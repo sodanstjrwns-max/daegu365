@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a120a"/>
+      <stop offset="100%" stop-color="#4a3520"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.8" cy="0.2" r="0.6">
+      <stop offset="0%" stop-color="#c9a876" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#c9a876" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <text x="80" y="180" font-family="Georgia, serif" font-size="28" fill="#c9a876" letter-spacing="8">DAEGU 365 DENTAL CLINIC</text>
+  <text x="80" y="300" font-family="Georgia, serif" font-size="88" font-weight="300" fill="#fdfbf7">치과가 두려워도</text>
+  <text x="80" y="400" font-family="Georgia, serif" font-size="88" font-weight="400" fill="#c9a876" font-style="italic">괜찮습니다.</text>
+  <text x="80" y="495" font-family="system-ui, sans-serif" font-size="24" fill="#b89468">수면임플란트 · 인비절라인 · 라미네이트 전문</text>
+  <text x="80" y="540" font-family="system-ui, sans-serif" font-size="22" fill="#8a7868">대구 북구 침산로 148 · 053-357-0365</text>
+  <circle cx="1050" cy="150" r="80" fill="none" stroke="#c9a876" stroke-width="2"/>
+  <text x="1050" y="165" text-anchor="middle" font-family="Georgia, serif" font-size="48" fill="#c9a876">365</text>
+</svg>
