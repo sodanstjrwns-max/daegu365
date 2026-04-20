@@ -47,13 +47,19 @@ body {
   letter-spacing: -0.02em;
 }
 
-/* 비디치과 스타일: 헤딩은 두꺼운 Pretendard, line-height 1.2 */
+/* 서울비디치과(bdbddc.com)와 동일: h1~h6 weight 800, letter-spacing -0.04em */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--sans);
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   line-height: 1.2;
   color: var(--text-primary);
+}
+/* 히어로(h1)는 비디치과와 동일하게 900 */
+h1, .hero-headline, .display-hero {
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
 }
 
 /* display / serif 클래스 호환 유지 (기존 코드 호환용) — 모두 Pretendard */
@@ -69,8 +75,9 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
-/* Pretendard는 이탤릭이 어색하므로 강조부 italic 해제 */
-.display.italic, em.display, .serif.italic, .italic.display {
+/* Pretendard는 이탤릭이 어색하므로 강조부 italic 전체 해제 */
+.display.italic, em.display, .serif.italic, .italic.display,
+.italic, em, i:not([class*="fa-"]):not([class*="fab"]) {
   font-style: normal;
 }
 
