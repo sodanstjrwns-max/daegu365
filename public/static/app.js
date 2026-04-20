@@ -1,4 +1,4 @@
-// 대구365치과 공통 JS — v2.0 Editorial Luxury
+// 대구365치과 공통 JS — v3.0 Awwwards Editorial Supreme
 
 // ============= SCROLL PROGRESS BAR =============
 (function() {
@@ -180,6 +180,145 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, { passive: true });
   }
+});
+
+// ============= v3 · IMAGE REVEAL (curtain pull-up) =============
+document.addEventListener('DOMContentLoaded', () => {
+  const revealIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        // Stagger slightly based on DOM position
+        const delay = Math.min(0.15, (e.target.dataset.revealDelay || 0) * 0.05);
+        e.target.style.transitionDelay = delay + 's';
+        e.target.classList.add('visible');
+        revealIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.img-reveal').forEach((el, i) => {
+    el.dataset.revealDelay = i % 4;
+    revealIO.observe(el);
+  });
+});
+
+// ============= v3 · REVEAL WORDS (kinetic typography) =============
+document.addEventListener('DOMContentLoaded', () => {
+  const lineIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        lineIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.reveal-lines').forEach(el => lineIO.observe(el));
+});
+
+// ============= v3 · ACCORDION (FAQ) =============
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-accordion-trigger]').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('[data-accordion-item]');
+      if (!item) return;
+      const isOpen = item.getAttribute('data-open') === 'true';
+      // Optional: close siblings in same container (uncomment for single-open mode)
+      // item.parentElement.querySelectorAll('[data-accordion-item]').forEach(s => s.setAttribute('data-open', 'false'));
+      item.setAttribute('data-open', isOpen ? 'false' : 'true');
+    });
+  });
+});
+
+// ============= v3 · HORIZONTAL SCROLL (pinned) =============
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.matchMedia('(max-width: 768px)').matches) return; // native scroll on mobile
+
+  document.querySelectorAll('[data-hscroll]').forEach(section => {
+    const track = section.querySelector('.h-scroll-track');
+    if (!track) return;
+
+    // Make the section tall enough for the horizontal distance
+    const setup = () => {
+      const trackWidth = track.scrollWidth;
+      const viewport = window.innerWidth;
+      const scrollDistance = trackWidth - viewport;
+      if (scrollDistance <= 0) {
+        section.style.height = '100vh';
+        return;
+      }
+      section.style.height = (window.innerHeight + scrollDistance) + 'px';
+      section.style.position = 'relative';
+      track.style.position = 'sticky';
+      track.style.top = '0';
+
+      const onScroll = () => {
+        const rect = section.getBoundingClientRect();
+        const progress = Math.max(0, Math.min(1, -rect.top / scrollDistance));
+        track.style.transform = `translateX(${-progress * scrollDistance}px)`;
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    };
+
+    // Wait for images
+    if (document.readyState === 'complete') setup();
+    else window.addEventListener('load', setup);
+  });
+});
+
+// ============= v3 · INLINE BEFORE/AFTER (home) =============
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.ba-inline').forEach(root => {
+    const after = root.querySelector('.ba-inline-after-wrap');
+    if (!after) return;
+    const setPos = (x) => {
+      const rect = root.getBoundingClientRect();
+      let pct = ((x - rect.left) / rect.width) * 100;
+      pct = Math.max(0, Math.min(100, pct));
+      after.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    };
+    root.addEventListener('mousemove', (e) => setPos(e.clientX));
+    root.addEventListener('touchmove', (e) => setPos(e.touches[0].clientX));
+  });
+});
+
+// ============= v3 · CURSOR TRAIL (subtle, hero only) =============
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const hero = document.querySelector('.cinematic-hero');
+  if (!hero) return;
+
+  const trailCount = 8;
+  const trails = [];
+  for (let i = 0; i < trailCount; i++) {
+    const t = document.createElement('div');
+    t.className = 'cursor-trail';
+    t.style.transform = 'scale(0)';
+    document.body.appendChild(t);
+    trails.push(t);
+  }
+
+  let inHero = false;
+  hero.addEventListener('mouseenter', () => inHero = true);
+  hero.addEventListener('mouseleave', () => {
+    inHero = false;
+    trails.forEach(t => t.style.transform = 'scale(0)');
+  });
+
+  const positions = Array(trailCount).fill({ x: 0, y: 0 });
+  hero.addEventListener('mousemove', (e) => {
+    positions.unshift({ x: e.clientX, y: e.clientY });
+    positions.length = trailCount;
+    trails.forEach((t, i) => {
+      const p = positions[i] || positions[0];
+      t.style.left = p.x + 'px';
+      t.style.top = p.y + 'px';
+      const s = 1 - (i / trailCount);
+      t.style.transform = `translate(-50%, -50%) scale(${s})`;
+      t.style.opacity = s * 0.7;
+    });
+  });
 });
 
 // ============= Before/After Slider =============
