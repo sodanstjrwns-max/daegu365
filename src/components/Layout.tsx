@@ -6,12 +6,13 @@ export const Navbar = () => (
       <div class="max-w-7xl mx-auto px-6 lg:px-10">
         <div class="flex items-center justify-between h-20">
           <a href="/" class="flex items-center gap-3 group">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brown-800 to-brown-600 flex items-center justify-center text-ivory shadow-lg">
-              <span class="display text-lg font-semibold">365</span>
+            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-brown-900 to-brown-600 flex items-center justify-center text-ivory shadow-lg group-hover:shadow-xl transition-all relative overflow-hidden">
+              <span class="display text-base font-black tracking-tight relative z-10">365</span>
+              <span class="absolute inset-0 bg-gradient-to-br from-gold to-brown-500 opacity-0 group-hover:opacity-100 transition-opacity"></span>
             </div>
             <div>
-              <div class="display text-xl font-medium text-brown-900 tracking-tight leading-none">대구365치과</div>
-              <div class="text-[10px] tracking-[0.3em] text-brown-500 mt-1">DAEGU 365 DENTAL</div>
+              <div class="display text-xl font-black text-brown-900 tracking-tight leading-none">대구365치과</div>
+              <div class="text-[10px] tracking-[0.3em] text-brown-500 mt-1 font-semibold">DAEGU 365 DENTAL</div>
             </div>
           </a>
 
@@ -131,28 +132,38 @@ export const Navbar = () => (
       </div>
     </div>
 
-    <div class="h-20"></div>
+    <div class="h-20" aria-hidden="true"></div>
   </>
 )
 
 export const Footer = () => (
-  <footer class="footer pt-20 pb-10 mt-32">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+  <footer class="footer pt-24 pb-10 mt-0 relative">
+    {/* Big brand headline */}
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 mb-20 relative">
+      <div class="overflow-hidden">
+        <h2 class="display font-black tracking-tight leading-[0.9] text-ivory/95" style="font-size:clamp(3rem,11vw,10rem);letter-spacing:-0.05em;">
+          DAEGU<span class="text-gold">365</span>DENTAL
+        </h2>
+      </div>
+      <div class="gold-divider mt-8" style="width:100%;"></div>
+    </div>
+
+    <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
       <div class="grid md:grid-cols-12 gap-12 mb-16">
         <div class="md:col-span-4">
           <div class="flex items-center gap-3 mb-6">
             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-brown-500 flex items-center justify-center text-brown-950">
-              <span class="display text-lg font-semibold">365</span>
+              <span class="display text-base font-black">365</span>
             </div>
             <div>
-              <div class="display text-2xl font-medium text-ivory leading-none">대구365치과</div>
-              <div class="text-[10px] tracking-[0.3em] text-brown-400 mt-1">DAEGU 365 DENTAL</div>
+              <div class="display text-2xl font-black text-ivory leading-none tracking-tight">대구365치과</div>
+              <div class="text-[10px] tracking-[0.3em] text-brown-400 mt-1 font-semibold">DAEGU 365 DENTAL</div>
             </div>
           </div>
           <p class="text-brown-300 text-sm leading-relaxed mb-6">
             치과공포증을 가졌던 의사가 만드는,<br/>
             두려움 없는 치과.<br/>
-            <span class="text-gold italic display">"치과 진입의 허들을 낮추고 경험의 혁신을 이룩한다"</span>
+            <span class="text-gold display font-bold">"치과 진입의 허들을 낮추고 경험의 혁신을 이룩한다"</span>
           </p>
           <div class="flex gap-3">
             <a href="https://blog.naver.com/nowhere2721" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-brown-700 flex items-center justify-center hover:bg-brown-800 transition">
@@ -165,7 +176,7 @@ export const Footer = () => (
         </div>
 
         <div class="md:col-span-2">
-          <h4 class="display text-lg text-gold mb-4">진료안내</h4>
+          <h4 class="display text-base text-gold mb-4 font-bold tracking-tight">진료안내</h4>
           <ul class="space-y-2 text-sm">
             <li><a href="/treatments/implant">수면임플란트</a></li>
             <li><a href="/treatments/lamineer">라미네이트</a></li>
@@ -174,7 +185,7 @@ export const Footer = () => (
           </ul>
         </div>
         <div class="md:col-span-2">
-          <h4 class="display text-lg text-gold mb-4">콘텐츠</h4>
+          <h4 class="display text-base text-gold mb-4 font-bold tracking-tight">콘텐츠</h4>
           <ul class="space-y-2 text-sm">
             <li><a href="/before-after">비포애프터</a></li>
             <li><a href="/blog">블로그</a></li>
@@ -183,7 +194,7 @@ export const Footer = () => (
           </ul>
         </div>
         <div class="md:col-span-4">
-          <h4 class="display text-lg text-gold mb-4">내원안내</h4>
+          <h4 class="display text-base text-gold mb-4 font-bold tracking-tight">내원안내</h4>
           <ul class="space-y-3 text-sm text-brown-200">
             <li class="flex gap-2"><i class="fas fa-map-marker-alt mt-1 text-gold"></i>
               <span>대구광역시 북구 침산로 148<br/>엠브로스퀘어 7층</span>

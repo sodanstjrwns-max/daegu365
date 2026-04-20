@@ -13,7 +13,7 @@ export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) 
       <section class="pt-20 pb-16 bg-cream">
         <div class="max-w-7xl mx-auto px-6 text-center">
           <div class="section-label mb-6">ALL TREATMENTS</div>
-          <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">
+          <h1 class="t-display mb-6 fade-in">
             당신의 모든 치과 고민,<br/><em class="italic text-brown-700">한 곳에서</em>
           </h1>
         </div>
@@ -27,7 +27,7 @@ export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) 
             {core.map(t => (
               <a href={`/treatments/${t.slug}`} class="group lux-card">
                 <div class="text-xs tracking-[0.3em] text-brown-400 mb-6">SIGNATURE</div>
-                <div class="display text-4xl font-light mb-4">{t.name}</div>
+                <div class="display text-4xl font-black tracking-tight mb-4">{t.name}</div>
                 <p class="display italic text-brown-600 mb-8">{t.tagline}</p>
                 <p class="text-brown-700 text-sm leading-relaxed">{t.short_desc}</p>
                 <div class="mt-8 text-sm flex items-center gap-2 text-brown-800">
@@ -104,7 +104,7 @@ export const TreatmentDetailPage = ({
             <div class="md:col-span-7 fade-in">
               {isCore && <div class="text-xs tracking-[0.4em] text-gold mb-6">SIGNATURE TREATMENT</div>}
               {!isCore && <div class="section-label mb-6">TREATMENT</div>}
-              <h1 class={`display ${isCore ? 'text-6xl md:text-8xl' : 'text-5xl md:text-6xl'} font-light leading-[1] mb-8`}>
+              <h1 class={`display ${isCore ? 'text-6xl md:text-8xl' : 'text-5xl md:text-6xl'} font-black tracking-tight leading-[1] mb-8`}>
                 {treatment.name}
               </h1>
               <p class={`display italic text-2xl ${isCore ? 'text-gold' : 'text-brown-700'} mb-8`}>
@@ -217,7 +217,7 @@ export const TreatmentDetailPage = ({
                 { num: '04', title: '사후 관리', desc: '정기 검진과 리콜 시스템으로 장기 관리합니다.' },
               ].map((step: any) => (
                 <div class="fade-in flex gap-8 p-6 rounded-2xl hover:bg-cream transition">
-                  <div class="text-5xl display font-light text-gold flex-shrink-0">{step.num}</div>
+                  <div class="text-5xl display font-black tracking-tight text-gold flex-shrink-0">{step.num}</div>
                   <div>
                     <h3 class="display text-2xl font-medium mb-2">{step.title}</h3>
                     <p class="text-brown-700 leading-relaxed">{step.desc}</p>
@@ -340,7 +340,7 @@ export const TreatmentDetailPage = ({
       {/* CTA */}
       <section class="py-24 bg-brown-950 text-ivory text-center">
         <div class="max-w-3xl mx-auto px-6">
-          <h2 class="display text-4xl md:text-5xl font-light mb-8 fade-in">
+          <h2 class="display text-4xl md:text-5xl font-black tracking-tight mb-8 fade-in">
             <em class="italic text-gold">{treatment.name}</em>, 지금 상담하세요
           </h2>
           <div class="flex flex-wrap justify-center gap-4 fade-in">

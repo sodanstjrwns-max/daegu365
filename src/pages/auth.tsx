@@ -7,7 +7,7 @@ export const SignupPage = ({ error, email, name, phone }: { error?: string, emai
       <div class="max-w-xl mx-auto px-6">
         <div class="text-center mb-10 fade-in">
           <div class="section-label mb-4">JOIN</div>
-          <h1 class="display text-5xl font-light">회원가입</h1>
+          <h1 class="display text-5xl font-black tracking-tight">회원가입</h1>
           <p class="text-brown-700 text-sm mt-4">가입 후 비포애프터의 <em class="italic display">애프터 사진</em>을 확인할 수 있습니다.</p>
         </div>
 
@@ -89,7 +89,7 @@ export const LoginPage = ({ error, next }: { error?: string, next?: string }) =>
       <div class="max-w-md mx-auto px-6">
         <div class="text-center mb-10 fade-in">
           <div class="section-label mb-4">LOGIN</div>
-          <h1 class="display text-5xl font-light">로그인</h1>
+          <h1 class="display text-5xl font-black tracking-tight">로그인</h1>
         </div>
         <form method="post" action="/login" class="bg-ivory rounded-3xl p-10 shadow-lux fade-in space-y-5">
           {error && (
@@ -122,7 +122,7 @@ export const AdminLoginPage = ({ error }: { error?: string }) => (
     <section class="min-h-screen bg-brown-950 text-ivory flex items-center justify-center px-6">
       <div class="max-w-md w-full">
         <div class="text-center mb-10">
-          <div class="display text-3xl font-light text-gold">DAEGU365 ADMIN</div>
+          <div class="display text-3xl font-black tracking-tight text-gold">DAEGU365 ADMIN</div>
           <p class="text-brown-300 text-sm mt-2">관리자 로그인</p>
         </div>
         <form method="post" action="/admin/login" class="bg-brown-900 rounded-3xl p-10 space-y-5 border border-brown-800">

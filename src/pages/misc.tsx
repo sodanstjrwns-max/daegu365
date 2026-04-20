@@ -11,14 +11,14 @@ export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
       <section class="pt-20 pb-12 bg-cream">
         <div class="max-w-5xl mx-auto px-6 text-center">
           <div class="section-label mb-6">NOTICE</div>
-          <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">공지사항</h1>
+          <h1 class="t-display mb-6 fade-in">공지사항</h1>
         </div>
       </section>
       <section class="py-16 max-w-5xl mx-auto px-6">
         {main && (
           <a href={`/notices/${main.id}`} class="block mb-10 p-10 rounded-3xl bg-brown-950 text-ivory hover:bg-brown-900 transition fade-in">
             <div class="text-xs tracking-widest text-gold mb-4">★ MAIN</div>
-            <h2 class="display text-3xl font-light mb-4">{main.title}</h2>
+            <h2 class="display text-3xl font-black tracking-tight mb-4">{main.title}</h2>
             <div class="text-brown-300 text-sm" dangerouslySetInnerHTML={{__html: main.content.replace(/<[^>]+>/g,'').substring(0,120)+'...'}}></div>
             <div class="mt-6 text-xs text-brown-400">{main.created_at?.split('T')[0]} · 조회 {main.view_count}</div>
           </a>
@@ -52,7 +52,7 @@ export const NoticeDetailPage = ({ notice }: { notice: Notice }) => (
     <article class="max-w-3xl mx-auto px-6 py-16">
       <a href="/notices" class="text-sm text-brown-600 hover:text-brown-900">← 공지사항 목록</a>
       {notice.is_main ? <div class="mt-8 text-xs tracking-widest text-gold">★ MAIN NOTICE</div> : <div class="mt-8 text-xs tracking-widest text-brown-500">NOTICE</div>}
-      <h1 class="display text-4xl md:text-5xl font-light leading-tight my-6">{notice.title}</h1>
+      <h1 class="display text-4xl md:text-5xl font-black tracking-tight leading-tight my-6">{notice.title}</h1>
       <div class="text-sm text-brown-500 mb-10 pb-6 border-b border-brown-200">
         {notice.created_at?.split('T')[0]} · 조회 {notice.view_count}
       </div>
@@ -95,7 +95,7 @@ export const DictionaryListPage = ({ items, selectedCategory, query }: { items: 
       <section class="pt-20 pb-12 bg-cream">
         <div class="max-w-7xl mx-auto px-6 text-center">
           <div class="section-label mb-6">DICTIONARY</div>
-          <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">치과 <em class="italic text-brown-700">백과사전</em></h1>
+          <h1 class="t-display mb-6 fade-in">치과 <em class="italic text-brown-700">백과사전</em></h1>
           <p class="text-brown-700 max-w-2xl mx-auto fade-in">500여 개의 치과 용어를 담았습니다. 검색하거나 카테고리로 찾아보세요.</p>
         </div>
       </section>
@@ -125,7 +125,7 @@ export const DictionaryListPage = ({ items, selectedCategory, query }: { items: 
         ) : (
           Object.keys(groups).sort().map(k => (
             <div class="mb-12 fade-in">
-              <h2 class="display text-4xl font-light text-brown-800 mb-6 pb-3 border-b border-brown-200">{k}</h2>
+              <h2 class="display text-4xl font-black tracking-tight text-brown-800 mb-6 pb-3 border-b border-brown-200">{k}</h2>
               <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {groups[k].map(d => (
                   <a href={`/dictionary/${d.slug}`} class="group p-4 rounded-xl hover:bg-cream transition">
@@ -157,7 +157,7 @@ export const DictionaryDetailPage = ({
     <article class="max-w-3xl mx-auto px-6 py-16">
       <a href="/dictionary" class="text-sm text-brown-600 hover:text-brown-900">← 백과사전 목록</a>
       <div class="mt-8 text-xs tracking-widest text-brown-500">DICTIONARY</div>
-      <h1 class="display text-5xl md:text-6xl font-light leading-tight my-4">{entry.term}</h1>
+      <h1 class="display text-5xl md:text-6xl font-black tracking-tight leading-tight my-4">{entry.term}</h1>
       {entry.term_en && <div class="display italic text-xl text-brown-600 mb-8">{entry.term_en}</div>}
       <div class="text-sm text-brown-500 mb-10 pb-6 border-b border-brown-200">
         카테고리: {entry.category} · 조회 {entry.view_count}
@@ -209,7 +209,7 @@ export const FAQPage = ({ grouped, treatments }: { grouped: Record<string, FAQ[]
     <section class="pt-20 pb-12 bg-cream">
       <div class="max-w-5xl mx-auto px-6 text-center">
         <div class="section-label mb-6">FAQ</div>
-        <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">자주 묻는 질문</h1>
+        <h1 class="t-display mb-6 fade-in">자주 묻는 질문</h1>
         <p class="text-brown-700 max-w-2xl mx-auto fade-in">진료 과목별로 자주 묻는 질문들을 모았습니다.</p>
       </div>
     </section>
@@ -221,7 +221,7 @@ export const FAQPage = ({ grouped, treatments }: { grouped: Record<string, FAQ[]
         return (
           <div class="mb-16 fade-in">
             <div class="flex items-end justify-between mb-8">
-              <h2 class="display text-3xl font-light">{t.name}</h2>
+              <h2 class="display text-3xl font-black tracking-tight">{t.name}</h2>
               <a href={`/treatments/${t.slug}`} class="text-sm link-underline">진료 안내 →</a>
             </div>
             <div class="space-y-3">
@@ -255,7 +255,7 @@ export const DirectionsPage = () => (
     <section class="pt-20 pb-12 bg-cream">
       <div class="max-w-5xl mx-auto px-6 text-center">
         <div class="section-label mb-6">DIRECTIONS</div>
-        <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">오시는 길</h1>
+        <h1 class="t-display mb-6 fade-in">오시는 길</h1>
       </div>
     </section>
     <section class="py-16 max-w-5xl mx-auto px-6">
@@ -310,7 +310,7 @@ export const HoursPage = () => (
     <section class="pt-20 pb-12 bg-cream">
       <div class="max-w-4xl mx-auto px-6 text-center">
         <div class="section-label mb-6">HOURS</div>
-        <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">진료시간</h1>
+        <h1 class="t-display mb-6 fade-in">진료시간</h1>
         <p class="text-brown-700 max-w-xl mx-auto fade-in">
           월·목 야간 21시까지, 토·일도 진료합니다. 진정한 <em class="italic display">365</em>일 치과.
         </p>
@@ -330,10 +330,10 @@ export const HoursPage = () => (
           ].map((row: any) => (
             <div class={`flex justify-between items-center pb-4 border-b ${row.highlight ? 'border-gold' : 'border-brown-800'}`}>
               <div class="flex items-center gap-3">
-                <div class="display text-xl font-light">{row.day}</div>
+                <div class="display text-xl font-black tracking-tight">{row.day}</div>
                 {row.tag && <span class="tag tag-gold text-xs">{row.tag}</span>}
               </div>
-              <div class="display text-xl font-light text-gold">{row.time}</div>
+              <div class="display text-xl font-black tracking-tight text-gold">{row.time}</div>
             </div>
           ))}
         </div>
@@ -358,7 +358,7 @@ export const FeesPage = ({ fees }: { fees: any[] }) => {
       <section class="pt-20 pb-12 bg-cream">
         <div class="max-w-4xl mx-auto px-6 text-center">
           <div class="section-label mb-6">FEES</div>
-          <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">수가 안내</h1>
+          <h1 class="t-display mb-6 fade-in">수가 안내</h1>
           <p class="text-brown-700 max-w-2xl mx-auto fade-in text-sm">
             아래 비용은 참고용이며, 실제 비용은 진단·난이도·재료에 따라 달라질 수 있습니다. 정확한 비용은 상담 시 안내드립니다.
           </p>
@@ -367,7 +367,7 @@ export const FeesPage = ({ fees }: { fees: any[] }) => {
       <section class="py-16 max-w-4xl mx-auto px-6">
         {Object.keys(grouped).map(cat => (
           <div class="mb-12 fade-in">
-            <h2 class="display text-3xl font-light mb-6">{cat}</h2>
+            <h2 class="display text-3xl font-black tracking-tight mb-6">{cat}</h2>
             <div class="bg-ivory rounded-2xl border border-brown-200 overflow-hidden">
               {grouped[cat].map((f, i) => (
                 <div class={`p-5 flex justify-between items-center gap-4 ${i>0 ? 'border-t border-brown-100':''}`}>

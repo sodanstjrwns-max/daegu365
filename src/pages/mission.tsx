@@ -11,7 +11,7 @@ export const MissionPage = () => (
 
       <div class="relative max-w-5xl mx-auto px-6 text-center">
         <div class="text-xs tracking-[0.4em] text-gold mb-12 fade-in">OUR MISSION</div>
-        <h1 class="display text-6xl md:text-8xl lg:text-[9rem] font-light leading-[0.95] mb-12 fade-in">
+        <h1 class="display text-6xl md:text-8xl lg:text-[9rem] font-black tracking-tight leading-[0.95] mb-12 fade-in">
           <span class="block">치과가</span>
           <span class="block italic text-gold">무서웠던</span>
           <span class="block">한 의사의</span>
@@ -36,7 +36,7 @@ export const MissionPage = () => (
           <div class="section-label">CHAPTER 1</div>
         </div>
         <div class="md:col-span-9 fade-in">
-          <h2 class="display text-4xl md:text-5xl font-light leading-tight mb-8">
+          <h2 class="display text-4xl md:text-5xl font-black tracking-tight leading-tight mb-8">
             저도 치과가<br/><em class="italic text-brown-700">무서웠습니다.</em>
           </h2>
           <div class="prose-dental text-brown-700 text-lg leading-relaxed space-y-6">
@@ -64,7 +64,7 @@ export const MissionPage = () => (
           <div class="section-label">CHAPTER 2</div>
         </div>
         <div class="md:col-span-9 fade-in">
-          <h2 class="display text-4xl md:text-5xl font-light leading-tight mb-8">
+          <h2 class="display text-4xl md:text-5xl font-black tracking-tight leading-tight mb-8">
             그래서 저는<br/><em class="italic text-brown-700">다르게 만들기로</em> 했습니다.
           </h2>
           <div class="prose-dental text-brown-700 text-lg leading-relaxed space-y-6">
@@ -98,7 +98,7 @@ export const MissionPage = () => (
           ].map((v: any) => (
             <div class="lux-card fade-in">
               <div class="text-xs tracking-[0.3em] text-brown-400 mb-8">{v.num} · {v.en}</div>
-              <div class="display text-5xl font-light text-brown-900 mb-6 italic">{v.title}</div>
+              <div class="display text-5xl font-black tracking-tight text-brown-900 mb-6 italic">{v.title}</div>
               <p class="text-brown-700 leading-relaxed">{v.desc}</p>
             </div>
           ))}
@@ -111,7 +111,7 @@ export const MissionPage = () => (
       <div class="blob" style="width:600px;height:600px;background:#c9a876;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.15;"></div>
       <div class="max-w-4xl mx-auto px-6 text-center relative">
         <div class="text-xs tracking-[0.4em] text-gold mb-8 fade-in">OUR MISSION</div>
-        <h2 class="display text-4xl md:text-6xl font-light leading-tight fade-in">
+        <h2 class="display text-4xl md:text-6xl font-black tracking-tight leading-tight fade-in">
           <em class="italic">"치과 진입의 허들을 낮추고</em><br/>
           <em class="italic">경험의 혁신을 이룩한다."</em>
         </h2>

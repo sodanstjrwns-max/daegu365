@@ -14,7 +14,7 @@ export const BeforeAfterListPage = ({
     <section class="pt-20 pb-12 bg-cream">
       <div class="max-w-7xl mx-auto px-6 text-center">
         <div class="section-label mb-6">BEFORE & AFTER</div>
-        <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">
+        <h1 class="t-display mb-6 fade-in">
           실제 <em class="italic text-brown-700">치료 사례</em>
         </h1>
         <p class="text-brown-700 max-w-2xl mx-auto fade-in">
@@ -112,7 +112,7 @@ export const BeforeAfterDetailPage = ({
           <span class="tag tag-brown">{item.treatment_period}</span>
           {item.region_sigungu && <span class="tag tag-brown">{item.region_sido} {item.region_sigungu} {item.region_dong}</span>}
         </div>
-        <h1 class="display text-4xl md:text-5xl font-light mb-6">{item.title}</h1>
+        <h1 class="display text-4xl md:text-5xl font-black tracking-tight mb-6">{item.title}</h1>
         <p class="text-brown-700 text-lg leading-relaxed mb-10">{item.description}</p>
       </div>
 

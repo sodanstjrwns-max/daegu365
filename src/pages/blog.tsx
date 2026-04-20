@@ -7,7 +7,7 @@ export const BlogListPage = ({ posts, doctors }: { posts: BlogPost[], doctors: D
     <section class="pt-20 pb-12 bg-cream">
       <div class="max-w-7xl mx-auto px-6 text-center">
         <div class="section-label mb-6">JOURNAL</div>
-        <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">
+        <h1 class="t-display mb-6 fade-in">
           대구365치과 <em class="italic text-brown-700">블로그</em>
         </h1>
         <p class="text-brown-700 max-w-2xl mx-auto fade-in">
@@ -57,7 +57,7 @@ export const BlogDetailPage = ({ post, author, related }: { post: BlogPost, auth
       </div>
       <header class="mb-12 fade-in">
         <div class="text-xs tracking-[0.3em] text-brown-500 mb-6">JOURNAL</div>
-        <h1 class="display text-4xl md:text-5xl font-light leading-tight mb-6">{post.title}</h1>
+        <h1 class="display text-4xl md:text-5xl font-black tracking-tight leading-tight mb-6">{post.title}</h1>
         {post.excerpt && <p class="text-brown-700 text-lg italic display">{post.excerpt}</p>}
         <div class="mt-6 flex items-center gap-3 text-sm text-brown-500">
           {author && <a href={`/doctors/${author.slug}`} class="font-medium text-brown-700 hover:underline">by {author.name} {author.position}</a>}
