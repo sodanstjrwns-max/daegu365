@@ -1173,33 +1173,44 @@ h1, .hero-headline, .display-hero {
   transform-origin: right center;
 }
 
-/* ---------- HORIZONTAL SCROLL SECTION ---------- */
+/* ---------- HORIZONTAL SCROLL SECTION (native drag/wheel scroll) ---------- */
 .h-scroll-section {
   position: relative;
-  height: 100vh;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 6vw;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  cursor: grab;
 }
+.h-scroll-section::-webkit-scrollbar { display: none; }
+.h-scroll-section.is-dragging { cursor: grabbing; scroll-snap-type: none; }
+.h-scroll-section.is-dragging * { pointer-events: none; }
+
 .h-scroll-track {
-  position: absolute;
-  top: 0; left: 0;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  padding: 0 6vw;
+  display: inline-flex;
+  align-items: stretch;
+  gap: 28px;
+  padding: 20px 6vw;
   will-change: transform;
-  transition: transform 0.1s linear;
 }
 .h-scroll-card {
   flex: 0 0 auto;
-  width: min(85vw, 520px);
-  height: 80vh;
+  width: min(85vw, 460px);
+  height: clamp(520px, 72vh, 640px);
   border-radius: 28px;
   overflow: hidden;
   position: relative;
   isolation: isolate;
   background: var(--brown-100);
   box-shadow: var(--shadow-xl);
+  scroll-snap-align: start;
+  transition: transform .5s var(--ease-silk), box-shadow .5s var(--ease-silk);
+}
+.h-scroll-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-2xl, 0 40px 80px rgba(44, 31, 20, 0.2));
 }
 .h-scroll-card img {
   width: 100%; height: 100%;
@@ -1237,12 +1248,13 @@ h1, .hero-headline, .display-hero {
 /* Intro block inside horizontal scroll */
 .h-scroll-intro {
   flex: 0 0 auto;
-  width: min(80vw, 520px);
-  height: 80vh;
+  width: min(80vw, 460px);
+  height: clamp(520px, 72vh, 640px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding-right: 40px;
+  scroll-snap-align: start;
 }
 
 /* ---------- OVERSIZED NUMBER STAT ---------- */

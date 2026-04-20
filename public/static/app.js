@@ -228,40 +228,70 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ============= v3 · HORIZONTAL SCROLL (pinned) =============
+// ============= v3 · HORIZONTAL SCROLL (native + drag + wheel) =============
 document.addEventListener('DOMContentLoaded', () => {
-  if (window.matchMedia('(max-width: 768px)').matches) return; // native scroll on mobile
-
   document.querySelectorAll('[data-hscroll]').forEach(section => {
-    const track = section.querySelector('.h-scroll-track');
-    if (!track) return;
+    // 1) Wheel → horizontal (데스크탑: 세로 휠을 가로로 변환, 단 섹션이 화면에 꽉 찼을 때만)
+    let wheelActive = false;
+    section.addEventListener('wheel', (e) => {
+      // 가로 스와이프는 그대로 둠
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
 
-    // Make the section tall enough for the horizontal distance
-    const setup = () => {
-      const trackWidth = track.scrollWidth;
-      const viewport = window.innerWidth;
-      const scrollDistance = trackWidth - viewport;
-      if (scrollDistance <= 0) {
-        section.style.height = '100vh';
-        return;
+      const atStart = section.scrollLeft <= 0;
+      const atEnd = section.scrollLeft + section.clientWidth >= section.scrollWidth - 1;
+      const goingDown = e.deltaY > 0;
+      const goingUp = e.deltaY < 0;
+
+      // 끝에 도달했으면 페이지 세로 스크롤에 양보
+      if ((atEnd && goingDown) || (atStart && goingUp)) return;
+
+      e.preventDefault();
+      section.scrollLeft += e.deltaY;
+    }, { passive: false });
+
+    // 2) Drag to scroll (데스크탑 마우스 드래그)
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+
+    section.addEventListener('mousedown', (e) => {
+      // 링크 자체 클릭은 살려둠 — 드래그만 막기
+      isDown = true;
+      startX = e.pageX;
+      startScroll = section.scrollLeft;
+    });
+    window.addEventListener('mouseup', () => {
+      if (isDown) {
+        isDown = false;
+        section.classList.remove('is-dragging');
       }
-      section.style.height = (window.innerHeight + scrollDistance) + 'px';
-      section.style.position = 'relative';
-      track.style.position = 'sticky';
-      track.style.top = '0';
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      const dx = e.pageX - startX;
+      // 일정 거리 이상 움직여야 드래그 모드 진입 (링크 클릭 보호)
+      if (Math.abs(dx) > 6 && !section.classList.contains('is-dragging')) {
+        section.classList.add('is-dragging');
+      }
+      if (section.classList.contains('is-dragging')) {
+        e.preventDefault();
+        section.scrollLeft = startScroll - dx;
+      }
+    });
 
-      const onScroll = () => {
-        const rect = section.getBoundingClientRect();
-        const progress = Math.max(0, Math.min(1, -rect.top / scrollDistance));
-        track.style.transform = `translateX(${-progress * scrollDistance}px)`;
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    };
-
-    // Wait for images
-    if (document.readyState === 'complete') setup();
-    else window.addEventListener('load', setup);
+    // 3) 드래그 직후 클릭 방지 (마우스업 후 바로 클릭되는 걸 막음)
+    section.addEventListener('click', (e) => {
+      if (section.classList.contains('just-dragged')) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+    section.addEventListener('mouseup', () => {
+      if (section.classList.contains('is-dragging')) {
+        section.classList.add('just-dragged');
+        setTimeout(() => section.classList.remove('just-dragged'), 50);
+      }
+    });
   });
 });
 

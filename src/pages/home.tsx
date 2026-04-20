@@ -184,18 +184,18 @@ export const HomePage = () => (
     {/* ================================================== */}
     {/* 4. HORIZONTAL SCROLL — SIGNATURE TREATMENTS         */}
     {/* ================================================== */}
-    <section class="bg-cream py-28 lg:py-40 relative overflow-hidden">
-      <div class="max-w-[1440px] mx-auto px-6 lg:px-12 mb-16">
+    <section class="bg-cream pt-28 lg:pt-40 pb-20 lg:pb-28 relative overflow-hidden">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12 mb-14">
         <div class="flex flex-wrap justify-between items-end gap-6 fade-in">
           <div class="max-w-2xl">
             <div class="section-label mb-6">SIGNATURE · 02</div>
             <h2 class="t-display">
               <span class="t-outline">시그니처</span><br/>
-              <span class="t-gold">진료 3선</span>
+              <span class="t-gold">진료 6선</span>
             </h2>
           </div>
           <div class="flex items-center gap-3 text-brown-600 text-sm">
-            <span class="font-semibold tracking-wider">DRAG →</span>
+            <span class="font-semibold tracking-wider">DRAG · SCROLL →</span>
             <div class="flex gap-1">
               <span class="w-8 h-px bg-brown-400"></span>
               <span class="w-4 h-px bg-brown-300"></span>
@@ -204,7 +204,7 @@ export const HomePage = () => (
         </div>
       </div>
 
-      {/* Horizontal scroll container */}
+      {/* Horizontal scroll container — native scroll + drag + wheel */}
       <div class="h-scroll-section" data-hscroll>
         <div class="h-scroll-track">
           {/* Intro card */}
@@ -300,8 +300,8 @@ export const HomePage = () => (
             </a>
           ))}
 
-          {/* End spacer */}
-          <div class="h-scroll-intro" style="width:240px;"></div>
+          {/* End spacer — snap anchor for last card */}
+          <div class="flex-shrink-0" style="width:6vw;"></div>
         </div>
       </div>
     </section>
