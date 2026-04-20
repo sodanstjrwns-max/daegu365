@@ -22,9 +22,10 @@
   --bg-secondary: #f5efe5;
   --shadow-lux: 0 20px 60px -15px rgba(44, 31, 20, 0.25);
   --shadow-card: 0 4px 20px rgba(44, 31, 20, 0.08);
-  --serif: 'Playfair Display', 'Noto Serif KR', serif;
-  --display: 'Cormorant Garamond', 'Noto Serif KR', serif;
+  /* 서울비디치과(bdbddc.com)와 동일한 Pretendard 단일 폰트 시스템 */
   --sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --serif: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --display: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 * {
@@ -41,20 +42,37 @@ body {
   background: var(--bg-primary);
   color: var(--text-primary);
   overflow-x: hidden;
-  line-height: 1.6;
+  line-height: 1.7;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
-h1, h2, h3, h4, .display {
-  font-family: var(--display);
-  font-weight: 500;
-  letter-spacing: -0.02em;
+/* 비디치과 스타일: 헤딩은 두꺼운 Pretendard, line-height 1.2 */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--sans);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
   color: var(--text-primary);
 }
 
-.serif { font-family: var(--serif); }
-.display { font-family: var(--display); }
+/* display / serif 클래스 호환 유지 (기존 코드 호환용) — 모두 Pretendard */
+.display {
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-style: normal;
+}
+.serif {
+  font-family: var(--sans);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Pretendard는 이탤릭이 어색하므로 강조부 italic 해제 */
+.display.italic, em.display, .serif.italic, .italic.display {
+  font-style: normal;
+}
 
 /* Navigation */
 .nav-blur {

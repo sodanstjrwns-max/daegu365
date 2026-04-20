@@ -86,10 +86,8 @@ export const renderer = jsxRenderer(({ children, title, description, keywords, c
         <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/static/favicon.svg" />
 
-        {/* Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+        {/* Fonts — 서울비디치과(bdbddc.com)와 동일: Pretendard 단일 폰트 */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="" />
         <link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 
         {/* Tailwind + Icons */}
@@ -106,9 +104,9 @@ export const renderer = jsxRenderer(({ children, title, description, keywords, c
                   ivory:'#fdfbf7', cream:'#f5efe5', gold:'#c9a876'
                 },
                 fontFamily: {
-                  display:['Cormorant Garamond','Noto Serif KR','serif'],
-                  serif:['Playfair Display','Noto Serif KR','serif'],
-                  sans:['Pretendard','system-ui','sans-serif']
+                  display:['Pretendard','-apple-system','BlinkMacSystemFont','Segoe UI','sans-serif'],
+                  serif:['Pretendard','-apple-system','BlinkMacSystemFont','Segoe UI','sans-serif'],
+                  sans:['Pretendard','-apple-system','BlinkMacSystemFont','Segoe UI','sans-serif']
                 }
               }
             }

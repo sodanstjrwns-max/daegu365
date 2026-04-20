@@ -32,11 +32,19 @@ export const Navbar = () => (
             </div>
             <div class="has-dropdown relative py-8">
               <a href="/treatments" class="nav-link">진료안내</a>
-              <div class="dropdown">
+              <div class="dropdown" style="min-width:240px">
                 <a href="/treatments/implant" class="font-semibold">✦ 수면임플란트</a>
                 <a href="/treatments/lamineer" class="font-semibold">✦ 라미네이트</a>
                 <a href="/treatments/ortho" class="font-semibold">✦ 인비절라인</a>
                 <div class="h-px bg-brown-200 my-2"></div>
+                <div class="text-[10px] tracking-[0.2em] text-brown-500 px-3 py-1 uppercase">특화 진료</div>
+                <a href="/treatments/vinique">VINIQUE 프리미엄 라미네이트</a>
+                <a href="/treatments/sleep-therapy">수면치료 시스템</a>
+                <a href="/treatments/painless-anesthesia">3단계 무통마취</a>
+                <a href="/treatments/airflow-gbt">에어플로우 (GBT)</a>
+                <a href="/treatments/pediatric-ortho">소아 교정장치</a>
+                <div class="h-px bg-brown-200 my-2"></div>
+                <div class="text-[10px] tracking-[0.2em] text-brown-500 px-3 py-1 uppercase">일반 진료</div>
                 <a href="/treatments/prosthetics">보철</a>
                 <a href="/treatments/endo">신경치료</a>
                 <a href="/treatments/periodontics">치주치료</a>

@@ -3,7 +3,9 @@ import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/type
 
 export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) => {
   const core = treatments.filter(t => t.is_core)
-  const others = treatments.filter(t => !t.is_core)
+  const specialtySlugs = ['vinique', 'sleep-therapy', 'painless-anesthesia', 'airflow-gbt', 'pediatric-ortho']
+  const specialty = treatments.filter(t => !t.is_core && specialtySlugs.includes(t.slug))
+  const others = treatments.filter(t => !t.is_core && !specialtySlugs.includes(t.slug))
 
   return (
     <>
@@ -35,6 +37,25 @@ export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) 
             ))}
           </div>
         </div>
+
+        {specialty.length > 0 && (
+          <div class="mb-20 fade-in">
+            <div class="section-label mb-6">SPECIALTY</div>
+            <h2 class="section-title mb-12">대구365치과 <em class="italic text-brown-700">특화 진료</em></h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {specialty.map(t => (
+                <a href={`/treatments/${t.slug}`} class="group block p-7 rounded-2xl bg-brown-50 border border-brown-200 hover:border-brown-700 hover:shadow-lg transition">
+                  <div class="text-[10px] tracking-[0.25em] text-brown-500 mb-4 uppercase">Signature Care</div>
+                  <div class="display text-2xl font-semibold mb-2 text-brown-900">{t.name}</div>
+                  <p class="text-sm text-brown-700 mb-4 leading-relaxed">{t.tagline}</p>
+                  <div class="text-xs text-brown-800 flex items-center gap-2">
+                    자세히 보기 <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition"></i>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div class="fade-in">
           <div class="section-label mb-6">OTHERS</div>
