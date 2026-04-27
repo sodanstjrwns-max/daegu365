@@ -1,22 +1,9 @@
 import { Navbar, Footer } from '../components/Layout'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
-// 의료진 슬러그 → 프로필 사진 매핑
-const DOCTOR_PHOTO: Record<string, string> = {
-  'kim-seongju':  '/static/images/doctors/kim-seongju.jpg',
-  'jung-jaeheon': '/static/images/doctors/jung-jaeheon.jpg',
-  'kim-sangwon':  '/static/images/doctors/kim-sangwon.jpg',
-  'choi-hyejung': '/static/images/doctors/choi-hyejung.jpg',
-  'kim-jinduk':   '/static/images/doctors/kim-jinduk.jpg',
-  'han-jieun':    '/static/images/doctors/han-jieun.jpg',
-  'lee-seoyoung': '/static/images/doctors/lee-seoyoung.jpg',
-}
-const getDoctorPhoto = (slug: string) =>
-  DOCTOR_PHOTO[slug] || '/static/images/doctors/team-horizontal-smile.jpg'
-
 export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) => {
   const core = treatments.filter(t => t.is_core)
-  const specialtySlugs = ['sleep-therapy', 'painless-anesthesia', 'airflow-gbt', 'pediatric-ortho']
+  const specialtySlugs = ['vinique', 'sleep-therapy', 'painless-anesthesia', 'airflow-gbt', 'pediatric-ortho']
   const specialty = treatments.filter(t => !t.is_core && specialtySlugs.includes(t.slug))
   const others = treatments.filter(t => !t.is_core && !specialtySlugs.includes(t.slug))
 
@@ -115,14 +102,7 @@ export const TreatmentDetailPage = ({
         <div class="max-w-7xl mx-auto px-6 relative">
           <div class="grid md:grid-cols-12 gap-12 items-center">
             <div class="md:col-span-7 fade-in">
-              {/* VINIQUE 브랜드 라벨 (라미네이트 전용) */}
-              {treatment.slug === 'lamineer' && (
-                <div class="flex items-center gap-3 mb-6">
-                  <span class="inline-block w-10 h-px bg-gold"></span>
-                  <span class="text-[10px] tracking-[0.5em] text-gold font-semibold">VINIQUE LABORATOIRES</span>
-                </div>
-              )}
-              {treatment.slug !== 'lamineer' && isCore && <div class="text-xs tracking-[0.4em] text-gold mb-6">SIGNATURE TREATMENT</div>}
+              {isCore && <div class="text-xs tracking-[0.4em] text-gold mb-6">SIGNATURE TREATMENT</div>}
               {!isCore && <div class="section-label mb-6">TREATMENT</div>}
               <h1 class={`display ${isCore ? 'text-6xl md:text-8xl' : 'text-5xl md:text-6xl'} font-black tracking-tight leading-[1] mb-8`}>
                 {treatment.name}
@@ -143,30 +123,9 @@ export const TreatmentDetailPage = ({
               </div>
             </div>
             <div class="md:col-span-5 fade-in">
-              {/* 라미네이트 → VINIQUE 로고 카드 */}
-              {treatment.slug === 'lamineer' ? (
-                <div class="relative">
-                  <div class="aspect-[16/10] rounded-[28px] bg-ivory shadow-2xl overflow-hidden flex items-center justify-center p-12 relative"
-                       style="background:linear-gradient(135deg,#fdfbf7 0%,#f4ede0 100%);">
-                    <img
-                      src="/static/images/brand/vinique-logo.png"
-                      alt="VINIQUE LABORATOIRES"
-                      class="w-full max-w-md object-contain"
-                      loading="eager"
-                    />
-                    <div class="absolute top-5 left-5 w-8 h-8 border-t-2 border-l-2" style="border-color:#c9a876;"></div>
-                    <div class="absolute bottom-5 right-5 w-8 h-8 border-b-2 border-r-2" style="border-color:#c9a876;"></div>
-                  </div>
-                  <div class="text-center mt-6">
-                    <p class="text-[10px] tracking-[0.4em] text-gold font-semibold mb-2">PREMIUM VENEER BRAND</p>
-                    <p class="text-brown-300 text-sm italic">대구365치과의 라미네이트 프리미엄 라인</p>
-                  </div>
-                </div>
-              ) : (
-                <div class="aspect-square rounded-full placeholder-img flex items-center justify-center text-7xl" style={isCore ? 'background:linear-gradient(135deg,#6b4c2a,#2c1f14);color:#c9a876;' : ''}>
-                  <i class={`fas ${icons[treatment.slug] || 'fa-tooth'}`}></i>
-                </div>
-              )}
+              <div class="aspect-square rounded-full placeholder-img flex items-center justify-center text-7xl" style={isCore ? 'background:linear-gradient(135deg,#6b4c2a,#2c1f14);color:#c9a876;' : ''}>
+                <i class={`fas ${icons[treatment.slug] || 'fa-tooth'}`}></i>
+              </div>
             </div>
           </div>
         </div>
@@ -267,153 +226,6 @@ export const TreatmentDetailPage = ({
               ))}
             </div>
           </section>
-
-          {/* THE SPACE — 시술별 매칭 시설 (코어 시술 전용) */}
-          {treatment.slug === 'implant' && (
-            <section class="bg-brown-950 text-ivory py-32 relative overflow-hidden">
-              <div class="blob" style="width:500px;height:500px;background:#c9a876;top:10%;right:-10%;opacity:0.15;"></div>
-              <div class="max-w-7xl mx-auto px-6 relative">
-                <div class="grid md:grid-cols-12 gap-8 mb-12 fade-in">
-                  <div class="md:col-span-7">
-                    <div class="text-[10px] tracking-[0.5em] text-gold mb-4">THE SPACE · IMPLANT</div>
-                    <h2 class="display text-4xl md:text-6xl font-black tracking-tight leading-[1] mb-6">
-                      독립된 <em class="italic text-gold">임플란트 수술센터</em>
-                    </h2>
-                    <p class="display italic text-brown-200 text-lg">"이 곳의 모든 준비는 당신의 안전과 회복을."</p>
-                  </div>
-                  <div class="md:col-span-5 flex items-end">
-                    <p class="text-sm text-brown-200 leading-relaxed border-l-2 border-gold pl-4">
-                      외과 진료 동선과 분리된 별도 출입구. 수술 전 STORY · SAFETY · DETAIL · TRUE CARE 4가지 약속이 새겨진 회복실 라운지.
-                    </p>
-                  </div>
-                </div>
-                <div class="grid md:grid-cols-2 gap-6 fade-in">
-                  <div>
-                    <div class="aspect-[3/4] overflow-hidden rounded-sm">
-                      <img src="/static/images/clinic/implant-surgery-center.jpg" alt="임플란트 수술센터 입구"
-                           class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-1000" loading="lazy"/>
-                    </div>
-                    <p class="text-[10px] tracking-[0.3em] text-brown-400 mt-3">PLATE 01 · SURGERY ENTRANCE</p>
-                  </div>
-                  <div class="flex flex-col gap-6">
-                    <div class="aspect-[16/10] overflow-hidden rounded-sm">
-                      <img src="/static/images/clinic/safety-corridor.jpg" alt="안전 동선"
-                           class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-1000" loading="lazy"/>
-                    </div>
-                    <div class="aspect-[16/10] overflow-hidden rounded-sm">
-                      <img src="/static/images/clinic/dlab-window.jpg" alt="D.LAB STUDIO 365"
-                           class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-1000" loading="lazy"/>
-                    </div>
-                    <p class="text-[10px] tracking-[0.3em] text-brown-400">PLATE 02 · 03 · SAFETY · DIGITAL LAB</p>
-                  </div>
-                </div>
-                <div class="mt-12 text-center fade-in">
-                  <a href="/mission#the-space" class="inline-flex items-center gap-3 text-gold hover:text-ivory transition tracking-[0.3em] text-xs">
-                    <span class="w-10 h-px bg-gold"></span>
-                    THE SPACE 전체 매거진 보기
-                    <i class="fas fa-arrow-right text-[10px]"></i>
-                  </a>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {treatment.slug === 'lamineer' && (
-            <section class="bg-cream py-32 relative">
-              <div class="max-w-7xl mx-auto px-6">
-                <div class="grid md:grid-cols-12 gap-8 mb-12 fade-in">
-                  <div class="md:col-span-7">
-                    <div class="text-[10px] tracking-[0.5em] text-gold mb-4">THE SPACE · VINIQUE</div>
-                    <h2 class="display text-4xl md:text-6xl font-black tracking-tight leading-[1] mb-6 text-brown-950">
-                      유리벽 안에서 만들어지는<br/>
-                      <em class="italic text-brown-700">당신의 미소</em>
-                    </h2>
-                    <p class="display italic text-brown-700 text-lg">"기공실을 환자의 시야 안으로."</p>
-                  </div>
-                  <div class="md:col-span-5 flex items-end">
-                    <p class="text-sm text-brown-700 leading-relaxed border-l-2 border-gold pl-4">
-                      D.LAB STUDIO 365 — 디지털 라보 시설을 유리벽 안에 두어, 환자의 보철이 환자의 시선 안에서 제작되는 투명한 워크플로우.
-                    </p>
-                  </div>
-                </div>
-                <div class="grid md:grid-cols-12 gap-6 fade-in">
-                  <div class="md:col-span-7">
-                    <div class="aspect-[16/10] overflow-hidden rounded-sm">
-                      <img src="/static/images/clinic/dlab-studio-365.jpg" alt="D.LAB 라운지"
-                           class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-1000" loading="lazy"/>
-                    </div>
-                    <p class="text-[10px] tracking-[0.3em] text-brown-400 mt-3">PLATE 01 · D.LAB LOUNGE</p>
-                  </div>
-                  <div class="md:col-span-5 flex flex-col gap-6">
-                    <div class="aspect-[4/5] overflow-hidden rounded-sm">
-                      <img src="/static/images/clinic/dlab-window.jpg" alt="D.LAB 유리벽 기공실"
-                           class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-1000" loading="lazy"/>
-                    </div>
-                    <p class="text-[10px] tracking-[0.3em] text-brown-400">PLATE 02 · GLASS LAB</p>
-                  </div>
-                </div>
-                <div class="mt-12 text-center fade-in">
-                  <a href="/mission#the-space" class="inline-flex items-center gap-3 text-brown-700 hover:text-gold transition tracking-[0.3em] text-xs">
-                    <span class="w-10 h-px bg-gold"></span>
-                    THE SPACE 전체 매거진 보기
-                    <i class="fas fa-arrow-right text-[10px]"></i>
-                  </a>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {treatment.slug === 'ortho' && (
-            <section class="bg-ivory py-32 relative">
-              <div class="max-w-7xl mx-auto px-6">
-                <div class="grid md:grid-cols-12 gap-8 mb-12 fade-in">
-                  <div class="md:col-span-7">
-                    <div class="text-[10px] tracking-[0.5em] text-gold mb-4">THE SPACE · ORTHO</div>
-                    <h2 class="display text-4xl md:text-6xl font-black tracking-tight leading-[1] mb-6 text-brown-950">
-                      <em class="italic text-brown-700">사적인 거리</em>를<br/>
-                      유지한 진료실
-                    </h2>
-                    <p class="display italic text-brown-700 text-lg">"교정은 긴 여정. 매 방문이 편안해야 합니다."</p>
-                  </div>
-                  <div class="md:col-span-5 flex items-end">
-                    <p class="text-sm text-brown-700 leading-relaxed border-l-2 border-gold pl-4">
-                      독립된 진료 부스와 아치형 유리 벽으로 일광과 프라이버시를 동시에. 매월 정기 체크가 부담스럽지 않은 공간을 설계했습니다.
-                    </p>
-                  </div>
-                </div>
-                <div class="mb-6 fade-in">
-                  <div class="aspect-[16/8] overflow-hidden rounded-sm">
-                    <img src="/static/images/clinic/treatment-rooms.jpg" alt="개별 진료실"
-                         class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-1000" loading="lazy"/>
-                  </div>
-                  <p class="text-[10px] tracking-[0.3em] text-brown-400 mt-3">PLATE 01 · TREATMENT BAYS</p>
-                </div>
-                <div class="grid md:grid-cols-2 gap-6 fade-in">
-                  <div>
-                    <div class="aspect-[4/3] overflow-hidden rounded-sm">
-                      <img src="/static/images/clinic/arch-glass-rooms.jpg" alt="아치형 유리 진료실"
-                           class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-1000" loading="lazy"/>
-                    </div>
-                    <p class="text-[10px] tracking-[0.3em] text-brown-400 mt-3">PLATE 02 · ARCH GLASS</p>
-                  </div>
-                  <div>
-                    <div class="aspect-[4/3] overflow-hidden rounded-sm">
-                      <img src="/static/images/clinic/consult-room-03.jpg" alt="03 상담실"
-                           class="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-1000" loading="lazy"/>
-                    </div>
-                    <p class="text-[10px] tracking-[0.3em] text-brown-400 mt-3">PLATE 03 · CONSULT 03</p>
-                  </div>
-                </div>
-                <div class="mt-12 text-center fade-in">
-                  <a href="/mission#the-space" class="inline-flex items-center gap-3 text-brown-700 hover:text-gold transition tracking-[0.3em] text-xs">
-                    <span class="w-10 h-px bg-gold"></span>
-                    THE SPACE 전체 매거진 보기
-                    <i class="fas fa-arrow-right text-[10px]"></i>
-                  </a>
-                </div>
-              </div>
-            </section>
-          )}
         </>
       )}
 
@@ -441,37 +253,15 @@ export const TreatmentDetailPage = ({
         <section class="py-24 bg-cream">
           <div class="max-w-7xl mx-auto px-6">
             <div class="section-label mb-6 fade-in">OUR TEAM</div>
-            <h2 class="section-title mb-12 fade-in">
-              <em class="italic text-brown-700">{treatment.name}</em> 담당 의료진
-            </h2>
+            <h2 class="section-title mb-12 fade-in">담당 의료진</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {doctors.map(d => (
-                <a
-                  href={`/doctors/${d.slug}`}
-                  class="group fade-in block rounded-2xl overflow-hidden bg-ivory border border-brown-200 hover:border-gold hover:shadow-lux transition-all duration-500"
-                >
-                  <div class="aspect-[3/4] overflow-hidden bg-brown-100 relative">
-                    <img
-                      src={getDoctorPhoto(d.slug)}
-                      alt={`${d.name} 원장 프로필 사진`}
-                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      loading="lazy"
-                    />
-                    <div class="absolute inset-0 bg-gradient-to-t from-brown-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div class="absolute bottom-4 left-4 right-4 text-ivory opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center gap-2 text-sm">
-                      <span>프로필 보기</span>
-                      <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition"></i>
-                    </div>
+                <a href={`/doctors/${d.slug}`} class="group fade-in">
+                  <div class="aspect-[3/4] placeholder-img rounded-2xl mb-4 group-hover:shadow-lux transition">
+                    <i class="fas fa-user-md"></i>
                   </div>
-                  <div class="p-6">
-                    <div class="text-[10px] tracking-[0.3em] text-gold font-semibold mb-2 uppercase">
-                      {d.is_representative ? '대표원장' : (d.position || '원장')}
-                    </div>
-                    <div class="display text-2xl font-medium text-brown-900 mb-1">{d.name}</div>
-                    {d.message && (
-                      <p class="text-sm text-brown-600 italic line-clamp-2 mt-2">"{d.message}"</p>
-                    )}
-                  </div>
+                  <div class="text-xs tracking-[0.3em] text-brown-500 mb-1">{d.is_representative ? '대표원장' : d.position}</div>
+                  <div class="display text-2xl font-medium">{d.name}</div>
                 </a>
               ))}
             </div>

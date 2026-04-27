@@ -6,7 +6,8 @@
 ## 🔗 현재 접속 URL
 - **샌드박스 미리보기**: https://3000-i0rsckxmwjmswcrcqzqer-d0b9e1e2.sandbox.novita.ai
 - **로컬**: http://localhost:3000
-- **프로덕션(예정)**: https://daegu365dc.pages.dev
+- **프로덕션(라이브)**: https://daegu365dc.pages.dev
+- **GitHub**: https://github.com/sodanstjrwns-max/daegu365 (push → GitHub Actions 자동 배포)
 
 ---
 
