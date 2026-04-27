@@ -17,6 +17,7 @@ export type Doctor = {
   photo_url: string | null
   is_representative: number
   display_order: number
+  interview: string | null // JSON: { intro, sections:[{title,content}], qa?:[{q,a}], signature? }
 }
 
 export type Treatment = {

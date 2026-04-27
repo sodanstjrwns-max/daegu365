@@ -101,6 +101,11 @@ export const DoctorDetailPage = ({
   const specialties = JSON.parse(doctor.specialties || '[]') as string[]
   const education = JSON.parse(doctor.education || '[]') as string[]
   const career = JSON.parse(doctor.career || '[]') as string[]
+  type InterviewSection = { title: string, content: string }
+  type InterviewQA = { q: string, a: string }
+  type InterviewData = { intro?: string, sections?: InterviewSection[], qa?: InterviewQA[], signature?: string }
+  let interview: InterviewData | null = null
+  try { interview = doctor.interview ? JSON.parse(doctor.interview) as InterviewData : null } catch { interview = null }
 
   return (
     <>
@@ -182,6 +187,85 @@ export const DoctorDetailPage = ({
           </div>
         </div>
       </section>
+
+      {/* INTERVIEW — 8개 섹션 + Q&A */}
+      {interview && (interview.intro || (interview.sections && interview.sections.length > 0)) && (
+        <section class="py-32 bg-brown-950 text-ivory relative overflow-hidden">
+          <div class="blob" style="width:600px;height:600px;background:#c9a876;top:-200px;left:-150px;opacity:0.12;"></div>
+          <div class="blob" style="width:500px;height:500px;background:#8a6235;bottom:-150px;right:-100px;opacity:0.18;animation-delay:-6s;"></div>
+          <div class="max-w-4xl mx-auto px-6 lg:px-12 relative">
+            <div class="text-center mb-20 fade-in">
+              <div class="text-xs tracking-[0.5em] text-gold mb-6">INTERVIEW</div>
+              <h2 class="display text-4xl md:text-5xl font-black tracking-tight text-ivory mb-8">
+                {doctor.name} <em class="italic text-gold">{doctor.position}</em>의 이야기
+              </h2>
+              {interview.intro && (
+                <p class="text-brown-200 text-lg leading-relaxed max-w-3xl mx-auto italic">
+                  "{interview.intro}"
+                </p>
+              )}
+              <div class="gold-divider mx-auto mt-10" style="background:#c9a876;"></div>
+            </div>
+
+            <div class="space-y-16">
+              {(interview.sections || []).map((s, i) => (
+                <div class="fade-in grid md:grid-cols-12 gap-8 items-start">
+                  <div class="md:col-span-3">
+                    <div class="text-[10px] tracking-[0.4em] text-gold mb-3 font-bold">
+                      {String(i + 1).padStart(2, '0')}
+                    </div>
+                    <h3 class="display text-xl md:text-2xl font-black tracking-tight text-ivory leading-tight">
+                      {s.title}
+                    </h3>
+                  </div>
+                  <div class="md:col-span-9">
+                    <p class="text-brown-100 text-base md:text-lg leading-[1.9] whitespace-pre-line">
+                      {s.content}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {interview.qa && interview.qa.length > 0 && (
+              <div class="mt-32">
+                <div class="text-center mb-12 fade-in">
+                  <div class="text-xs tracking-[0.5em] text-gold mb-6">Q &amp; A</div>
+                  <h3 class="display text-3xl md:text-4xl font-black tracking-tight text-ivory">
+                    원장에게 <em class="italic text-gold">묻습니다</em>
+                  </h3>
+                </div>
+                <div class="space-y-8">
+                  {interview.qa.map((qa) => (
+                    <div class="fade-in border-l-2 border-gold pl-6 md:pl-8">
+                      <div class="flex gap-4 mb-3">
+                        <span class="display text-2xl italic text-gold font-black flex-shrink-0">Q.</span>
+                        <p class="text-ivory text-lg md:text-xl font-semibold leading-relaxed">{qa.q}</p>
+                      </div>
+                      <div class="flex gap-4">
+                        <span class="display text-2xl italic text-brown-300 font-black flex-shrink-0">A.</span>
+                        <p class="text-brown-100 text-base md:text-lg leading-[1.9]">{qa.a}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {interview.signature && (
+              <div class="mt-24 text-center fade-in">
+                <div class="gold-divider mx-auto mb-8" style="background:#c9a876;"></div>
+                <p class="display text-2xl md:text-3xl italic text-gold leading-relaxed max-w-3xl mx-auto">
+                  "{interview.signature}"
+                </p>
+                <div class="text-xs tracking-[0.4em] text-brown-300 mt-8">
+                  — {doctor.name} {doctor.position}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* CASES */}
       {cases.length > 0 && (
