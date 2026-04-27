@@ -157,8 +157,8 @@ export const HomePage = () => (
 
           {/* Editorial grid */}
           <div class="editorial-grid fade-in">
-            <div class="eg-1 img-frame img-reveal rounded-[20px]">
-              <img src="/static/images/doctor-mood.jpg" alt="대표원장 무드" loading="lazy" />
+            <div class="eg-1 img-frame img-reveal rounded-[20px] overflow-hidden">
+              <img src="/static/images/doctors/kim-seongju.jpg" alt="김성주 대표원장" loading="lazy" class="w-full h-full object-cover object-[center_15%]" />
             </div>
             <div class="eg-2 img-frame img-reveal rounded-[20px]">
               <img src="/static/images/macro-veneer.jpg" alt="세라믹 베니어 매크로" loading="lazy" />
@@ -385,12 +385,12 @@ export const HomePage = () => (
 
         {/* Team group image */}
         <div class="img-frame img-reveal aspect-[16/9] rounded-[32px] mb-8 fade-in shadow-xl">
-          <img src="/static/images/team-group.jpg" alt="대구365치과 의료진" loading="lazy" />
+          <img src="/static/images/doctors/team-horizontal-smile.jpg" alt="대구365치과 의료진 7인" loading="lazy" />
         </div>
 
         {/* 대표원장 스포트라이트 */}
         <a href="/doctors/kim-seongju" class="block spotlight-card shadow-xl fade-in group mb-8">
-          <img src="/static/images/doctor-mood.jpg" alt="김성주 대표원장" class="spotlight-card-img" loading="lazy" />
+          <img src="/static/images/doctors/kim-seongju.jpg" alt="김성주 대표원장" class="spotlight-card-img" loading="lazy" style="object-position: center 20%;" />
           <div class="relative h-full p-10 lg:p-16 flex flex-col justify-end min-h-[580px]">
             <div class="section-label mb-6" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.3);">
               FOUNDER · DIRECTOR
@@ -417,16 +417,16 @@ export const HomePage = () => (
 
         <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-4 fade-in-stagger">
           {[
-            { slug: 'jung-jaeheon', name: '정재헌', pos: '진료원장', spec: '보존·치아 시간' },
-            { slug: 'choi-hyejung', name: '최혜정', pos: '진료원장', spec: '보존·정직 치료' },
-            { slug: 'han-jieun', name: '한지은', pos: '진료원장', spec: '소아·따뜻한 기억' },
-            { slug: 'kim-jinduk', name: '김진덕', pos: '진료원장', spec: '교정·자신감 미소' },
-            { slug: 'kim-sangwon', name: '김상원', pos: '진료원장', spec: '자연치아 보존' },
-            { slug: 'lee-seoyoung', name: '이서영', pos: '진료원장', spec: '치주·세심한 치료' },
+            { slug: 'jung-jaeheon',  name: '정재헌', pos: '보존과 전문의',   spec: '보존·심미 치료',     img: '/static/images/doctors/jung-jaeheon.jpg' },
+            { slug: 'choi-hyejung',  name: '최혜정', pos: '보존과 전문의',   spec: '보존·정직 치료',     img: '/static/images/doctors/choi-hyejung.jpg' },
+            { slug: 'han-jieun',     name: '한지은', pos: '소아치과 전문의', spec: '소아·따뜻한 기억',   img: '/static/images/doctors/han-jieun.jpg' },
+            { slug: 'kim-jinduk',    name: '김진덕', pos: '교정과 전문의',   spec: '교정·자신감 미소',   img: '/static/images/doctors/kim-jinduk.jpg' },
+            { slug: 'kim-sangwon',   name: '김상원', pos: '보존과 전문의',   spec: '자연치아 보존',     img: '/static/images/doctors/kim-sangwon.jpg' },
+            { slug: 'lee-seoyoung',  name: '이서영', pos: '치주과 전문의',   spec: '치주·세심한 케어',   img: '/static/images/doctors/lee-seoyoung.jpg' },
           ].map((d: any) => (
             <a href={`/doctors/${d.slug}`} class="group block">
-              <div class="img-frame aspect-[3/4] rounded-2xl mb-4">
-                <img src="/static/images/doctor-mood.jpg" alt={d.name} loading="lazy" class="group-hover:scale-105 transition-transform duration-700" />
+              <div class="img-frame aspect-[3/4] rounded-2xl mb-4 overflow-hidden">
+                <img src={d.img} alt={`${d.name} ${d.pos}`} loading="lazy" class="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-700" />
               </div>
               <div class="text-[10px] tracking-[0.3em] text-brown-500 mb-1 font-bold">{d.pos.toUpperCase()}</div>
               <div class="display text-lg font-black tracking-tight mb-1">{d.name} 원장</div>
@@ -735,7 +735,7 @@ export const HomePage = () => (
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 fade-in-stagger">
           {[
             { href: '/before-after', label: 'BEFORE & AFTER', title: '치료 사례', desc: '실제 진행된 케이스', img: '/static/images/smile-portrait.jpg' },
-            { href: '/blog', label: 'JOURNAL', title: '블로그', desc: '의료진 직접 작성', img: '/static/images/doctor-mood.jpg' },
+            { href: '/blog', label: 'JOURNAL', title: '블로그', desc: '의료진 직접 작성', img: '/static/images/doctors/team-horizontal-serious.jpg' },
             { href: '/dictionary', label: 'KNOWLEDGE', title: '치과 백과', desc: '500+ 용어 사전', img: '/static/images/macro-veneer.jpg' },
             { href: '/faq', label: 'FAQ', title: '자주 묻는 질문', desc: '268개 상세 답변', img: '/static/images/treatment-room.jpg' },
           ].map((c: any) => (

@@ -1,22 +1,45 @@
 import { Navbar, Footer } from '../components/Layout'
 import type { Doctor, Treatment, BeforeAfter, BlogPost } from '../lib/types'
 
+// 의료진 슬러그 → 프로필 사진 매핑 (파일명 기준 7명 + 단체 4장)
+const DOCTOR_PHOTO: Record<string, string> = {
+  'kim-seongju':  '/static/images/doctors/kim-seongju.jpg',
+  'jung-jaeheon': '/static/images/doctors/jung-jaeheon.jpg',
+  'kim-sangwon':  '/static/images/doctors/kim-sangwon.jpg',
+  'choi-hyejung': '/static/images/doctors/choi-hyejung.jpg',
+  'kim-jinduk':   '/static/images/doctors/kim-jinduk.jpg',
+  'han-jieun':    '/static/images/doctors/han-jieun.jpg',
+  'lee-seoyoung': '/static/images/doctors/lee-seoyoung.jpg',
+}
+const getDoctorPhoto = (slug: string) =>
+  DOCTOR_PHOTO[slug] || '/static/images/doctors/team-horizontal-smile.jpg'
+
 export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
   <>
     <Navbar />
 
-    <section class="pt-20 pb-16 bg-cream relative overflow-hidden">
-      <div class="blob" style="width:500px;height:500px;background:#c9a876;top:-150px;right:-100px;opacity:0.25;"></div>
-      <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
-        <div class="text-center fade-in">
-          <div class="section-label mb-8">MEDICAL TEAM</div>
-          <h1 class="t-display mb-8">
-            7명의 <span class="t-gold">전문</span> 의료진
-          </h1>
-          <p class="t-lead max-w-2xl mx-auto">
-            보존·치주·소아·교정·보철·심미.<br/>
-            각 분야 전문성을 갖춘 의료진이 협진으로 완성도 있는 치료를 제공합니다.
-          </p>
+    {/* HERO with team group photo */}
+    <section class="relative bg-brown-950 text-ivory overflow-hidden">
+      <div class="relative h-[60vh] min-h-[500px] overflow-hidden">
+        <img
+          src="/static/images/doctors/team-horizontal-smile.jpg"
+          alt="대구365치과 의료진 7인"
+          class="w-full h-full object-cover"
+          style="animation: kenburns 24s ease-in-out infinite alternate;"
+        />
+        <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(28,18,11,0.55) 0%, rgba(28,18,11,0.35) 50%, rgba(28,18,11,1) 100%);"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="text-center px-6 fade-in">
+            <div class="text-xs tracking-[0.5em] text-gold mb-6">MEDICAL TEAM · 7</div>
+            <h1 class="display text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] text-ivory mb-8">
+              <span class="block text-ivory">7명의</span>
+              <span class="block italic text-gold">전문 의료진</span>
+            </h1>
+            <p class="text-brown-200 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+              보존·치주·소아·교정. 각 분야 전문성을 갖춘 의료진이<br/>
+              협진으로 완성도 있는 치료를 제공합니다.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -25,8 +48,13 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 fade-in-stagger">
         {doctors.map(d => (
           <a href={`/doctors/${d.slug}`} class="group block">
-            <div class="img-frame aspect-[3/4] rounded-[24px] mb-6 group-hover:shadow-xl transition-all duration-500">
-              <img src="/static/images/doctor-mood.jpg" alt={d.name} loading="lazy" class="group-hover:scale-105 transition-transform duration-700" />
+            <div class="img-frame aspect-[3/4] rounded-[24px] mb-6 overflow-hidden group-hover:shadow-xl transition-all duration-500">
+              <img
+                src={getDoctorPhoto(d.slug)}
+                alt={`${d.name} ${d.is_representative ? '대표원장' : d.position}`}
+                loading="lazy"
+                class="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-700"
+              />
             </div>
             <div class="text-[10px] tracking-[0.3em] text-brown-500 mb-2 font-bold">
               {(d.is_representative ? '대표원장' : d.position).toUpperCase()}
@@ -40,6 +68,26 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
             </div>
           </a>
         ))}
+      </div>
+    </section>
+
+    {/* TEAM GROUP — 다양한 단체 컷 */}
+    <section class="py-24 bg-cream">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div class="text-center mb-16 fade-in">
+          <div class="section-label mb-6">TEAM PORTRAIT</div>
+          <h2 class="t-display">
+            함께, <em class="italic text-brown-700">협진</em>으로 완성합니다
+          </h2>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 fade-in-stagger">
+          <div class="img-frame aspect-[3/2] rounded-[24px] overflow-hidden">
+            <img src="/static/images/doctors/team-2rows.jpg" alt="대구365치과 의료진 단체 컷" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+          </div>
+          <div class="img-frame aspect-[3/2] rounded-[24px] overflow-hidden">
+            <img src="/static/images/doctors/team-3rows.jpg" alt="대구365치과 의료진 단체 컷" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+          </div>
+        </div>
       </div>
     </section>
 
@@ -64,8 +112,13 @@ export const DoctorDetailPage = ({
         <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
           <div class="grid md:grid-cols-12 gap-12 items-center">
             <div class="md:col-span-5 fade-in">
-              <div class="img-frame aspect-[3/4] rounded-[32px] shadow-xl">
-                <img src="/static/images/doctor-mood.jpg" alt={doctor.name} loading="eager" />
+              <div class="img-frame aspect-[3/4] rounded-[32px] shadow-xl overflow-hidden">
+                <img
+                  src={getDoctorPhoto(doctor.slug)}
+                  alt={`${doctor.name} ${doctor.is_representative ? '대표원장' : doctor.position}`}
+                  loading="eager"
+                  class="w-full h-full object-cover object-[center_15%]"
+                />
               </div>
             </div>
             <div class="md:col-span-7 fade-in">
