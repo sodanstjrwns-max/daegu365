@@ -74,7 +74,6 @@ export const Navbar = () => (
               <a href="/directions" class="nav-link">내원안내</a>
               <div class="dropdown">
                 <a href="/directions">오시는 길</a>
-                <a href="/hours">진료시간</a>
                 <a href="/fees">수가 안내</a>
               </div>
             </div>
@@ -123,7 +122,13 @@ export const Navbar = () => (
         <a href="/notices" class="block text-2xl display font-medium">공지사항</a>
         <a href="/dictionary" class="block text-2xl display font-medium">백과사전</a>
         <a href="/faq" class="block text-2xl display font-medium">자주묻는질문</a>
-        <a href="/directions" class="block text-2xl display font-medium">내원안내</a>
+        <div>
+          <div class="text-2xl display font-medium mb-3">내원안내</div>
+          <div class="pl-4 space-y-2 text-brown-700">
+            <a href="/directions" class="block">· 오시는 길</a>
+            <a href="/fees" class="block">· 수가 안내</a>
+          </div>
+        </div>
         <div class="pt-4 border-t border-brown-200 space-y-3">
           <a href="/login" class="block">로그인</a>
           <a href="/signup" class="block">회원가입</a>

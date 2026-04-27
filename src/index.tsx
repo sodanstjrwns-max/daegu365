@@ -16,8 +16,9 @@ import { BlogListPage, BlogDetailPage } from './pages/blog'
 import {
   NoticeListPage, NoticeDetailPage,
   DictionaryListPage, DictionaryDetailPage,
-  FAQPage, DirectionsPage, HoursPage, FeesPage
+  FAQPage, DirectionsPage, HoursPage
 } from './pages/misc'
+import { FeesPage } from './pages/fees'
 import { SignupPage, LoginPage, AdminLoginPage } from './pages/auth'
 import { Navbar, Footer } from './components/Layout'
 import {
@@ -317,12 +318,11 @@ app.get('/directions', (c) => c.render(<DirectionsPage />, {
 app.get('/hours', (c) => c.render(<HoursPage />, {
   title: '진료시간', canonical: 'https://daegu365dc.pages.dev/hours'
 }))
-app.get('/fees', async (c) => {
-  const r = await c.env.DB.prepare('SELECT * FROM fees ORDER BY display_order, id').all()
-  return c.render(<FeesPage fees={r.results as any} />, {
-    title: '수가 안내', canonical: 'https://daegu365dc.pages.dev/fees'
-  })
-})
+app.get('/fees', (c) => c.render(<FeesPage />, {
+  title: '비급여 의료수가표 · 수가 안내',
+  description: '대구365치과 비급여 의료수가표. 임플란트·교정·라미네이트·보철·소아치과 등 전 항목 투명 공개. 진료 전 정확한 비용을 안내드립니다.',
+  canonical: 'https://daegu365dc.pages.dev/fees'
+}))
 
 // --- Region SEO pages ---
 app.get('/region/:slug', async (c) => {
