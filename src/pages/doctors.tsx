@@ -14,6 +14,14 @@ const DOCTOR_PHOTO: Record<string, string> = {
 const getDoctorPhoto = (slug: string) =>
   DOCTOR_PHOTO[slug] || '/static/images/doctors/team-horizontal-smile.jpg'
 
+// 의료진 슬러그 → 인터뷰 영상 R2 스트리밍 라우트 매핑
+// (R2 버킷 daegu365dc-assets 의 videos/ 경로 참조, /api/videos/:slug 라우트로 서빙)
+const DOCTOR_VIDEO: Record<string, string> = {
+  'jung-jaeheon': '/api/videos/jung-jaeheon-interview',
+}
+const getDoctorVideo = (slug: string): string | null =>
+  DOCTOR_VIDEO[slug] || null
+
 export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
   <>
     <Navbar />
@@ -106,6 +114,7 @@ export const DoctorDetailPage = ({
   type InterviewData = { intro?: string, sections?: InterviewSection[], qa?: InterviewQA[], signature?: string }
   let interview: InterviewData | null = null
   try { interview = doctor.interview ? JSON.parse(doctor.interview) as InterviewData : null } catch { interview = null }
+  const videoUrl = getDoctorVideo(doctor.slug)
 
   return (
     <>
@@ -206,6 +215,35 @@ export const DoctorDetailPage = ({
               )}
               <div class="gold-divider mx-auto mt-10" style="background:#c9a876;"></div>
             </div>
+
+            {/* INTERVIEW VIDEO (정재헌 원장 등 영상이 있는 경우만) */}
+            {videoUrl && (
+              <div class="fade-in mb-20">
+                <div class="text-center mb-8">
+                  <div class="text-[10px] tracking-[0.4em] text-gold mb-3 font-bold">FULL INTERVIEW</div>
+                  <h3 class="display text-2xl md:text-3xl font-black tracking-tight text-ivory">
+                    원장님의 목소리로 직접 듣는 인터뷰
+                  </h3>
+                </div>
+                <div class="relative rounded-[24px] overflow-hidden shadow-2xl bg-black aspect-video max-w-4xl mx-auto"
+                     style="border: 1px solid rgba(201, 168, 118, 0.3);">
+                  <video
+                    controls
+                    preload="metadata"
+                    playsinline
+                    poster={getDoctorPhoto(doctor.slug)}
+                    class="w-full h-full object-cover"
+                  >
+                    <source src={videoUrl} type="video/mp4" />
+                    브라우저가 비디오 태그를 지원하지 않습니다.
+                  </video>
+                </div>
+                <p class="text-center text-brown-300 text-xs mt-4 tracking-wider">
+                  <i class="fas fa-circle-play text-gold mr-2"></i>
+                  재생 버튼을 눌러 인터뷰 영상을 시청하실 수 있습니다
+                </p>
+              </div>
+            )}
 
             <div class="space-y-16">
               {(interview.sections || []).map((s, i) => (

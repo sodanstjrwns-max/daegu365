@@ -351,6 +351,66 @@ app.get('/api/addresses', async (c) => {
   return c.json({ items: items.results })
 })
 
+// ============ R2 video streaming (with HTTP Range support) ============
+// 의료진 인터뷰 영상 슬러그 → R2 객체 키 매핑
+const VIDEO_KEYS: Record<string, string> = {
+  'jung-jaeheon-interview': 'videos/jung-jaeheon-interview.mp4',
+}
+
+app.on(['GET', 'HEAD'], '/api/videos/:slug', async (c) => {
+  const slug = c.req.param('slug')
+  const key = VIDEO_KEYS[slug]
+  if (!key) return c.notFound()
+
+  const range = c.req.header('range')
+
+  // HEAD 또는 Range 없는 GET → 메타데이터만 (HEAD) 또는 전체 스트림 (GET)
+  if (!range) {
+    const obj = c.req.method === 'HEAD'
+      ? await c.env.R2.head(key)
+      : await c.env.R2.get(key)
+    if (!obj) return c.notFound()
+    const headers = new Headers()
+    headers.set('Content-Type', 'video/mp4')
+    headers.set('Content-Length', String(obj.size))
+    headers.set('Accept-Ranges', 'bytes')
+    headers.set('Cache-Control', 'public, max-age=31536000, immutable')
+    if (c.req.method === 'HEAD') return new Response(null, { status: 200, headers })
+    return new Response((obj as R2ObjectBody).body, { status: 200, headers })
+  }
+
+  // Range 요청 파싱: "bytes=START-END"
+  const m = /^bytes=(\d*)-(\d*)$/.exec(range)
+  if (!m) return new Response('Invalid Range', { status: 416 })
+
+  // 먼저 head로 전체 사이즈 확인
+  const head = await c.env.R2.head(key)
+  if (!head) return c.notFound()
+  const total = head.size
+
+  let start = m[1] ? parseInt(m[1], 10) : 0
+  let end = m[2] ? parseInt(m[2], 10) : total - 1
+  if (isNaN(start) || isNaN(end) || start > end || end >= total) {
+    return new Response('Range Not Satisfiable', {
+      status: 416,
+      headers: { 'Content-Range': `bytes */${total}` }
+    })
+  }
+
+  const obj = await c.env.R2.get(key, {
+    range: { offset: start, length: end - start + 1 }
+  })
+  if (!obj) return c.notFound()
+
+  const headers = new Headers()
+  headers.set('Content-Type', 'video/mp4')
+  headers.set('Content-Length', String(end - start + 1))
+  headers.set('Content-Range', `bytes ${start}-${end}/${total}`)
+  headers.set('Accept-Ranges', 'bytes')
+  headers.set('Cache-Control', 'public, max-age=31536000, immutable')
+  return new Response((obj as R2ObjectBody).body, { status: 206, headers })
+})
+
 // ============ Auth ============
 app.get('/signup', (c) => c.render(<SignupPage />, { title: '회원가입' }))
 
