@@ -83,8 +83,9 @@ export const renderer = jsxRenderer(({ children, title, description, keywords, c
         <meta name="twitter:image" content={pageOg} />
 
         {/* Favicon */}
+        <link rel="icon" href="/static/favicon-32.png" type="image/png" sizes="32x32" />
         <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/static/favicon.svg" />
+        <link rel="apple-touch-icon" href="/static/favicon-180.png" />
 
         {/* Fonts — 서울비디치과(bdbddc.com)와 동일: Pretendard 단일 폰트 */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="" />

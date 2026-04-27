@@ -5,15 +5,13 @@ export const Navbar = () => (
     <nav class="fixed top-0 left-0 right-0 z-50 nav-blur">
       <div class="max-w-7xl mx-auto px-6 lg:px-10">
         <div class="flex items-center justify-between h-20">
-          <a href="/" class="flex items-center gap-3 group">
-            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-brown-900 to-brown-600 flex items-center justify-center text-ivory shadow-lg group-hover:shadow-xl transition-all relative overflow-hidden">
-              <span class="display text-base font-black tracking-tight relative z-10">365</span>
-              <span class="absolute inset-0 bg-gradient-to-br from-gold to-brown-500 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-            </div>
-            <div>
-              <div class="display text-xl font-black text-brown-900 tracking-tight leading-none">대구365치과</div>
-              <div class="text-[10px] tracking-[0.3em] text-brown-500 mt-1 font-semibold">DAEGU 365 DENTAL</div>
-            </div>
+          <a href="/" class="flex items-center group" aria-label="대구365치과 홈">
+            <img
+              src="/static/images/logo-horizontal-brown.png"
+              alt="대구365치과 DAEGU 365 DENTAL CLINIC"
+              class="h-10 lg:h-11 w-auto transition-transform duration-500 group-hover:scale-[1.03]"
+              width="332" height="115"
+            />
           </a>
 
           <div class="hidden lg:flex items-center gap-10">
@@ -99,8 +97,12 @@ export const Navbar = () => (
     {/* Mobile Menu */}
     <div id="mobileMenu" class="mobile-menu lg:hidden">
       <div class="flex justify-between items-center p-6 border-b border-brown-200">
-        <div class="display text-xl font-medium">대구365치과</div>
-        <button id="menuClose" class="w-10 h-10 flex items-center justify-center">
+        <img
+          src="/static/images/logo-horizontal-brown.png"
+          alt="대구365치과"
+          class="h-9 w-auto"
+        />
+        <button id="menuClose" class="w-10 h-10 flex items-center justify-center" aria-label="메뉴 닫기">
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
@@ -151,14 +153,13 @@ export const Footer = () => (
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
       <div class="grid md:grid-cols-12 gap-12 mb-16">
         <div class="md:col-span-4">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-brown-500 flex items-center justify-center text-brown-950">
-              <span class="display text-base font-black">365</span>
-            </div>
-            <div>
-              <div class="display text-2xl font-black text-ivory leading-none tracking-tight">대구365치과</div>
-              <div class="text-[10px] tracking-[0.3em] text-brown-400 mt-1 font-semibold">DAEGU 365 DENTAL</div>
-            </div>
+          <div class="mb-6">
+            <img
+              src="/static/images/logo-vertical-gold.png"
+              alt="대구365치과 DAEGU 365 DENTAL CLINIC"
+              class="h-28 w-auto"
+              width="562" height="562"
+            />
           </div>
           <p class="text-brown-300 text-sm leading-relaxed mb-6">
             치과공포증을 가졌던 의사가 만드는,<br/>
