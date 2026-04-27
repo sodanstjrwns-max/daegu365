@@ -13,11 +13,11 @@ export const MissionPage = () => (
 
       <div class="relative max-w-5xl mx-auto px-6 text-center">
         <div class="text-xs tracking-[0.4em] text-gold mb-12 fade-in">PHILOSOPHY · MISSION · VISION · VALUE</div>
-        <h1 class="display text-6xl md:text-8xl lg:text-[9rem] font-black tracking-tight leading-[0.95] mb-12 fade-in">
-          <span class="block">치과가</span>
+        <h1 class="display text-6xl md:text-8xl lg:text-[9rem] font-black tracking-tight leading-[0.95] mb-12 fade-in text-ivory">
+          <span class="block text-ivory">치과가</span>
           <span class="block italic text-gold">무서웠던</span>
-          <span class="block">한 의사의</span>
-          <span class="block italic">다짐</span>
+          <span class="block text-ivory">한 의사의</span>
+          <span class="block italic text-ivory">다짐</span>
         </h1>
         <p class="text-brown-200 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed fade-in">
           치과공포증을 가졌던 사람으로서,<br/>
@@ -107,11 +107,11 @@ export const MissionPage = () => (
           <div class="text-[7rem] md:text-[10rem] font-black leading-[0.85] mb-10 fade-in display italic" style="color:transparent;-webkit-text-stroke:2px #c9a876;">
             Mission
           </div>
-          <h2 class="display text-3xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight leading-[1.15] mb-10 fade-in">
-            치과를 두려워하는 환자가<br/>
-            불안 없이 병원 문을 열 수 있도록,<br/>
+          <h2 class="display text-3xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight leading-[1.15] mb-10 fade-in text-ivory">
+            <span class="text-ivory">치과를 두려워하는 환자가</span><br/>
+            <span class="text-ivory">불안 없이 병원 문을 열 수 있도록,</span><br/>
             <em class="italic text-gold">진입의 허들을 낮추고<br/>
-            치과경험의 혁신</em>을 이룩한다.
+            치과경험의 혁신</em><span class="text-ivory">을 이룩한다.</span>
           </h2>
           <div class="text-xs tracking-[0.3em] text-brown-300 fade-in">
             <i class="fas fa-camera mr-2 text-gold"></i>
