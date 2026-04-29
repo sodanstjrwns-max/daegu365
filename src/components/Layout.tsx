@@ -180,6 +180,113 @@ export const Navbar = () => (
   </>
 )
 
+/**
+ * TL;DR 요약 박스 — AEO(LLM 답변 엔진) 최적화 전용 컴포넌트
+ *
+ * 목적: ChatGPT/Perplexity/Claude/Gemini 등이 페이지를 읽을 때 가장 먼저 인용할
+ * "한 문단 직답"을 의미상 명확한 박스로 박아둠. 첫 의미 단위로 잡히도록
+ * HERO 직후, 본문 도입부 전에 배치 권장.
+ *
+ * 구조:
+ *  - summary: 핵심 1-2 문장 (LLM이 그대로 인용할 가능성 높은 자리)
+ *  - bullets: 4-6개 핵심 팩트 (가격/소요시간/적응증/장비/보증 등)
+ *  - cta: 선택적 다음 단계 안내 (전화/예약 링크)
+ *
+ * 사용 예:
+ *  <TldrBox
+ *    summary="수면임플란트는 의식하 진정 하에 진행하는 임플란트로, 치과공포증 환자도 꿈결처럼 편안하게 받을 수 있습니다."
+ *    bullets={[
+ *      { label: '가격', value: '메가젠 80만원 ~ 스트라우만 150만원' },
+ *      { label: '소요 기간', value: '식립 1회 + 보철 2-4개월' },
+ *      { label: '보증', value: '픽스쳐 5년 / 상부 평생' },
+ *      { label: '핵심 장비', value: 'CBCT + 디지털 가이드 + IV 진정' },
+ *    ]}
+ *  />
+ */
+export const TldrBox = ({ summary, bullets, cta, label }: {
+  summary: string
+  bullets: Array<{ label: string; value: string }>
+  cta?: { text: string; href: string }
+  label?: string
+}) => (
+  <section class="py-10 lg:py-14 bg-cream border-y border-brown-200/40" aria-label="핵심 요약">
+    <div class="max-w-[1100px] mx-auto px-6 lg:px-12">
+      <div class="bg-ivory rounded-2xl p-8 lg:p-10 shadow-card border border-gold/20">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-brown-950 text-gold text-xs tracking-widest font-bold">TL;DR</span>
+          <span class="text-xs tracking-[0.3em] text-brown-500 font-semibold">{label || '한눈에 보기'}</span>
+        </div>
+        <p class="display text-xl lg:text-2xl text-brown-900 font-medium leading-relaxed mb-6">
+          {summary}
+        </p>
+        <dl class="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+          {bullets.map((b) => (
+            <div class="flex gap-3 py-2 border-b border-brown-100">
+              <dt class="text-brown-500 font-semibold min-w-[5.5rem] tracking-wide">{b.label}</dt>
+              <dd class="text-brown-800 flex-1">{b.value}</dd>
+            </div>
+          ))}
+        </dl>
+        {cta && (
+          <div class="mt-6 pt-5 border-t border-brown-100">
+            <a href={cta.href} class="inline-flex items-center gap-2 text-brown-900 hover:text-gold font-semibold tracking-wide">
+              <i class="fas fa-arrow-right text-xs"></i>
+              <span>{cta.text}</span>
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+)
+
+/**
+ * 비교 표 — AEO 강력 무기. "A vs B" 검색 의도 직격 + LLM이 표 구조 그대로 인용.
+ *
+ * 사용 예:
+ *  <ComparisonTable
+ *    title="픽스쳐 5종 비교"
+ *    headers={['브랜드', '원산지', '특징', '가격']}
+ *    rows={[
+ *      ['메가젠 ST', '대한민국', 'SLA 표면, 가성비', '80만원'],
+ *      ['스트라우만 앤서지', '스위스', 'Roxolid 합금, 50년 임상', '150만원'],
+ *    ]}
+ *  />
+ */
+export const ComparisonTable = ({ title, headers, rows, caption }: {
+  title?: string
+  headers: string[]
+  rows: string[][]
+  caption?: string
+}) => (
+  <div class="my-10 fade-in">
+    {title && <h3 class="display text-xl lg:text-2xl font-black text-brown-900 mb-4 tracking-tight">{title}</h3>}
+    <div class="overflow-x-auto rounded-2xl border border-brown-200/60 shadow-card">
+      <table class="w-full text-sm bg-ivory">
+        <thead>
+          <tr class="bg-brown-950 text-gold">
+            {headers.map((h) => (
+              <th class="px-4 py-3 text-left font-semibold tracking-wide border-r border-brown-800/50 last:border-r-0">{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, idx) => (
+            <tr class={idx % 2 === 0 ? 'bg-ivory' : 'bg-cream/60'}>
+              {row.map((cell, ci) => (
+                <td class={`px-4 py-3 text-brown-800 border-r border-brown-100 last:border-r-0 ${ci === 0 ? 'font-semibold text-brown-900' : ''}`}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    {caption && <p class="text-xs text-brown-500 mt-3 italic">{caption}</p>}
+  </div>
+)
+
 export const Footer = () => (
   <footer class="footer pt-24 pb-10 mt-0 relative">
     {/* Big brand headline */}
