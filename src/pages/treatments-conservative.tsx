@@ -1,4 +1,5 @@
-import { Navbar, Footer } from '../components/Layout'
+import { Navbar, Footer, TldrBox } from '../components/Layout'
+import { tldrFor } from '../lib/tldr-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -80,6 +81,13 @@ export const ConservativeTreatmentPage = ({
           </div>
         </div>
       </section>
+
+
+      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
+      {(() => {
+        const _tldr = tldrFor("conservative")
+        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
+      })()}
 
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-5xl mx-auto px-6 lg:px-12">

@@ -1,4 +1,4 @@
-import { Navbar, Footer } from '../components/Layout'
+import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -293,6 +293,23 @@ export const ImplantTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* ========================================== */}
+      {/* 1.5 TL;DR — AEO 최적화 한 문단 직답           */}
+      {/* ========================================== */}
+      <TldrBox
+        label="수면임플란트 한눈에 보기"
+        summary="수면임플란트는 의식하 진정(IV Sedation) 하에 진행하는 임플란트로, 치과공포증·구역반사·다수 식립 환자도 꿈결처럼 편안하게 받을 수 있는 시술입니다. 전문 마취 모니터링과 디지털 가이드 수술로 안전성과 정밀도를 동시에 확보합니다."
+        bullets={[
+          { label: '가격', value: '메가젠 ST 80만원 ~ 스트라우만 앤서지 150만원 (5종 옵션)' },
+          { label: '소요 기간', value: '식립 1회 (1~2시간) + 골유착 2~4개월 + 보철' },
+          { label: '보증', value: '픽스쳐 5년 / 상부보철 평생' },
+          { label: '핵심 장비', value: 'CBCT 3D + 디지털 가이드 + IV 진정 모니터링' },
+          { label: '추천 대상', value: '치과공포증 · 다수 식립 · 골이식 동반 · 구역반사 환자' },
+          { label: '마취 방식', value: '4단계 무통마취 (가글→도포→무통기→일반마취) + IV 진정' },
+        ]}
+        cta={{ text: '053-357-0365 상담 예약하기', href: 'tel:053-357-0365' }}
+      />
 
       {/* ========================================== */}
       {/* 2. WHAT IS — 의학적 정의 + 적응증 + 비적응증   */}
