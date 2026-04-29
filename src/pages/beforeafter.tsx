@@ -59,6 +59,7 @@ export const BeforeAfterListPage = ({
 
     {/* Grid */}
     <section class="py-16 max-w-7xl mx-auto px-6">
+      <h2 class="display text-3xl font-black tracking-tight text-brown-900 mb-8">치료 사례 갤러리</h2>
       {items.length === 0 ? (
         <div class="text-center py-24 text-brown-500">해당 조건의 사례가 없습니다.</div>
       ) : (

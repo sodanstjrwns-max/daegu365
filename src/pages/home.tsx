@@ -13,7 +13,13 @@ export const HomePage = () => (
     {/* 1. CINEMATIC HERO                                   */}
     {/* ================================================== */}
     <section class="cinematic-hero">
-      <img src="/static/images/wide-hallway.jpg" alt="" class="cinematic-hero-bg loaded" aria-hidden="true" />
+      <img
+        src="/r2/images/hero/lobby-curve.jpg"
+        alt="대구365치과 메인 로비 — 곡선 천장 라인과 365 로고 사인"
+        class="cinematic-hero-bg loaded"
+        aria-hidden="true"
+        fetchpriority="high"
+      />
 
       {/* Side meta */}
       <div class="side-meta hidden lg:block">DAEGU 365 DENTAL · EST. 2024 · KOREA</div>
@@ -158,7 +164,7 @@ export const HomePage = () => (
           {/* Editorial grid */}
           <div class="editorial-grid fade-in">
             <div class="eg-1 img-frame img-reveal rounded-[20px] overflow-hidden">
-              <img src="/static/images/doctors/kim-seongju.jpg" alt="김성주 대표원장" loading="lazy" class="w-full h-full object-cover object-[center_15%]" />
+              <img src="/r2/images/doctors/kim-seongju.jpg" alt="김성주 대표원장" loading="lazy" class="w-full h-full object-cover object-[center_15%]" />
             </div>
             <div class="eg-2 img-frame img-reveal rounded-[20px]">
               <img src="/static/images/macro-veneer.jpg" alt="세라믹 베니어 매크로" loading="lazy" />
@@ -174,7 +180,7 @@ export const HomePage = () => (
               <img src="/static/images/detail-crown.jpg" alt="디테일" loading="lazy" />
             </div>
             <div class="eg-5 img-frame img-reveal rounded-[20px]">
-              <img src="/static/images/treatment-room.jpg" alt="진료실 디테일" loading="lazy" />
+              <img src="/r2/images/clinic/care-luxury-room.jpg?v=1" alt="대구365치과 럭셔리 진료실 — 호텔 라운지 무드의 단독 진료 공간" loading="lazy" class="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -218,7 +224,7 @@ export const HomePage = () => (
               <span class="t-gold">3가지 시그니처</span>
             </h3>
             <p class="t-lead mb-8">
-              수면 진정 + 3단계 무통마취 + 원내 디지털 기공실로<br/>
+              수면 진정 + 4단계 무통마취 + 원내 디지털 기공실로<br/>
               공포 없이, 정확하게, 빠르게.
             </p>
             <a href="/treatments" class="btn-primary btn-shine magnetic">
@@ -233,7 +239,8 @@ export const HomePage = () => (
               name: '수면임플란트',
               tagline: '공포 없는 임플란트',
               num: '01',
-              img: '/static/images/treatment-room.jpg',
+              // 티타늄 임플란트 픽스처 매크로 컷 (R2, 4K, 골드톤)
+              img: '/r2/images/treatments/implant-fixture.jpg',
               points: ['수면 진정 + 무통마취', '메가젠 BD · 오스템 BA', '평생 임플란트 보증'],
             },
             {
@@ -241,7 +248,8 @@ export const HomePage = () => (
               name: 'VINIQUE',
               tagline: '프리미엄 라미네이트',
               num: '02',
-              img: '/static/images/smile-portrait.jpg',
+              // 매크로 베니어 컷 — 라미네이트 결과 자체를 보여주는 이미지로 스왑
+              img: '/static/images/macro-veneer.jpg',
               points: ['얼굴형·스마일 라인 설계', '최소 삭제 · 자연광택', '원내 디지털 기공실'],
             },
             {
@@ -249,15 +257,17 @@ export const HomePage = () => (
               name: '인비절라인',
               tagline: '투명하게, 자유롭게',
               num: '03',
-              img: '/static/images/macro-veneer.jpg',
+              // 투명 인비절라인 얼라이너 매크로 컷 (R2, 4K)
+              img: '/r2/images/treatments/invisalign-aligner.jpg',
               points: ['인비절라인 공인 의료진', '3D 시뮬레이션', '티 나지 않는 교정'],
             },
             {
               slug: 'painless-anesthesia',
-              name: '3단계 무통마취',
+              name: '4단계 무통마취',
               tagline: '주사 공포 제거',
               num: '04',
-              img: '/static/images/detail-crown.jpg',
+              // 극세 주사 바늘 정물 매크로 컷 (R2, 4K, 따뜻한 톤)
+              img: '/r2/images/treatments/painless-needle.jpg',
               points: ['가글 → 도포 → 무통기 → 본마취', '앰플 워머 사용', '극세 주사 바늘'],
             },
             {
@@ -265,7 +275,8 @@ export const HomePage = () => (
               name: '수면치료 시스템',
               tagline: '잠드는 사이 끝',
               num: '05',
-              img: '/static/images/hero-interior.jpg',
+              // 평온하게 쉬는 환자 사이드컷 (R2, 4K, 골드톤)
+              img: '/r2/images/treatments/sleep-therapy-serene.jpg',
               points: ['전문 마취과 협진', '생체 신호 실시간 모니터', '응급 대응 시스템'],
             },
             {
@@ -273,7 +284,8 @@ export const HomePage = () => (
               name: 'AIRFLOW GBT',
               tagline: '무통 스케일링',
               num: '06',
-              img: '/static/images/cta-operation-room.jpg',
+              // 펄세센트 클렌징 파우더 캐스케이드 (R2, 4K, 샴페인톤)
+              img: '/r2/images/treatments/airflow-powder.jpg',
               points: ['온수·공기·고운 분말', '시린이·임플란트 가능', '바이오필름 완전 제거'],
             },
           ].map((t: any) => (
@@ -385,12 +397,12 @@ export const HomePage = () => (
 
         {/* Team group image */}
         <div class="img-frame img-reveal aspect-[16/9] rounded-[32px] mb-8 fade-in shadow-xl">
-          <img src="/static/images/doctors/team-horizontal-smile.jpg" alt="대구365치과 의료진 7인" loading="lazy" />
+          <img src="/r2/images/doctors/team-horizontal-smile.jpg" alt="대구365치과 의료진 7인" loading="lazy" />
         </div>
 
         {/* 대표원장 스포트라이트 */}
         <a href="/doctors/kim-seongju" class="block spotlight-card shadow-xl fade-in group mb-8">
-          <img src="/static/images/doctors/kim-seongju.jpg" alt="김성주 대표원장" class="spotlight-card-img" loading="lazy" style="object-position: center 20%;" />
+          <img src="/r2/images/doctors/kim-seongju.jpg" alt="김성주 대표원장" class="spotlight-card-img" loading="lazy" style="object-position: center 20%;" />
           <div class="relative h-full p-10 lg:p-16 flex flex-col justify-end min-h-[580px]">
             <div class="section-label mb-6" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.3);">
               FOUNDER · DIRECTOR
@@ -417,12 +429,12 @@ export const HomePage = () => (
 
         <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-4 fade-in-stagger">
           {[
-            { slug: 'jung-jaeheon',  name: '정재헌', pos: '보존과 전문의',   spec: '보존·심미 치료',     img: '/static/images/doctors/jung-jaeheon.jpg' },
-            { slug: 'choi-hyejung',  name: '최혜정', pos: '보존과 전문의',   spec: '보존·정직 치료',     img: '/static/images/doctors/choi-hyejung.jpg' },
-            { slug: 'han-jieun',     name: '한지은', pos: '소아치과 전문의', spec: '소아·따뜻한 기억',   img: '/static/images/doctors/han-jieun.jpg' },
-            { slug: 'kim-jinduk',    name: '김진덕', pos: '교정과 전문의',   spec: '교정·자신감 미소',   img: '/static/images/doctors/kim-jinduk.jpg' },
-            { slug: 'kim-sangwon',   name: '김상원', pos: '보존과 전문의',   spec: '자연치아 보존',     img: '/static/images/doctors/kim-sangwon.jpg' },
-            { slug: 'lee-seoyoung',  name: '이서영', pos: '치주과 전문의',   spec: '치주·세심한 케어',   img: '/static/images/doctors/lee-seoyoung.jpg' },
+            { slug: 'jung-jaeheon',  name: '정재헌', pos: '보존과 전문의',   spec: '보존·심미 치료',     img: '/r2/images/doctors/jung-jaeheon.jpg' },
+            { slug: 'choi-hyejung',  name: '최혜정', pos: '보존과 전문의',   spec: '보존·정직 치료',     img: '/r2/images/doctors/choi-hyejung.jpg' },
+            { slug: 'han-jieun',     name: '한지은', pos: '소아치과 전문의', spec: '소아·따뜻한 기억',   img: '/r2/images/doctors/han-jieun.jpg' },
+            { slug: 'kim-jinduk',    name: '김진덕', pos: '교정과 전문의',   spec: '교정·자신감 미소',   img: '/r2/images/doctors/kim-jinduk.jpg' },
+            { slug: 'kim-sangwon',   name: '김상원', pos: '보존과 전문의',   spec: '자연치아 보존',     img: '/r2/images/doctors/kim-sangwon.jpg' },
+            { slug: 'lee-seoyoung',  name: '이서영', pos: '치주과 전문의',   spec: '치주·세심한 케어',   img: '/r2/images/doctors/lee-seoyoung.jpg' },
           ].map((d: any) => (
             <a href={`/doctors/${d.slug}`} class="group block">
               <div class="img-frame aspect-[3/4] rounded-2xl mb-4 overflow-hidden">
@@ -486,7 +498,7 @@ export const HomePage = () => (
               },
               {
                 step: '02 · ANESTHESIA',
-                title: '3단계 무통마취 시스템',
+                title: '4단계 무통마취 시스템',
                 desc: '가글 마취 → 도포 마취 → 무통마취기 → 본마취. 앰플 워머로 체온과 같은 온도 유지, 극세 주사 바늘 사용. 주사의 공포를 완전히 제거했습니다.'
               },
               {
@@ -583,24 +595,26 @@ export const HomePage = () => (
     </section>
 
     {/* ================================================== */}
-    {/* 9. FACILITY                                         */}
+    {/* 9. FACILITY — EDITORIAL GALLERY                     */}
     {/* ================================================== */}
     <section class="py-28 lg:py-40 bg-cream">
       <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
-        <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          <div class="lg:col-span-5 fade-in">
+
+        {/* HEADER */}
+        <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end mb-20 fade-in">
+          <div class="lg:col-span-7">
             <div class="section-label mb-6">FACILITY · 07</div>
-            <h2 class="t-display mb-10">
+            <h2 class="t-display mb-8">
               <span class="t-outline">프리미엄</span><br/>
               <span class="t-gold">치과 공간</span>
             </h2>
-            <p class="t-lead mb-10">
+            <p class="t-lead">
               대구광역시 북구 침산로 <strong class="text-brown-900 font-bold">엠브로스퀘어 7층</strong>.<br/>
-              쾌적하고 정적인 환경에서 진료를 받을 수 있도록,<br/>
-              공간의 디테일까지 설계했습니다.
+              도착부터 진료, 평생관리까지 — 공간의 모든 디테일을 설계했습니다.
             </p>
-
-            <div class="grid grid-cols-2 gap-y-6 gap-x-4 mb-10">
+          </div>
+          <div class="lg:col-span-5">
+            <div class="grid grid-cols-2 gap-y-5 gap-x-4">
               {[
                 { icon: 'fa-car', label: '무료 주차' },
                 { icon: 'fa-wifi', label: '무료 Wi-Fi' },
@@ -611,41 +625,133 @@ export const HomePage = () => (
                   <div class="w-11 h-11 rounded-full bg-brown-100 flex items-center justify-center text-brown-900 border border-brown-200">
                     <i class={`fas ${i.icon} text-sm`}></i>
                   </div>
-                  <span class="font-bold text-brown-900 tracking-tight">{i.label}</span>
+                  <span class="font-bold text-brown-900 tracking-tight text-sm">{i.label}</span>
                 </div>
               ))}
             </div>
-
-            <div class="flex gap-3">
-              <a href="/directions" class="btn-primary btn-shine magnetic">
-                <span>오시는 길</span>
-                <i class="fas fa-map-marker-alt"></i>
-              </a>
-              <a href="/hours" class="btn-outline magnetic">
-                <span>진료시간</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="lg:col-span-7 fade-in">
-            <div class="grid grid-cols-12 gap-4">
-              <div class="col-span-8 img-frame img-reveal aspect-[4/5] rounded-[24px]">
-                <img src="/static/images/hero-interior.jpg" alt="대구365치과 인테리어" loading="lazy" />
-              </div>
-              <div class="col-span-4 flex flex-col gap-4 pt-10">
-                <div class="img-frame img-reveal aspect-square rounded-[20px]">
-                  <img src="/static/images/cta-operation-room.jpg" alt="수술실" loading="lazy" />
-                </div>
-                <div class="img-frame img-reveal aspect-square rounded-[20px]">
-                  <img src="/static/images/treatment-room.jpg" alt="진료실" loading="lazy" />
-                </div>
-                <div class="img-frame img-reveal aspect-square rounded-[20px]">
-                  <img src="/static/images/detail-crown.jpg" alt="디테일" loading="lazy" />
-                </div>
-              </div>
-            </div>
           </div>
         </div>
+
+        {/* CHAPTER 01 — ARRIVAL */}
+        <div class="mb-6 fade-in">
+          <div class="flex items-baseline gap-4 mb-2">
+            <span class="text-gold text-xs tracking-[0.3em] font-bold">CHAPTER 01</span>
+            <span class="text-brown-400 text-xs tracking-widest">ARRIVAL</span>
+          </div>
+          <h3 class="text-2xl lg:text-3xl font-black text-brown-900 tracking-tight">도착, 그리고 첫인상</h3>
+        </div>
+        <div class="grid grid-cols-12 gap-4 mb-20 fade-in-stagger">
+          <div class="col-span-12 lg:col-span-7 img-frame img-reveal aspect-[16/10] rounded-[24px]">
+            <img src="/r2/images/clinic/arrival-lobby-wide.jpg" alt="대구365치과 와이드 로비 라운지" loading="lazy" />
+          </div>
+          <div class="col-span-6 lg:col-span-5 img-frame img-reveal aspect-[4/5] lg:aspect-auto rounded-[24px]">
+            <img src="/r2/images/clinic/arrival-entrance.jpg" alt="대구365치과 입구 365 로고 사인" loading="lazy" />
+          </div>
+          <div class="col-span-6 lg:col-span-5 img-frame img-reveal aspect-[4/3] rounded-[20px]">
+            <img src="/r2/images/clinic/arrival-lounge.jpg" alt="대기 라운지 디스플레이 월" loading="lazy" />
+          </div>
+          <div class="hidden lg:flex col-span-7 items-center px-8">
+            <p class="text-brown-700 text-base leading-relaxed">
+              <span class="t-eyebrow text-gold mb-2 block">RECEPTION</span>
+              곡선의 리셉션 데스크와 천장 라이팅이 호텔 라운지의 정적인 분위기를 만듭니다. 도착 즉시 차분해지는 공간 설계.
+            </p>
+          </div>
+        </div>
+
+        {/* CHAPTER 02 — CARE */}
+        <div class="mb-6 fade-in">
+          <div class="flex items-baseline gap-4 mb-2">
+            <span class="text-gold text-xs tracking-[0.3em] font-bold">CHAPTER 02</span>
+            <span class="text-brown-400 text-xs tracking-widest">CARE</span>
+          </div>
+          <h3 class="text-2xl lg:text-3xl font-black text-brown-900 tracking-tight">한 사람을 위한 진료실</h3>
+        </div>
+        <div class="grid grid-cols-12 gap-4 mb-20 fade-in-stagger">
+          <div class="col-span-12 lg:col-span-8 img-frame img-reveal aspect-[16/10] rounded-[24px]">
+            <img src="/r2/images/clinic/care-treatment-rooms.jpg" alt="진료실 다중뷰" loading="lazy" />
+          </div>
+          <div class="col-span-6 lg:col-span-4 img-frame img-reveal aspect-[3/4] rounded-[20px]">
+            <img src="/r2/images/clinic/care-digital-room.jpg" alt="디지털 진료실" loading="lazy" />
+          </div>
+          <div class="col-span-6 lg:col-span-4 img-frame img-reveal aspect-[4/3] rounded-[20px]">
+            <img src="/r2/images/clinic/care-luxury-room.jpg" alt="블랙 천장 럭셔리 진료실" loading="lazy" />
+          </div>
+          <div class="hidden lg:flex col-span-8 items-center px-8">
+            <p class="text-brown-700 text-base leading-relaxed">
+              <span class="t-eyebrow text-gold mb-2 block">PRIVATE TREATMENT</span>
+              모든 진료실은 독립된 공간으로 분리되어 있습니다. 옆 환자의 시선이나 소음 없이, 오직 한 사람을 위한 진료에 집중합니다.
+            </p>
+          </div>
+        </div>
+
+        {/* CHAPTER 03 — PRECISION */}
+        <div class="mb-6 fade-in">
+          <div class="flex items-baseline gap-4 mb-2">
+            <span class="text-gold text-xs tracking-[0.3em] font-bold">CHAPTER 03</span>
+            <span class="text-brown-400 text-xs tracking-widest">PRECISION</span>
+          </div>
+          <h3 class="text-2xl lg:text-3xl font-black text-brown-900 tracking-tight">정밀, 디지털, 그리고 수술센터</h3>
+        </div>
+        <div class="grid grid-cols-12 gap-4 mb-20 fade-in-stagger">
+          <div class="col-span-12 lg:col-span-6 img-frame img-reveal aspect-[3/2] rounded-[24px]">
+            <img src="/r2/images/clinic/precision-dlab.jpg" alt="D.LAB STUDIO 365 디지털 기공실" loading="lazy" />
+          </div>
+          <div class="col-span-6 lg:col-span-3 img-frame img-reveal aspect-[3/4] rounded-[20px]">
+            <img src="/r2/images/clinic/precision-implant-center.jpg" alt="365 임플란트 수술센터" loading="lazy" />
+          </div>
+          <div class="col-span-6 lg:col-span-3 img-frame img-reveal aspect-[3/4] rounded-[20px]">
+            <img src="/r2/images/clinic/precision-arch-corridor.jpg" alt="아치형 정밀 동선 복도" loading="lazy" />
+          </div>
+        </div>
+
+        {/* CHAPTER 04 — LIFETIME */}
+        <div class="mb-6 fade-in">
+          <div class="flex items-baseline gap-4 mb-2">
+            <span class="text-gold text-xs tracking-[0.3em] font-bold">CHAPTER 04</span>
+            <span class="text-brown-400 text-xs tracking-widest">LIFETIME</span>
+          </div>
+          <h3 class="text-2xl lg:text-3xl font-black text-brown-900 tracking-tight">평생, 함께하는 동선</h3>
+        </div>
+        <div class="grid grid-cols-12 gap-4 mb-20 fade-in-stagger">
+          <div class="col-span-6 lg:col-span-4 img-frame img-reveal aspect-[3/4] rounded-[20px]">
+            <img src="/r2/images/clinic/lifetime-care-center.jpg" alt="평생치아관리센터 입구" loading="lazy" />
+          </div>
+          <div class="col-span-6 lg:col-span-4 img-frame img-reveal aspect-[3/4] rounded-[20px]">
+            <img src="/r2/images/clinic/lifetime-airflow-zone.jpg" alt="AIRFLOW ZONE 예방 진료실" loading="lazy" />
+          </div>
+          <div class="col-span-12 lg:col-span-4 img-frame img-reveal aspect-[3/4] rounded-[20px]">
+            <img src="/r2/images/clinic/lifetime-vip-rooms.jpg" alt="VIP 룸 입구" loading="lazy" />
+          </div>
+        </div>
+
+        {/* CHAPTER 05 — DETAILS */}
+        <div class="mb-6 fade-in">
+          <div class="flex items-baseline gap-4 mb-2">
+            <span class="text-gold text-xs tracking-[0.3em] font-bold">CHAPTER 05</span>
+            <span class="text-brown-400 text-xs tracking-widest">DETAILS</span>
+          </div>
+          <h3 class="text-2xl lg:text-3xl font-black text-brown-900 tracking-tight">디테일은 결국 시간이 됩니다</h3>
+        </div>
+        <div class="grid grid-cols-12 gap-4 mb-12 fade-in-stagger">
+          <div class="col-span-12 lg:col-span-7 img-frame img-reveal aspect-[16/10] rounded-[24px]">
+            <img src="/r2/images/clinic/detail-led-corridor.jpg" alt="LED 라인 시그니처 복도" loading="lazy" />
+          </div>
+          <div class="col-span-12 lg:col-span-5 img-frame img-reveal aspect-[4/5] rounded-[24px]">
+            <img src="/r2/images/clinic/detail-restroom.jpg" alt="럭셔리 호텔 무드 화장실" loading="lazy" />
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div class="flex flex-wrap justify-center gap-4 fade-in">
+          <a href="/directions" class="btn-primary btn-shine magnetic">
+            <span>오시는 길</span>
+            <i class="fas fa-map-marker-alt"></i>
+          </a>
+          <a href="/hours" class="btn-outline magnetic">
+            <span>진료시간 보기</span>
+          </a>
+        </div>
+
       </div>
     </section>
 
@@ -665,7 +771,7 @@ export const HomePage = () => (
           {[
             {
               q: '치과 공포증이 심한데, 치료받을 수 있을까요?',
-              a: '물론입니다. 대구365치과는 치과공포증이 있으셨던 의사가 직접 설계한 곳입니다. 3단계 무통마취, 수면치료 시스템, 그리고 무엇보다 환자의 속도에 맞추는 진료 문화가 있습니다. 언제든 불편하시면 중단할 수 있고, 단계별로 천천히 진행합니다.'
+              a: '물론입니다. 대구365치과는 치과공포증이 있으셨던 의사가 직접 설계한 곳입니다. 4단계 무통마취, 수면치료 시스템, 그리고 무엇보다 환자의 속도에 맞추는 진료 문화가 있습니다. 언제든 불편하시면 중단할 수 있고, 단계별로 천천히 진행합니다.'
             },
             {
               q: '임플란트는 평생 쓸 수 있나요? 보증 범위는?',
@@ -734,10 +840,10 @@ export const HomePage = () => (
 
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 fade-in-stagger">
           {[
-            { href: '/before-after', label: 'BEFORE & AFTER', title: '치료 사례', desc: '실제 진행된 케이스', img: '/static/images/smile-portrait.jpg' },
-            { href: '/blog', label: 'JOURNAL', title: '블로그', desc: '의료진 직접 작성', img: '/static/images/doctors/team-horizontal-serious.jpg' },
-            { href: '/dictionary', label: 'KNOWLEDGE', title: '치과 백과', desc: '500+ 용어 사전', img: '/static/images/macro-veneer.jpg' },
-            { href: '/faq', label: 'FAQ', title: '자주 묻는 질문', desc: '268개 상세 답변', img: '/static/images/treatment-room.jpg' },
+            { href: '/before-after', label: 'BEFORE & AFTER', title: '치료 사례', desc: '실제 진행된 케이스', img: '/r2/images/journal/before-after.jpg?v=3' },
+            { href: '/blog', label: 'JOURNAL', title: '블로그', desc: '의료진 직접 작성', img: '/r2/images/journal/journal.jpg' },
+            { href: '/dictionary', label: 'KNOWLEDGE', title: '치과 백과', desc: '500+ 용어 사전', img: '/r2/images/journal/knowledge.jpg' },
+            { href: '/faq', label: 'FAQ', title: '자주 묻는 질문', desc: '268개 상세 답변', img: '/r2/images/journal/faq.jpg?v=2' },
           ].map((c: any) => (
             <a href={c.href} class="photo-card aspect-[3/4] group block">
               <img src={c.img} alt={c.title} loading="lazy" />

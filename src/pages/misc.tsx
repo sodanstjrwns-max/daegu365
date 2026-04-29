@@ -259,9 +259,11 @@ export const DirectionsPage = () => (
       </div>
     </section>
     <section class="py-16 max-w-5xl mx-auto px-6">
+      <h2 class="display text-3xl font-black tracking-tight text-brown-900 mb-8 text-center">대구365치과 위치 안내</h2>
       <div class="aspect-[16/9] rounded-3xl overflow-hidden mb-12 fade-in shadow-lux">
         <iframe src="https://map.kakao.com/?urlX=473870&urlY=1119810&urlLevel=3&map_type=TYPE_MAP" class="w-full h-full" title="대구365치과 위치"></iframe>
       </div>
+      <h2 class="display text-3xl font-black tracking-tight text-brown-900 mb-8 mt-4 text-center">병원 정보 한눈에 보기</h2>
       <div class="grid md:grid-cols-2 gap-6 fade-in">
         <div class="lux-card">
           <div class="text-xs tracking-widest text-brown-500 mb-3">ADDRESS</div>
@@ -317,6 +319,7 @@ export const HoursPage = () => (
       </div>
     </section>
     <section class="py-16 max-w-3xl mx-auto px-6">
+      <h2 class="display text-3xl font-black tracking-tight text-brown-900 mb-8 text-center">요일별 진료시간</h2>
       <div class="bg-brown-950 text-ivory rounded-3xl p-12 fade-in">
         <div class="space-y-6">
           {[
