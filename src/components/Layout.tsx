@@ -33,31 +33,30 @@ export const Navbar = () => (
               <a href="/treatments" class="nav-link">진료안내</a>
               <div class="dropdown" style="min-width:240px">
                 <a href="/treatments/implant" class="font-semibold">✦ 수면임플란트</a>
-                <a href="/treatments/lamineer" class="font-semibold">✦ 라미네이트</a>
+                <a href="/treatments/lamineer" class="font-semibold">✦ 비니크 프리미엄 라미네이트</a>
                 <a href="/treatments/ortho" class="font-semibold">✦ 인비절라인</a>
                 <div class="h-px bg-brown-200 my-2"></div>
                 <div class="text-[10px] tracking-[0.2em] text-brown-500 px-3 py-1 uppercase">특화 진료</div>
-                <a href="/treatments/vinique">VINIQUE 프리미엄 라미네이트</a>
                 <a href="/treatments/sleep-therapy">수면치료 시스템</a>
-                <a href="/treatments/painless-anesthesia">3단계 무통마취</a>
+                <a href="/treatments/painless-anesthesia">4단계 무통마취</a>
                 <a href="/treatments/airflow-gbt">에어플로우 (GBT)</a>
                 <a href="/treatments/pediatric-ortho">소아 교정장치</a>
                 <div class="h-px bg-brown-200 my-2"></div>
                 <div class="text-[10px] tracking-[0.2em] text-brown-500 px-3 py-1 uppercase">일반 진료</div>
-                <a href="/treatments/endo">충치·신경치료·크라운</a>
-                <a href="/treatments/periodontics">치주치료</a>
+                <a href="/treatments/cavity-endo-crown">충치·신경치료·크라운</a>
+                <a href="/treatments/perio">치주치료</a>
                 <a href="/treatments/pediatric">소아치과</a>
                 <a href="/treatments/whitening">전문가 미백</a>
                 <a href="/treatments/icon-resin">아이콘 레진 (백반)</a>
-                <a href="/treatments/q-ray">Q-ray 정밀진단</a>
+                <a href="/treatments/qray">Q-ray 정밀진단</a>
                 <a href="/treatments/in-house-lab">원내 디지털 기공실</a>
                 <div class="h-px bg-brown-200 my-2"></div>
                 <div class="text-[10px] tracking-[0.2em] text-brown-500 px-3 py-1 uppercase">더 보기</div>
-                <a href="/treatments/prosthetics">보철</a>
-                <a href="/treatments/preventive">예방치과</a>
+                <a href="/treatments/prosthetic">보철</a>
+                <a href="/treatments/prevention">예방치과</a>
                 <a href="/treatments/aesthetic">심미치료</a>
                 <a href="/treatments/conservative">보존치료</a>
-                <a href="/treatments/general">일반진료</a>
+                <a href="/treatments">전체 진료</a>
               </div>
             </div>
             <div class="has-dropdown relative py-8">
@@ -81,6 +80,14 @@ export const Navbar = () => (
 
           <div class="flex items-center gap-3">
             <a href="/login" class="hidden md:inline-flex text-sm text-brown-700 hover:text-brown-900 font-medium">로그인</a>
+            <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="hidden md:inline-flex items-center gap-1.5 text-sm font-bold px-3.5 py-2 rounded-full transition" style="background:#FEE500;color:#191919;" aria-label="카카오톡 상담">
+              <i class="fas fa-comment text-xs"></i>
+              <span>카카오톡</span>
+            </a>
+            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="hidden md:inline-flex items-center gap-1.5 text-sm font-bold px-3.5 py-2 rounded-full transition" style="background:#03C75A;color:#fff;" aria-label="네이버 예약">
+              <span class="text-[11px] font-black tracking-tighter" style="background:#fff;color:#03C75A;border-radius:4px;padding:1px 4px;">N</span>
+              <span>네이버예약</span>
+            </a>
             <a href="tel:053-357-0365" class="btn-primary text-sm">
               <i class="fas fa-phone text-xs"></i>
               <span>053-357-0365</span>
@@ -112,7 +119,7 @@ export const Navbar = () => (
           <div class="text-2xl display font-medium mb-3">진료안내</div>
           <div class="pl-4 space-y-2 text-brown-700">
             <a href="/treatments/implant" class="block">· 수면임플란트</a>
-            <a href="/treatments/lamineer" class="block">· 라미네이트</a>
+            <a href="/treatments/lamineer" class="block">· 비니크 프리미엄 라미네이트</a>
             <a href="/treatments/ortho" class="block">· 인비절라인</a>
             <a href="/treatments" class="block text-sm underline">전체 보기 →</a>
           </div>
@@ -132,6 +139,14 @@ export const Navbar = () => (
         <div class="pt-4 border-t border-brown-200 space-y-3">
           <a href="/login" class="block">로그인</a>
           <a href="/signup" class="block">회원가입</a>
+          <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 w-full font-bold py-3 rounded-full" style="background:#03C75A;color:#fff;">
+            <span class="text-xs font-black" style="background:#fff;color:#03C75A;border-radius:4px;padding:2px 6px;">N</span>
+            네이버예약
+          </a>
+          <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 w-full font-bold py-3 rounded-full" style="background:#FEE500;color:#191919;">
+            <i class="fas fa-comment"></i>
+            카카오톡 상담
+          </a>
           <a href="tel:053-357-0365" class="btn-primary w-full justify-center">
             <i class="fas fa-phone"></i> 053-357-0365
           </a>
@@ -140,6 +155,28 @@ export const Navbar = () => (
     </div>
 
     <div class="h-20" aria-hidden="true"></div>
+
+    {/* Floating CTA — 모바일 우선 */}
+    <div class="fixed bottom-4 right-4 z-40 flex flex-col gap-2 md:hidden">
+      <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener"
+        class="inline-flex items-center gap-2 px-4 h-12 rounded-full font-bold text-sm shadow-lg"
+        style="background:#03C75A;color:#fff;" aria-label="네이버 예약">
+        <span class="text-[11px] font-black" style="background:#fff;color:#03C75A;border-radius:4px;padding:1px 5px;">N</span>
+        <span>예약</span>
+      </a>
+      <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener"
+        class="inline-flex items-center gap-2 px-4 h-12 rounded-full font-bold text-sm shadow-lg"
+        style="background:#FEE500;color:#191919;" aria-label="카카오톡 상담">
+        <i class="fas fa-comment"></i>
+        <span>톡상담</span>
+      </a>
+      <a href="tel:053-357-0365"
+        class="inline-flex items-center gap-2 px-4 h-12 rounded-full font-bold text-sm shadow-lg"
+        style="background:var(--brown-950);color:var(--gold);" aria-label="전화 상담">
+        <i class="fas fa-phone"></i>
+        <span>전화</span>
+      </a>
+    </div>
   </>
 )
 
@@ -171,11 +208,19 @@ export const Footer = () => (
             두려움 없는 치과.<br/>
             <span class="text-gold display font-bold">"치과 진입의 허들을 낮추고 경험의 혁신을 이룩한다"</span>
           </p>
-          <div class="flex gap-3">
-            <a href="https://blog.naver.com/nowhere2721" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-brown-700 flex items-center justify-center hover:bg-brown-800 transition">
+          <div class="flex gap-3 flex-wrap">
+            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 h-10 rounded-full font-bold text-sm transition hover:opacity-90" style="background:#03C75A;color:#fff;" aria-label="네이버 예약">
+              <span class="text-[11px] font-black" style="background:#fff;color:#03C75A;border-radius:4px;padding:1px 5px;">N</span>
+              <span>예약</span>
+            </a>
+            <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 h-10 rounded-full font-bold text-sm transition hover:opacity-90" style="background:#FEE500;color:#191919;" aria-label="카카오톡 상담">
+              <i class="fas fa-comment"></i>
+              <span>카카오톡</span>
+            </a>
+            <a href="https://blog.naver.com/nowhere2721" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-brown-700 flex items-center justify-center hover:bg-brown-800 transition" aria-label="네이버 블로그">
               <span class="text-xs font-bold">blog</span>
             </a>
-            <a href="https://www.instagram.com/chee_jaeee" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-brown-700 flex items-center justify-center hover:bg-brown-800 transition">
+            <a href="https://www.instagram.com/chee_jaeee/" target="_blank" rel="noopener" class="w-10 h-10 rounded-full border border-brown-700 flex items-center justify-center hover:bg-brown-800 transition" aria-label="인스타그램">
               <i class="fab fa-instagram"></i>
             </a>
           </div>
@@ -185,7 +230,7 @@ export const Footer = () => (
           <h4 class="display text-base text-gold mb-4 font-bold tracking-tight">진료안내</h4>
           <ul class="space-y-2 text-sm">
             <li><a href="/treatments/implant">수면임플란트</a></li>
-            <li><a href="/treatments/lamineer">라미네이트</a></li>
+            <li><a href="/treatments/lamineer">비니크 프리미엄 라미네이트</a></li>
             <li><a href="/treatments/ortho">인비절라인</a></li>
             <li><a href="/treatments">전체 진료</a></li>
           </ul>

@@ -3,5 +3,18 @@
   "name": "daegu365dc",
   "compatibility_date": "2026-04-13",
   "pages_build_output_dir": "./dist",
-  "compatibility_flags": ["nodejs_compat"]
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "daegu365dc-production",
+      "database_id": "df7c1592-8bb5-41de-be9d-eff92766133a"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "daegu365dc-assets"
+    }
+  ]
 }

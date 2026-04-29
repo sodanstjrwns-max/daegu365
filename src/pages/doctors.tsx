@@ -3,21 +3,27 @@ import type { Doctor, Treatment, BeforeAfter, BlogPost } from '../lib/types'
 
 // 의료진 슬러그 → 프로필 사진 매핑 (파일명 기준 7명 + 단체 4장)
 const DOCTOR_PHOTO: Record<string, string> = {
-  'kim-seongju':  '/static/images/doctors/kim-seongju.jpg',
-  'jung-jaeheon': '/static/images/doctors/jung-jaeheon.jpg',
-  'kim-sangwon':  '/static/images/doctors/kim-sangwon.jpg',
-  'choi-hyejung': '/static/images/doctors/choi-hyejung.jpg',
-  'kim-jinduk':   '/static/images/doctors/kim-jinduk.jpg',
-  'han-jieun':    '/static/images/doctors/han-jieun.jpg',
-  'lee-seoyoung': '/static/images/doctors/lee-seoyoung.jpg',
+  'kim-seongju':  '/r2/images/doctors/kim-seongju.jpg',
+  'jung-jaeheon': '/r2/images/doctors/jung-jaeheon.jpg',
+  'kim-sangwon':  '/r2/images/doctors/kim-sangwon.jpg',
+  'choi-hyejung': '/r2/images/doctors/choi-hyejung.jpg',
+  'kim-jinduk':   '/r2/images/doctors/kim-jinduk.jpg',
+  'han-jieun':    '/r2/images/doctors/han-jieun.jpg',
+  'lee-seoyoung': '/r2/images/doctors/lee-seoyoung.jpg',
 }
 const getDoctorPhoto = (slug: string) =>
-  DOCTOR_PHOTO[slug] || '/static/images/doctors/team-horizontal-smile.jpg'
+  DOCTOR_PHOTO[slug] || '/r2/images/doctors/team-horizontal-smile.jpg'
 
 // 의료진 슬러그 → 인터뷰 영상 R2 스트리밍 라우트 매핑
-// (R2 버킷 daegu365dc-assets 의 videos/ 경로 참조, /api/videos/:slug 라우트로 서빙)
+// (R2 버킷 daegu365dc-assets 의 한글 master 파일을 /api/videos/:slug 라우트로 서빙)
 const DOCTOR_VIDEO: Record<string, string> = {
-  'jung-jaeheon': '/api/videos/jung-jaeheon-interview',
+  'kim-seongju':  '/api/videos/kim-seongju',
+  'jung-jaeheon': '/api/videos/jung-jaeheon',
+  'kim-sangwon':  '/api/videos/kim-sangwon',
+  'choi-hyejung': '/api/videos/choi-hyejung',
+  'kim-jinduk':   '/api/videos/kim-jinduk',
+  'han-jieun':    '/api/videos/han-jieun',
+  'lee-seoyoung': '/api/videos/lee-seoyoung',
 }
 const getDoctorVideo = (slug: string): string | null =>
   DOCTOR_VIDEO[slug] || null
@@ -28,15 +34,23 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
 
     {/* HERO with team group photo */}
     <section class="relative bg-brown-950 text-ivory overflow-hidden">
-      <div class="relative h-[60vh] min-h-[500px] overflow-hidden">
+      {/* 머리 윗부분 여유 공간 확보 — 높이를 키우고, 사진을 아래쪽 정렬해서 인물의 머리·어깨·상체가 모두 노출되도록 */}
+      <div class="relative h-[78vh] min-h-[640px] md:min-h-[720px] overflow-hidden">
         <img
-          src="/static/images/doctors/team-horizontal-smile.jpg"
+          src="/r2/images/doctors/team-horizontal-smile.jpg"
           alt="대구365치과 의료진 7인"
-          class="w-full h-full object-cover"
-          style="animation: kenburns 24s ease-in-out infinite alternate;"
+          class="w-full h-full object-cover object-[center_85%]"
+          style="animation: kenburns-doctors 24s ease-in-out infinite alternate;"
         />
-        <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(28,18,11,0.55) 0%, rgba(28,18,11,0.35) 50%, rgba(28,18,11,1) 100%);"></div>
-        <div class="absolute inset-0 flex items-center justify-center">
+        {/* 머리 위 여백을 더 확보하기 위해 상단 어둡기 살짝 줄이고, 헤드라인 가독성은 중앙 글로우로 보조 */}
+        <div
+          class="absolute inset-0"
+          style="background:
+            linear-gradient(180deg, rgba(28,18,11,0.45) 0%, rgba(28,18,11,0.25) 35%, rgba(28,18,11,0.55) 70%, rgba(28,18,11,1) 100%),
+            radial-gradient(ellipse at center 60%, rgba(28,18,11,0.55) 0%, transparent 60%);"
+        ></div>
+        {/* 카피는 아래쪽 1/3 지점에 배치 — 인물 머리와 겹치지 않도록 */}
+        <div class="absolute inset-x-0 bottom-0 pb-20 md:pb-28">
           <div class="text-center px-6 fade-in">
             <div class="text-xs tracking-[0.5em] text-gold mb-6">MEDICAL TEAM · 7</div>
             <h1 class="display text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] text-ivory mb-8">
@@ -50,6 +64,14 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           </div>
         </div>
       </div>
+
+      {/* HERO 전용 Ken Burns — 머리 윗부분이 잘리지 않도록 object-position 기준에서 미세하게만 움직임 */}
+      <style>{`
+        @keyframes kenburns-doctors {
+          0%   { transform: scale(1.04); }
+          100% { transform: scale(1.10); }
+        }
+      `}</style>
     </section>
 
     <section class="py-24 max-w-[1440px] mx-auto px-6 lg:px-12">
@@ -79,7 +101,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
       </div>
     </section>
 
-    {/* TEAM GROUP — 다양한 단체 컷 */}
+    {/* TEAM GROUP — 다양한 단체 컷 (가로 + 세로 비율 매거진 레이아웃) */}
     <section class="py-24 bg-cream">
       <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="text-center mb-16 fade-in">
@@ -87,14 +109,45 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           <h2 class="t-display">
             함께, <em class="italic text-brown-700">협진</em>으로 완성합니다
           </h2>
+          <p class="mt-6 text-brown-700 max-w-2xl mx-auto leading-relaxed">
+            7인의 전문의가 한 자리에서 케이스를 검토하고 진단합니다.
+            한 환자의 모든 진료를 같은 기준으로 — 그것이 협진의 약속입니다.
+          </p>
         </div>
-        <div class="grid md:grid-cols-2 gap-6 fade-in-stagger">
-          <div class="img-frame aspect-[3/2] rounded-[24px] overflow-hidden">
-            <img src="/static/images/doctors/team-2rows.jpg" alt="대구365치과 의료진 단체 컷" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-          </div>
-          <div class="img-frame aspect-[3/2] rounded-[24px] overflow-hidden">
-            <img src="/static/images/doctors/team-3rows.jpg" alt="대구365치과 의료진 단체 컷" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-          </div>
+
+        {/* 12-col 매거진 그리드: 가로 사진(7) + 세로 사진(5) */}
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 fade-in-stagger items-stretch">
+          {/* 왼쪽 — 가로 단체 컷 (3:2) */}
+          <figure class="md:col-span-7 group">
+            <div class="img-frame aspect-[3/2] rounded-[24px] overflow-hidden bg-brown-100">
+              <img
+                src="/r2/images/doctors/team-2rows.jpg"
+                alt="대구365치과 7인 의료진 가로 단체컷 — 2열 구성"
+                loading="lazy"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+            <figcaption class="mt-4 flex items-baseline gap-3 text-xs tracking-[0.3em] text-brown-700">
+              <span class="text-gold font-bold">01</span>
+              <span class="uppercase">Wide Group · 한 자리에서</span>
+            </figcaption>
+          </figure>
+
+          {/* 오른쪽 — 세로 단체 컷 (2:3 = 세로 비율) */}
+          <figure class="md:col-span-5 group">
+            <div class="img-frame aspect-[2/3] rounded-[24px] overflow-hidden bg-brown-100">
+              <img
+                src="/r2/images/doctors/team-3rows.jpg"
+                alt="대구365치과 7인 의료진 세로 단체컷 — 3열 클로즈업"
+                loading="lazy"
+                class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+            <figcaption class="mt-4 flex items-baseline gap-3 text-xs tracking-[0.3em] text-brown-700">
+              <span class="text-gold font-bold">02</span>
+              <span class="uppercase">Close Group · 가까이에서</span>
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>
@@ -216,7 +269,7 @@ export const DoctorDetailPage = ({
               <div class="gold-divider mx-auto mt-10" style="background:#c9a876;"></div>
             </div>
 
-            {/* INTERVIEW VIDEO (정재헌 원장 등 영상이 있는 경우만) */}
+            {/* INTERVIEW VIDEO — 세로 9:16 인터뷰 영상 */}
             {videoUrl && (
               <div class="fade-in mb-20">
                 <div class="text-center mb-8">
@@ -225,14 +278,17 @@ export const DoctorDetailPage = ({
                     원장님의 목소리로 직접 듣는 인터뷰
                   </h3>
                 </div>
-                <div class="relative rounded-[24px] overflow-hidden shadow-2xl bg-black aspect-video max-w-4xl mx-auto"
-                     style="border: 1px solid rgba(201, 168, 118, 0.3);">
+                {/* 세로 영상 컨테이너 — 9:16 비율, 데스크탑에서도 좌우 여백을 두고 중앙 정렬 */}
+                <div
+                  class="relative rounded-[24px] overflow-hidden shadow-2xl bg-black mx-auto"
+                  style="border: 1px solid rgba(201, 168, 118, 0.3); aspect-ratio: 9 / 16; width: 100%; max-width: 420px;"
+                >
                   <video
                     controls
                     preload="metadata"
                     playsinline
                     poster={getDoctorPhoto(doctor.slug)}
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-contain bg-black"
                   >
                     <source src={videoUrl} type="video/mp4" />
                     브라우저가 비디오 태그를 지원하지 않습니다.
