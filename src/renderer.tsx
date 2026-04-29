@@ -288,8 +288,15 @@ export const articleSchema = (opts: {
 
 export const renderer = jsxRenderer(({
   children, title, description, keywords, canonical, ogImage,
-  ogType, jsonLd, breadcrumb, publishedTime, modifiedTime, author
-}: any) => {
+  ogType, jsonLd, breadcrumb, publishedTime, modifiedTime, author,
+  naverVerify: nv, googleVerify: gv, msVerify: mv
+}: any, c: any) => {
+  // 환경변수 우선, props fallback (wrangler secret put 으로 한 번에 박기 위함)
+  const env = (c?.env || {}) as any
+  const naverVerify = nv || env.NAVER_SITE_VERIFICATION || ''
+  const googleVerify = gv || env.GOOGLE_SITE_VERIFICATION || ''
+  const msVerify = mv || env.MS_SITE_VERIFICATION || ''
+
   const pageTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} | 대구 북구 치과 · 수면임플란트 · 인비절라인 전문`
   const pageDesc = description || '대구 북구 침산동 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인, 라미네이트 전문. 월·목 21시까지, 주말 진료.'
   const pageKw = keywords || '대구치과,대구365치과,침산동치과,북구치과,수면임플란트,인비절라인,라미네이트,대구임플란트,수성구치과,대구교정,투명교정,치과공포증'
@@ -322,7 +329,9 @@ export const renderer = jsxRenderer(({
         <meta name="keywords" content={pageKw} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="googlebot" content="index, follow" />
-        <meta name="naver-site-verification" content="" />
+        {naverVerify && <meta name="naver-site-verification" content={naverVerify} />}
+        {googleVerify && <meta name="google-site-verification" content={googleVerify} />}
+        {msVerify && <meta name="msvalidate.01" content={msVerify} />}
         <meta name="author" content={author || SITE.name} />
         <meta name="publisher" content={SITE.name} />
         <meta name="theme-color" content="#6b4c2a" />
