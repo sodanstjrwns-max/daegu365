@@ -18,7 +18,7 @@ type RendererProps = {
 export const SITE = {
   name: '대구365치과',
   nameEn: 'DAEGU 365 Dental Clinic',
-  url: 'https://daegu365dc.pages.dev',
+  url: 'https://daegu365dc.kr',
   phone: '053-357-0365',
   address: '대구광역시 북구 침산로 148 엠브로스퀘어 7층',
   streetAddress: '침산로 148 엠브로스퀘어 7층',
@@ -28,8 +28,8 @@ export const SITE = {
   email: 'daegu365dc@naver.com',
   lat: 35.888,
   lng: 128.584,
-  logo: 'https://daegu365dc.pages.dev/static/images/logo-vertical-gold.png',
-  logoHorizontal: 'https://daegu365dc.pages.dev/static/images/logo-horizontal-brown.png',
+  logo: 'https://daegu365dc.kr/static/images/logo-vertical-gold.png',
+  logoHorizontal: 'https://daegu365dc.kr/static/images/logo-horizontal-brown.png',
   founded: '2024',
   sameAs: [
     'https://blog.naver.com/nowhere2721',

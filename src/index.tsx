@@ -302,7 +302,7 @@ const DOCTOR_INTERVIEW_DESC: Record<string, string> = {
 app.get('/', (c) => c.render(<HomePage />, {
   title: '대구 북구 치과 · 수면임플란트 · 인비절라인 전문',
   description: '치과가 두려웠던 의사가 만든 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인, 라미네이트 전문. 월·목 21시까지, 주말 진료.',
-  canonical: 'https://daegu365dc.pages.dev/',
+  canonical: 'https://daegu365dc.kr/',
   ogImage: ogUrl.default('치과가 두려워도', '괜찮습니다.'),
   breadcrumb: [{ name: '홈', url: '/' }]
 }))
@@ -310,7 +310,7 @@ app.get('/', (c) => c.render(<HomePage />, {
 app.get('/mission', (c) => c.render(<MissionPage />, {
   title: '병원 미션',
   description: '치과가 무서웠던 한 의사의 다짐 — 치과 진입의 허들을 낮추고 경험의 혁신을 이룩한다.',
-  canonical: 'https://daegu365dc.pages.dev/mission',
+  canonical: 'https://daegu365dc.kr/mission',
   ogImage: ogUrl.default('치과의 진입 허들을', '낮추는 일.'),
   breadcrumb: [
     { name: '홈', url: '/' },
@@ -324,7 +324,7 @@ app.get('/doctors', async (c) => {
   return c.render(<DoctorsListPage doctors={r.results as any} />, {
     title: '의료진 소개',
     description: '대구365치과 7인의 의료진. 보존·치주·소아·교정·보철·심미 각 분야 전문 협진.',
-    canonical: 'https://daegu365dc.pages.dev/doctors',
+    canonical: 'https://daegu365dc.kr/doctors',
     ogImage: ogUrl.default('의료진 소개', '7인의 전문 협진.'),
     ogType: 'profile',
     breadcrumb: [
@@ -371,7 +371,7 @@ app.get('/doctors/:slug', async (c) => {
     <DoctorDetailPage doctor={doctor} treatments={treatments.results as any} cases={cases.results as any} />, {
       title: `${doctor.name} ${doctor.position}`,
       description: `${doctor.name} ${doctor.position} — ${doctor.philosophy?.substring(0,140) || ''}`,
-      canonical: `https://daegu365dc.pages.dev/doctors/${slug}`,
+      canonical: `https://daegu365dc.kr/doctors/${slug}`,
       ogImage: ogUrl.doctor(doctor.name, doctor.position || '', specialty || undefined),
       ogType: 'profile',
       breadcrumb: [
@@ -390,11 +390,11 @@ app.get('/treatments', async (c) => {
   return c.render(<TreatmentsListPage treatments={r.results as any} />, {
     title: '진료 안내',
     description: '대구365치과의 전체 진료 과목. 수면임플란트·라미네이트·인비절라인 3대 핵심 진료.',
-    canonical: 'https://daegu365dc.pages.dev/treatments',
+    canonical: 'https://daegu365dc.kr/treatments',
     ogImage: ogUrl.default('진료 안내', '평생 가는 치료.'),
     breadcrumb: [
-      { name: '홈', url: 'https://daegu365dc.pages.dev/' },
-      { name: '진료 안내', url: 'https://daegu365dc.pages.dev/treatments' }
+      { name: '홈', url: 'https://daegu365dc.kr/' },
+      { name: '진료 안내', url: 'https://daegu365dc.kr/treatments' }
     ]
   })
 })
@@ -442,7 +442,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `수면임플란트 — 잠든 사이, 평생 가는 임플란트 | 대구365치과`,
         description: `의식하 진정 + 4단계 무통마취 + 디지털 가이드 수술. 메가젠·오스템·스트라우만 5종 픽스쳐, 픽스쳐 5년·상부보철 평생 보증. 대구365치과 수면임플란트.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/implant`,
+        canonical: `https://daegu365dc.kr/treatments/implant`,
         ogImage: ogUrl.treatment('수면임플란트', '잠든 사이, 평생 가는 임플란트', '임플란트'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -461,7 +461,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `VINIQUE 라미네이트 — 자연을 닮은 미세 보철 | 대구365치과`,
         description: `0.3mm 미세 보철, 이마젝스·E.max·지르코니아 라미네이트. 자연치 삭제 최소화, In-house D.LAB 디지털 보철. 대구365치과 VINIQUE 라미네이트.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/lamineer`,
+        canonical: `https://daegu365dc.kr/treatments/lamineer`,
         ogImage: ogUrl.treatment('VINIQUE 라미네이트', '자연을 닮은 0.3mm 미세 보철', '심미보철'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -480,7 +480,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `인비절라인 — 보이지 않는 투명교정 | 대구365치과`,
         description: `iTero 5D 디지털 스캔 기반 인비절라인. ClinCheck 시뮬레이션, 투명·탈착식 교정으로 일상에 자유로움. 대구365치과 투명교정.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/ortho`,
+        canonical: `https://daegu365dc.kr/treatments/ortho`,
         ogImage: ogUrl.treatment('인비절라인', '보이지 않는 투명교정', '교정'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -499,7 +499,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `수면치료 시스템 — 치과의 기억을 바꿔드립니다 | 대구365치과`,
         description: `의식하 진정(IV Sedation) + 4단계 무통마취 + 4지표 실시간 모니터링. 치과공포증 의사가 직접 설계한 수면치료 시스템. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/sleep-therapy`,
+        canonical: `https://daegu365dc.kr/treatments/sleep-therapy`,
         ogImage: ogUrl.treatment('수면치료 시스템', '치과의 기억을 바꿔드립니다', '진정치료'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -518,7 +518,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `4단계 무통마취 — 바늘이 들어가는 그 순간을 없애드립니다 | 대구365치과`,
         description: `가글마취 → 도포마취 → 컴퓨터 제어 무통마취기 → 본마취. 모든 진료에 기본 적용되는 추가 비용 없는 4단계 프로토콜. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/painless-anesthesia`,
+        canonical: `https://daegu365dc.kr/treatments/painless-anesthesia`,
         ogImage: ogUrl.treatment('4단계 무통마취', '바늘이 들어가는 그 순간을 없애드립니다', '마취'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -537,7 +537,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `에어플로우 (GBT) — 긁어내지 않습니다, 씻어냅니다 | 대구365치과`,
         description: `EMS 스위스 정품 장비, GBT 8단계 표준 프로토콜. 치아·잇몸 손상 없이 플라크와 착색을 동시에 제거하는 차세대 구강 위생 관리. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/airflow-gbt`,
+        canonical: `https://daegu365dc.kr/treatments/airflow-gbt`,
         ogImage: ogUrl.treatment('에어플로우 GBT', '긁어내지 않습니다, 씻어냅니다', '구강위생'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -556,7 +556,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `소아 교정장치 — 7~10세 골든타임 | 대구365치과`,
         description: `RPE·근기능장치·페이스마스크·MRC·공간유지 6종 풀라인업. 골격성 부정교합을 비수술로 잡는 7~10세 골든타임 1차 교정. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/pediatric-ortho`,
+        canonical: `https://daegu365dc.kr/treatments/pediatric-ortho`,
         ogImage: ogUrl.treatment('소아 교정장치', '7~10세 골든타임 1차 교정', '소아교정'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -575,7 +575,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `소아치과 — 아이의 첫 치과, 평생을 결정하는 한 번의 경험 | 대구365치과`,
         description: `치과공포증 의사가 설계한 어린이 진료. TSD·웃음가스·수면치료까지 협조도 3단계 맞춤 시스템 + 4단계 무통마취 기본 적용. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/pediatric`,
+        canonical: `https://daegu365dc.kr/treatments/pediatric`,
         ogImage: ogUrl.treatment('소아치과', '아이의 첫 치과, 평생을 결정하는 한 번', '소아'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -594,7 +594,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `충치·신경치료·크라운 — 한 번 깎은 치아는 돌아오지 않습니다 | 대구365치과`,
         description: `Q-ray 형광 진단 + 4단계 무통마취 + 보존 우선 원칙. C0~C4 정밀 분류로 과잉 진료 없이, 놓치지도 않습니다. 신경치료 6단계·크라운 3종 풀라인업. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/cavity-endo-crown`,
+        canonical: `https://daegu365dc.kr/treatments/cavity-endo-crown`,
         ogImage: ogUrl.treatment('충치·신경치료·크라운', '한 번 깎은 치아는 돌아오지 않습니다', '보존'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -613,7 +613,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `치주치료 — 치아를 잃는 1순위, 잇몸병입니다 | 대구365치과`,
         description: `잇몸병 5단계 정밀 진단 + 에어플로우(GBT) 연계 + SRP·치주수술·골재생술 통합. 3·6개월 맞춤 리콜로 평생 유지 관리. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/perio`,
+        canonical: `https://daegu365dc.kr/treatments/perio`,
         ogImage: ogUrl.treatment('치주치료', '치아를 잃는 1순위, 잇몸병입니다', '치주'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -632,7 +632,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `전문가 미백 — 깎지 않습니다, 톤만 밝힙니다 | 대구365치과`,
         description: `1·2·3회 패키지 (15만원/30만원/40만원). 잇몸 보호제 + 고농도 안전 적용 + VITA Shade 정량 측정. 결혼·면접·이벤트 직전 60분 케어. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/whitening`,
+        canonical: `https://daegu365dc.kr/treatments/whitening`,
         ogImage: ogUrl.treatment('전문가 미백', '깎지 않습니다, 톤만 밝힙니다', '심미'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -651,7 +651,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `아이콘 레진 — 깎지 않고, 반점만 지웁니다 | 대구365치과`,
         description: `DMG ICON 독일 정품 침투형 레진. 교정 후 흰 반점·초기 우식·소아 변색까지 마취·삭제 없이 60분 한 번에. 25만원부터. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/icon-resin`,
+        canonical: `https://daegu365dc.kr/treatments/icon-resin`,
         ogImage: ogUrl.treatment('아이콘 레진', '깎지 않고, 반점만 지웁니다', '심미'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -670,7 +670,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `Q-ray 형광 충치 진단 — 보이지 않는 충치를 빛으로 봅니다 | 대구365치과`,
         description: `QLF 정량 형광 기술, 방사선 0의 차세대 진단 시스템. 초기 우식·플라크·교정 탈회까지 가시화. 정기 검진 기본 포함. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/qray`,
+        canonical: `https://daegu365dc.kr/treatments/qray`,
         ogImage: ogUrl.treatment('Q-ray 형광 진단', '보이지 않는 충치를 빛으로 봅니다', '진단'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -689,7 +689,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `보철 (크라운·브릿지·인레이) — 잘 만든 보철은 평생을 갑니다 | 대구365치과`,
         description: `원내 디지털 기공실(D.LAB) + iTero 5D 스캔 + CAD/CAM 정밀 밀링. 지르코니아·PFM·하이브리드 인레이 풀라인업. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/prosthetic`,
+        canonical: `https://daegu365dc.kr/treatments/prosthetic`,
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
       }
@@ -707,7 +707,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `원내 디지털 기공실 D.LAB — 보철의 정밀함은 기공실에서 결정됩니다 | 대구365치과`,
         description: `iTero 5D + CAD/CAM + 3D 프린터 + 신터링 퍼니스. 환자 입에서 즉시 색상·교합 조정 가능한 원내 기공실. 외주 불일치 0. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/in-house-lab`,
+        canonical: `https://daegu365dc.kr/treatments/in-house-lab`,
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
       }
@@ -725,7 +725,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `예방치과 — 가장 좋은 치료는 치료가 없는 것 | 대구365치과`,
         description: `GBT 에어플로우 + Q-ray 형광 진단 + 3·6·12개월 맞춤 리콜. 평생 자연치를 만드는 365일 관리 시스템. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/prevention`,
+        canonical: `https://daegu365dc.kr/treatments/prevention`,
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
       }
@@ -743,7 +743,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `심미치료 — 예쁜 치아가 아닌, 예쁜 미소 | 대구365치과`,
         description: `라미네이트·미백·아이콘·심미보철·교정의 통합 심미 디자인. iTero 5D 시뮬레이션으로 결과를 미리 확인. 얼굴 비례까지 고려한 맞춤 설계. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/aesthetic`,
+        canonical: `https://daegu365dc.kr/treatments/aesthetic`,
         ogImage: ogUrl.treatment('심미치료', '예쁜 치아가 아닌, 예쁜 미소', '심미'),
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
@@ -762,7 +762,7 @@ app.get('/treatments/:slug', async (c) => {
       />, {
         title: `보존치료 — 가능한 한, 남깁니다 | 대구365치과`,
         description: `확대경 + Q-ray + 러버댐 + 4단계 무통마취. 자연치를 살리는 가장 정확한 방법. 레진 7만원부터, 정직한 가격. 대구365치과.`,
-        canonical: `https://daegu365dc.pages.dev/treatments/conservative`,
+        canonical: `https://daegu365dc.kr/treatments/conservative`,
         breadcrumb: treatmentBC,
         jsonLd: treatmentSchemas
       }
@@ -779,7 +779,7 @@ app.get('/treatments/:slug', async (c) => {
     />, {
       title: `${treatment.name} - ${treatment.tagline || ''}`,
       description: `${treatment.short_desc} — 대구365치과 ${treatment.name} 전문 진료.`,
-      canonical: `https://daegu365dc.pages.dev/treatments/${slug}`,
+      canonical: `https://daegu365dc.kr/treatments/${slug}`,
       breadcrumb: treatmentBC,
       jsonLd: treatmentSchemas
     }
@@ -816,7 +816,7 @@ app.get('/before-after', async (c) => {
     />, {
       title: '비포애프터 — 실제 치료 사례',
       description: '대구365치과 실제 치료 사례. 수면임플란트, 라미네이트, 인비절라인 등 검증된 결과.',
-      canonical: 'https://daegu365dc.pages.dev/before-after',
+      canonical: 'https://daegu365dc.kr/before-after',
       ogImage: ogUrl.beforeAfter('실제 치료 사례', '검증된 결과'),
       breadcrumb: [
         { name: '홈', url: '/' },
@@ -843,7 +843,7 @@ app.get('/before-after/:id', async (c) => {
     <BeforeAfterDetailPage item={item} doctor={doctor} treatment={treatment} isLoggedIn={!!session} />, {
       title: `${item.title} · 치료사례`,
       description: item.description?.substring(0, 160) || '',
-      canonical: `https://daegu365dc.pages.dev/before-after/${id}`,
+      canonical: `https://daegu365dc.kr/before-after/${id}`,
       ogImage: ogUrl.beforeAfter(
         item.title,
         treatment?.name || undefined,
@@ -890,7 +890,7 @@ app.get('/blog', async (c) => {
   return c.render(<BlogListPage posts={posts.results as any} doctors={doctors.results as any} />, {
     title: '블로그 · 의료진 칼럼',
     description: '대구365치과 의료진이 직접 쓰는 치과 칼럼과 건강 이야기.',
-    canonical: 'https://daegu365dc.pages.dev/blog',
+    canonical: 'https://daegu365dc.kr/blog',
     ogImage: ogUrl.default('의료진 칼럼', '직접 쓰는 치과 이야기.'),
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -932,7 +932,7 @@ app.get('/blog/:slug', async (c) => {
     title: post.title,
     description: post.meta_description || post.excerpt,
     keywords: post.meta_keywords,
-    canonical: `https://daegu365dc.pages.dev/blog/${slug}`,
+    canonical: `https://daegu365dc.kr/blog/${slug}`,
     ogImage: ogUrl.blog(post.title, author?.name ? `${author.name} ${author.position || ''}`.trim() : undefined),
     ogType: 'article',
     publishedTime: post.created_at,
@@ -961,7 +961,7 @@ app.get('/notices', async (c) => {
   const r = await c.env.DB.prepare('SELECT * FROM notices WHERE is_published=1 ORDER BY is_main DESC, id DESC').all()
   return c.render(<NoticeListPage notices={r.results as any} />, {
     title: '공지사항',
-    canonical: 'https://daegu365dc.pages.dev/notices',
+    canonical: 'https://daegu365dc.kr/notices',
     ogImage: ogUrl.default('공지사항', '대구365치과 안내.'),
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -977,7 +977,7 @@ app.get('/notices/:id', async (c) => {
   await c.env.DB.prepare('UPDATE notices SET view_count=view_count+1 WHERE id=?').bind(id).run()
   return c.render(<NoticeDetailPage notice={n} />, {
     title: n.title, description: n.content?.replace(/<[^>]+>/g,'').substring(0,160),
-    canonical: `https://daegu365dc.pages.dev/notices/${id}`,
+    canonical: `https://daegu365dc.kr/notices/${id}`,
     ogImage: ogUrl.blog(n.title, '대구365치과'),
     ogType: 'article',
     publishedTime: n.created_at,
@@ -1015,7 +1015,7 @@ app.get('/dictionary', async (c) => {
   return c.render(<DictionaryListPage items={r.results as any} selectedCategory={category} query={q} />, {
     title: '치과 백과사전 · 500+ 용어',
     description: '치과 용어 500여 개를 담은 대구365치과 백과사전. 임플란트·교정·라미네이트 등 전문 용어 해설.',
-    canonical: 'https://daegu365dc.pages.dev/dictionary',
+    canonical: 'https://daegu365dc.kr/dictionary',
     breadcrumb: [
       { name: '홈', url: '/' },
       { name: '치과 백과사전', url: '/dictionary' }
@@ -1051,7 +1051,7 @@ app.get('/dictionary/:slug', async (c) => {
   return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} />, {
     title: `${entry.term} - 치과 용어사전`,
     description: entry.short_desc,
-    canonical: `https://daegu365dc.pages.dev/dictionary/${slug}`,
+    canonical: `https://daegu365dc.kr/dictionary/${slug}`,
     breadcrumb: [
       { name: '홈', url: '/' },
       { name: '치과 백과사전', url: '/dictionary' },
@@ -1089,7 +1089,7 @@ app.get('/faq', async (c) => {
   return c.render(<FAQPage grouped={grouped} treatments={treatments.results as any} />, {
     title: '자주 묻는 질문 · 전체 FAQ',
     description: '진료 과목별 자주 묻는 질문 200개 이상. 대구365치과가 성심껏 답변드립니다.',
-    canonical: 'https://daegu365dc.pages.dev/faq',
+    canonical: 'https://daegu365dc.kr/faq',
     breadcrumb: [
       { name: '홈', url: '/' },
       { name: '자주 묻는 질문', url: '/faq' }
@@ -1111,7 +1111,7 @@ app.get('/faq', async (c) => {
 app.get('/directions', (c) => c.render(<DirectionsPage />, {
   title: '오시는 길 · 내원 안내',
   description: '대구365치과 위치·주차·대중교통 안내. 대구광역시 북구 침산로 148 엠브로스퀘어 7층. 053-357-0365.',
-  canonical: 'https://daegu365dc.pages.dev/directions',
+  canonical: 'https://daegu365dc.kr/directions',
   breadcrumb: [
     { name: '홈', url: '/' },
     { name: '오시는 길', url: '/directions' }
@@ -1120,7 +1120,7 @@ app.get('/directions', (c) => c.render(<DirectionsPage />, {
 app.get('/hours', (c) => c.render(<HoursPage />, {
   title: '진료시간',
   description: '대구365치과 진료시간. 월·목 09:30~21:00 야간진료, 주말도 진료. 365일 연중 환자 곁에.',
-  canonical: 'https://daegu365dc.pages.dev/hours',
+  canonical: 'https://daegu365dc.kr/hours',
   breadcrumb: [
     { name: '홈', url: '/' },
     { name: '진료시간', url: '/hours' }
@@ -1129,7 +1129,7 @@ app.get('/hours', (c) => c.render(<HoursPage />, {
 app.get('/fees', (c) => c.render(<FeesPage />, {
   title: '비급여 의료수가표 · 수가 안내',
   description: '대구365치과 비급여 의료수가표. 임플란트·교정·라미네이트·보철·소아치과 등 전 항목 투명 공개. 진료 전 정확한 비용을 안내드립니다.',
-  canonical: 'https://daegu365dc.pages.dev/fees',
+  canonical: 'https://daegu365dc.kr/fees',
   breadcrumb: [
     { name: '홈', url: '/' },
     { name: '비급여 의료수가표', url: '/fees' }
@@ -1148,7 +1148,7 @@ app.get('/region/:slug', async (c) => {
     <RegionSEOInline r={r} treatments={treatments.results as any} doctors={doctors.results as any} />,
     {
       title: r.title, description: r.meta_description,
-      canonical: `https://daegu365dc.pages.dev/region/${slug}`,
+      canonical: `https://daegu365dc.kr/region/${slug}`,
       breadcrumb: [
         { name: '홈', url: '/' },
         { name: '지역별 진료', url: '/' },
