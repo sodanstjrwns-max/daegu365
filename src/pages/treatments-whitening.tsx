@@ -1,5 +1,6 @@
-import { Navbar, Footer, TldrBox } from '../components/Layout'
+import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
 import { tldrFor } from '../lib/tldr-data'
+import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -94,6 +95,17 @@ export const WhiteningTreatmentPage = ({
       {(() => {
         const _tldr = tldrFor("whitening")
         return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
+      })()}
+      {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
+      {(() => {
+        const _cmp = comparisonFor("whitening")
+        return _cmp ? (
+          <section class="py-12 lg:py-16 bg-ivory" aria-label="비교 표">
+            <div class="max-w-[1100px] mx-auto px-6 lg:px-12">
+              <ComparisonTable title={_cmp.title} headers={_cmp.headers} rows={_cmp.rows} caption={_cmp.caption} />
+            </div>
+          </section>
+        ) : null
       })()}
 
       <section class="py-24 lg:py-32 bg-ivory">
