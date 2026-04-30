@@ -1737,7 +1737,35 @@ app.post('/admin/notices/:id/delete', async (c) => {
   return c.redirect('/admin/notices')
 })
 
-// ============ robots + sitemap + llms.txt ============
+// ============ robots + sitemap + llms.txt + manifest ============
+// PWA manifest — _routes.json 이 /static/* 만 자산 라우팅으로 빼두기 때문에
+// 루트의 manifest.webmanifest 는 Worker 가 직접 응답해야 함
+app.get('/manifest.webmanifest', (c) => {
+  const manifest = {
+    name: '대구365치과',
+    short_name: '대구365치과',
+    description: '치과가 두려웠던 의사가 만든 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인, 라미네이트 전문. 월·목 21시까지, 주말 진료.',
+    start_url: '/',
+    scope: '/',
+    display: 'standalone',
+    orientation: 'portrait',
+    background_color: '#fdf8f3',
+    theme_color: '#6b4c2a',
+    lang: 'ko-KR',
+    dir: 'ltr',
+    categories: ['medical', 'health', 'business'],
+    icons: [
+      { src: '/static/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { src: '/static/favicon-180.png', sizes: '180x180', type: 'image/png', purpose: 'any maskable' },
+      { src: '/static/favicon.svg', sizes: 'any', type: 'image/svg+xml' }
+    ]
+  }
+  return c.json(manifest, 200, {
+    'Content-Type': 'application/manifest+json; charset=utf-8',
+    'Cache-Control': 'public, max-age=86400'
+  })
+})
+
 app.get('/robots.txt', (c) => {
   // 2025년 표준: AI 크롤러도 명시적으로 허용 (GPTBot, ClaudeBot, PerplexityBot 등)
   // 단, 관리자 영역과 인증 영역은 차단
