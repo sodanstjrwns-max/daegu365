@@ -358,6 +358,8 @@ app.get('/doctors/:slug', async (c) => {
   if (!doctor) return c.notFound()
   const treatments = await c.env.DB.prepare('SELECT * FROM treatments').all()
   const cases = await c.env.DB.prepare('SELECT * FROM before_afters WHERE doctor_slug=? AND is_published=1 ORDER BY id DESC LIMIT 6').bind(slug).all()
+  // 다른 의료진 보기 — 현재 원장 제외한 전체 명단 (이름·슬러그·직책만)
+  const allDoctors = await c.env.DB.prepare('SELECT slug, name, position, is_representative FROM doctors ORDER BY is_representative DESC, display_order ASC, id ASC').all()
   // 전문분야 첫 항목을 OG에 노출
   let specialty = ''
   try {
@@ -386,7 +388,7 @@ app.get('/doctors/:slug', async (c) => {
     "isPartOf": { "@id": `${SITE.url}/#website` }
   })
   return c.render(
-    <DoctorDetailPage doctor={doctor} treatments={treatments.results as any} cases={cases.results as any} />, {
+    <DoctorDetailPage doctor={doctor} treatments={treatments.results as any} cases={cases.results as any} allDoctors={allDoctors.results as any} />, {
       title: `${doctor.name} ${doctor.position}`,
       description: `${doctor.name} ${doctor.position}. ${(doctor.philosophy || '').replace(/[—ㅡ–]/g, ' ').replace(/\s{2,}/g, ' ').substring(0,140)}`,
       canonical: `https://daegu365dc.kr/doctors/${slug}`,

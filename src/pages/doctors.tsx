@@ -610,8 +610,10 @@ const ensureClosingQuote = (text: string): string => {
 }
 
 export const DoctorDetailPage = ({
-  doctor, treatments, cases
-}: { doctor: Doctor, treatments: Treatment[], cases: BeforeAfter[] }) => {
+  doctor, treatments, cases, allDoctors
+}: { doctor: Doctor, treatments: Treatment[], cases: BeforeAfter[], allDoctors?: Doctor[] }) => {
+  // 다른 의료진 보기 — 현재 원장 제외 (안전 폴백: prop 없으면 빈 배열)
+  const otherDoctors = (allDoctors || []).filter(d => d.slug !== doctor.slug)
   const specialties = JSON.parse(doctor.specialties || '[]') as string[]
   const education = JSON.parse(doctor.education || '[]') as string[]
   const career = JSON.parse(doctor.career || '[]') as string[]
@@ -991,78 +993,109 @@ export const DoctorDetailPage = ({
         </section>
       )}
 
-      {/* PPT PC3-S12 반영: 원장님 프로필 — 진료케이스 밑에 3개 CTA 블록
-          1) 다른 의료진 보기  2) 상담받으세요 (모달)  3) 진료받고 싶으시다면 (전화) */}
-      <section class="py-24 lg:py-28 bg-brown-950 text-ivory relative overflow-hidden">
-        <div class="blob" style="width:400px;height:400px;background:#c9a876;top:-100px;right:-80px;opacity:0.10;"></div>
-        <div class="max-w-[1280px] mx-auto px-6 lg:px-12 relative">
-          <div class="text-center mb-12 fade-in">
-            <div class="text-xs tracking-[0.5em] text-gold mb-6 font-bold">NEXT STEP</div>
-            <h2 class="display text-3xl md:text-5xl font-black tracking-tight text-ivory leading-tight">
-              <em class="italic text-gold">{doctor.name} 원장님</em>께<br/>
-              상담받고 싶으시다면
-            </h2>
-          </div>
+      {/* ========== PPT PC3-S12 v2 — 진료케이스 밑 3단 CTA (참고사진 매칭)
+          1) 다른 의료진 보기 (작은 원형 사진 그리드)
+          2) ○○○ 원장님께 상담받으세요 (갈색 박스 + 상담예약하기)
+          3) ○○○ 원장님께 진료받고 싶으시다면 (진한 갈색 박스 + 예약·전화 두 버튼) ========== */}
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5 fade-in-stagger">
-            {/* CTA 1: 다른 의료진 보기 */}
-            <a href="/doctors" class="group block p-7 rounded-2xl border border-ivory/15 bg-ivory/5 hover:border-gold/50 hover:bg-ivory/8 transition-all duration-500 hover:-translate-y-1">
-              <div class="w-14 h-14 rounded-2xl bg-ivory/10 text-gold flex items-center justify-center mb-5 group-hover:bg-gold/20 transition-colors">
-                <i class="fas fa-users text-xl"></i>
-              </div>
-              <h3 class="display text-xl font-black tracking-tight text-ivory mb-2">
+      {/* 1) 다른 의료진 보기 — 작은 원형 사진 그리드 */}
+      {otherDoctors.length > 0 && (
+        <section class="py-16 lg:py-20 bg-cream">
+          <div class="max-w-[1280px] mx-auto px-6 lg:px-12">
+            <div class="text-center mb-10 fade-in">
+              <h3 class="display text-2xl md:text-3xl font-black tracking-tight text-brown-950">
                 다른 의료진 보기
               </h3>
-              <p class="text-sm text-brown-300 mb-5 leading-relaxed">
-                7인의 전문 의료진 프로필을 한눈에 확인하세요.
-              </p>
-              <div class="flex items-center gap-2 text-sm font-bold text-gold group-hover:gap-3 transition-all">
-                <span>전체 프로필 보기</span>
-                <i class="fas fa-arrow-right text-xs"></i>
-              </div>
-            </a>
+              <div class="mt-3 mx-auto w-12 h-[3px] bg-gold rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-5 md:gap-6 fade-in-stagger">
+              {otherDoctors.map((d) => {
+                const pos = d.is_representative ? '대표원장' : (d.position || '원장')
+                return (
+                  <a href={`/doctors/${d.slug}`} class="group block text-center">
+                    <div class="relative mx-auto w-[88px] h-[88px] sm:w-[100px] sm:h-[100px] md:w-[110px] md:h-[110px] rounded-full overflow-hidden border-2 border-brown-100 group-hover:border-gold group-hover:shadow-xl transition-all duration-500">
+                      <img
+                        src={getDoctorPhoto(d.slug)}
+                        alt={`${d.name} ${pos}`}
+                        loading="lazy"
+                        class="w-full h-full object-cover object-[center_15%] group-hover:scale-110 transition-transform duration-700"
+                      />
+                    </div>
+                    <div class="mt-3 display text-[15px] md:text-base font-black text-brown-950 group-hover:text-brown-700 transition-colors leading-tight">
+                      {d.name} <span class="text-brown-500 font-bold text-[13px]">원장</span>
+                    </div>
+                    <div class="text-[11px] text-brown-600 mt-0.5 tracking-wide">
+                      {pos}
+                    </div>
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
-            {/* CTA 2: 상담받으세요 (모달) */}
-            <button
-              type="button"
-              onclick="window.dispatchEvent(new Event('open-consultation-modal'))"
-              class="group block text-left p-7 rounded-2xl border border-gold/40 transition-all duration-500 hover:-translate-y-1 hover:border-gold"
-              style="background: linear-gradient(135deg, rgba(201,168,118,0.15), rgba(201,168,118,0.05));"
-            >
-              <div class="w-14 h-14 rounded-2xl bg-gold/25 text-gold flex items-center justify-center mb-5 group-hover:bg-gold/40 transition-colors">
-                <i class="fas fa-comments text-xl"></i>
-              </div>
-              <h3 class="display text-xl font-black tracking-tight text-ivory mb-2">
-                <span class="text-gold">{doctor.name} 원장님</span>께<br/>
-                상담받으세요
-              </h3>
-              <p class="text-sm text-brown-200 mb-5 leading-relaxed">
-                온라인 상담예약으로 편하게 시작하세요.
-              </p>
-              <div class="flex items-center gap-2 text-sm font-bold text-gold group-hover:gap-3 transition-all">
-                <i class="fas fa-calendar-check"></i>
-                <span>상담예약하기</span>
-                <i class="fas fa-arrow-right text-xs"></i>
-              </div>
-            </button>
+      {/* 2) ○○○ 원장님께 상담받으세요 — 갈색 그라데이션 박스 */}
+      <section class="px-6 lg:px-12 bg-cream pb-10">
+        <div class="max-w-[900px] mx-auto rounded-3xl overflow-hidden relative fade-in"
+             style="background:linear-gradient(135deg, #8b6f4b 0%, #6b5235 50%, #4f3d28 100%); box-shadow:0 25px 50px -12px rgba(75,55,35,0.35);">
+          <div class="px-8 sm:px-12 py-12 sm:py-14 text-center">
+            <h3 class="display text-xl sm:text-2xl md:text-[1.75rem] font-black tracking-tight text-ivory leading-tight">
+              <span class="text-gold">{doctor.name} 원장님</span>께 상담받으세요
+            </h3>
+            <p class="mt-3 text-sm sm:text-base text-ivory/75 leading-relaxed">
+              {doctor.position || '전문의'} 전문성 상담
+            </p>
+            <div class="mt-7 flex justify-center">
+              <button
+                type="button"
+                onclick="window.dispatchEvent(new Event('open-consultation-modal'))"
+                class="inline-flex items-center gap-2.5 px-7 sm:px-9 py-3.5 sm:py-4 rounded-full bg-ivory text-brown-950 font-black text-sm sm:text-base tracking-wide hover:bg-gold hover:text-brown-950 hover:-translate-y-0.5 hover:shadow-2xl transition-all duration-300"
+              >
+                <i class="fas fa-calendar-check text-[15px]"></i>
+                <span>상담 예약하기</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            {/* CTA 3: 진료받고 싶으시다면 (전화) */}
-            <a href="tel:053-357-0365" class="group block p-7 rounded-2xl border border-ivory/15 bg-ivory/5 hover:border-gold/50 hover:bg-ivory/8 transition-all duration-500 hover:-translate-y-1">
-              <div class="w-14 h-14 rounded-2xl bg-ivory/10 text-gold flex items-center justify-center mb-5 group-hover:bg-gold/20 transition-colors">
-                <i class="fas fa-phone text-xl"></i>
-              </div>
-              <h3 class="display text-xl font-black tracking-tight text-ivory mb-2">
-                <span class="text-gold">{doctor.name} 원장님</span>께<br/>
-                진료받고 싶으시다면
-              </h3>
-              <p class="text-sm text-brown-300 mb-5 leading-relaxed">
-                바로 전화로 예약하실 수 있습니다.
-              </p>
-              <div class="flex items-center gap-2 text-base font-black text-gold group-hover:gap-3 transition-all">
-                <i class="fas fa-phone"></i>
+      {/* 3) ○○○ 원장님께 진료받고 싶으시다면 — 진한 갈색 박스 + 두 버튼 + 진료시간 */}
+      <section class="px-6 lg:px-12 bg-cream pb-24">
+        <div class="max-w-[900px] mx-auto rounded-3xl overflow-hidden relative fade-in"
+             style="background:linear-gradient(135deg, #5d4630 0%, #3f2f20 50%, #2a1f15 100%); box-shadow:0 25px 50px -12px rgba(40,28,18,0.45);">
+          <div class="px-8 sm:px-12 py-12 sm:py-14 text-center">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/15 border border-gold/35 mb-5">
+              <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+              <span class="text-[11px] tracking-[0.3em] text-gold font-bold">상담 안내</span>
+            </div>
+            <h3 class="display text-xl sm:text-2xl md:text-[1.75rem] font-black tracking-tight text-ivory leading-tight">
+              <span class="text-gold">{doctor.name} 원장님</span>께 진료받고 싶으시다면
+            </h3>
+            <p class="mt-3 text-sm sm:text-base text-ivory/70 leading-relaxed">
+              예약 시 희망 원장님을 선택하실 수 있습니다.
+            </p>
+            <div class="mt-7 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+              <button
+                type="button"
+                onclick="window.dispatchEvent(new Event('open-consultation-modal'))"
+                class="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-ivory text-brown-950 font-black text-sm sm:text-base tracking-wide hover:bg-gold hover:-translate-y-0.5 hover:shadow-2xl transition-all duration-300"
+              >
+                <i class="fas fa-calendar-check text-[14px]"></i>
+                <span>상담 예약</span>
+              </button>
+              <a
+                href="tel:053-357-0365"
+                class="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full bg-transparent border-2 border-ivory/70 text-ivory font-black text-sm sm:text-base tracking-wide hover:bg-ivory hover:text-brown-950 hover:-translate-y-0.5 hover:shadow-2xl transition-all duration-300"
+              >
+                <i class="fas fa-phone text-[14px]"></i>
                 <span>053-357-0365</span>
-              </div>
-            </a>
+              </a>
+            </div>
+            <div class="mt-7 pt-6 border-t border-ivory/12 text-[12px] sm:text-[13px] text-ivory/65 tracking-wide leading-relaxed">
+              <i class="fas fa-clock text-gold/80 mr-1.5"></i>
+              365일 진료 · 평일 09:00 ~ 21:00 &nbsp;|&nbsp; 토 · 일 09:00 ~ 17:00
+            </div>
           </div>
         </div>
       </section>
