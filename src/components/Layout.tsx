@@ -20,22 +20,22 @@ export const Navbar = () => (
             {/* LIVE 진료 상태 — 영업시간에 따라 자동 갱신 (스크립트로 텍스트/색상 변경) */}
             <div
               id="nav-live-status"
-              class="hidden md:inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border transition"
+              class="hidden md:inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full border transition whitespace-nowrap"
               style="background:rgba(34,197,94,0.10); border-color:rgba(34,197,94,0.35); color:#15803d;"
               role="status"
               aria-live="polite"
             >
-              <span class="relative flex h-2 w-2">
+              <span class="relative flex h-1.5 w-1.5">
                 <span id="nav-live-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span id="nav-live-dot" class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                <span id="nav-live-dot" class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
               </span>
               <span id="nav-live-label" class="font-bold tracking-wider">LIVE</span>
               <span class="opacity-40">·</span>
-              <span id="nav-live-text" class="font-semibold">현재 진료 중</span>
+              <span id="nav-live-text" class="font-semibold">진료중</span>
             </div>
           </div>
 
-          <div class="hidden lg:flex items-center gap-8 xl:gap-10">
+          <div class="hidden lg:flex items-center gap-5 xl:gap-7">
             <a href="/mission" class="nav-link">병원미션</a>
             {/* PPT PC3 슬라이드 1 — 의료진 호버 드롭다운 제거, 단일 링크로 변경 */}
             <a href="/doctors" class="nav-link py-8">의료진</a>
@@ -105,22 +105,23 @@ export const Navbar = () => (
             </div>
           </div>
 
-          <div class="flex items-center gap-2 xl:gap-3 shrink-0">
-            <a href="/login" class="hidden xl:inline-flex text-sm text-brown-700 hover:text-brown-900 font-medium">로그인</a>
-            <a href="https://www.instagram.com/daegu365dc_?igsh=MThuemZncThqOTF3ZA==" target="_blank" rel="noopener" class="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full text-white transition hover:opacity-90" style="background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);" aria-label="대구365치과 인스타그램">
+          <div class="flex items-center gap-1.5 xl:gap-2 shrink-0">
+            <a href="/login" class="hidden xl:inline-flex text-xs text-brown-700 hover:text-brown-900 font-medium px-2">로그인</a>
+            {/* 인스타 — 동그란 아이콘 */}
+            <a href="https://www.instagram.com/daegu365dc_?igsh=MThuemZncThqOTF3ZA==" target="_blank" rel="noopener" class="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full text-white transition hover:opacity-90 hover:scale-105" style="background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);" aria-label="대구365치과 인스타그램" title="인스타그램">
               <i class="fab fa-instagram text-base"></i>
             </a>
-            <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="hidden xl:inline-flex items-center gap-1.5 text-sm font-bold px-3 py-2 rounded-full transition" style="background:#FEE500;color:#191919;" aria-label="카카오톡 상담">
-              <i class="fas fa-comment text-xs"></i>
-              <span>카카오톡</span>
+            {/* 카카오톡 — 동그란 아이콘 */}
+            <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full transition hover:scale-105" style="background:#FEE500;color:#191919;" aria-label="카카오톡 상담" title="카카오톡 상담">
+              <i class="fas fa-comment text-sm"></i>
             </a>
-            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="hidden xl:inline-flex items-center gap-1.5 text-sm font-bold px-3 py-2 rounded-full transition" style="background:#03C75A;color:#fff;" aria-label="네이버 예약">
-              <span class="text-[11px] font-black tracking-tighter" style="background:#fff;color:#03C75A;border-radius:4px;padding:1px 4px;">N</span>
-              <span>네이버예약</span>
+            {/* 네이버 예약 — 동그란 아이콘 */}
+            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full transition hover:scale-105 font-black text-sm" style="background:#03C75A;color:#fff;" aria-label="네이버 예약" title="네이버 예약">
+              N
             </a>
-            <a href="tel:053-357-0365" class="btn-primary text-sm" style="white-space:nowrap;">
-              <i class="fas fa-phone text-xs"></i>
-              <span style="white-space:nowrap;">053-357-0365</span>
+            {/* 전화 — 동그란 아이콘 (브랜드 그라데이션) */}
+            <a href="tel:053-357-0365" class="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full transition hover:scale-105 shadow-md" style="background:linear-gradient(135deg, var(--brown-900) 0%, var(--brown-700) 100%);color:var(--ivory);" aria-label="전화 053-357-0365" title="053-357-0365">
+              <i class="fas fa-phone text-sm"></i>
             </a>
             <button id="menuBtn" class="lg:hidden w-10 h-10 flex items-center justify-center text-brown-800">
               <i class="fas fa-bars text-xl"></i>
@@ -151,14 +152,14 @@ export const Navbar = () => (
     var LUNCH_OPEN = 13*60;
     var LUNCH_CLOSE = 14*60;
     var s = SCHEDULE[day];
-    if (!s) return { state:'closed', label:'CLOSED', text:'금일 휴진' };
-    if (mins < s.open) return { state:'soon', label:'SOON', text:'오픈 준비 중' };
-    if (mins >= s.close) return { state:'closed', label:'CLOSED', text:'진료 마감' };
+    if (!s) return { state:'closed', label:'CLOSED', text:'휴진' };
+    if (mins < s.open) return { state:'soon', label:'SOON', text:'오픈 전' };
+    if (mins >= s.close) return { state:'closed', label:'CLOSED', text:'마감' };
     // 점심시간 (평일만)
     if (day >= 1 && day <= 5 && mins >= LUNCH_OPEN && mins < LUNCH_CLOSE) {
       return { state:'lunch', label:'LUNCH', text:'점심시간' };
     }
-    return { state:'open', label:'LIVE', text:'현재 진료 중' };
+    return { state:'open', label:'LIVE', text:'진료중' };
   }
 
   function paint(){
