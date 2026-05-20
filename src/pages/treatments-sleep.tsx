@@ -13,22 +13,22 @@ const SAFETY_SYSTEM = [
   {
     icon: 'fa-heart-pulse',
     title: '실시간 생체신호 모니터링',
-    desc: '심전도·혈압·산소포화도·호흡수까지 4개 지표를 시술 전 과정 동안 실시간 추적. 미세한 변화도 즉각 인지합니다.',
+    desc: '심전도·혈압·산소포화도·호흡수까지 4개 지표를\n시술 전 과정 동안 실시간 추적.\n미세한 변화도 즉각 인지합니다.',
   },
   {
     icon: 'fa-syringe',
     title: '맞춤 진정 용량 산정',
-    desc: '체중·연령·전신 건강 상태·복용 중인 약물까지 사전 문진을 통해 1인 1처방. 표준 용량을 일괄 적용하지 않습니다.',
+    desc: '체중·연령·전신 건강 상태·복용 중인 약물까지\n사전 문진을 통해 1인 1처방.\n표준 용량을 일괄 적용하지 않습니다.',
   },
   {
     icon: 'fa-shield-heart',
     title: '응급 대응 프로토콜',
-    desc: '응급 약물·산소·기도 확보 장비를 진료실 내 비치. 정기적인 응급 시뮬레이션 훈련으로 모든 스태프가 즉시 대응합니다.',
+    desc: '응급 약물·산소·기도 확보 장비를 진료실 내 비치.\n정기적인 응급 시뮬레이션 훈련으로\n모든 스태프가 즉시 대응합니다.',
   },
   {
     icon: 'fa-user-doctor',
     title: '회복실 1:1 케어',
-    desc: '시술 종료 후 별도 회복실에서 의식이 또렷해질 때까지 1:1 모니터링. 보호자 동행으로 귀가까지 안전을 확인합니다.',
+    desc: '시술 종료 후 별도 회복실에서\n의식이 또렷해질 때까지 1:1 모니터링.\n보호자 동행으로 귀가까지 안전을 확인합니다.',
   },
 ]
 
@@ -70,28 +70,28 @@ const PROCESS = [
     step: '01',
     title: '사전 상담 · 전신 건강 평가',
     duration: '시술 전일까지',
-    desc: '복용 중인 약물·과거 마취 경험·기저질환·알러지를 정밀 문진. 필요 시 혈액검사·심전도까지 사전 점검합니다.',
+    desc: '복용 중인 약물·과거 마취 경험·기저질환·알러지를 정밀 문진.\n필요 시 혈액검사·심전도까지 사전 점검합니다.',
     detail: ['약물 복용력 확인', '심혈관·호흡기 평가', '진정 적합성 판정', '동의서 설명'],
   },
   {
     step: '02',
     title: '시술 전 준비',
     duration: '시술 당일',
-    desc: '8시간 금식 확인 후 정맥로 확보. 생체신호 모니터링 장비 부착으로 안전 기준선을 확보합니다.',
+    desc: '8시간 금식 확인 후 정맥로 확보.\n생체신호 모니터링 장비 부착으로 안전 기준선을 확보합니다.',
     detail: ['금식 확인', '정맥 라인 확보', '모니터링 장비 부착', '환자 컨디션 최종 점검'],
   },
   {
     step: '03',
     title: '의식하 진정 진입',
     duration: '약 5~10분',
-    desc: '소량의 진정제를 천천히 주입. 환자분은 꿈결 같은 편안함 속에 의식이 흐려지지만, 호흡과 자발 반응은 유지됩니다.',
+    desc: '소량의 진정제를 천천히 주입.\n환자분은 꿈결 같은 편안함 속에 의식이 흐려지지만,\n호흡과 자발 반응은 유지됩니다.',
     detail: ['단계적 약물 주입', '의식 수준 평가', '4단계 무통마취 병행', '시술 시작 신호'],
   },
   {
     step: '04',
     title: '시술 진행 + 실시간 모니터링',
     duration: '시술 시간',
-    desc: '진료팀과 모니터링팀이 분리되어 동시 진행. 환자분의 모든 생체 신호를 시술 종료 시점까지 추적합니다.',
+    desc: '진료팀과 모니터링팀이 분리되어 동시 진행.\n환자분의 모든 생체 신호를 시술 종료 시점까지 추적합니다.',
     detail: ['진료팀·모니터팀 분리', '생체신호 연속 기록', '약물 추가 주입 조절', '환자 반응 즉시 대응'],
   },
   {
@@ -105,7 +105,7 @@ const PROCESS = [
     step: '06',
     title: '보호자 동행 귀가',
     duration: '귀가 후 24시간',
-    desc: '진정 후 24시간은 운전·중요 의사결정 금지. 보호자 동행을 원칙으로 하며, 다음날까지 컨디션 체크를 진행합니다.',
+    desc: '진정 후 24시간은 운전·중요 의사결정 금지.\n보호자 동행을 원칙으로 하며, 다음날까지 컨디션 체크를 진행합니다.',
     detail: ['보호자 동행 필수', '24시간 운전 금지', '경과 관찰 콜', '익일 컨디션 확인'],
   },
 ]
@@ -140,11 +140,11 @@ const WHY_US = [
 const NOT_FOR = [
   {
     risk: '심한 심혈관 질환',
-    desc: '최근 심근경색·불안정 협심증·중증 심부전이 있는 분은 진정이 부담될 수 있어 사전 평가가 필수입니다.',
+    desc: '최근 심근경색·불안정 협심증·중증 심부전이 있는 분은\n진정이 부담될 수 있어 사전 평가가 필수입니다.',
   },
   {
     risk: '중증 호흡기 질환',
-    desc: '중증 천식·수면무호흡증·만성폐쇄성폐질환이 있는 분은 진정 적합성을 별도로 평가합니다.',
+    desc: '중증 천식·수면무호흡증·만성폐쇄성폐질환이 있는 분은\n진정 적합성을 별도로 평가합니다.',
   },
   {
     risk: '특정 약물 복용',
@@ -335,7 +335,7 @@ export const SleepTherapyTreatmentPage = ({
             <div class="section-label mb-6">SAFETY · 04</div>
             <h2 class="t-display mb-6">
               4중 안전 시스템,<br/>
-              <span class="t-gold italic">단 하나의 변수도 놓치지 않습니다.</span>
+              <span class="t-gold italic">단 하나의 변수도<br/>놓치지 않습니다.</span>
             </h2>
             <p class="t-lead max-w-2xl mx-auto text-brown-700">
               진정 시술의 핵심은 약물이 아니라 모니터링입니다. 모든 변화를 동시에 추적하는 4중 시스템.
@@ -351,7 +351,7 @@ export const SleepTherapyTreatmentPage = ({
                   <div>
                     <div class="text-xs text-gold uppercase tracking-wider mb-2">SYSTEM 0{i+1}</div>
                     <h3 class="t-display text-xl mb-3">{s.title}</h3>
-                    <p class="t-body text-brown-700">{s.desc}</p>
+                    <p class="t-body text-brown-700 whitespace-pre-line">{s.desc}</p>
                   </div>
                 </div>
               </div>
@@ -401,7 +401,7 @@ export const SleepTherapyTreatmentPage = ({
                 </div>
                 <div class="lg:col-span-6">
                   <h3 class="t-display text-2xl mb-3">{p.title}</h3>
-                  <p class="t-body text-brown-700">{p.desc}</p>
+                  <p class="t-body text-brown-700 whitespace-pre-line">{p.desc}</p>
                 </div>
                 <div class="lg:col-span-4">
                   <ul class="space-y-2">
@@ -439,7 +439,7 @@ export const SleepTherapyTreatmentPage = ({
                   <i class="fas fa-circle-exclamation text-gold mt-1"></i>
                   <div>
                     <h3 class="t-display text-lg text-ivory mb-2">{n.risk}</h3>
-                    <p class="text-sm opacity-80">{n.desc}</p>
+                    <p class="text-sm opacity-80 whitespace-pre-line">{n.desc}</p>
                   </div>
                 </div>
               </div>

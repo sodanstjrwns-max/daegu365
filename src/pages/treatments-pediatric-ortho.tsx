@@ -263,7 +263,7 @@ export const PediatricOrthoTreatmentPage = ({
               <div class="section-label mb-6">WHAT IS · 02</div>
               <h2 class="t-display">
                 소아 교정은<br/>
-                <span class="t-gold italic">치아가 아니라 “턱”입니다.</span>
+                <span class="t-gold italic">치아가 아니라<br/>“턱”입니다.</span>
               </h2>
             </div>
             <div class="lg:col-span-7 space-y-6 t-body text-lg">
