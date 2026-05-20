@@ -584,7 +584,7 @@ export const Navbar = () => (
             </div>
           </div>
 
-          {/* 우측 패널 — 온라인 상담예약 */}
+          {/* 우측 패널 — 온라인 상담예약 (대구365치과 실제 진료 라인업) */}
           <div class="bg-ivory rounded-2xl border border-brown-200 p-6 sm:p-7">
             <div class="mb-5">
               <div class="display text-lg font-black text-brown-950 tracking-tight">온라인 상담 예약</div>
@@ -592,17 +592,44 @@ export const Navbar = () => (
             </div>
 
             <div class="space-y-5">
+              {/* ★ 3대 핵심 진료 — 사이트 메가메뉴와 동일 라인업 (시그니처 강조) */}
               <div>
-                <label class="block text-[13px] font-bold text-brown-900 mb-3">어떤 진료를 원하시나요?</label>
-                <p class="text-[11px] text-brown-500 mb-3">진료 항목을 선택해주세요</p>
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gold/15 border border-gold/40 text-[10px] font-black text-brown-800 tracking-[0.15em]">
+                    <i class="fas fa-star text-gold text-[8px]"></i>
+                    SIGNATURE
+                  </span>
+                  <label class="text-[13px] font-bold text-brown-900">3대 핵심 진료</label>
+                </div>
                 <div class="grid grid-cols-3 gap-2.5">
                   {[
-                    { v: 'BDX 임플란트', icon: 'fa-tooth', sub: '수면임플란트' },
-                    { v: '글로우네이트', icon: 'fa-sun', sub: '디지털라미' },
-                    { v: '인비절라인', icon: 'fa-grip-lines', sub: '투명교정' },
-                    { v: '일반임플란트', icon: 'fa-tooth', sub: '치아 식립' },
-                    { v: '소아치과', icon: 'fa-child', sub: '어린이 치과' },
-                    { v: '일반/기타', icon: 'fa-stethoscope', sub: '충치/신경/스케일링' },
+                    { v: '수면임플란트',     icon: 'fa-tooth',        sub: '평생 보증 · BDX·BA' },
+                    { v: '인비절라인 (교정)', icon: 'fa-grin',         sub: '인비절라인 공인' },
+                    { v: '비니크 라미네이트', icon: 'fa-star',         sub: 'VINIQUE · 원내 기공' },
+                  ].map(t => (
+                    <label class="cursor-pointer">
+                      <input type="radio" name="consult-treatment" value={t.v} class="peer sr-only" />
+                      <div class="aspect-square flex flex-col items-center justify-center text-center rounded-xl border-2 border-gold/40 bg-gold/[0.04] peer-checked:border-brown-900 peer-checked:bg-brown-900 peer-checked:text-ivory hover:border-gold hover:bg-gold/10 transition px-2 py-3">
+                        <i class={`fas ${t.icon} text-[16px] mb-1.5 text-brown-800 peer-checked:text-gold`}></i>
+                        <div class="text-[11px] font-black leading-tight text-brown-950">{t.v}</div>
+                        <div class="text-[9px] opacity-70 mt-0.5 leading-tight">{t.sub}</div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* 특화 진료 + 일반 진료 */}
+              <div>
+                <label class="block text-[13px] font-bold text-brown-900 mb-3">특화 · 일반 진료</label>
+                <div class="grid grid-cols-3 gap-2.5">
+                  {[
+                    { v: '수면치료 시스템',   icon: 'fa-bed-pulse',    sub: '의식하 진정' },
+                    { v: '4단계 무통마취',    icon: 'fa-shield-heart', sub: '주사 공포 ZERO' },
+                    { v: '에어플로우 GBT',    icon: 'fa-wind',         sub: '무통 스케일링' },
+                    { v: '소아치과',          icon: 'fa-child',        sub: '소아 교정 포함' },
+                    { v: '충치·신경·크라운',  icon: 'fa-tooth',        sub: '보존치료' },
+                    { v: '기타 · 잘 모르겠음', icon: 'fa-comments',    sub: '상담 후 안내' },
                   ].map(t => (
                     <label class="cursor-pointer">
                       <input type="radio" name="consult-treatment" value={t.v} class="peer sr-only" />
