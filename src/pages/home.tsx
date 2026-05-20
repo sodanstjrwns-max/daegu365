@@ -30,60 +30,67 @@ export const HomePage = () => (
       <div class="side-meta side-meta-right hidden lg:block">NORTH DISTRICT · CHIMSAN-RO 148</div>
 
       <div class="cinematic-hero-content max-w-[1440px] mx-auto px-6 lg:px-12 pt-32 pb-24 min-h-screen flex flex-col justify-between">
-        {/* Top bar — PPT PC3 슬라이드 2·5: LIVE 표시 로고 옆 / 상단 정보 박스 + 상담예약·전화 버튼 */}
-        <div class="flex flex-wrap items-center justify-between gap-6 fade-in">
-          <div class="flex flex-wrap items-center gap-3">
-            <div class="ribbon">
-              <i class="fas fa-shield-heart"></i>
-              <span>평생 보증 임플란트</span>
+        {/* TOP GROUP — 평생보증/LIVE → 4-카드 → SINCE 2025 라벨을 균일 mt-6 간격으로 묶음 */}
+        <div>
+          {/* Top bar — PPT PC3 슬라이드 2·5: LIVE 표시 로고 옆 / 상단 정보 박스 + 상담예약·전화 버튼 */}
+          <div class="flex flex-wrap items-center justify-between gap-6 fade-in">
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="ribbon">
+                <i class="fas fa-shield-heart"></i>
+                <span>평생 보증 임플란트</span>
+              </div>
+              <div class="hidden md:inline-flex items-center gap-2 text-xs text-ivory/85 px-3 py-1.5 rounded-full bg-brown-950/40 border border-ivory/15 backdrop-blur-sm">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span class="font-semibold tracking-wider">LIVE</span>
+                <span class="text-ivory/40">·</span>
+                <span>현재 진료 중</span>
+              </div>
             </div>
-            <div class="hidden md:inline-flex items-center gap-2 text-xs text-ivory/85 px-3 py-1.5 rounded-full bg-brown-950/40 border border-ivory/15 backdrop-blur-sm">
-              <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              </span>
-              <span class="font-semibold tracking-wider">LIVE</span>
-              <span class="text-ivory/40">·</span>
-              <span>현재 진료 중</span>
+            <div class="hidden md:flex items-center gap-2">
+              <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md" style="background:#FEE500;color:#191919;">
+                <i class="fas fa-comment"></i>
+                <span>상담예약</span>
+              </a>
+              <a href="tel:053-357-0365" class="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md" style="background:var(--gold);color:var(--brown-950);">
+                <i class="fas fa-phone"></i>
+                <span style="white-space:nowrap;">053-357-0365</span>
+              </a>
             </div>
           </div>
-          <div class="hidden md:flex items-center gap-2">
-            <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md" style="background:#FEE500;color:#191919;">
-              <i class="fas fa-comment"></i>
-              <span>상담예약</span>
-            </a>
-            <a href="tel:053-357-0365" class="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md" style="background:var(--gold);color:var(--brown-950);">
-              <i class="fas fa-phone"></i>
-              <span style="white-space:nowrap;">053-357-0365</span>
-            </a>
-          </div>
-        </div>
 
-        {/* PPT PC3 슬라이드 2 — 상단 정보 박스 (7인 협진 / 365일 / 평일 야간 21시 / 대구침산동) */}
-        <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-2 mt-6 fade-in">
-          {[
-            { icon: 'fa-user-doctor', label: '전문의 7인 협진', sub: 'SPECIALIZED TEAM' },
-            { icon: 'fa-calendar-days', label: '365일 연중무휴', sub: 'ALWAYS OPEN' },
-            { icon: 'fa-moon', label: '평일 야간 21시까지', sub: 'LATE NIGHT' },
-            { icon: 'fa-location-dot', label: '대구 북구 침산동', sub: 'CHIMSAN-DONG' },
-          ].map((b: any) => (
-            <div class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-brown-950/40 border border-ivory/10 backdrop-blur-sm hover:border-gold/40 transition">
-              <div class="w-9 h-9 flex items-center justify-center rounded-full bg-gold/15 text-gold">
-                <i class={`fas ${b.icon}`}></i>
+          {/* PPT PC3 슬라이드 2 — 상단 정보 박스 (7인 협진 / 365일 / 평일 야간 21시 / 대구침산동) */}
+          <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-2 mt-6 fade-in">
+            {[
+              { icon: 'fa-user-doctor', label: '전문의 7인 협진', sub: 'SPECIALIZED TEAM' },
+              { icon: 'fa-calendar-days', label: '365일 연중무휴', sub: 'ALWAYS OPEN' },
+              { icon: 'fa-moon', label: '평일 야간 21시까지', sub: 'LATE NIGHT' },
+              { icon: 'fa-location-dot', label: '대구 북구 침산동', sub: 'CHIMSAN-DONG' },
+            ].map((b: any) => (
+              <div class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-brown-950/40 border border-ivory/10 backdrop-blur-sm hover:border-gold/40 transition">
+                <div class="w-9 h-9 flex items-center justify-center rounded-full bg-gold/15 text-gold">
+                  <i class={`fas ${b.icon}`}></i>
+                </div>
+                <div class="flex flex-col leading-tight">
+                  <span class="text-[9px] tracking-[0.2em] text-gold font-bold uppercase">{b.sub}</span>
+                  <span class="text-sm font-semibold text-ivory" style="white-space:nowrap;">{b.label}</span>
+                </div>
               </div>
-              <div class="flex flex-col leading-tight">
-                <span class="text-[9px] tracking-[0.2em] text-gold font-bold uppercase">{b.sub}</span>
-                <span class="text-sm font-semibold text-ivory" style="white-space:nowrap;">{b.label}</span>
-              </div>
+            ))}
+          </div>
+
+          {/* SINCE 2025 라벨 — 위 카드와 동일 mt-6 간격 */}
+          <div class="mt-6 fade-in">
+            <div class="section-label inline-block" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.4);">
+              SINCE 2025 · 대구 북구
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Headline block */}
         <div class="max-w-5xl hero-headline-block">
-          <div class="section-label mb-10 fade-in" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.4);">
-            SINCE 2025 · 대구 북구
-          </div>
 
           {/* PPT PC3 슬라이드 3 — 글씨 크기 축소 (8.4rem → 6.4rem), '괜찮습' 하단 잘림 방지 padding 강화 */}
           <h1 class="reveal-lines hero-h1 text-ivory font-black leading-[0.92] tracking-[-0.045em]" style="font-size:clamp(2rem, 6.4vw, 6.4rem); padding-bottom:0.22em;">
