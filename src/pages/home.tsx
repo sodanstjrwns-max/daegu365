@@ -10,32 +10,8 @@ export const HomePage = () => (
     <Navbar />
 
     {/* ================================================== */}
-    {/* 0. 진료안내 컴팩트 띠 — 메인 페이지 전용, ivory 톤 (PPT PC3-S4 절충안 C) */}
+    {/* 0. 진료안내 컴팩트 띠 — 삭제됨 (사용자 요청, 메가드롭다운으로 대체) */}
     {/* ================================================== */}
-    <div class="hidden lg:block bg-ivory border-b border-brown-200/60">
-      <div class="max-w-[1440px] mx-auto px-6 lg:px-10">
-        <div class="flex items-center gap-1 overflow-x-auto py-2 text-[12.5px] font-medium tracking-tight text-brown-800">
-          <span class="shrink-0 px-2.5 py-1 text-[10px] tracking-[0.22em] text-brown-500 font-bold uppercase">진료안내</span>
-          <span class="shrink-0 w-px h-3.5 bg-brown-300 mx-0.5"></span>
-          <a href="/treatments/implant" class="shrink-0 px-2.5 py-1 rounded-full text-brown-900 font-semibold hover:bg-gold/15 hover:text-brown-950 transition border border-gold/40">✦ 수면임플란트</a>
-          <a href="/treatments/ortho" class="shrink-0 px-2.5 py-1 rounded-full text-brown-900 font-semibold hover:bg-gold/15 hover:text-brown-950 transition border border-gold/40">✦ 인비절라인 교정</a>
-          <a href="/treatments/lamineer" class="shrink-0 px-2.5 py-1 rounded-full text-brown-900 font-semibold hover:bg-gold/15 hover:text-brown-950 transition border border-gold/40">✦ 비니크 라미네이트</a>
-          <span class="shrink-0 w-px h-3.5 bg-brown-300 mx-1"></span>
-          <a href="/treatments/sleep-therapy" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">수면치료</a>
-          <a href="/treatments/painless-anesthesia" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">4단계 무통마취</a>
-          <a href="/treatments/airflow-gbt" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">에어플로우 GBT</a>
-          <a href="/treatments/cavity-endo-crown" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">충치·신경·크라운</a>
-          <a href="/treatments/perio" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">치주치료</a>
-          <a href="/treatments/pediatric" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">소아치과</a>
-          <a href="/treatments/pediatric-ortho" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">소아교정</a>
-          <a href="/treatments/whitening" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">전문가 미백</a>
-          <a href="/treatments/prosthetic" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">보철</a>
-          <a href="/treatments/qray" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">Q-ray</a>
-          <a href="/treatments/in-house-lab" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">기공실</a>
-          <a href="/treatments" class="shrink-0 ml-auto px-2.5 py-1 rounded-full bg-brown-900 text-gold hover:bg-brown-950 transition font-semibold">전체 보기 →</a>
-        </div>
-      </div>
-    </div>
 
     {/* ================================================== */}
     {/* 1. CINEMATIC HERO                                   */}
