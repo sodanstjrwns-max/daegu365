@@ -105,24 +105,46 @@ export const Navbar = () => (
             </div>
           </div>
 
-          <div class="flex items-center gap-1.5 xl:gap-2 shrink-0">
-            <a href="/login" class="hidden xl:inline-flex text-xs text-brown-700 hover:text-brown-900 font-medium px-2">로그인</a>
-            {/* 인스타 — 동그란 아이콘 */}
-            <a href="https://www.instagram.com/daegu365dc_?igsh=MThuemZncThqOTF3ZA==" target="_blank" rel="noopener" class="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full text-white transition hover:opacity-90 hover:scale-105" style="background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);" aria-label="대구365치과 인스타그램" title="인스타그램">
-              <i class="fab fa-instagram text-base"></i>
+          {/* PPT PC3-S?? — 우측 상단 컴팩트 그룹 (참고사진 매칭)
+              [📞 전화아이콘]  [➡로그인]  [👤+회원가입]  [📅 편리한 상담예약(파란 둥근 버튼)] */}
+          <div class="flex items-center gap-3 xl:gap-4 shrink-0">
+            {/* 전화 — 텍스트 없이 아이콘만 (참고사진처럼 회색 톤) */}
+            <a
+              href="tel:053-357-0365"
+              class="hidden md:inline-flex items-center justify-center w-9 h-9 text-brown-600 hover:text-brown-900 transition"
+              aria-label="전화 053-357-0365"
+              title="053-357-0365"
+            >
+              <i class="fas fa-phone text-[17px]"></i>
             </a>
-            {/* 카카오톡 — 동그란 아이콘 */}
-            <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full transition hover:scale-105" style="background:#FEE500;color:#191919;" aria-label="카카오톡 상담" title="카카오톡 상담">
-              <i class="fas fa-comment text-sm"></i>
+            {/* 로그인 — 텍스트 + 아이콘 */}
+            <a
+              href="/login"
+              class="hidden md:inline-flex items-center gap-1.5 text-sm font-bold text-brown-700 hover:text-brown-950 transition"
+            >
+              <i class="fas fa-arrow-right-to-bracket text-[13px]"></i>
+              <span>로그인</span>
             </a>
-            {/* 네이버 예약 — 동그란 아이콘 */}
-            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full transition hover:scale-105 font-black text-sm" style="background:#03C75A;color:#fff;" aria-label="네이버 예약" title="네이버 예약">
-              N
+            {/* 회원가입 — 텍스트 + 아이콘 */}
+            <a
+              href="/signup"
+              class="hidden md:inline-flex items-center gap-1.5 text-sm font-bold text-brown-700 hover:text-brown-950 transition"
+            >
+              <i class="fas fa-user-plus text-[13px]"></i>
+              <span>회원가입</span>
             </a>
-            {/* 전화 — 동그란 아이콘 (브랜드 그라데이션) */}
-            <a href="tel:053-357-0365" class="hidden md:inline-flex w-9 h-9 items-center justify-center rounded-full transition hover:scale-105 shadow-md" style="background:linear-gradient(135deg, var(--brown-900) 0%, var(--brown-700) 100%);color:var(--ivory);" aria-label="전화 053-357-0365" title="053-357-0365">
-              <i class="fas fa-phone text-sm"></i>
-            </a>
+            {/* 편리한 상담예약 — 메인 CTA 버튼 (네비바 고정버튼은 페이지 우측에 floatingActions로 별도 노출 → 여기서는 동일 모달 트리거) */}
+            <button
+              type="button"
+              id="navConsultBtn"
+              class="hidden md:inline-flex items-center gap-2 h-10 px-5 rounded-full text-white font-black text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+              style="background:linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%);"
+              onclick="document.getElementById('openConsultModal')?.click()"
+              aria-label="편리한 상담예약"
+            >
+              <i class="fas fa-calendar-check text-[13px]"></i>
+              <span>편리한 상담예약</span>
+            </button>
             <button id="menuBtn" class="lg:hidden w-10 h-10 flex items-center justify-center text-brown-800">
               <i class="fas fa-bars text-xl"></i>
             </button>
@@ -284,68 +306,117 @@ export const Navbar = () => (
     {/* Spacer — 헤더 (h-24 = 96px) 높이 보정 */}
     <div class="h-24" aria-hidden="true"></div>
 
-    {/* PPT PC3 슬라이드 15 — 우측상단 고정버튼이 스크롤을 내릴수록 우측하단 펼침형으로 변환
-        - 페이지 상단: 우측상단에 콤팩트 "상담예약" 단일 버튼 (Navbar 아래쪽)
-        - 스크롤 400px 이상: 우측하단으로 이동 + 4개 버튼 펼침
-        - 위치/크기/디자인 전환은 JS로 .scrolled 클래스 토글 */}
-    <div id="floatingActions"
-      class="floating-actions-top fixed z-40 flex flex-col gap-2 transition-all duration-500"
-      style="top: 112px; right: 16px; bottom: auto;">
-      <button type="button" id="openConsultModal"
-        class="fa-cta-primary inline-flex items-center gap-2 h-11 px-5 rounded-full font-bold text-sm shadow-xl border-2 border-gold"
-        style="background:linear-gradient(135deg, var(--gold), var(--brown-500));color:var(--brown-950);" aria-label="상담예약 모달 열기">
-        <i class="fas fa-calendar-check"></i>
-        <span>상담예약</span>
-      </button>
-      <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener"
-        class="fa-cta-extra inline-flex items-center gap-2 px-4 h-11 rounded-full font-bold text-sm shadow-lg"
-        style="background:#03C75A;color:#fff;display:none;" aria-label="네이버 예약">
-        <span class="text-[11px] font-black" style="background:#fff;color:#03C75A;border-radius:4px;padding:1px 5px;">N</span>
-        <span>네이버예약</span>
-      </a>
-      <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener"
-        class="fa-cta-extra inline-flex items-center gap-2 px-4 h-11 rounded-full font-bold text-sm shadow-lg"
-        style="background:#FEE500;color:#191919;display:none;" aria-label="카카오톡 상담">
-        <i class="fas fa-comment"></i>
-        <span>톡상담</span>
-      </a>
-      <a href="tel:053-357-0365"
-        class="fa-cta-extra inline-flex items-center gap-2 px-4 h-11 rounded-full font-bold text-sm shadow-lg"
-        style="background:var(--brown-950);color:var(--gold);display:none;" aria-label="전화 상담">
-        <i class="fas fa-phone"></i>
-        <span>053-357-0365</span>
-      </a>
-    </div>
+    {/* ========== PPT PC3-S15 v2 — 우측 상단 고정 CTA 모핑 버튼 (참고사진 매칭)
+        스크롤 위치에 따라 동일 위치에서 텍스트/색상/아이콘이 4단계 변신:
+        ① 0~600px (히어로):       "편리한 상담예약" — 파란 그라데이션 (#4a90e2)
+        ② 600~1500px (소개/특징): "내 케이스 진단받기" — 보라 그라데이션 (#9b7ee5)
+        ③ 1500~3000px (진료/사례): "지금 예약하기" — 갈색 그라데이션 (브랜드)
+        ④ 3000px+ (페이지 하단):  "오늘 상담 가능!" — 레드 펄스 그라데이션 (#e85a6a)
+        모든 버튼은 동일하게 openConsultModal 클릭 트리거 ========== */}
+    <button
+      type="button"
+      id="openConsultModal"
+      class="fixed z-40 inline-flex items-center gap-2 h-11 px-5 rounded-full font-black text-sm shadow-xl border-2 transition-all duration-500"
+      style="top: 124px; right: 20px; background:linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%); color:#fff; border-color:rgba(255,255,255,0.3);"
+      aria-label="상담예약 모달 열기"
+    >
+      <i id="floatingCtaIcon" class="fas fa-calendar-check text-[13px]"></i>
+      <span id="floatingCtaLabel">편리한 상담예약</span>
+    </button>
 
-    {/* 스크롤 토글 스크립트 — PC3-S15: 상단(콤팩트 1개) → 하단(펼침 4개) */}
+    {/* 스크롤 위치별 버튼 모핑 스크립트 */}
     <script dangerouslySetInnerHTML={{__html: `
       (function(){
-        var el = document.getElementById('floatingActions');
-        if (!el) return;
-        var extras = el.querySelectorAll('.fa-cta-extra');
-        var threshold = 400;
-        var ticking = false;
-        function update(){
-          var y = window.scrollY || window.pageYOffset;
-          if (y > threshold) {
-            // 스크롤 후 → 우측 하단 펼침
-            el.style.top = 'auto';
-            el.style.bottom = '16px';
-            el.style.right = '16px';
-            el.classList.add('floating-actions-scrolled');
-            el.classList.remove('floating-actions-top');
-            extras.forEach(function(e){ e.style.display = 'inline-flex'; });
-          } else {
-            // 상단 → 우측 상단 콤팩트 (헤더 아래)
-            el.style.top = '112px';
-            el.style.bottom = 'auto';
-            el.style.right = '16px';
-            el.classList.remove('floating-actions-scrolled');
-            el.classList.add('floating-actions-top');
-            extras.forEach(function(e){ e.style.display = 'none'; });
+        var btn = document.getElementById('openConsultModal');
+        if (!btn) return;
+        var iconEl = document.getElementById('floatingCtaIcon');
+        var labelEl = document.getElementById('floatingCtaLabel');
+
+        // 4단계 변신 정의
+        var STATES = [
+          {
+            // ① 페이지 최상단 — 편리한 상담예약 (파란색)
+            threshold: 0,
+            label: '편리한 상담예약',
+            icon: 'fa-calendar-check',
+            bg: 'linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%)',
+            color: '#fff',
+            border: 'rgba(255,255,255,0.3)',
+            pulse: false
+          },
+          {
+            // ② 중간 — 내 케이스 진단받기 (보라)
+            threshold: 600,
+            label: '내 케이스 진단받기',
+            icon: 'fa-stethoscope',
+            bg: 'linear-gradient(135deg, #9b7ee5 0%, #7c5fcc 100%)',
+            color: '#fff',
+            border: 'rgba(255,255,255,0.3)',
+            pulse: false
+          },
+          {
+            // ③ 후반 — 지금 예약하기 (브랜드 갈색)
+            threshold: 1500,
+            label: '지금 예약하기',
+            icon: 'fa-calendar-check',
+            bg: 'linear-gradient(135deg, #5d4630 0%, #3f2f20 100%)',
+            color: '#fff',
+            border: 'rgba(201,168,118,0.45)',
+            pulse: false
+          },
+          {
+            // ④ 하단 — 오늘 상담 가능! (레드 펄스)
+            threshold: 3000,
+            label: '오늘 상담 가능!',
+            icon: 'fa-fire',
+            bg: 'linear-gradient(135deg, #e85a6a 0%, #d63d52 100%)',
+            color: '#fff',
+            border: 'rgba(255,255,255,0.35)',
+            pulse: true
           }
+        ];
+
+        var currentIdx = -1;
+        var ticking = false;
+
+        function applyState(idx) {
+          if (idx === currentIdx) return;
+          currentIdx = idx;
+          var s = STATES[idx];
+          // 부드러운 페이드 (텍스트/아이콘만 0.3s)
+          labelEl.style.transition = 'opacity 0.25s';
+          iconEl.style.transition = 'opacity 0.25s';
+          labelEl.style.opacity = '0';
+          iconEl.style.opacity = '0';
+          setTimeout(function(){
+            labelEl.textContent = s.label;
+            iconEl.className = 'fas ' + s.icon + ' text-[13px]';
+            labelEl.style.opacity = '1';
+            iconEl.style.opacity = '1';
+          }, 220);
+          btn.style.background = s.bg;
+          btn.style.color = s.color;
+          btn.style.borderColor = s.border;
+          if (s.pulse) {
+            btn.style.animation = 'floatingCtaPulse 1.4s ease-in-out infinite';
+            btn.style.boxShadow = '0 10px 30px -8px rgba(232,90,106,0.55), 0 0 0 0 rgba(232,90,106,0.6)';
+          } else {
+            btn.style.animation = '';
+            btn.style.boxShadow = '0 10px 25px -8px rgba(0,0,0,0.25)';
+          }
+        }
+
+        function update() {
+          var y = window.scrollY || window.pageYOffset;
+          // 가장 큰 threshold를 만족하는 상태 찾기
+          var idx = 0;
+          for (var i = STATES.length - 1; i >= 0; i--) {
+            if (y >= STATES[i].threshold) { idx = i; break; }
+          }
+          applyState(idx);
           ticking = false;
         }
+
         window.addEventListener('scroll', function(){
           if (!ticking) {
             window.requestAnimationFrame(update);
@@ -356,103 +427,225 @@ export const Navbar = () => (
       })();
     `}}/>
 
-    {/* PPT PC3 슬라이드 13-14 — 상담예약 3단계 모달 */}
-    <div id="consultModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4" style="background:rgba(26,18,10,0.75);backdrop-filter:blur(8px);">
-      <div class="bg-ivory rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto relative" role="dialog" aria-modal="true" aria-labelledby="consultModalTitle">
-        <button type="button" id="closeConsultModal" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-brown-100 transition" aria-label="모달 닫기">
+    {/* CTA 펄스 애니메이션 keyframes */}
+    <style dangerouslySetInnerHTML={{__html: `
+      @keyframes floatingCtaPulse {
+        0%, 100% {
+          box-shadow: 0 10px 30px -8px rgba(232,90,106,0.55), 0 0 0 0 rgba(232,90,106,0.55);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 10px 30px -8px rgba(232,90,106,0.65), 0 0 0 14px rgba(232,90,106,0);
+          transform: scale(1.04);
+        }
+      }
+      #openConsultModal:hover {
+        transform: translateY(-2px) scale(1.03);
+        filter: brightness(1.08);
+      }
+    `}}/>
+
+    {/* ========== PPT 슬라이드 14 — 편리한 예약·상담 모달 (참고사진 매칭)
+        구조:
+        ① 상단 헤더 — "편리한 예약·상담" + 3 카드 (전화/카카오톡/네이버예약)
+        ② 좌측: 진료시간 + 오시는길 / 우측: 온라인 상담예약 (요일 + 진료선택)
+        ③ FAQ + 지도 ========== */}
+    <div id="consultModal" class="fixed inset-0 z-50 hidden items-start justify-center px-4 py-8 overflow-y-auto" style="background:rgba(26,18,10,0.75);backdrop-filter:blur(8px);">
+      <div class="bg-cream rounded-3xl shadow-2xl max-w-[920px] w-full relative my-auto" role="dialog" aria-modal="true" aria-labelledby="consultModalTitle">
+        <button type="button" id="closeConsultModal" class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-ivory shadow hover:bg-brown-100 transition" aria-label="모달 닫기">
           <i class="fas fa-times text-lg text-brown-700"></i>
         </button>
 
-        <div class="p-8 md:p-10">
-          {/* 진행 단계 표시 */}
-          <div class="flex items-center justify-center gap-2 mb-8">
-            {[1, 2, 3].map((n) => (
-              <div class="flex items-center gap-2" data-step-indicator={n}>
-                <div class={`step-circle w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition ${n === 1 ? 'bg-gold text-brown-950' : 'bg-brown-200 text-brown-500'}`}>
-                  {n}
-                </div>
-                {n < 3 && <div class="w-8 h-px bg-brown-300"></div>}
+        {/* ① 헤더 영역 — 타이틀 + 3 카드 */}
+        <div class="px-6 sm:px-10 pt-10 pb-8 text-center">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brown-950/8 border border-brown-300/40 mb-5">
+            <i class="fas fa-calendar-check text-brown-700 text-[11px]"></i>
+            <span class="text-[11px] tracking-[0.25em] text-brown-700 font-bold">예약/상담</span>
+          </div>
+          <h2 id="consultModalTitle" class="display text-3xl sm:text-4xl md:text-[2.6rem] font-black tracking-tight text-brown-950 leading-tight">
+            편리한 <span class="t-gold">예약 · 상담</span>
+          </h2>
+          <p class="mt-3 text-sm sm:text-[15px] text-brown-700">
+            365일 진료 — 온라인, 전화, 카카오톡으로 편하게 예약하세요
+          </p>
+
+          {/* 3카드 — 전화/카카오/네이버 */}
+          <div class="mt-7 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            <a href="tel:053-357-0365" class="group block bg-ivory rounded-2xl border border-brown-200 p-5 hover:border-brown-400 hover:-translate-y-0.5 hover:shadow-lg transition-all text-center">
+              <div class="mx-auto w-12 h-12 rounded-full bg-brown-100 text-brown-800 flex items-center justify-center mb-3 group-hover:bg-brown-200 transition">
+                <i class="fas fa-phone text-[18px]"></i>
               </div>
-            ))}
+              <div class="text-[11px] tracking-[0.2em] text-brown-500 font-bold mb-1.5">전화 예약</div>
+              <div class="display text-lg font-black text-brown-950 leading-tight">053-357-0365</div>
+              <div class="text-[11px] text-brown-600 mt-1.5">평일 09:30~21:00</div>
+            </a>
+            <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="group block bg-ivory rounded-2xl border border-brown-200 p-5 hover:border-yellow-400 hover:-translate-y-0.5 hover:shadow-lg transition-all text-center">
+              <div class="mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-3 transition" style="background:#FEE500;color:#191919;">
+                <i class="fas fa-comment text-[18px]"></i>
+              </div>
+              <div class="text-[11px] tracking-[0.2em] text-brown-500 font-bold mb-1.5">카카오톡 상담</div>
+              <div class="display text-base font-black text-brown-950 leading-tight">@대구365치과</div>
+              <div class="text-[11px] text-brown-600 mt-1.5">빠른 답변 가능</div>
+            </a>
+            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="group block bg-ivory rounded-2xl border border-brown-200 p-5 hover:border-green-500 hover:-translate-y-0.5 hover:shadow-lg transition-all text-center">
+              <div class="mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-3 transition" style="background:#03C75A;color:#fff;">
+                <i class="fas fa-calendar-check text-[18px]"></i>
+              </div>
+              <div class="text-[11px] tracking-[0.2em] text-brown-500 font-bold mb-1.5">네이버 예약</div>
+              <div class="display text-base font-black text-brown-950 leading-tight">즉시 예약</div>
+              <div class="text-[11px] text-brown-600 mt-1.5">24시간 가능</div>
+            </a>
+          </div>
+        </div>
+
+        {/* ② 좌·우 그리드 — 진료시간/오시는길 | 온라인 상담예약 */}
+        <div class="px-6 sm:px-10 pb-8 grid lg:grid-cols-[300px_1fr] gap-5 lg:gap-6">
+          {/* 좌측 패널 */}
+          <div class="space-y-5">
+            {/* 진료시간 */}
+            <div class="bg-ivory rounded-2xl border border-brown-200 p-5">
+              <div class="flex items-center gap-2 mb-4">
+                <i class="far fa-clock text-brown-700"></i>
+                <span class="display text-sm font-black text-brown-950 tracking-tight">진료 시간</span>
+              </div>
+              <ul class="space-y-2 text-[13px]">
+                <li class="flex items-center justify-between">
+                  <span class="text-brown-600">월·목</span>
+                  <span class="font-bold text-brown-950">09:30 ~ 21:00</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-brown-600">화·수·금</span>
+                  <span class="font-bold text-brown-950">09:30 ~ 18:30</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-brown-600">토·일</span>
+                  <span class="font-bold text-brown-950">09:30 ~ 17:00</span>
+                </li>
+                <li class="flex items-center justify-between pt-2 mt-2 border-t border-brown-100">
+                  <span class="text-brown-500 text-[12px]">점심시간 (평일)</span>
+                  <span class="font-bold text-brown-700 text-[12px]">13:00 ~ 14:00</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* 오시는 길 */}
+            <div class="bg-ivory rounded-2xl border border-brown-200 p-5">
+              <div class="flex items-center gap-2 mb-3">
+                <i class="fas fa-map-marker-alt text-brown-700"></i>
+                <span class="display text-sm font-black text-brown-950 tracking-tight">오시는 길</span>
+              </div>
+              <p class="text-[13px] text-brown-800 leading-relaxed mb-3">
+                대구광역시 북구 침산로 148<br/>엠브로스퀘어 7층
+              </p>
+              <div class="flex flex-wrap gap-1.5">
+                <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black" style="background:#03C75A;color:#fff;">
+                  <span class="text-[10px] font-black" style="background:#fff;color:#03C75A;border-radius:3px;padding:0 4px;">N</span> 네이버
+                </a>
+                <a href="https://maps.google.com/?q=대구365치과" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-brown-100 text-brown-800 hover:bg-brown-200 transition">
+                  <i class="fab fa-google text-[10px]"></i> 구글
+                </a>
+                <a href="https://map.kakao.com/?q=대구365치과" target="_blank" rel="noopener" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black" style="background:#FEE500;color:#191919;">
+                  <i class="fas fa-map-marker-alt text-[10px]"></i> 카카오
+                </a>
+              </div>
+            </div>
           </div>
 
-          <h3 id="consultModalTitle" class="display text-2xl md:text-3xl font-black tracking-tight text-brown-900 mb-2 text-center">
-            <span class="step-title" data-step-title="1">어떤 진료가 궁금하세요?</span>
-            <span class="step-title hidden" data-step-title="2">언제 방문 가능하세요?</span>
-            <span class="step-title hidden" data-step-title="3">연락처를 알려주세요</span>
-          </h3>
-          <p class="text-sm text-brown-600 mb-6 text-center">3단계로 빠르게 상담 예약을 도와드립니다</p>
+          {/* 우측 패널 — 온라인 상담예약 */}
+          <div class="bg-ivory rounded-2xl border border-brown-200 p-6 sm:p-7">
+            <div class="mb-5">
+              <div class="display text-lg font-black text-brown-950 tracking-tight">온라인 상담 예약</div>
+              <p class="text-[12px] text-brown-600 mt-1">양식 작성 후 담당자가 확인하여 연락드립니다.</p>
+            </div>
 
-          {/* STEP 1 — 진료 선택 (SEO 핵심 키워드 우선 노출) */}
-          <div class="step-panel" data-step-panel="1">
-            <div class="grid grid-cols-2 gap-2">
-              {['수면임플란트','인비절라인 치아교정','비니크 라미네이트','글로우네이트','소아치과','일반 진료'].map(t => (
-                <label class="cursor-pointer">
-                  <input type="radio" name="consult-treatment" value={t} class="peer sr-only" />
-                  <div class="p-4 text-center rounded-xl border-2 border-brown-200 peer-checked:border-gold peer-checked:bg-gold/10 transition text-sm font-semibold">
-                    {t}
-                  </div>
-                </label>
+            <div class="space-y-5">
+              <div>
+                <label class="block text-[13px] font-bold text-brown-900 mb-3">어떤 진료를 원하시나요?</label>
+                <p class="text-[11px] text-brown-500 mb-3">진료 항목을 선택해주세요</p>
+                <div class="grid grid-cols-3 gap-2.5">
+                  {[
+                    { v: 'BDX 임플란트', icon: 'fa-tooth', sub: '수면임플란트' },
+                    { v: '글로우네이트', icon: 'fa-sun', sub: '디지털라미' },
+                    { v: '인비절라인', icon: 'fa-grip-lines', sub: '투명교정' },
+                    { v: '일반임플란트', icon: 'fa-tooth', sub: '치아 식립' },
+                    { v: '소아치과', icon: 'fa-child', sub: '어린이 치과' },
+                    { v: '일반/기타', icon: 'fa-stethoscope', sub: '충치/신경/스케일링' },
+                  ].map(t => (
+                    <label class="cursor-pointer">
+                      <input type="radio" name="consult-treatment" value={t.v} class="peer sr-only" />
+                      <div class="aspect-square flex flex-col items-center justify-center text-center rounded-xl border-2 border-brown-200 peer-checked:border-brown-900 peer-checked:bg-brown-900 peer-checked:text-ivory hover:border-brown-400 transition px-2 py-3">
+                        <i class={`fas ${t.icon} text-[15px] mb-1.5`}></i>
+                        <div class="text-[11px] font-bold leading-tight">{t.v}</div>
+                        <div class="text-[9px] opacity-70 mt-0.5 leading-tight">{t.sub}</div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                id="consultSubmit"
+                class="w-full py-4 rounded-full font-black text-sm tracking-wide shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all"
+                style="background:linear-gradient(135deg, #5d4630 0%, #3f2f20 100%);color:var(--ivory);"
+              >
+                다음 단계 <i class="fas fa-arrow-right ml-1.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ③ FAQ + 지도 */}
+        <div class="px-6 sm:px-10 pb-10">
+          <div class="bg-ivory rounded-2xl border border-brown-200 p-6 sm:p-7 mb-5">
+            <div class="text-center mb-5">
+              <div class="display text-lg font-black text-brown-950 tracking-tight">예약 관련 자주 묻는 질문</div>
+            </div>
+            <div class="space-y-2">
+              {[
+                { q: '당일 예약도 가능한가요?', a: '평일에는 당일 예약이 가능하나, 야간(월·목)·주말 예약은 사전 전화 확인을 권장드립니다. (053-357-0365)' },
+                { q: '예약 변경이나 취소는 어떻게 하나요?', a: '카카오톡(@대구365치과) 또는 전화(053-357-0365)로 24시간 전까지 연락 주시면 됩니다.' },
+                { q: '초진 시 준비물이 있나요?', a: '신분증 1개 정도면 충분합니다. 기존 진료 기록(파노라마, CT)이 있으시면 지참해주세요.' },
+                { q: '주차가 가능한가요?', a: '엠브로스퀘어 건물 지하 주차장 무료 이용 가능합니다 (진료 시 2시간).' },
+              ].map((f, i) => (
+                <details class="group border-b border-brown-100 last:border-b-0">
+                  <summary class="flex items-center justify-between gap-3 py-3 cursor-pointer list-none">
+                    <span class="text-[13px] sm:text-sm font-bold text-brown-900">{f.q}</span>
+                    <i class="fas fa-chevron-down text-[11px] text-brown-500 transition-transform group-open:rotate-180"></i>
+                  </summary>
+                  <div class="pb-3 pl-1 text-[13px] text-brown-700 leading-relaxed">{f.a}</div>
+                </details>
               ))}
             </div>
           </div>
 
-          {/* STEP 2 — 시간 선택 */}
-          <div class="step-panel hidden" data-step-panel="2">
-            <div class="space-y-3">
-              <div>
-                <label class="block text-xs font-bold text-brown-700 mb-2 tracking-wider">희망 요일</label>
-                <div class="grid grid-cols-7 gap-1">
-                  {['월','화','수','목','금','토','일'].map(d => (
-                    <label class="cursor-pointer">
-                      <input type="checkbox" name="consult-day" value={d} class="peer sr-only" />
-                      <div class="py-3 text-center rounded-lg border border-brown-200 peer-checked:border-gold peer-checked:bg-gold peer-checked:text-brown-950 transition text-sm font-bold">
-                        {d}
-                      </div>
-                    </label>
-                  ))}
-                </div>
+          {/* 지도 */}
+          <div class="bg-ivory rounded-2xl border border-brown-200 overflow-hidden">
+            <div class="px-5 pt-4 pb-3 text-center">
+              <div class="display text-base font-black text-brown-950 tracking-tight">
+                <i class="fas fa-map-marker-alt text-brown-700 mr-1.5"></i>
+                오시는 길
               </div>
-              <div>
-                <label class="block text-xs font-bold text-brown-700 mb-2 tracking-wider">희망 시간대</label>
-                <div class="grid grid-cols-3 gap-2">
-                  {['오전 09:30~12:00','오후 14:00~18:30','야간 18:30~21:00'].map(t => (
-                    <label class="cursor-pointer">
-                      <input type="radio" name="consult-time" value={t} class="peer sr-only" />
-                      <div class="p-3 text-center rounded-lg border border-brown-200 peer-checked:border-gold peer-checked:bg-gold/10 transition text-xs font-semibold">
-                        {t}
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
+              <p class="text-[12px] text-brown-600 mt-1">대구광역시 북구 침산로 148 엠브로스퀘어 7층</p>
             </div>
-          </div>
-
-          {/* STEP 3 — 연락처 */}
-          <div class="step-panel hidden" data-step-panel="3">
-            <div class="space-y-3">
-              <input type="text" name="consult-name" placeholder="성함" class="w-full px-4 py-3 rounded-xl border border-brown-200 focus:border-gold outline-none text-sm" />
-              <input type="tel" name="consult-phone" placeholder="연락처 (010-0000-0000)" class="w-full px-4 py-3 rounded-xl border border-brown-200 focus:border-gold outline-none text-sm" />
-              <textarea name="consult-memo" placeholder="추가 문의사항 (선택)" rows={3} class="w-full px-4 py-3 rounded-xl border border-brown-200 focus:border-gold outline-none text-sm resize-none"></textarea>
-              <label class="flex items-start gap-2 text-xs text-brown-600">
-                <input type="checkbox" name="consult-agree" class="mt-0.5" />
-                <span>개인정보 수집·이용에 동의합니다 (예약 안내 목적, 1개월 보관)</span>
-              </label>
+            <iframe
+              src="https://map.kakao.com/?q=대구365치과 침산"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              style="width:100%;height:260px;border:0;"
+              title="대구365치과 약도"
+            ></iframe>
+            <div class="px-5 py-3 flex flex-wrap justify-center gap-2 border-t border-brown-100">
+              <a href="https://maps.google.com/?q=대구365치과+엠브로스퀘어" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-black bg-brown-100 text-brown-800 hover:bg-brown-200 transition">
+                <i class="fab fa-google text-[11px]"></i> 구글 지도
+              </a>
+              <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-black" style="background:#03C75A;color:#fff;">
+                <span class="text-[10px] font-black" style="background:#fff;color:#03C75A;border-radius:3px;padding:0 4px;">N</span> 네이버 지도
+              </a>
+              <a href="https://map.kakao.com/?q=대구365치과" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-black" style="background:#FEE500;color:#191919;">
+                <i class="fas fa-map-marker-alt text-[11px]"></i> 카카오맵
+              </a>
             </div>
-          </div>
-
-          {/* 버튼 영역 */}
-          <div class="flex gap-2 mt-8">
-            <button type="button" id="consultPrev" class="flex-1 px-5 py-3 rounded-full border border-brown-300 text-brown-700 font-bold hover:bg-brown-100 transition hidden">
-              <i class="fas fa-arrow-left mr-1"></i> 이전
-            </button>
-            <button type="button" id="consultNext" class="flex-[2] px-5 py-3 rounded-full font-bold transition shadow-md" style="background:linear-gradient(135deg, var(--gold), var(--brown-500));color:var(--brown-950);">
-              다음 단계 <i class="fas fa-arrow-right ml-1"></i>
-            </button>
-            <button type="button" id="consultSubmit" class="flex-[2] px-5 py-3 rounded-full font-bold transition shadow-md hidden" style="background:var(--brown-950);color:var(--gold);">
-              <i class="fas fa-paper-plane mr-1"></i> 예약 요청 보내기
-            </button>
           </div>
         </div>
       </div>

@@ -357,46 +357,19 @@ window.toast = function(msg, type = 'info') {
   }, 2500);
 };
 
-// ============= 상담예약 3단계 모달 (PPT PC3 슬라이드 13-14) =============
+// ============= 편리한 예약·상담 모달 v2 (슬라이드 14 — 단일 페이지) =============
 (function() {
   document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('consultModal');
     const openBtn = document.getElementById('openConsultModal');
     const closeBtn = document.getElementById('closeConsultModal');
-    const prevBtn = document.getElementById('consultPrev');
-    const nextBtn = document.getElementById('consultNext');
     const submitBtn = document.getElementById('consultSubmit');
     if (!modal) return;
-
-    let currentStep = 1;
-    const totalSteps = 3;
-
-    const showStep = (n) => {
-      currentStep = n;
-      modal.querySelectorAll('[data-step-panel]').forEach(el => {
-        el.classList.toggle('hidden', el.dataset.stepPanel !== String(n));
-      });
-      modal.querySelectorAll('[data-step-title]').forEach(el => {
-        el.classList.toggle('hidden', el.dataset.stepTitle !== String(n));
-      });
-      modal.querySelectorAll('[data-step-indicator]').forEach(el => {
-        const i = Number(el.dataset.stepIndicator);
-        const c = el.querySelector('.step-circle');
-        if (c) {
-          if (i <= n) { c.style.background = 'var(--gold)'; c.style.color = 'var(--brown-950)'; }
-          else { c.style.background = ''; c.style.color = ''; c.classList.remove('bg-gold','text-brown-950'); }
-        }
-      });
-      prevBtn && prevBtn.classList.toggle('hidden', n === 1);
-      nextBtn && nextBtn.classList.toggle('hidden', n === totalSteps);
-      submitBtn && submitBtn.classList.toggle('hidden', n !== totalSteps);
-    };
 
     const openModal = () => {
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
-      showStep(1);
     };
     const closeModal = () => {
       modal.classList.add('hidden');
@@ -409,38 +382,21 @@ window.toast = function(msg, type = 'info') {
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
 
-    nextBtn && nextBtn.addEventListener('click', () => { if (currentStep < totalSteps) showStep(currentStep + 1); });
-    prevBtn && prevBtn.addEventListener('click', () => { if (currentStep > 1) showStep(currentStep - 1); });
+    // 다른 컴포넌트에서 모달 열기 — window event 디스패치 지원
+    window.addEventListener('open-consultation-modal', openModal);
 
+    // "다음 단계" → 진료 선택 확인 후 네이버 예약으로 연결
     submitBtn && submitBtn.addEventListener('click', () => {
-      const name = modal.querySelector('input[name="consult-name"]').value.trim();
-      const phone = modal.querySelector('input[name="consult-phone"]').value.trim();
-      const agree = modal.querySelector('input[name="consult-agree"]').checked;
-      if (!name || !phone) { window.toast && window.toast('성함과 연락처를 입력해주세요'); return; }
-      if (!agree) { window.toast && window.toast('개인정보 수집·이용에 동의해주세요'); return; }
-      window.toast && window.toast('상담 예약 요청이 접수되었습니다. 곧 연락드리겠습니다.');
-      setTimeout(closeModal, 1200);
-    });
-  });
-})();
-
-// ============= 스크롤 시 플로팅 버튼 강조 (PPT PC3 슬라이드 15) =============
-(function() {
-  document.addEventListener('DOMContentLoaded', () => {
-    const fab = document.getElementById('floatingActions');
-    if (!fab) return;
-    let scrolled = false;
-    window.addEventListener('scroll', () => {
-      const isScrolled = window.scrollY > 200;
-      if (isScrolled === scrolled) return;
-      scrolled = isScrolled;
-      if (scrolled) {
-        fab.style.transform = 'translateY(-4px) scale(1.02)';
-        fab.style.filter = 'drop-shadow(0 8px 24px rgba(201,168,118,0.35))';
-      } else {
-        fab.style.transform = '';
-        fab.style.filter = '';
+      const selected = modal.querySelector('input[name="consult-treatment"]:checked');
+      if (!selected) {
+        window.toast && window.toast('진료 항목을 선택해주세요');
+        return;
       }
-    }, { passive: true });
+      window.toast && window.toast(selected.value + ' 진료 예약을 진행합니다');
+      setTimeout(() => {
+        window.open('https://naver.me/GhSIroMf', '_blank', 'noopener');
+        closeModal();
+      }, 800);
+    });
   });
 })();
