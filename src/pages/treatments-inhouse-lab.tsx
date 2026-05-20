@@ -85,13 +85,13 @@ export const InhouseLabPage = ({
         </div>
       </section>
       <section class="py-24 lg:py-32 bg-ivory">
-        <div class="max-w-5xl mx-auto px-6 lg:px-12">
-          <div class="grid lg:grid-cols-12 gap-12 items-start">
-            <div class="lg:col-span-4">
+        <div class="max-w-6xl mx-auto px-6 lg:px-12">
+          <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            <div class="lg:col-span-6">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="t-display">기공실은,<br/><span class="t-gold italic">보이지 않는 손</span>입니다.</h2>
+              <h2 class="t-headline" style="font-size:clamp(1.6rem,2.6vw,2.4rem);line-height:1.2;">기공실은,<br/><span class="t-gold">보이지 않는 손</span>입니다.</h2>
             </div>
-            <div class="lg:col-span-8 space-y-6">
+            <div class="lg:col-span-6 space-y-6">
               <p class="t-lead text-brown-700">
                 보철의 품질은 <strong class="t-gold">기공실의 정밀도</strong>에서 결정됩니다.<br/>
                 아무리 잘 본을 떠도 기공실에서 색·형태·교합이 어긋나면<br/>
