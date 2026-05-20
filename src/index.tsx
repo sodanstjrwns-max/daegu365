@@ -55,7 +55,8 @@ import {
   AdminBlogListPage, AdminBlogFormPage,
   AdminNoticesListPage, AdminNoticeFormPage,
   AdminFeesPage,
-  AdminSeoGuidePage
+  AdminSeoGuidePage,
+  AdminConsultationsPage
 } from './pages/admin'
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -1803,18 +1804,32 @@ app.get('/admin', async (c) => {
   )
   tables.forEach((t, i) => { stats[t] = counts[i]?.n || 0 })
 
-  // 최근 활동
-  const [recentBA, recentBlog, recentNotice, recentMembers] = await Promise.all([
+  // 최근 활동 + 상담 신청 통계
+  const [recentBA, recentBlog, recentNotice, recentMembers, recentConsults, consultStats] = await Promise.all([
     DB.prepare('SELECT id,title,is_published,created_at FROM before_afters ORDER BY id DESC LIMIT 5').all(),
     DB.prepare('SELECT id,title,slug,is_published,created_at FROM blog_posts ORDER BY id DESC LIMIT 5').all(),
     DB.prepare('SELECT id,title,is_main,is_published,created_at FROM notices ORDER BY id DESC LIMIT 5').all(),
     DB.prepare('SELECT id,name,email,created_at FROM members ORDER BY id DESC LIMIT 5').all(),
+    DB.prepare("SELECT id,name,phone,treatment,status,created_at FROM consultations ORDER BY id DESC LIMIT 5").all(),
+    DB.prepare(`
+      SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN status='new'  THEN 1 ELSE 0 END) AS new_c,
+        SUM(CASE WHEN date(created_at)=date('now','localtime') THEN 1 ELSE 0 END) AS today_c,
+        SUM(CASE WHEN created_at >= datetime('now','-7 days') THEN 1 ELSE 0 END) AS week_c
+      FROM consultations
+    `).first<any>(),
   ])
+  stats.consultations = consultStats?.total || 0
+  stats.consultations_new = consultStats?.new_c || 0
+  stats.consultations_today = consultStats?.today_c || 0
+  stats.consultations_week = consultStats?.week_c || 0
   stats.recent = {
     ba: recentBA.results,
     blog: recentBlog.results,
     notice: recentNotice.results,
     members: recentMembers.results,
+    consults: recentConsults.results,
   }
   return c.render(<AdminDashboard stats={stats} />, { title: 'Admin · Dashboard' })
 })
@@ -1901,6 +1916,93 @@ app.get('/admin/members/export.csv', async (c) => {
 app.get('/admin/members', async (c) => {
   const r = await c.env.DB.prepare('SELECT * FROM members ORDER BY created_at DESC').all()
   return c.render(<AdminMembersPage members={r.results as any} />, { title: 'Admin · 회원' })
+})
+
+// --- Admin: 상담 신청 ---
+app.get('/admin/consultations', async (c) => {
+  const status = (c.req.query('status') || '').trim()
+  const limit = 200
+
+  // 상태별 카운트 (탭 인디케이터)
+  const countsRow = await c.env.DB.prepare(`
+    SELECT
+      COUNT(*) AS total,
+      SUM(CASE WHEN status='new'        THEN 1 ELSE 0 END) AS new_c,
+      SUM(CASE WHEN status='contacted'  THEN 1 ELSE 0 END) AS contacted_c,
+      SUM(CASE WHEN status='booked'     THEN 1 ELSE 0 END) AS booked_c,
+      SUM(CASE WHEN status='completed'  THEN 1 ELSE 0 END) AS completed_c,
+      SUM(CASE WHEN status='no_show'    THEN 1 ELSE 0 END) AS no_show_c,
+      SUM(CASE WHEN status='cancelled'  THEN 1 ELSE 0 END) AS cancelled_c
+    FROM consultations
+  `).first<any>()
+
+  // 목록
+  let items: any[]
+  let totalForStatus: number
+  if (status) {
+    const r = await c.env.DB.prepare(
+      'SELECT * FROM consultations WHERE status = ? ORDER BY created_at DESC LIMIT ?'
+    ).bind(status, limit).all()
+    items = r.results as any[]
+    const tr = await c.env.DB.prepare('SELECT COUNT(*) as n FROM consultations WHERE status = ?').bind(status).first<any>()
+    totalForStatus = tr?.n || 0
+  } else {
+    const r = await c.env.DB.prepare(
+      'SELECT * FROM consultations ORDER BY created_at DESC LIMIT ?'
+    ).bind(limit).all()
+    items = r.results as any[]
+    totalForStatus = countsRow?.total || 0
+  }
+
+  return c.render(
+    <AdminConsultationsPage
+      items={items as any}
+      total={totalForStatus}
+      counts={{
+        all: countsRow?.total || 0,
+        new: countsRow?.new_c || 0,
+        contacted: countsRow?.contacted_c || 0,
+        booked: countsRow?.booked_c || 0,
+        completed: countsRow?.completed_c || 0,
+        no_show: countsRow?.no_show_c || 0,
+        cancelled: countsRow?.cancelled_c || 0,
+      }}
+      currentStatus={status}
+    />,
+    { title: 'Admin · 상담 신청' }
+  )
+})
+
+// 상담 신청 CSV 내보내기 — 실장님 엑셀 작업용
+app.get('/admin/consultations/export.csv', async (c) => {
+  const status = (c.req.query('status') || '').trim()
+  const sql = status
+    ? 'SELECT * FROM consultations WHERE status = ? ORDER BY created_at DESC'
+    : 'SELECT * FROM consultations ORDER BY created_at DESC'
+  const stmt = status ? c.env.DB.prepare(sql).bind(status) : c.env.DB.prepare(sql)
+  const r = await stmt.all()
+  const rows: any[] = r.results as any[]
+  const escape = (v: any) => {
+    const s = (v === null || v === undefined) ? '' : String(v)
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  }
+  const header = [
+    'id','status','treatment','treatment_tier','name','phone',
+    'preferred_date','preferred_time','message',
+    'privacy_agreed','marketing_agreed','source_channel','source_page',
+    'assigned_to','internal_memo','contacted_at','booked_at',
+    'created_at','updated_at'
+  ]
+  const lines = [header.join(',')]
+  for (const m of rows) lines.push(header.map(h => escape(m[h])).join(','))
+  const csv = '\uFEFF' + lines.join('\n')
+  const today = new Date().toISOString().slice(0, 10)
+  return new Response(csv, {
+    headers: {
+      'Content-Type': 'text/csv; charset=utf-8',
+      'Content-Disposition': `attachment; filename="consultations-${status || 'all'}-${today}.csv"`
+    }
+  })
 })
 
 // --- Admin: Before/After ---

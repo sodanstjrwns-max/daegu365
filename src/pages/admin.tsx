@@ -53,6 +53,7 @@ const AdminShell = ({ active, children }: { active: string, children: any }) => 
         <nav class="flex-1 p-4 space-y-1 text-sm">
           {[
             { href: '/admin', label: '대시보드', icon: 'fa-gauge', key: 'dash' },
+            { href: '/admin/consultations', label: '상담 신청', icon: 'fa-comments-dollar', key: 'consult' },
             { href: '/admin/before-after', label: '비포애프터', icon: 'fa-images', key: 'ba' },
             { href: '/admin/blog', label: '블로그', icon: 'fa-pen-nib', key: 'blog' },
             { href: '/admin/notices', label: '공지사항', icon: 'fa-bullhorn', key: 'notices' },
@@ -122,13 +123,52 @@ export const AdminDashboard = ({ stats }: { stats: any }) => (
       <h1 class="display text-3xl lg:text-4xl font-light text-brown-900 mb-2">대시보드</h1>
       <p class="text-brown-600 text-sm">대구365치과 홈페이지 관리 현황</p>
     </div>
-    {/* 4개 통계 카드 */}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-5 mb-8">
+
+    {/* ★ 상담 신청 알림 배너 — 신규 건 있으면 최상단에 강조 */}
+    {(stats.consultations_new || 0) > 0 && (
+      <a href="/admin/consultations?status=new" class="block mb-6 rounded-2xl overflow-hidden shadow-lux hover:shadow-xl transition group">
+        <div class="px-5 lg:px-7 py-4 lg:py-5 flex items-center justify-between gap-4" style="background:linear-gradient(135deg,#7c2d12 0%,#9a3412 50%,#c2410c 100%);color:#fff;">
+          <div class="flex items-center gap-4 min-w-0">
+            <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/15 backdrop-blur flex items-center justify-center shrink-0 animate-pulse">
+              <i class="fas fa-bell text-xl lg:text-2xl"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[11px] tracking-[0.2em] font-bold text-amber-200/90 mb-0.5">URGENT · 미처리 상담</div>
+              <div class="display text-xl lg:text-2xl font-black">
+                연락 대기 중인 신규 상담 <span class="text-amber-200">{stats.consultations_new}건</span>
+              </div>
+              <div class="text-xs text-amber-100/80 mt-0.5">바로 연락드려야 합니다 →</div>
+            </div>
+          </div>
+          <div class="text-2xl lg:text-3xl shrink-0 group-hover:translate-x-1 transition">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </div>
+      </a>
+    )}
+
+    {/* 5개 통계 카드 — 상담을 첫 번째로 */}
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-8">
+      <a href="/admin/consultations" class="bg-ivory rounded-2xl p-4 lg:p-6 shadow-card hover:shadow-lux transition block border-2 border-gold/30">
+        <div class="flex items-center justify-between mb-3 lg:mb-4">
+          <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center bg-gold/15 text-brown-900">
+            <i class="fas fa-comments-dollar"></i>
+          </div>
+          <i class="fas fa-arrow-right text-brown-300 text-xs"></i>
+        </div>
+        <div class="text-2xl lg:text-3xl display font-light text-brown-900">{stats.consultations}</div>
+        <div class="text-xs lg:text-sm text-brown-600 mt-1">상담 신청</div>
+        <div class="text-[10px] text-brown-500 mt-1.5 flex gap-2">
+          <span>오늘 <strong class="text-brown-800">{stats.consultations_today}</strong></span>
+          <span>·</span>
+          <span>7일 <strong class="text-brown-800">{stats.consultations_week}</strong></span>
+        </div>
+      </a>
       {[
-        { label: '누적 회원', value: stats.members, icon: 'fa-users', link: '/admin/members', color: 'bg-emerald-50 text-emerald-700' },
-        { label: '비포애프터', value: stats.before_afters, icon: 'fa-images', link: '/admin/before-after', color: 'bg-amber-50 text-amber-700' },
-        { label: '블로그 글', value: stats.blog_posts, icon: 'fa-pen-nib', link: '/admin/blog', color: 'bg-sky-50 text-sky-700' },
-        { label: '공지사항', value: stats.notices, icon: 'fa-bullhorn', link: '/admin/notices', color: 'bg-rose-50 text-rose-700' },
+        { label: '누적 회원',  value: stats.members,        icon: 'fa-users',     link: '/admin/members',       color: 'bg-emerald-50 text-emerald-700' },
+        { label: '비포애프터', value: stats.before_afters,  icon: 'fa-images',    link: '/admin/before-after',  color: 'bg-amber-50 text-amber-700' },
+        { label: '블로그 글',  value: stats.blog_posts,     icon: 'fa-pen-nib',   link: '/admin/blog',          color: 'bg-sky-50 text-sky-700' },
+        { label: '공지사항',   value: stats.notices,        icon: 'fa-bullhorn',  link: '/admin/notices',       color: 'bg-rose-50 text-rose-700' },
       ].map(c => (
         <a href={c.link} class="bg-ivory rounded-2xl p-4 lg:p-6 shadow-card hover:shadow-lux transition block">
           <div class="flex items-center justify-between mb-3 lg:mb-4">
@@ -145,6 +185,17 @@ export const AdminDashboard = ({ stats }: { stats: any }) => (
 
     {/* 최근 활동 피드 */}
     <div class="grid lg:grid-cols-2 gap-4 lg:gap-6 mb-8">
+      <RecentFeed
+        title="최근 상담 신청"
+        icon="fa-comments-dollar"
+        items={(stats.recent?.consults || []).map((r: any) => ({
+          title: r.name + ' · ' + r.treatment,
+          sub: STATUS_META[r.status]?.label || r.status,
+          date: (r.created_at || '').split(' ')[0],
+          href: `/admin/consultations?status=${r.status}`
+        }))}
+        moreHref="/admin/consultations"
+      />
       <RecentFeed
         title="최근 비포애프터"
         icon="fa-images"
@@ -194,10 +245,10 @@ export const AdminDashboard = ({ stats }: { stats: any }) => (
       <h3 class="display text-lg lg:text-xl font-medium mb-4">빠른 작업</h3>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
+          { href: '/admin/consultations?status=new', icon: 'fa-bell', label: '신규 상담 처리', sub: '미연락 환자 보기' },
           { href: '/admin/before-after/new', icon: 'fa-plus', label: '새 비포애프터', sub: '케이스 등록' },
           { href: '/admin/blog/new', icon: 'fa-plus', label: '새 블로그 글', sub: 'HTML · 썸네일' },
-          { href: '/admin/notices/new', icon: 'fa-plus', label: '새 공지사항', sub: '대장 고정 가능' },
-          { href: '/admin/members/export.csv', icon: 'fa-file-csv', label: '회원 CSV', sub: '엑셀 다운로드' },
+          { href: '/admin/consultations/export.csv', icon: 'fa-file-csv', label: '상담 CSV', sub: '엑셀 다운로드' },
         ].map(a => (
           <a href={a.href} class="p-4 rounded-xl bg-cream hover:bg-brown-100 transition block">
             <i class={`fas ${a.icon} text-gold mb-2`}></i>
@@ -1792,5 +1843,281 @@ export const AdminSeoGuidePage = ({ stats }: { stats: { blog: number, ba: number
         </a>
       </div>
     </div>
+  </AdminShell>
+)
+
+/* =========================================================================
+   상담 신청 관리 — 페이션트 퍼널의 핵심 운영 화면
+   실장님이 매일 아침 한 화면에서 다 처리 가능하도록 설계
+   ========================================================================= */
+type Consultation = {
+  id: number
+  treatment: string
+  treatment_tier: string | null
+  name: string
+  phone: string
+  birth_year: string | null
+  gender: string | null
+  preferred_date: string | null
+  preferred_time: string | null
+  message: string | null
+  privacy_agreed: number
+  marketing_agreed: number
+  source_channel: string
+  source_page: string | null
+  status: string
+  assigned_to: string | null
+  internal_memo: string | null
+  contacted_at: string | null
+  booked_at: string | null
+  ip_address: string | null
+  user_agent: string | null
+  created_at: string
+  updated_at: string
+}
+
+const STATUS_META: Record<string, { label: string, badge: string, dot: string }> = {
+  new:        { label: '신규',     badge: 'bg-rose-100 text-rose-800 border-rose-200',         dot: 'bg-rose-500' },
+  contacted:  { label: '연락완료', badge: 'bg-amber-100 text-amber-800 border-amber-200',      dot: 'bg-amber-500' },
+  booked:     { label: '예약확정', badge: 'bg-sky-100 text-sky-800 border-sky-200',            dot: 'bg-sky-500' },
+  completed:  { label: '내원완료', badge: 'bg-emerald-100 text-emerald-800 border-emerald-200', dot: 'bg-emerald-500' },
+  no_show:    { label: '노쇼',     badge: 'bg-stone-200 text-stone-700 border-stone-300',      dot: 'bg-stone-500' },
+  cancelled:  { label: '취소',     badge: 'bg-stone-100 text-stone-500 border-stone-200',      dot: 'bg-stone-400' },
+}
+
+const TIME_LABEL: Record<string, string> = {
+  morning: '오전', afternoon: '오후', evening: '야간 (월·목)', weekend: '주말', any: '아무때나'
+}
+
+const TIER_LABEL: Record<string, { txt: string, cls: string }> = {
+  signature: { txt: '시그니처', cls: 'bg-gold/20 text-brown-900 border-gold/50' },
+  special:   { txt: '특화',     cls: 'bg-brown-100 text-brown-800 border-brown-300' },
+  general:   { txt: '일반',     cls: 'bg-stone-100 text-stone-700 border-stone-300' },
+}
+
+export const AdminConsultationsPage = ({
+  items, total, counts, currentStatus
+}: {
+  items: Consultation[]
+  total: number
+  counts: { all: number, new: number, contacted: number, booked: number, completed: number, no_show: number, cancelled: number }
+  currentStatus: string
+}) => (
+  <AdminShell active="consult">
+    <ToastBootstrap />
+
+    {/* 헤더 */}
+    <div class="mb-6 lg:mb-8 flex flex-wrap justify-between items-end gap-3">
+      <div>
+        <h1 class="display text-3xl lg:text-4xl font-light text-brown-900 mb-1">상담 신청</h1>
+        <p class="text-brown-600 text-sm">
+          전체 <strong class="text-brown-900">{counts.all}</strong>건 ·
+          신규 <strong class="text-rose-700">{counts.new}</strong>건 ·
+          연락완료 <strong class="text-amber-700">{counts.contacted}</strong>건 ·
+          예약확정 <strong class="text-sky-700">{counts.booked}</strong>건 ·
+          내원완료 <strong class="text-emerald-700">{counts.completed}</strong>건
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="refreshBtn" class="btn-outline text-sm whitespace-nowrap" title="새로고침">
+          <i class="fas fa-rotate"></i> 새로고침
+        </button>
+        <a href="/admin/consultations/export.csv" class="btn-outline text-sm whitespace-nowrap">
+          <i class="fas fa-file-csv"></i> CSV
+        </a>
+      </div>
+    </div>
+
+    {/* 상태 필터 탭 */}
+    <div class="bg-ivory rounded-2xl shadow-card p-2 mb-5 overflow-x-auto">
+      <div class="flex items-center gap-1 min-w-max">
+        {[
+          { key: '',          label: '전체',     count: counts.all,        cls: 'text-brown-900' },
+          { key: 'new',       label: '신규',     count: counts.new,        cls: 'text-rose-700' },
+          { key: 'contacted', label: '연락완료', count: counts.contacted,  cls: 'text-amber-700' },
+          { key: 'booked',    label: '예약확정', count: counts.booked,     cls: 'text-sky-700' },
+          { key: 'completed', label: '내원완료', count: counts.completed,  cls: 'text-emerald-700' },
+          { key: 'no_show',   label: '노쇼',     count: counts.no_show,    cls: 'text-stone-600' },
+          { key: 'cancelled', label: '취소',     count: counts.cancelled,  cls: 'text-stone-400' },
+        ].map(t => (
+          <a
+            href={t.key ? `/admin/consultations?status=${t.key}` : '/admin/consultations'}
+            class={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition ${currentStatus === t.key ? 'bg-brown-900 text-ivory' : 'hover:bg-cream text-brown-700'}`}
+          >
+            {t.label} <span class={`ml-1 text-xs font-normal ${currentStatus === t.key ? 'text-gold' : t.cls}`}>{t.count}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    {/* 상담 신청 리스트 */}
+    {items.length === 0 ? (
+      <div class="bg-ivory rounded-2xl p-12 text-center shadow-card">
+        <i class="fas fa-inbox text-5xl text-brown-200 mb-4"></i>
+        <div class="display text-lg text-brown-700 mb-2">해당 상태의 상담 신청이 없습니다</div>
+        <p class="text-sm text-brown-500">다른 탭을 확인해보세요.</p>
+      </div>
+    ) : (
+      <div class="space-y-3">
+        {items.map(item => {
+          const sm = STATUS_META[item.status] || STATUS_META.new
+          const tier = item.treatment_tier ? TIER_LABEL[item.treatment_tier] : null
+          const created = (item.created_at || '').replace('T', ' ').slice(0, 16)
+          return (
+            <div class="bg-ivory rounded-2xl shadow-card p-4 lg:p-5 consult-card" data-id={item.id} data-status={item.status}>
+              <div class="flex flex-wrap items-start gap-4">
+                {/* 왼쪽 — 환자 정보 */}
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <span class={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-black border ${sm.badge}`}>
+                      <span class={`w-1.5 h-1.5 rounded-full ${sm.dot}`}></span>
+                      {sm.label}
+                    </span>
+                    {tier && (
+                      <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black border ${tier.cls}`}>
+                        {tier.txt}
+                      </span>
+                    )}
+                    <span class="text-[11px] text-brown-400 tracking-widest font-bold">#{String(item.id).padStart(6,'0')}</span>
+                    <span class="text-[11px] text-brown-500 ml-auto">{created}</span>
+                  </div>
+
+                  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-2.5">
+                    <span class="display text-xl font-black text-brown-950">{item.name}</span>
+                    <a href={`tel:${item.phone.replace(/-/g, '')}`} class="text-sm font-bold text-brown-800 hover:text-gold transition tracking-wider">
+                      <i class="fas fa-phone text-[10px] mr-1"></i>{item.phone}
+                    </a>
+                  </div>
+
+                  <div class="flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] text-brown-700">
+                    <div><i class="fas fa-tooth text-brown-400 text-[11px] mr-1"></i><strong class="text-brown-900">{item.treatment}</strong></div>
+                    {(item.preferred_date || item.preferred_time) && (
+                      <div>
+                        <i class="fas fa-calendar text-brown-400 text-[11px] mr-1"></i>
+                        희망: {item.preferred_date || '미정'}{item.preferred_time ? ` · ${TIME_LABEL[item.preferred_time] || item.preferred_time}` : ''}
+                      </div>
+                    )}
+                    {item.source_page && (
+                      <div class="text-[11px] text-brown-500">
+                        <i class="fas fa-link text-[10px] mr-1"></i>{item.source_page}
+                      </div>
+                    )}
+                  </div>
+
+                  {item.message && (
+                    <div class="mt-3 p-3 rounded-lg bg-cream/60 border border-brown-100 text-[13px] text-brown-700 leading-relaxed whitespace-pre-wrap break-words">
+                      <span class="text-[10px] text-brown-500 tracking-widest font-bold block mb-1">환자 메시지</span>
+                      {item.message}
+                    </div>
+                  )}
+
+                  {/* 내부 메모 — 인라인 편집 */}
+                  <div class="mt-3">
+                    <textarea
+                      class="consult-memo w-full text-[13px] px-3 py-2 rounded-lg border border-brown-100 bg-brown-50/40 focus:outline-none focus:border-brown-400 focus:bg-ivory transition resize-y"
+                      placeholder="내부 메모 (실장님/원장님만 보임) — 전화 결과, 다음 액션 등"
+                      rows={2}
+                      data-id={item.id}
+                    >{item.internal_memo || ''}</textarea>
+                    <div class="flex items-center justify-between mt-1.5">
+                      <div class="text-[10px] text-brown-400">
+                        {item.contacted_at && <span class="mr-3">📞 {item.contacted_at.slice(0,16).replace('T',' ')} 연락</span>}
+                        {item.booked_at && <span>📅 {item.booked_at.slice(0,16).replace('T',' ')} 예약확정</span>}
+                      </div>
+                      <button class="consult-memo-save text-[11px] font-bold text-brown-600 hover:text-brown-900 px-2 py-1 rounded" data-id={item.id}>
+                        <i class="fas fa-save mr-1"></i>메모 저장
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 오른쪽 — 액션 패널 */}
+                <div class="w-full lg:w-56 shrink-0 space-y-2 lg:border-l lg:border-brown-100 lg:pl-4">
+                  <div class="text-[10px] tracking-widest text-brown-500 font-bold mb-1">상태 변경</div>
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <button class="consult-status-btn px-2 py-2 rounded-lg text-[11px] font-bold border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100 transition" data-id={item.id} data-status="contacted">
+                      📞 연락완료
+                    </button>
+                    <button class="consult-status-btn px-2 py-2 rounded-lg text-[11px] font-bold border border-sky-200 bg-sky-50 text-sky-800 hover:bg-sky-100 transition" data-id={item.id} data-status="booked">
+                      📅 예약확정
+                    </button>
+                    <button class="consult-status-btn px-2 py-2 rounded-lg text-[11px] font-bold border border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 transition" data-id={item.id} data-status="completed">
+                      ✅ 내원완료
+                    </button>
+                    <button class="consult-status-btn px-2 py-2 rounded-lg text-[11px] font-bold border border-stone-200 bg-stone-50 text-stone-600 hover:bg-stone-100 transition" data-id={item.id} data-status="no_show">
+                      ❌ 노쇼
+                    </button>
+                  </div>
+                  <div class="grid grid-cols-2 gap-1.5 pt-1">
+                    <button class="consult-status-btn px-2 py-1.5 rounded-lg text-[11px] font-bold border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 transition" data-id={item.id} data-status="new">
+                      ↩ 신규
+                    </button>
+                    <button class="consult-status-btn px-2 py-1.5 rounded-lg text-[11px] font-bold border border-stone-200 bg-stone-100 text-stone-500 hover:bg-stone-200 transition" data-id={item.id} data-status="cancelled">
+                      취소
+                    </button>
+                  </div>
+                  <a href={`tel:${item.phone.replace(/-/g, '')}`} class="block text-center mt-2 px-3 py-2.5 rounded-lg bg-brown-900 text-ivory text-[12px] font-bold hover:bg-brown-800 transition">
+                    <i class="fas fa-phone mr-1"></i>지금 전화걸기
+                  </a>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    )}
+
+    {/* 페이지네이션 안내 */}
+    {total > items.length && (
+      <div class="text-center text-sm text-brown-500 mt-6">
+        최근 {items.length}건 표시 · 전체 {total}건
+      </div>
+    )}
+
+    {/* 클라이언트 인터랙션 */}
+    <script dangerouslySetInnerHTML={{__html: `
+      (function(){
+        // 새로고침
+        var rb=document.getElementById('refreshBtn');
+        rb&&rb.addEventListener('click',function(){location.reload()});
+
+        // 상태 변경 버튼
+        document.querySelectorAll('.consult-status-btn').forEach(function(btn){
+          btn.addEventListener('click', async function(){
+            var id=btn.dataset.id, status=btn.dataset.status;
+            if(!confirm('상태를 [' + ({new:'신규',contacted:'연락완료',booked:'예약확정',completed:'내원완료',no_show:'노쇼',cancelled:'취소'}[status]) + ']로 변경하시겠습니까?')) return;
+            try{
+              var res=await fetch('/api/admin/consultations/'+id,{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({status:status})
+              });
+              var d=await res.json();
+              if(d.ok){ window.adminToast&&window.adminToast('상태가 변경되었습니다','ok'); setTimeout(function(){location.reload()},600); }
+              else{ window.adminToast&&window.adminToast(d.message||'실패','err'); }
+            }catch(e){ window.adminToast&&window.adminToast('네트워크 오류','err'); }
+          });
+        });
+
+        // 메모 저장
+        document.querySelectorAll('.consult-memo-save').forEach(function(btn){
+          btn.addEventListener('click', async function(){
+            var id=btn.dataset.id;
+            var ta=document.querySelector('textarea.consult-memo[data-id="'+id+'"]');
+            if(!ta) return;
+            try{
+              var res=await fetch('/api/admin/consultations/'+id,{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({internal_memo:ta.value})
+              });
+              var d=await res.json();
+              if(d.ok){ window.adminToast&&window.adminToast('메모 저장 완료','ok'); }
+              else{ window.adminToast&&window.adminToast(d.message||'실패','err'); }
+            }catch(e){ window.adminToast&&window.adminToast('네트워크 오류','err'); }
+          });
+        });
+      })();
+    `}}/>
   </AdminShell>
 )
