@@ -141,8 +141,8 @@ export const Navbar = () => (
             <button
               type="button"
               id="openConsultModal"
-              class="hidden md:inline-flex items-center gap-2 h-10 px-5 rounded-full text-white font-black text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-500"
-              style="background:linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%); border:2px solid rgba(255,255,255,0.3);"
+              class="hidden md:inline-flex items-center gap-2 h-10 px-5 rounded-full text-white font-black text-sm transition-[background,box-shadow] duration-500"
+              style="background:linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%); box-shadow:0 4px 12px rgba(74,144,226,0.35);"
               aria-label="편리한 상담예약 모달 열기"
             >
               <i id="navCtaIcon" class="fas fa-calendar-check text-[13px]"></i>
@@ -309,12 +309,19 @@ export const Navbar = () => (
     {/* Spacer — 헤더 (h-24 = 96px) 높이 보정 */}
     <div class="h-24" aria-hidden="true"></div>
 
-    {/* ========== 네비바 편리한 상담예약 버튼 — 스크롤 위치에 따라 4단계 모핑
-        (별도 우측 상단 떠다니는 CTA 제거 — 네비바 버튼 하나로 통합)
-        ① 0~600px:    "편리한 상담예약"  — 파란   #4a90e2
-        ② 600~1500:   "내 케이스 진단받기" — 보라   #9b7ee5
-        ③ 1500~3000:  "지금 예약하기"     — 갈색   #5d4630
-        ④ 3000+:      "오늘 상담 가능!"   — 레드 펄스 #e85a6a */}
+    {/* ========== 네비바 편리한 상담예약 버튼 — 스크롤 깊이에 따라 "열정 게이지" 4단계 점진 상승
+        ┌─ 디자인 원칙 ─────────────────────────────────────────────────┐
+        │ ① 색상: 차가운 블루 → 따뜻한 인디고 → 진한 오렌지 → 뜨거운 레드     │
+        │    (컬러 휠을 한 방향으로만 — 톤이 튀지 않고 자연스럽게 데워짐)       │
+        │ ② 텍스트: 권유 → 부드러운 요청 → 명령 → 긴급 (어조가 점진 강화)     │
+        │ ③ 진동: 정적 → 살짝 호흡 → 빠른 호흡 → 강한 펄스 (체감 긴장도 ↑)     │
+        │ ④ 그림자: 약 → 중 → 강 → 핵 (시각적 무게 ↑)                       │
+        │ ⑤ 스케일: 1.0 → 1.02 → 1.04 → 1.06 (점진 확대)                  │
+        └────────────────────────────────────────────────────────────┘
+        ① 0~600px (히어로 둘러보는중):    "편리한 상담예약"   — 차분한 블루 #4a90e2
+        ② 600~1500 (정보 탐색중):        "상담 받아보세요"   — 따뜻한 인디고 #6366f1
+        ③ 1500~3000 (진료·사례 확인중):  "지금 예약하세요!"  — 진한 오렌지 #f97316
+        ④ 3000+ (페이지 끝):           "오늘 바로 상담받기!" — 뜨거운 레드 #ef4444 (강펄스) */}
     <script dangerouslySetInnerHTML={{__html: `
       (function(){
         var btn = document.getElementById('openConsultModal');
@@ -323,11 +330,48 @@ export const Navbar = () => (
         var labelEl = document.getElementById('navCtaLabel');
         if (!iconEl || !labelEl) return;
 
+        // 열정 게이지 — 단계가 올라갈수록 색온도·진동·그림자·스케일이 모두 점진 상승
         var STATES = [
-          { threshold: 0,    label: '편리한 상담예약',     icon: 'fa-calendar-check', bg: 'linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%)', border: 'rgba(255,255,255,0.3)',  pulse: false },
-          { threshold: 600,  label: '내 케이스 진단받기',  icon: 'fa-stethoscope',    bg: 'linear-gradient(135deg, #9b7ee5 0%, #7c5fcc 100%)', border: 'rgba(255,255,255,0.3)',  pulse: false },
-          { threshold: 1500, label: '지금 예약하기',       icon: 'fa-calendar-check', bg: 'linear-gradient(135deg, #5d4630 0%, #3f2f20 100%)', border: 'rgba(201,168,118,0.45)', pulse: false },
-          { threshold: 3000, label: '오늘 상담 가능!',     icon: 'fa-fire',           bg: 'linear-gradient(135deg, #e85a6a 0%, #d63d52 100%)', border: 'rgba(255,255,255,0.35)', pulse: true  }
+          {
+            // ① 차분한 관찰 단계 — 부담 없는 안내
+            threshold: 0,
+            label: '편리한 상담예약',
+            icon: 'fa-calendar-check',
+            bg: 'linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%)',
+            shadow: '0 4px 12px rgba(74,144,226,0.35)',
+            scale: 1.0,
+            anim: '' // 정적
+          },
+          {
+            // ② 관심 환기 — 살짝 따뜻해진 인디고 + 부드러운 호흡
+            threshold: 600,
+            label: '상담 받아보세요',
+            icon: 'fa-hand-holding-medical',
+            bg: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+            shadow: '0 6px 16px rgba(99,102,241,0.45)',
+            scale: 1.02,
+            anim: 'navCtaBreath 2.4s ease-in-out infinite'
+          },
+          {
+            // ③ 결심 유도 — 시선 끄는 오렌지 + 빠른 호흡 + 느낌표
+            threshold: 1500,
+            label: '지금 예약하세요!',
+            icon: 'fa-bolt',
+            bg: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)',
+            shadow: '0 8px 20px rgba(249,115,22,0.55)',
+            scale: 1.04,
+            anim: 'navCtaBreathFast 1.6s ease-in-out infinite'
+          },
+          {
+            // ④ 긴급 행동 촉발 — 뜨거운 레드 + 강한 펄스 + 불꽃 아이콘
+            threshold: 3000,
+            label: '오늘 바로 상담받기!',
+            icon: 'fa-fire',
+            bg: 'linear-gradient(135deg, #f87171 0%, #ef4444 100%)',
+            shadow: '0 10px 26px rgba(239,68,68,0.65)',
+            scale: 1.06,
+            anim: 'navCtaPulseHot 1.2s ease-in-out infinite'
+          }
         ];
 
         var currentIdx = -1;
@@ -337,6 +381,7 @@ export const Navbar = () => (
           if (idx === currentIdx) return;
           currentIdx = idx;
           var s = STATES[idx];
+          // 텍스트/아이콘은 부드러운 페이드
           labelEl.style.transition = 'opacity 0.25s';
           iconEl.style.transition = 'opacity 0.25s';
           labelEl.style.opacity = '0';
@@ -347,13 +392,11 @@ export const Navbar = () => (
             labelEl.style.opacity = '1';
             iconEl.style.opacity = '1';
           }, 220);
+          // 배경·그림자·스케일은 즉시 부드럽게 (0.5s transition)
           btn.style.background = s.bg;
-          btn.style.borderColor = s.border;
-          if (s.pulse) {
-            btn.style.animation = 'navCtaPulse 1.4s ease-in-out infinite';
-          } else {
-            btn.style.animation = '';
-          }
+          btn.style.boxShadow = s.shadow;
+          btn.style.setProperty('--cta-scale', s.scale);
+          btn.style.animation = s.anim;
         }
 
         function update() {
@@ -376,21 +419,42 @@ export const Navbar = () => (
       })();
     `}}/>
 
-    {/* 네비바 CTA 펄스 애니메이션 — 마지막 단계 "오늘 상담 가능!" 전용 */}
+    {/* 네비바 CTA — 점진적 열정 게이지 애니메이션 (호흡 약 → 호흡 강 → 펄스) */}
     <style dangerouslySetInnerHTML={{__html: `
-      @keyframes navCtaPulse {
-        0%, 100% {
-          box-shadow: 0 4px 12px rgba(232,90,106,0.45), 0 0 0 0 rgba(232,90,106,0.55);
-          transform: scale(1);
-        }
-        50% {
-          box-shadow: 0 6px 16px rgba(232,90,106,0.55), 0 0 0 10px rgba(232,90,106,0);
-          transform: scale(1.05);
-        }
+      #openConsultModal {
+        --cta-scale: 1;
+        transform: scale(var(--cta-scale));
       }
       #openConsultModal:hover {
-        transform: translateY(-2px) scale(1.04);
-        filter: brightness(1.08);
+        transform: scale(calc(var(--cta-scale) + 0.04)) translateY(-1px);
+        filter: brightness(1.1);
+      }
+      /* ② 단계 — 느린 부드러운 호흡 */
+      @keyframes navCtaBreath {
+        0%, 100% { transform: scale(var(--cta-scale)); }
+        50%      { transform: scale(calc(var(--cta-scale) + 0.015)); }
+      }
+      /* ③ 단계 — 빠른 호흡 + 그림자 강도 변동 */
+      @keyframes navCtaBreathFast {
+        0%, 100% {
+          transform: scale(var(--cta-scale));
+          box-shadow: 0 8px 20px rgba(249,115,22,0.55);
+        }
+        50% {
+          transform: scale(calc(var(--cta-scale) + 0.025));
+          box-shadow: 0 10px 24px rgba(249,115,22,0.7);
+        }
+      }
+      /* ④ 단계 — 강한 펄스 (링 확산 + 스케일) */
+      @keyframes navCtaPulseHot {
+        0%, 100% {
+          transform: scale(var(--cta-scale));
+          box-shadow: 0 10px 26px rgba(239,68,68,0.65), 0 0 0 0 rgba(239,68,68,0.55);
+        }
+        50% {
+          transform: scale(calc(var(--cta-scale) + 0.035));
+          box-shadow: 0 12px 30px rgba(239,68,68,0.75), 0 0 0 12px rgba(239,68,68,0);
+        }
       }
     `}}/>
 
