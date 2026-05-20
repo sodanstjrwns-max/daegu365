@@ -92,13 +92,13 @@ export const IconTreatmentPage = ({
 
       {/* 2. WHAT IS */}
       <section class="py-24 lg:py-32 bg-ivory">
-        <div class="max-w-5xl mx-auto px-6 lg:px-12">
-          <div class="grid lg:grid-cols-12 gap-12 items-start">
-            <div class="lg:col-span-4">
+        <div class="max-w-6xl mx-auto px-6 lg:px-12">
+          <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="t-display">아이콘은,<br/><span class="t-gold italic">스며드는 레진</span>입니다.</h2>
+              <h2 class="t-display" style="font-size:clamp(1.8rem,4.2vw,3.4rem);line-height:1.12">아이콘은,<br/><span class="t-gold italic">스며드는 레진</span>입니다.</h2>
             </div>
-            <div class="lg:col-span-8 space-y-6">
+            <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
                 일반 레진은 “충전”입니다. 충치 부위를 깎고 채웁니다. 아이콘은 다릅니다. <strong class="t-gold">에나멜 내부의 미세 결손부에 스며들어</strong> 변색·초기 우식을 차단해요.
               </p>

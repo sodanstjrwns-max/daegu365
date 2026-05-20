@@ -97,13 +97,13 @@ export const ProstheticTreatmentPage = ({
       })()}
 
       <section class="py-24 lg:py-32 bg-ivory">
-        <div class="max-w-5xl mx-auto px-6 lg:px-12">
-          <div class="grid lg:grid-cols-12 gap-12 items-start">
-            <div class="lg:col-span-4">
+        <div class="max-w-6xl mx-auto px-6 lg:px-12">
+          <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="t-display">보철은,<br/><span class="t-gold italic">치아의 옷</span>입니다.</h2>
+              <h2 class="t-display" style="font-size:clamp(1.8rem,4.2vw,3.4rem);line-height:1.12">보철은,<br/><span class="t-gold italic">치아의 옷</span>입니다.</h2>
             </div>
-            <div class="lg:col-span-8 space-y-6">
+            <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
                 손상되거나 잃은 치아 부위를 인공 재료로 복원하는 시술이에요.<br/>
                 <strong class="t-gold">기능·심미·내구성</strong>이 동시에 충족되어야 진짜 보철입니다.

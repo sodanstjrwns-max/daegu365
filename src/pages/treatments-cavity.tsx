@@ -187,15 +187,15 @@ export const CavityTreatmentPage = ({
 
       {/* 2. WHAT IS — 충치란 */}
       <section class="py-24 lg:py-32 bg-ivory">
-        <div class="max-w-5xl mx-auto px-6 lg:px-12">
-          <div class="grid lg:grid-cols-12 gap-12 items-start">
-            <div class="lg:col-span-4">
+        <div class="max-w-6xl mx-auto px-6 lg:px-12">
+          <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="t-display">
+              <h2 class="t-display" style="font-size:clamp(1.8rem,4.2vw,3.4rem);line-height:1.12">
                 충치는,<br/><span class="t-gold italic">감염 질환</span>입니다.
               </h2>
             </div>
-            <div class="lg:col-span-8 space-y-6">
+            <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
                 충치는 단순한 “구멍”이 아닙니다. 뮤탄스균이 만든 산이 치아 미네랄을 녹여 진행하는 <strong class="t-gold">감염성 진행 질환</strong>이에요.
               </p>
