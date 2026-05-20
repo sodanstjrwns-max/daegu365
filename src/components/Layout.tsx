@@ -309,19 +309,18 @@ export const Navbar = () => (
     {/* Spacer — 헤더 (h-24 = 96px) 높이 보정 */}
     <div class="h-24" aria-hidden="true"></div>
 
-    {/* ========== 네비바 편리한 상담예약 버튼 — 스크롤 깊이에 따라 "열정 게이지" 4단계 점진 상승
+    {/* ========== 네비바 편리한 상담예약 버튼 — 페이지 스크롤 진행도(%) 기반 열정 게이지
         ┌─ 디자인 원칙 ─────────────────────────────────────────────────┐
         │ ① 색상: 차가운 블루 → 따뜻한 인디고 → 진한 오렌지 → 뜨거운 레드     │
-        │    (컬러 휠을 한 방향으로만 — 톤이 튀지 않고 자연스럽게 데워짐)       │
-        │ ② 텍스트: 권유 → 부드러운 요청 → 명령 → 긴급 (어조가 점진 강화)     │
-        │ ③ 진동: 정적 → 살짝 호흡 → 빠른 호흡 → 강한 펄스 (체감 긴장도 ↑)     │
-        │ ④ 그림자: 약 → 중 → 강 → 핵 (시각적 무게 ↑)                       │
-        │ ⑤ 스케일: 1.0 → 1.02 → 1.04 → 1.06 (점진 확대)                  │
+        │ ② 텍스트: 권유 → 부드러운 요청 → 명령 → 긴급                       │
+        │ ③ 진동/스케일/그림자: 모두 단계별 점진 상승                          │
         └────────────────────────────────────────────────────────────┘
-        ① 0~600px (히어로 둘러보는중):    "편리한 상담예약"   — 차분한 블루 #4a90e2
-        ② 600~1500 (정보 탐색중):        "상담 받아보세요"   — 따뜻한 인디고 #6366f1
-        ③ 1500~3000 (진료·사례 확인중):  "지금 예약하세요!"  — 진한 오렌지 #f97316
-        ④ 3000+ (페이지 끝):           "오늘 바로 상담받기!" — 뜨거운 레드 #ef4444 (강펄스) */}
+        ★ 핵심 변경 — 절대 픽셀(px) 기반이 아닌 페이지 진행률(%) 기반으로 전환
+        ★ 페이지 높이가 짧든 길든 동일한 비율로 단계가 진행됨
+        ① 0~25%   : "편리한 상담예약"     — 차분한 블루
+        ② 25~50%  : "상담 받아보세요"     — 따뜻한 인디고
+        ③ 50~80%  : "지금 예약하세요!"    — 진한 오렌지
+        ④ 80~100% : "오늘 바로 상담받기!" — 뜨거운 레드 (강펄스) */}
     <script dangerouslySetInnerHTML={{__html: `
       (function(){
         var btn = document.getElementById('openConsultModal');
@@ -330,21 +329,21 @@ export const Navbar = () => (
         var labelEl = document.getElementById('navCtaLabel');
         if (!iconEl || !labelEl) return;
 
-        // 열정 게이지 — 단계가 올라갈수록 색온도·진동·그림자·스케일이 모두 점진 상승
+        // 페이지 진행률(0.0~1.0) 기반 단계 — 페이지 길이에 비례하여 자연스럽게 데워짐
         var STATES = [
           {
-            // ① 차분한 관찰 단계 — 부담 없는 안내
-            threshold: 0,
+            // ① 0~25% (히어로 둘러보는중) — 차분한 관찰
+            minProgress: 0.00,
             label: '편리한 상담예약',
             icon: 'fa-calendar-check',
             bg: 'linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%)',
             shadow: '0 4px 12px rgba(74,144,226,0.35)',
             scale: 1.0,
-            anim: '' // 정적
+            anim: ''
           },
           {
-            // ② 관심 환기 — 살짝 따뜻해진 인디고 + 부드러운 호흡
-            threshold: 600,
+            // ② 25~50% (정보 탐색중) — 살짝 따뜻해진 인디고 + 부드러운 호흡
+            minProgress: 0.25,
             label: '상담 받아보세요',
             icon: 'fa-hand-holding-medical',
             bg: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
@@ -353,8 +352,8 @@ export const Navbar = () => (
             anim: 'navCtaBreath 2.4s ease-in-out infinite'
           },
           {
-            // ③ 결심 유도 — 시선 끄는 오렌지 + 빠른 호흡 + 느낌표
-            threshold: 1500,
+            // ③ 50~80% (진료/사례 확인중) — 시선 끄는 오렌지 + 빠른 호흡 + 느낌표
+            minProgress: 0.50,
             label: '지금 예약하세요!',
             icon: 'fa-bolt',
             bg: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)',
@@ -363,8 +362,8 @@ export const Navbar = () => (
             anim: 'navCtaBreathFast 1.6s ease-in-out infinite'
           },
           {
-            // ④ 긴급 행동 촉발 — 뜨거운 레드 + 강한 펄스 + 불꽃 아이콘
-            threshold: 3000,
+            // ④ 80~100% (페이지 끝 진입) — 뜨거운 레드 + 강한 펄스 + 불꽃
+            minProgress: 0.80,
             label: '오늘 바로 상담받기!',
             icon: 'fa-fire',
             bg: 'linear-gradient(135deg, #f87171 0%, #ef4444 100%)',
@@ -381,7 +380,6 @@ export const Navbar = () => (
           if (idx === currentIdx) return;
           currentIdx = idx;
           var s = STATES[idx];
-          // 텍스트/아이콘은 부드러운 페이드
           labelEl.style.transition = 'opacity 0.25s';
           iconEl.style.transition = 'opacity 0.25s';
           labelEl.style.opacity = '0';
@@ -392,24 +390,46 @@ export const Navbar = () => (
             labelEl.style.opacity = '1';
             iconEl.style.opacity = '1';
           }, 220);
-          // 배경·그림자·스케일은 즉시 부드럽게 (0.5s transition)
           btn.style.background = s.bg;
           btn.style.boxShadow = s.shadow;
           btn.style.setProperty('--cta-scale', s.scale);
           btn.style.animation = s.anim;
         }
 
+        function getScrollProgress() {
+          // 스크롤 가능한 전체 높이 = 문서 높이 - 뷰포트 높이
+          var doc = document.documentElement;
+          var body = document.body;
+          var docHeight = Math.max(
+            body.scrollHeight, doc.scrollHeight,
+            body.offsetHeight, doc.offsetHeight,
+            body.clientHeight, doc.clientHeight
+          );
+          var winHeight = window.innerHeight || doc.clientHeight;
+          var maxScroll = docHeight - winHeight;
+          if (maxScroll <= 0) return 0; // 스크롤 불가 페이지 (짧은 페이지)
+          var y = window.scrollY || window.pageYOffset || 0;
+          return Math.min(1, Math.max(0, y / maxScroll));
+        }
+
         function update() {
-          var y = window.scrollY || window.pageYOffset;
+          var progress = getScrollProgress();
           var idx = 0;
           for (var i = STATES.length - 1; i >= 0; i--) {
-            if (y >= STATES[i].threshold) { idx = i; break; }
+            if (progress >= STATES[i].minProgress) { idx = i; break; }
           }
           applyState(idx);
           ticking = false;
         }
 
         window.addEventListener('scroll', function(){
+          if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+          }
+        }, { passive: true });
+        // 리사이즈 시에도 다시 계산 (문서 높이가 바뀔 수 있음)
+        window.addEventListener('resize', function(){
           if (!ticking) {
             window.requestAnimationFrame(update);
             ticking = true;
