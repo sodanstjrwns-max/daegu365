@@ -105,47 +105,47 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
     </section>
 
     <section class="py-24 max-w-[1440px] mx-auto px-6 lg:px-12">
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 fade-in-stagger">
-        {/* PPT PC3-S7 반영: 전문의 배지 글자 키움 + 사진 사이즈 축소 + 이름·문구 가독성 강화 */}
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 fade-in-stagger">
+        {/* PPT PC3-S7 v2 — 참고사진 스타일: 사진 축소(3/4) + 배지·이름·메시지 가독성 대폭 강화 */}
         {doctors.map(d => {
           const specialtyLabel = d.is_representative ? '대표원장' : d.position
           return (
-            <a href={`/doctors/${d.slug}`} class="group block bg-cream rounded-[24px] overflow-hidden border border-brown-200/60 hover:border-gold/60 hover:shadow-xl transition-all duration-500">
-              {/* 사진 — 4:5 비율로 줄임 (기존 3:4보다 짧음) */}
-              <div class="img-frame aspect-[4/5] overflow-hidden bg-brown-100 relative">
+            <a href={`/doctors/${d.slug}`} class="doctor-card group block bg-cream rounded-[20px] overflow-hidden border border-brown-200/60 hover:border-gold/70 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500">
+              {/* 사진 — 3:4 비율로 축소 (이전 4:5 → 더 짧고 컴팩트) */}
+              <div class="img-frame aspect-[3/4] overflow-hidden bg-brown-100 relative">
                 <img
                   src={getDoctorPhoto(d.slug)}
                   alt={`${d.name} ${specialtyLabel}`}
                   loading="lazy"
-                  class="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-700"
+                  class="w-full h-full object-cover object-[center_18%] group-hover:scale-105 transition-transform duration-700"
                 />
-                {/* 사진 위 그라데이션 — 하단 정보 가독성 보조 */}
-                <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-cream via-cream/40 to-transparent"></div>
               </div>
 
               {/* 정보 영역 — 패딩 늘림 + 글자 키움 */}
-              <div class="px-6 pt-5 pb-7">
-                {/* 전문의 배지 — 골드 칩으로 강조 (PPT 요청: 크기 키우기) */}
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/15 border border-gold/40 mb-4">
-                  <i class="fas fa-user-doctor text-gold text-xs"></i>
-                  <span class="text-[13px] md:text-sm font-bold text-brown-900 tracking-wide">
+              <div class="px-5 pt-5 pb-6">
+                {/* 전문의 배지 — 골드 채움 칩 (가독성 대폭 강화) */}
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md mb-3 shadow-sm" style="background:linear-gradient(135deg, #c9a876 0%, #b08a4a 100%);">
+                  <i class="fas fa-user-doctor text-white text-[11px]"></i>
+                  <span class="text-[13px] md:text-[14px] font-black text-white tracking-wide" style="letter-spacing:0.02em;">
                     {specialtyLabel}
                   </span>
                 </div>
 
-                {/* 이름 — 좀 더 크게 */}
-                <h3 class="display text-3xl md:text-[2rem] font-black tracking-tight mb-3 text-brown-900">
-                  {d.name} <span class="text-gold text-xl">원장</span>
+                {/* 이름 + 진료과 한 줄 */}
+                <h3 class="display font-black tracking-tight mb-3 text-brown-950 leading-tight" style="font-size:clamp(1.6rem, 2.2vw, 2rem);">
+                  {d.name} <span class="text-brown-500 font-bold" style="font-size:0.7em;">원장</span>
                 </h3>
 
-                {/* 메시지 */}
-                <p class="text-brown-700 text-sm leading-relaxed line-clamp-2 min-h-[2.6em]">
-                  {d.message}
-                </p>
+                {/* 메시지 — 골드 좌측 보더 + 따옴표 강조 */}
+                <div class="relative pl-3 border-l-[3px] border-gold/70 mb-5">
+                  <p class="text-brown-800 text-[14px] leading-[1.55] font-medium line-clamp-2 min-h-[2.85em]">
+                    <span class="text-gold/80 font-bold mr-0.5">"</span>{d.message}<span class="text-gold/80 font-bold ml-0.5">"</span>
+                  </p>
+                </div>
 
                 {/* 프로필 보기 CTA */}
-                <div class="mt-5 pt-5 border-t border-brown-200 flex items-center justify-between text-sm font-bold text-brown-900 group-hover:text-gold transition-colors">
-                  <span>프로필 보기</span>
+                <div class="pt-4 border-t border-brown-200 flex items-center justify-between text-[13px] font-bold text-brown-900 group-hover:text-gold transition-colors">
+                  <span class="tracking-wide">프로필 보기</span>
                   <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
                 </div>
               </div>
