@@ -1,5 +1,6 @@
 import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
+import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -454,9 +455,7 @@ export const PainlessAnesthesiaTreatmentPage = ({
               {doctors.slice(0, 6).map((d: any) => (
                 <a href={`/doctors/${d.slug}`} class="block bg-cream rounded-xl overflow-hidden hover:shadow-lg transition group">
                   <div class="aspect-[3/4] overflow-hidden bg-brown-100">
-                    {d.photo_url
-                      ? <img src={d.photo_url} alt={d.name} class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy"/>
-                      : <div class="w-full h-full flex items-center justify-center text-6xl text-brown-300"><i class="fas fa-user-doctor"></i></div>}
+                    <img src={d.photo_url || getDoctorPhoto(d.slug)} alt={d.name} class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy"/>
                   </div>
                   <div class="p-6">
                     <div class="text-xs text-gold uppercase tracking-wider mb-2">{d.position}</div>

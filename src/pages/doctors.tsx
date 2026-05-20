@@ -3,7 +3,8 @@ import type { Doctor, Treatment, BeforeAfter, BlogPost } from '../lib/types'
 
 // 의료진 슬러그 → 프로필 사진 매핑 (파일명 기준 7명 + 단체 4장)
 // PPT 모바일 슬라이드 7 + PC1 슬라이드 13 — 최혜정 ↔ 김진덕 사진 서로 교체
-const DOCTOR_PHOTO: Record<string, string> = {
+// export: 진료별 페이지에서도 동일한 매핑을 공유하여 사진이 누락되지 않도록 함
+export const DOCTOR_PHOTO: Record<string, string> = {
   'kim-seongju':  '/r2/images/doctors/kim-seongju.jpg',
   'jung-jaeheon': '/r2/images/doctors/jung-jaeheon.jpg',
   'kim-sangwon':  '/r2/images/doctors/kim-sangwon.jpg',
@@ -12,7 +13,7 @@ const DOCTOR_PHOTO: Record<string, string> = {
   'han-jieun':    '/r2/images/doctors/han-jieun.jpg',
   'lee-seoyoung': '/r2/images/doctors/lee-seoyoung.jpg',
 }
-const getDoctorPhoto = (slug: string) =>
+export const getDoctorPhoto = (slug: string) =>
   DOCTOR_PHOTO[slug] || '/r2/images/doctors/team-horizontal-smile.jpg'
 
 // 의료진 슬러그 → 인터뷰 영상 R2 스트리밍 라우트 매핑

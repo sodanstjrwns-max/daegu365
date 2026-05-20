@@ -1,5 +1,6 @@
 import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
+import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -602,7 +603,7 @@ export const OrthoTreatmentPage = ({
                 <a href={`/doctors/${d.slug}`} class="group">
                   <div class="aspect-[3/4] rounded-2xl mb-4 overflow-hidden bg-brown-100 group-hover:shadow-lux transition">
                     <img
-                      src={d.photo_url || `/r2/images/doctors/${d.slug}.jpg`}
+                      src={d.photo_url || getDoctorPhoto(d.slug)}
                       alt={d.name}
                       class="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-700"
                       loading="lazy"
