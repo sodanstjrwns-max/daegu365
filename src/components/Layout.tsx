@@ -133,17 +133,20 @@ export const Navbar = () => (
               <i class="fas fa-user-plus text-[13px]"></i>
               <span>회원가입</span>
             </a>
-            {/* 편리한 상담예약 — 메인 CTA 버튼 (네비바 고정버튼은 페이지 우측에 floatingActions로 별도 노출 → 여기서는 동일 모달 트리거) */}
+            {/* 편리한 상담예약 — 메인 CTA 버튼 (스크롤 위치에 따라 색상/텍스트 변신 — openConsultModal 클릭 직접 트리거)
+                ① 0~600px:    "편리한 상담예약" — 파란
+                ② 600~1500:   "내 케이스 진단받기" — 보라
+                ③ 1500~3000:  "지금 예약하기" — 갈색
+                ④ 3000+:      "오늘 상담 가능!" — 레드 펄스 */}
             <button
               type="button"
-              id="navConsultBtn"
-              class="hidden md:inline-flex items-center gap-2 h-10 px-5 rounded-full text-white font-black text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
-              style="background:linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%);"
-              onclick="document.getElementById('openConsultModal')?.click()"
-              aria-label="편리한 상담예약"
+              id="openConsultModal"
+              class="hidden md:inline-flex items-center gap-2 h-10 px-5 rounded-full text-white font-black text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-500"
+              style="background:linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%); border:2px solid rgba(255,255,255,0.3);"
+              aria-label="편리한 상담예약 모달 열기"
             >
-              <i class="fas fa-calendar-check text-[13px]"></i>
-              <span>편리한 상담예약</span>
+              <i id="navCtaIcon" class="fas fa-calendar-check text-[13px]"></i>
+              <span id="navCtaLabel">편리한 상담예약</span>
             </button>
             <button id="menuBtn" class="lg:hidden w-10 h-10 flex items-center justify-center text-brown-800">
               <i class="fas fa-bars text-xl"></i>
@@ -306,74 +309,25 @@ export const Navbar = () => (
     {/* Spacer — 헤더 (h-24 = 96px) 높이 보정 */}
     <div class="h-24" aria-hidden="true"></div>
 
-    {/* ========== PPT PC3-S15 v2 — 우측 상단 고정 CTA 모핑 버튼 (참고사진 매칭)
-        스크롤 위치에 따라 동일 위치에서 텍스트/색상/아이콘이 4단계 변신:
-        ① 0~600px (히어로):       "편리한 상담예약" — 파란 그라데이션 (#4a90e2)
-        ② 600~1500px (소개/특징): "내 케이스 진단받기" — 보라 그라데이션 (#9b7ee5)
-        ③ 1500~3000px (진료/사례): "지금 예약하기" — 갈색 그라데이션 (브랜드)
-        ④ 3000px+ (페이지 하단):  "오늘 상담 가능!" — 레드 펄스 그라데이션 (#e85a6a)
-        모든 버튼은 동일하게 openConsultModal 클릭 트리거 ========== */}
-    <button
-      type="button"
-      id="openConsultModal"
-      class="fixed z-40 inline-flex items-center gap-2 h-11 px-5 rounded-full font-black text-sm shadow-xl border-2 transition-all duration-500"
-      style="top: 124px; right: 20px; background:linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%); color:#fff; border-color:rgba(255,255,255,0.3);"
-      aria-label="상담예약 모달 열기"
-    >
-      <i id="floatingCtaIcon" class="fas fa-calendar-check text-[13px]"></i>
-      <span id="floatingCtaLabel">편리한 상담예약</span>
-    </button>
-
-    {/* 스크롤 위치별 버튼 모핑 스크립트 */}
+    {/* ========== 네비바 편리한 상담예약 버튼 — 스크롤 위치에 따라 4단계 모핑
+        (별도 우측 상단 떠다니는 CTA 제거 — 네비바 버튼 하나로 통합)
+        ① 0~600px:    "편리한 상담예약"  — 파란   #4a90e2
+        ② 600~1500:   "내 케이스 진단받기" — 보라   #9b7ee5
+        ③ 1500~3000:  "지금 예약하기"     — 갈색   #5d4630
+        ④ 3000+:      "오늘 상담 가능!"   — 레드 펄스 #e85a6a */}
     <script dangerouslySetInnerHTML={{__html: `
       (function(){
         var btn = document.getElementById('openConsultModal');
         if (!btn) return;
-        var iconEl = document.getElementById('floatingCtaIcon');
-        var labelEl = document.getElementById('floatingCtaLabel');
+        var iconEl = document.getElementById('navCtaIcon');
+        var labelEl = document.getElementById('navCtaLabel');
+        if (!iconEl || !labelEl) return;
 
-        // 4단계 변신 정의
         var STATES = [
-          {
-            // ① 페이지 최상단 — 편리한 상담예약 (파란색)
-            threshold: 0,
-            label: '편리한 상담예약',
-            icon: 'fa-calendar-check',
-            bg: 'linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%)',
-            color: '#fff',
-            border: 'rgba(255,255,255,0.3)',
-            pulse: false
-          },
-          {
-            // ② 중간 — 내 케이스 진단받기 (보라)
-            threshold: 600,
-            label: '내 케이스 진단받기',
-            icon: 'fa-stethoscope',
-            bg: 'linear-gradient(135deg, #9b7ee5 0%, #7c5fcc 100%)',
-            color: '#fff',
-            border: 'rgba(255,255,255,0.3)',
-            pulse: false
-          },
-          {
-            // ③ 후반 — 지금 예약하기 (브랜드 갈색)
-            threshold: 1500,
-            label: '지금 예약하기',
-            icon: 'fa-calendar-check',
-            bg: 'linear-gradient(135deg, #5d4630 0%, #3f2f20 100%)',
-            color: '#fff',
-            border: 'rgba(201,168,118,0.45)',
-            pulse: false
-          },
-          {
-            // ④ 하단 — 오늘 상담 가능! (레드 펄스)
-            threshold: 3000,
-            label: '오늘 상담 가능!',
-            icon: 'fa-fire',
-            bg: 'linear-gradient(135deg, #e85a6a 0%, #d63d52 100%)',
-            color: '#fff',
-            border: 'rgba(255,255,255,0.35)',
-            pulse: true
-          }
+          { threshold: 0,    label: '편리한 상담예약',     icon: 'fa-calendar-check', bg: 'linear-gradient(135deg, #4a90e2 0%, #3b75d4 100%)', border: 'rgba(255,255,255,0.3)',  pulse: false },
+          { threshold: 600,  label: '내 케이스 진단받기',  icon: 'fa-stethoscope',    bg: 'linear-gradient(135deg, #9b7ee5 0%, #7c5fcc 100%)', border: 'rgba(255,255,255,0.3)',  pulse: false },
+          { threshold: 1500, label: '지금 예약하기',       icon: 'fa-calendar-check', bg: 'linear-gradient(135deg, #5d4630 0%, #3f2f20 100%)', border: 'rgba(201,168,118,0.45)', pulse: false },
+          { threshold: 3000, label: '오늘 상담 가능!',     icon: 'fa-fire',           bg: 'linear-gradient(135deg, #e85a6a 0%, #d63d52 100%)', border: 'rgba(255,255,255,0.35)', pulse: true  }
         ];
 
         var currentIdx = -1;
@@ -383,7 +337,6 @@ export const Navbar = () => (
           if (idx === currentIdx) return;
           currentIdx = idx;
           var s = STATES[idx];
-          // 부드러운 페이드 (텍스트/아이콘만 0.3s)
           labelEl.style.transition = 'opacity 0.25s';
           iconEl.style.transition = 'opacity 0.25s';
           labelEl.style.opacity = '0';
@@ -395,20 +348,16 @@ export const Navbar = () => (
             iconEl.style.opacity = '1';
           }, 220);
           btn.style.background = s.bg;
-          btn.style.color = s.color;
           btn.style.borderColor = s.border;
           if (s.pulse) {
-            btn.style.animation = 'floatingCtaPulse 1.4s ease-in-out infinite';
-            btn.style.boxShadow = '0 10px 30px -8px rgba(232,90,106,0.55), 0 0 0 0 rgba(232,90,106,0.6)';
+            btn.style.animation = 'navCtaPulse 1.4s ease-in-out infinite';
           } else {
             btn.style.animation = '';
-            btn.style.boxShadow = '0 10px 25px -8px rgba(0,0,0,0.25)';
           }
         }
 
         function update() {
           var y = window.scrollY || window.pageYOffset;
-          // 가장 큰 threshold를 만족하는 상태 찾기
           var idx = 0;
           for (var i = STATES.length - 1; i >= 0; i--) {
             if (y >= STATES[i].threshold) { idx = i; break; }
@@ -427,20 +376,20 @@ export const Navbar = () => (
       })();
     `}}/>
 
-    {/* CTA 펄스 애니메이션 keyframes */}
+    {/* 네비바 CTA 펄스 애니메이션 — 마지막 단계 "오늘 상담 가능!" 전용 */}
     <style dangerouslySetInnerHTML={{__html: `
-      @keyframes floatingCtaPulse {
+      @keyframes navCtaPulse {
         0%, 100% {
-          box-shadow: 0 10px 30px -8px rgba(232,90,106,0.55), 0 0 0 0 rgba(232,90,106,0.55);
+          box-shadow: 0 4px 12px rgba(232,90,106,0.45), 0 0 0 0 rgba(232,90,106,0.55);
           transform: scale(1);
         }
         50% {
-          box-shadow: 0 10px 30px -8px rgba(232,90,106,0.65), 0 0 0 14px rgba(232,90,106,0);
-          transform: scale(1.04);
+          box-shadow: 0 6px 16px rgba(232,90,106,0.55), 0 0 0 10px rgba(232,90,106,0);
+          transform: scale(1.05);
         }
       }
       #openConsultModal:hover {
-        transform: translateY(-2px) scale(1.03);
+        transform: translateY(-2px) scale(1.04);
         filter: brightness(1.08);
       }
     `}}/>

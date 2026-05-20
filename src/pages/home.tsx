@@ -32,23 +32,11 @@ export const HomePage = () => (
       <div class="cinematic-hero-content max-w-[1440px] mx-auto px-6 lg:px-12 pt-32 pb-24 min-h-screen flex flex-col justify-between">
         {/* TOP GROUP — 평생보증/LIVE → 4-카드 → SINCE 2025 라벨을 균일 mt-6 간격으로 묶음 */}
         <div>
-          {/* Top bar — PPT PC3 슬라이드 2·5: 상담예약·전화 버튼 (LIVE는 상단 메뉴바 로고 옆으로 이동) */}
-          <div class="flex flex-wrap items-center justify-between gap-6 fade-in">
-            <div class="flex flex-wrap items-center gap-3">
-              <div class="ribbon">
-                <i class="fas fa-shield-heart"></i>
-                <span>평생 보증 임플란트</span>
-              </div>
-            </div>
-            <div class="hidden md:flex items-center gap-2">
-              <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md" style="background:#FEE500;color:#191919;">
-                <i class="fas fa-comment"></i>
-                <span>상담예약</span>
-              </a>
-              <a href="tel:053-357-0365" class="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md" style="background:var(--gold);color:var(--brown-950);">
-                <i class="fas fa-phone"></i>
-                <span style="white-space:nowrap;">053-357-0365</span>
-              </a>
+          {/* Top bar — 평생 보증 리본만 (상담예약/전화 버튼은 네비바의 편리한 상담예약으로 통합 제거) */}
+          <div class="flex flex-wrap items-center gap-6 fade-in">
+            <div class="ribbon">
+              <i class="fas fa-shield-heart"></i>
+              <span>평생 보증 임플란트</span>
             </div>
           </div>
 
