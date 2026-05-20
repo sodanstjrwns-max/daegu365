@@ -761,41 +761,40 @@ export const DoctorDetailPage = ({
 
       {/* INTERVIEW — 8개 섹션 + Q&A */}
       {interview && (interview.intro || (interview.sections && interview.sections.length > 0)) && (
-        <section class="py-32 bg-brown-950 text-ivory relative overflow-hidden">
-          <div class="blob" style="width:600px;height:600px;background:#c9a876;top:-200px;left:-150px;opacity:0.12;"></div>
-          <div class="blob" style="width:500px;height:500px;background:#8a6235;bottom:-150px;right:-100px;opacity:0.18;animation-delay:-6s;"></div>
-          <div class="max-w-4xl mx-auto px-6 lg:px-12 relative">
-            <div class="text-center mb-20 fade-in">
-              <div class="text-xs tracking-[0.5em] text-gold mb-6">INTERVIEW</div>
-              {/* PPT PC1 슬라이드 29 — 자격(position) 줄과 이름·이야기 줄을 분리해 잘림 방지 */}
-              <h2 class="display text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-ivory mb-8 leading-[1.2]">
-                <span class="block text-base md:text-lg lg:text-xl italic text-gold font-medium mb-3 tracking-tight">
+        /* PPT v3 — 어두운 다단 → 밝은 단일 컬럼 + 골드 좌측 보더 헤더 + 골드 인용박스 (가독성 대폭 강화) */
+        <section class="py-24 lg:py-28 bg-ivory relative overflow-hidden">
+          <div class="max-w-3xl mx-auto px-6 lg:px-8 relative">
+            {/* 섹션 헤더 — 밝은 톤 */}
+            <div class="text-center mb-16 fade-in">
+              <div class="text-xs tracking-[0.5em] text-gold mb-5 font-bold">INTERVIEW</div>
+              <h2 class="display text-3xl md:text-4xl lg:text-[2.75rem] font-black tracking-tight text-brown-950 mb-6 leading-[1.2]">
+                <span class="block text-sm md:text-base italic text-brown-500 font-medium mb-3 tracking-tight">
                   {doctor.position}
                 </span>
                 <span class="block">{doctor.name} 원장의 이야기</span>
               </h2>
               {interview.intro && (
-                /* 원장님 요청 #2: 앞 큰따옴표 제거 — 닫는 따옴표만 남김 */
-                <p class="text-brown-200 text-lg leading-relaxed max-w-3xl mx-auto italic">
-                  {interview.intro}”
-                </p>
+                <div class="relative max-w-2xl mx-auto mt-8 px-6 py-5 rounded-2xl" style="background:rgba(201,168,118,0.08); border:1px solid rgba(201,168,118,0.25);">
+                  <div class="absolute -top-3 left-1/2 -translate-x-1/2 text-4xl text-gold leading-none font-serif" style="font-family: Georgia, serif;">"</div>
+                  <p class="text-brown-800 text-base md:text-lg leading-relaxed italic">
+                    {interview.intro}"
+                  </p>
+                </div>
               )}
-              <div class="gold-divider mx-auto mt-10" style="background:#c9a876;"></div>
             </div>
 
-            {/* INTERVIEW VIDEO — 세로 9:16 인터뷰 영상 */}
+            {/* INTERVIEW VIDEO — 세로 9:16 (밝은 톤 적용) */}
             {videoUrl && (
-              <div class="fade-in mb-20">
-                <div class="text-center mb-8">
-                  <div class="text-[10px] tracking-[0.4em] text-gold mb-3 font-bold">FULL INTERVIEW</div>
-                  <h3 class="display text-2xl md:text-3xl font-black tracking-tight text-ivory">
-                    원장님의 목소리로 직접 듣는 인터뷰
+              <div class="fade-in mb-16">
+                <div class="text-center mb-6">
+                  <div class="text-[10px] tracking-[0.4em] text-gold mb-2 font-bold">FULL INTERVIEW</div>
+                  <h3 class="display text-xl md:text-2xl font-black tracking-tight text-brown-950">
+                    원장님 목소리로 직접 듣는 인터뷰
                   </h3>
                 </div>
-                {/* 세로 영상 컨테이너 — 9:16 비율, 데스크탑에서도 좌우 여백을 두고 중앙 정렬 */}
                 <div
-                  class="relative rounded-[24px] overflow-hidden shadow-2xl bg-black mx-auto"
-                  style="border: 1px solid rgba(201, 168, 118, 0.3); aspect-ratio: 9 / 16; width: 100%; max-width: 420px;"
+                  class="relative rounded-[20px] overflow-hidden shadow-xl bg-black mx-auto"
+                  style="border: 1px solid rgba(201, 168, 118, 0.4); aspect-ratio: 9 / 16; width: 100%; max-width: 380px;"
                 >
                   <video
                     controls
@@ -808,52 +807,76 @@ export const DoctorDetailPage = ({
                     브라우저가 비디오 태그를 지원하지 않습니다.
                   </video>
                 </div>
-                <p class="text-center text-brown-300 text-xs mt-4 tracking-wider">
+                <p class="text-center text-brown-500 text-xs mt-3 tracking-wider">
                   <i class="fas fa-circle-play text-gold mr-2"></i>
                   재생 버튼을 눌러 인터뷰 영상을 시청하실 수 있습니다
                 </p>
               </div>
             )}
 
-            <div class="space-y-16">
-              {(interview.sections || []).map((s, i) => (
-                <div class="fade-in grid md:grid-cols-12 gap-8 items-start">
-                  <div class="md:col-span-3">
-                    <div class="text-[10px] tracking-[0.4em] text-gold mb-3 font-bold">
-                      {String(i + 1).padStart(2, '0')}
+            {/* 인터뷰 섹션들 — 단일 컬럼 + 골드 좌측 보더 헤더 */}
+            <div class="space-y-14">
+              {(interview.sections || []).map((s, i) => {
+                // 본문 안에 따옴표("..." 또는 "...")로 감싸진 부분이 있으면 골드 인용박스로 분리
+                const content = s.content || ''
+                // "...": 본문 첫 줄이 따옴표로 시작/끝나는 경우 인용박스로 추출
+                const quoteMatch = content.match(/^([""][^""]+[""])\s*\n?/)
+                let quote: string | null = null
+                let rest = content
+                if (quoteMatch) {
+                  quote = quoteMatch[1].replace(/[""]/g, '').trim()
+                  rest = content.slice(quoteMatch[0].length).trim()
+                }
+                return (
+                  <div class="fade-in">
+                    {/* 섹션 헤더 — 골드 좌측 보더 + 굵은 제목 (참고사진 스타일) */}
+                    <div class="flex items-center gap-3 mb-5 pb-3 border-b border-brown-200">
+                      <div class="w-1 h-6 rounded-full bg-gold"></div>
+                      <h3 class="display text-xl md:text-[1.4rem] font-black tracking-tight text-brown-950 leading-tight whitespace-pre-line">
+                        {String(s.title || '').replace(/\n/g, ' ')}
+                      </h3>
                     </div>
-                    {/* 원장님 요청 #4: 제목 안의 중간점(·)을 줄바꿈으로 표시 */}
-                    <h3 class="display text-xl md:text-2xl font-black tracking-tight text-ivory leading-[1.35] whitespace-pre-line">
-                      {s.title}
-                    </h3>
-                  </div>
-                  <div class="md:col-span-9">
-                    <p class="text-brown-100 text-base md:text-lg leading-[1.9] whitespace-pre-line">
-                      {s.content}
+                    {/* 본문 — 큰 글씨, 진한 톤, 넓은 행간 */}
+                    {quote && (
+                      <div class="my-5 px-5 py-4 rounded-xl" style="background:rgba(201,168,118,0.08); border-left:3px solid #c9a876;">
+                        <p class="text-brown-900 text-[15px] md:text-base font-bold leading-relaxed mb-1">
+                          "{quote}"
+                        </p>
+                      </div>
+                    )}
+                    <p class="text-brown-800 text-[15px] md:text-base leading-[1.85] whitespace-pre-line">
+                      {rest}
                     </p>
+
+                    {/* 섹션 사이 장식 구분자 (마지막 제외) */}
+                    {i < (interview.sections?.length || 0) - 1 && (
+                      <div class="flex items-center justify-center mt-14">
+                        <span class="text-gold/40 text-xl">✦</span>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             {interview.qa && interview.qa.length > 0 && (
-              <div class="mt-32">
-                <div class="text-center mb-12 fade-in">
-                  <div class="text-xs tracking-[0.5em] text-gold mb-6">Q &amp; A</div>
-                  <h3 class="display text-3xl md:text-4xl font-black tracking-tight text-ivory">
-                    {doctor.name}<em class="italic text-gold"> 원장에게 묻습니다</em>
+              <div class="mt-24">
+                <div class="text-center mb-10 fade-in">
+                  <div class="text-xs tracking-[0.5em] text-gold mb-4 font-bold">Q &amp; A</div>
+                  <h3 class="display text-2xl md:text-3xl font-black tracking-tight text-brown-950">
+                    {doctor.name}<em class="italic text-gold not-italic"> 원장에게 묻습니다</em>
                   </h3>
                 </div>
-                <div class="space-y-8">
+                <div class="space-y-6">
                   {interview.qa.map((qa) => (
-                    <div class="fade-in border-l-2 border-gold pl-6 md:pl-8">
-                      <div class="flex gap-4 mb-3">
-                        <span class="display text-2xl italic text-gold font-black flex-shrink-0">Q.</span>
-                        <p class="text-ivory text-lg md:text-xl font-semibold leading-relaxed">{qa.q}</p>
+                    <div class="fade-in p-5 md:p-6 rounded-2xl bg-cream border border-brown-200">
+                      <div class="flex gap-3 mb-3">
+                        <span class="display text-xl italic text-gold font-black flex-shrink-0">Q.</span>
+                        <p class="text-brown-950 text-base md:text-lg font-bold leading-snug">{qa.q}</p>
                       </div>
-                      <div class="flex gap-4">
-                        <span class="display text-2xl italic text-brown-300 font-black flex-shrink-0">A.</span>
-                        <p class="text-brown-100 text-base md:text-lg leading-[1.9]">{qa.a}</p>
+                      <div class="flex gap-3 pl-4 border-l-2 border-gold/40 ml-1">
+                        <span class="display text-xl italic text-brown-500 font-black flex-shrink-0">A.</span>
+                        <p class="text-brown-800 text-[15px] md:text-base leading-[1.8]">{qa.a}</p>
                       </div>
                     </div>
                   ))}
@@ -862,14 +885,13 @@ export const DoctorDetailPage = ({
             )}
 
             {interview.signature && (
-              <div class="mt-24 text-center fade-in">
-                <div class="gold-divider mx-auto mb-8" style="background:#c9a876;"></div>
-                {/* 원장님 요청 #2 (일관성): signature도 앞 큰따옴표 제거 + 요청 #3: 장식 대시 제거 */}
-                <p class="display text-2xl md:text-3xl italic text-gold leading-relaxed max-w-3xl mx-auto">
-                  {interview.signature}”
+              <div class="mt-20 text-center fade-in">
+                <div class="inline-block w-12 h-px bg-gold mb-6"></div>
+                <p class="display text-xl md:text-2xl italic text-brown-900 leading-relaxed max-w-2xl mx-auto font-semibold">
+                  "{interview.signature}"
                 </p>
-                <div class="text-xs tracking-[0.4em] text-brown-300 mt-8">
-                  {doctor.name} {doctor.is_representative ? '대표원장' : doctor.position}
+                <div class="text-[11px] tracking-[0.4em] text-brown-500 mt-6 font-bold">
+                  {doctor.name} · {doctor.is_representative ? '대표원장' : doctor.position}
                 </div>
               </div>
             )}
