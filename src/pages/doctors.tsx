@@ -519,6 +519,59 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
       </div>
     </section>
 
+    {/* 참고사진 스타일 최종 CTA 박스 — 단일 갈색 라운드 박스 */}
+    <section class="py-16 lg:py-20 bg-cream">
+      <div class="max-w-5xl mx-auto px-6 lg:px-8">
+        <div
+          class="relative rounded-[28px] px-6 py-14 md:px-12 md:py-16 text-center text-ivory overflow-hidden shadow-xl"
+          style="background: linear-gradient(135deg, #6b4c2a 0%, #4a3320 100%);"
+        >
+          {/* 상단 작은 라벨 */}
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-ivory/15 backdrop-blur-sm mb-6">
+            <i class="fas fa-headset text-ivory text-xs"></i>
+            <span class="text-xs font-semibold tracking-wider text-ivory">상담 안내</span>
+          </div>
+
+          {/* 메인 타이틀 */}
+          <h2 class="display text-2xl md:text-4xl lg:text-[2.5rem] font-black tracking-tight text-ivory mb-4 leading-tight">
+            어떤 원장님께 진료받고 <span class="italic" style="color:#e8c98c;">싶으신가요?</span>
+          </h2>
+          <p class="text-ivory/75 text-sm md:text-base mb-9 max-w-xl mx-auto">
+            예약 시 희망 원장님을 선택하실 수 있습니다.
+          </p>
+
+          {/* 2개의 동그란 알약 버튼 */}
+          <div class="flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center max-w-lg mx-auto">
+            <button
+              type="button"
+              onclick="window.dispatchEvent(new Event('open-consultation-modal'))"
+              class="group inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-ivory text-brown-900 font-bold text-sm md:text-base hover:bg-white hover:-translate-y-0.5 transition-all shadow-lg whitespace-nowrap"
+            >
+              <i class="fas fa-calendar-check"></i>
+              <span>상담 예약하기</span>
+            </button>
+            <a
+              href="tel:053-357-0365"
+              class="group inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full border border-ivory/40 text-ivory font-bold text-sm md:text-base hover:bg-ivory/10 hover:border-ivory transition-all whitespace-nowrap"
+            >
+              <i class="fas fa-phone"></i>
+              <span>053-357-0365</span>
+            </a>
+          </div>
+
+          {/* 하단 진료시간 안내 */}
+          <div class="mt-7 inline-flex items-center gap-2 text-[12px] md:text-[13px] text-ivory/65 flex-wrap justify-center">
+            <i class="far fa-clock text-ivory/70"></i>
+            <span>365일 진료</span>
+            <span class="text-ivory/30">·</span>
+            <span>평일 09:30~21:00</span>
+            <span class="text-ivory/30">·</span>
+            <span>토·일 09:30~17:00</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <Footer />
   </>
 )
