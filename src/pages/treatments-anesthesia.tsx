@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -14,32 +13,32 @@ const FOUR_STEPS = [
     step: '01',
     name: '가글 마취',
     eng: 'Topical Gargle',
-    desc: '구강 점막 전체를 약하게 마비시키는 가글로 시작합니다. 이 단계가 있어야 다음 단계인 도포 마취 시 “약 맛”과 “이물감”이 거의 느껴지지 않습니다.',
-    why: '대부분의 치과는 이 단계를 건너뜁니다. 우리는 첫 자극부터 줄입니다.',
+    desc: '구강 점막 전체를 약하게 마비시키는 가글로 시작합니다.\n이 단계가 있어야 다음 단계인 도포 마취 시\n약 맛과 이물감이 거의 느껴지지 않습니다.',
+    why: '대부분의 치과는 이 단계를 건너뜁니다.\n우리는 첫 자극부터 줄입니다.',
     icon: 'fa-droplet',
   },
   {
     step: '02',
     name: '도포 마취',
     eng: 'Topical Anesthetic',
-    desc: '본 마취 주사를 놓을 잇몸 부위에 마취 연고를 충분히 도포해, 점막 표면을 완전히 마비시킵니다. 이 과정만 1~2분.',
-    why: '도포가 부족하면 “바늘 끝이 닿는 그 순간”의 자극을 느낍니다. 충분한 시간이 핵심.',
+    desc: '본 마취 주사를 놓을 잇몸 부위에\n마취 연고를 충분히 도포해,\n점막 표면을 완전히 마비시킵니다.\n이 과정만 1~2분.',
+    why: '도포가 부족하면 바늘 끝이 닿는 그 순간의\n자극을 느낍니다. 충분한 시간이 핵심.',
     icon: 'fa-prescription-bottle',
   },
   {
     step: '03',
     name: '무통 마취기',
     eng: 'Computer-Controlled Injection',
-    desc: '컴퓨터 제어 무통마취기로 약물을 일정한 압력·속도로 주입합니다. 손으로 누르는 일반 주사기와 달리, 압력이 튀지 않아 통증이 90% 이상 감소합니다.',
-    why: '치과 통증의 대부분은 “약물이 들어가는 압력”에서 발생합니다. 기계가 그걸 해결합니다.',
+    desc: '컴퓨터 제어 무통마취기로\n약물을 일정한 압력·속도로 주입합니다.\n손으로 누르는 일반 주사기와 달리,\n압력이 튀지 않아 통증이 90% 이상 감소합니다.',
+    why: '치과 통증의 대부분은\n약물이 들어가는 압력에서 발생합니다.\n기계가 그걸 해결합니다.',
     icon: 'fa-microchip',
   },
   {
     step: '04',
     name: '본 마취',
     eng: 'Block Anesthesia',
-    desc: '시술 부위 신경을 완전히 차단하는 본 마취. 앞 3단계로 이미 점막이 충분히 마비된 상태이기 때문에, 환자분은 “언제 놓았지?” 하실 정도.',
-    why: '본 마취는 어쩔 수 없는 단계지만, 앞 3단계 덕분에 환자 체감 통증이 결정적으로 달라집니다.',
+    desc: '시술 부위 신경을 완전히 차단하는 본 마취.\n앞 3단계로 이미 점막이 충분히 마비된 상태이기 때문에,\n환자분은 "언제 놓았지?" 하실 정도입니다.',
+    why: '본 마취는 어쩔 수 없는 단계지만,\n앞 3단계 덕분에 환자 체감 통증이 결정적으로 달라집니다.',
     icon: 'fa-syringe',
   },
 ]
@@ -106,23 +105,27 @@ const APPLICABLE = [
 const WHY_US = [
   {
     icon: 'fa-shield-check',
-    title: '치과공포증 의사가 만든 4단계',
-    desc: '대표원장 본인의 두려움 경험에서 출발한 프로토콜. 환자 입장에서 “덜 아픈 것”이 아니라 “안 아픈 것”을 목표로 설계.',
+    emoji: '🛡️',
+    title: '치과공포증 의사가\n만든 4단계',
+    desc: '대표원장 본인의 두려움 경험에서 출발한 프로토콜.\n환자 입장에서 “덜 아픈 것”이 아니라\n“안 아픈 것”을 목표로 설계.',
   },
   {
     icon: 'fa-microchip',
-    title: '컴퓨터 제어 주입',
-    desc: '손 압력 대신 기계가 일정한 속도로 마취액을 주입. 일반 주사기 대비 통증 90% 이상 감소를 임상에서 확인.',
+    emoji: '🧮',
+    title: '컴퓨터 제어\n주입',
+    desc: '손 압력 대신 기계가 일정한 속도로 마취액을 주입.\n일반 주사기 대비 통증 90% 이상 감소를\n임상에서 확인.',
   },
   {
     icon: 'fa-clock',
-    title: '단계별 충분한 시간',
-    desc: '도포 마취 1~2분, 본 마취 후 충분한 대기. “빨리 빨리”가 아니라 “환자 속도에 맞춰” 진행합니다.',
+    emoji: '⏱️',
+    title: '단계별\n충분한 시간',
+    desc: '도포 마취 1~2분, 본 마취 후 충분한 대기.\n“빨리 빨리”가 아니라\n“환자 속도에 맞춰” 진행합니다.',
   },
   {
     icon: 'fa-bed',
-    title: '수면치료와 결합 가능',
-    desc: '4단계 무통만으로도 충분하지만, 두려움이 큰 분께는 의식하 진정과 결합해 “이중 안심” 시스템으로 운영합니다.',
+    emoji: '🛏️',
+    title: '수면치료와\n결합 가능',
+    desc: '4단계 무통만으로도 충분하지만,\n두려움이 큰 분께는 의식하 진정과 결합해\n“이중 안심” 시스템으로 운영합니다.',
   },
 ]
 
@@ -210,12 +213,6 @@ export const PainlessAnesthesiaTreatmentPage = ({
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("painless-anesthesia")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("painless-anesthesia")
@@ -233,17 +230,28 @@ export const PainlessAnesthesiaTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-16">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 02</div>
-              <h2 class="t-display">
-                치과 통증의 정체를<br/>
-                <span class="t-gold italic">먼저 이해해야 합니다.</span>
+              {/* PPT 슬라이드 19 반영: 한 줄 표기 + 폰트 통일 */}
+              <h2 class="anesthesia-whatis-title font-black">
+                <span class="anesthesia-whatis-keyword">치과 통증의 정체를</span>
+                <span class="anesthesia-whatis-mark"> 먼저 이해해야 합니다.</span>
               </h2>
             </div>
             <div class="lg:col-span-7 space-y-6 t-body text-lg">
               <p>
-                많은 분이 “치과 마취가 아프다”고 하시지만, 정확히 말하면 <b>마취 그 자체가 아니라 마취를 놓는 과정의 4가지 자극</b>이 통증의 정체입니다.
+                많은 분이 "치과 마취가 아프다"고 하시지만,<br class="hidden md:inline"/>
+                정확히 말하면<br class="hidden md:inline"/>
+                <b>마취 그 자체가 아니라<br class="hidden md:inline"/>
+                마취를 놓는 과정의 4가지 자극</b>이<br class="hidden md:inline"/>
+                통증의 정체입니다.
               </p>
               <p>
-                대구365치과의 4단계 무통마취는 이 4가지 자극을 <b>각각 분리해서 차단</b>합니다. “마취 한 번으로 끝내겠다”가 아니라, “네 가지 자극을 네 단계로 풀어내겠다”는 접근입니다.
+                대구365치과의 4단계 무통마취는<br class="hidden md:inline"/>
+                이 4가지 자극을 <b>각각 분리해서 차단</b>합니다.
+              </p>
+              <p>
+                "마취 한 번으로 끝내겠다"가 아니라,<br class="hidden md:inline"/>
+                "네 가지 자극을 네 단계로 풀어냅니다."<br class="hidden md:inline"/>
+                그것이 4단계 무통마취 프로토콜입니다.
               </p>
               <div class="grid grid-cols-1 gap-3 pt-4">
                 {PAIN_SCIENCE.map((p: any) => (
@@ -274,11 +282,11 @@ export const PainlessAnesthesiaTreatmentPage = ({
           <div class="grid md:grid-cols-2 gap-6">
             {WHY_US.map((f: any, i: number) => (
               <div class="bg-ivory p-8 lg:p-10 rounded-xl">
-                <div class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mb-4">
-                  <i class={`fas ${f.icon} text-gold text-xl`}></i>
+                <div class="w-14 h-14 rounded-full bg-gold/10 flex items-center justify-center mb-4 text-2xl" aria-hidden="true">
+                  <span>{f.emoji}</span>
                 </div>
-                <h3 class="t-display text-xl mb-3">{f.title}</h3>
-                <p class="t-body text-brown-700">{f.desc}</p>
+                <h3 class="t-display text-xl mb-3" style="white-space:pre-line;">{f.title}</h3>
+                <p class="t-body text-brown-700" style="white-space:pre-line;">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -312,8 +320,8 @@ export const PainlessAnesthesiaTreatmentPage = ({
                 </div>
                 <div class="lg:col-span-8">
                   <h3 class="t-display text-2xl mb-3">{s.name}</h3>
-                  <p class="t-body text-brown-700 mb-3">{s.desc}</p>
-                  <div class="text-sm text-gold border-t border-gold/20 pt-3"><b>POINT.</b> {s.why}</div>
+                  <p class="t-body text-brown-700 mb-3 whitespace-pre-line">{s.desc}</p>
+                  <div class="text-sm text-gold border-t border-gold/20 pt-3 whitespace-pre-line"><b>POINT.</b> {s.why}</div>
                 </div>
               </div>
             ))}
@@ -518,6 +526,16 @@ export const PainlessAnesthesiaTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 19-21 — 4단계 무통마취 담당 김성주 대표원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="kim-seongju"
+        name="김성주"
+        position="대표원장 · 통합치의학과 전문의"
+        quote={'주사의 공포는 의사의 의지로 줄일 수 있습니다.\n가글에서 본 마취까지 4단계로 쪼개면, 환자는 통증을 거의 느끼지 못합니다.'}
+        credentials={['서울대 치의학과', '통합치의학과 전문의', '4단계 무통마취 프로토콜 설계']}
+        treatmentLabel="4단계 무통마취"
+      />
 
       <Footer />
     </>

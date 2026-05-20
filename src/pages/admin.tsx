@@ -2,6 +2,27 @@
 import type { BeforeAfter, BlogPost, Notice, Doctor, Treatment } from '../lib/types'
 
 /* =========================================================================
+   비포애프터 카테고리 화이트리스트 (admin 업로드 폼 전용)
+   - 임플란트는 'implant'로 통합 (수면임플란트 페이지·일반 임플란트 페이지 양쪽에 노출)
+   - 케이스 누적이 적은 카테고리(수면치료/에어플로우/기공실/무통마취/예방치과)는 제외
+   ========================================================================= */
+export const BA_CATEGORIES: Array<{ slug: string, name: string }> = [
+  { slug: 'implant',           name: '임플란트' },
+  { slug: 'ortho',             name: '인비절라인 (치아교정)' },
+  { slug: 'lamineer',          name: '비니크 프리미엄 라미네이트' },
+  { slug: 'cavity-endo-crown', name: '충치·신경치료·크라운' },
+  { slug: 'perio',             name: '치주치료' },
+  { slug: 'pediatric',         name: '소아치과' },
+  { slug: 'pediatric-ortho',   name: '소아 교정' },
+  { slug: 'whitening',         name: '전문가 미백' },
+  { slug: 'icon-resin',        name: '아이콘 레진 (백반)' },
+  { slug: 'prosthetic',        name: '보철' },
+  { slug: 'aesthetic',         name: '심미치료' },
+  { slug: 'conservative',      name: '보존치료' },
+  { slug: 'general',           name: '기타' },
+]
+
+/* =========================================================================
    AdminShell — 반응형 사이드바 + 모바일 햄버거
    ========================================================================= */
 const AdminShell = ({ active, children }: { active: string, children: any }) => (
@@ -35,6 +56,8 @@ const AdminShell = ({ active, children }: { active: string, children: any }) => 
             { href: '/admin/before-after', label: '비포애프터', icon: 'fa-images', key: 'ba' },
             { href: '/admin/blog', label: '블로그', icon: 'fa-pen-nib', key: 'blog' },
             { href: '/admin/notices', label: '공지사항', icon: 'fa-bullhorn', key: 'notices' },
+            { href: '/admin/fees', label: '수가 관리', icon: 'fa-won-sign', key: 'fees' },
+            { href: '/admin/seo', label: 'SEO 가이드', icon: 'fa-magnifying-glass-chart', key: 'seo' },
             { href: '/admin/members', label: '회원 관리', icon: 'fa-users', key: 'members' },
           ].map(m => (
             <a href={m.href} class={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${active === m.key ? 'bg-gold text-brown-950 font-bold' : 'hover:bg-brown-900 text-brown-200'}`}>
@@ -436,8 +459,9 @@ export const AdminBAFormPage = ({
             <label class="block text-xs tracking-widest text-brown-600 mb-2">진료 카테고리 <span class="text-rose-500">*</span></label>
             <select name="treatment_slug" required class="form-input">
               <option value="">선택</option>
-              {treatments.map(t => <option value={t.slug} selected={item?.treatment_slug === t.slug}>{t.name}</option>)}
+              {BA_CATEGORIES.map(t => <option value={t.slug} selected={item?.treatment_slug === t.slug}>{t.name}</option>)}
             </select>
+            <p class="text-[11px] text-brown-500 mt-1">※ 임플란트 케이스는 수면임플란트·일반 임플란트 페이지 양쪽에 자동 노출됩니다.</p>
           </div>
           <div>
             <label class="block text-xs tracking-widest text-brown-600 mb-2">담당 원장 <span class="text-rose-500">*</span></label>
@@ -512,6 +536,50 @@ export const AdminBAFormPage = ({
             ))}
           </div>
           <p class="text-xs text-brown-500 mt-3"><i class="fas fa-info-circle"></i> 비워둔 슬롯은 상세 페이지에서 슬라이더가 표시되지 않습니다. 최대 20MB · jpg/png/webp/avif</p>
+        </div>
+
+        {/* ============ SEO/AEO 고도화 섹션 ============ */}
+        <div class="pt-6 border-t border-brown-200">
+          <div class="flex items-center gap-2 mb-4">
+            <i class="fas fa-search text-gold"></i>
+            <h3 class="text-sm font-medium tracking-widest text-brown-700">SEO · AEO 최적화 (구글/네이버 노출 강화)</h3>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-[12px] text-brown-700 leading-relaxed">
+            <i class="fas fa-lightbulb text-amber-600 mr-1"></i>
+            비워두면 자동으로 생성됩니다. 하지만 <strong>직접 작성한 메타가 검색 노출에 훨씬 유리</strong>합니다. (필수 키워드: 임플란트 · 인비절라인 · 라미네이트 · 글로우네이트 · 치아교정)
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs tracking-widest text-brown-600 mb-2">메타 설명 (구글 검색결과 미리보기 · 70~155자 권장)</label>
+              <textarea name="meta_description" rows={2} class="form-input" placeholder="예: 대구365치과 박OO 원장의 앞니 라미네이트 8개 심미 케이스. 3개월 치료 기간, 자연스러운 색상 회복 결과 사진 공개.">{item?.meta_description || ''}</textarea>
+            </div>
+            <div>
+              <label class="block text-xs tracking-widest text-brown-600 mb-2">메타 키워드 (콤마 구분 · 5~10개 권장)</label>
+              <input name="meta_keywords" value={item?.meta_keywords || ''} class="form-input" placeholder="예: 라미네이트, 앞니심미, 대구라미네이트, 임플란트, 인비절라인, 치아교정, 글로우네이트" />
+            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs tracking-widest text-brown-600 mb-2">Before 이미지 ALT (SEO 핵심)</label>
+                <input name="before_alt" value={item?.before_alt || ''} class="form-input" placeholder="예: 앞니 변색 치료 전 사진 - 대구365치과" />
+              </div>
+              <div>
+                <label class="block text-xs tracking-widest text-brown-600 mb-2">After 이미지 ALT (SEO 핵심)</label>
+                <input name="after_alt" value={item?.after_alt || ''} class="form-input" placeholder="예: 라미네이트 시술 후 결과 사진 - 대구365치과" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs tracking-widest text-brown-600 mb-2">OG 대표 이미지 URL (SNS 공유 썸네일 · 비워두면 After 사진 자동 사용)</label>
+              <input name="og_image" value={item?.og_image || ''} class="form-input" placeholder="/r2/... (After 사진과 다른 대표 이미지 사용 시)" />
+            </div>
+            <div class="flex items-center gap-3 pt-2">
+              <input type="checkbox" name="noindex" id="noindex_ba" value="1" checked={!!item?.noindex} />
+              <label for="noindex_ba" class="text-sm text-rose-600">
+                <i class="fas fa-eye-slash mr-1"></i>
+                검색엔진 노출 차단 (noindex) - 체크 시 구글/네이버에 색인되지 않습니다
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="flex items-center gap-3 pt-4 border-t border-brown-200">
@@ -746,16 +814,42 @@ export const AdminBlogFormPage = ({ post, doctors }: { post?: BlogPost, doctors:
           <p class="text-xs text-brown-500 mt-2"><i class="fas fa-info-circle"></i> textarea 안에 이미지를 드래그하면 자동 업로드 후 &lt;img&gt; 태그가 커서 위치에 삽입됩니다.</p>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-4 pt-4 border-t border-brown-200">
-          <div>
-            <label class="block text-xs tracking-widest text-brown-600 mb-2">Meta Description (SEO)</label>
-            <textarea name="meta_description" rows={2} class="form-input text-sm">{post?.meta_description || ''}</textarea>
+        {/* ============ SEO/AEO 고도화 섹션 ============ */}
+        <div class="pt-6 border-t border-brown-200">
+          <div class="flex items-center gap-2 mb-4">
+            <i class="fas fa-search text-gold"></i>
+            <h3 class="text-sm font-medium tracking-widest text-brown-700">SEO · AEO 최적화 (구글/네이버 노출 강화)</h3>
           </div>
-          <div>
-            <label class="block text-xs tracking-widest text-brown-600 mb-2">Keywords (콤마 구분)</label>
-            <input name="meta_keywords" value={post?.meta_keywords || ''} class="form-input text-sm" />
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-[12px] text-brown-700 leading-relaxed">
+            <i class="fas fa-lightbulb text-amber-600 mr-1"></i>
+            비워두면 자동 생성됩니다. 하지만 <strong>직접 작성하면 검색 노출이 훨씬 강력</strong>해집니다. (필수 키워드: 임플란트 · 인비절라인 · 라미네이트 · 글로우네이트 · 치아교정)
+          </div>
+
+          <div class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs tracking-widest text-brown-600 mb-2">Meta Description (70~155자)</label>
+                <textarea name="meta_description" rows={3} class="form-input text-sm" placeholder="검색결과에 표시될 미리보기 문장">{post?.meta_description || ''}</textarea>
+              </div>
+              <div>
+                <label class="block text-xs tracking-widest text-brown-600 mb-2">Meta Keywords (콤마 구분 · 5~10개)</label>
+                <textarea name="meta_keywords" rows={3} class="form-input text-sm" placeholder="임플란트, 인비절라인, 라미네이트, 글로우네이트, 치아교정">{post?.meta_keywords || ''}</textarea>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs tracking-widest text-brown-600 mb-2">OG 대표 이미지 URL (SNS/카톡 공유 썸네일 · 비워두면 썸네일 자동 사용)</label>
+              <input name="og_image" value={post?.og_image || ''} class="form-input text-sm" placeholder="/r2/... (썸네일과 다른 대표 이미지 사용 시)" />
+            </div>
+            <div class="flex items-center gap-3 pt-2">
+              <input type="checkbox" name="noindex" id="noindex_blog" value="1" checked={!!post?.noindex} />
+              <label for="noindex_blog" class="text-sm text-rose-600">
+                <i class="fas fa-eye-slash mr-1"></i>
+                검색엔진 노출 차단 (noindex) - 체크 시 구글/네이버에 색인되지 않습니다
+              </label>
+            </div>
           </div>
         </div>
+
         <div class="flex items-center gap-3 pt-4 border-t border-brown-200">
           <input type="checkbox" name="is_published" id="pub" value="1" checked={post ? !!post.is_published : true} />
           <label for="pub" class="text-sm">공개</label>
@@ -1256,4 +1350,447 @@ const AdminListScript = () => (
       render();
     })();
   `}}/>
+)
+
+/* =========================================================================
+   AdminFeesPage — 비급여 수가 관리 (그룹별 인라인 편집)
+   ========================================================================= */
+export const AdminFeesPage = ({ groups }: { groups: Array<{
+  category: string,
+  category_icon: string,
+  group_note: string | null,
+  sort_group: number,
+  rows: Array<{ id: number, name: string, price: string, note: string | null, is_highlight: number, is_published: number, sort_order: number }>
+}> }) => (
+  <AdminShell active="fees">
+    <ToastBootstrap />
+    <div class="mb-6 lg:mb-10 flex items-end justify-between flex-wrap gap-4">
+      <div>
+        <h1 class="display text-3xl lg:text-4xl font-light text-brown-900 mb-2">
+          <i class="fas fa-won-sign text-gold mr-2"></i>수가 관리
+        </h1>
+        <p class="text-brown-600 text-sm">
+          비급여 의료수가표 — 가격·비고·강조 표시를 바로 수정할 수 있습니다.
+          저장 버튼을 누르면 즉시 <a href="/fees" target="_blank" class="text-brown-900 underline font-semibold">비용 안내 페이지</a>에 반영됩니다.
+        </p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button id="feesExpandAll" class="btn-outline text-sm"><i class="fas fa-expand"></i> 전체 펼침</button>
+        <button id="feesCollapseAll" class="btn-outline text-sm"><i class="fas fa-compress"></i> 전체 접기</button>
+        <a href="/fees" target="_blank" class="btn-primary text-sm"><i class="fas fa-external-link-alt"></i> 사이트 보기</a>
+      </div>
+    </div>
+
+    {/* 도움말 */}
+    <div class="bg-gold/10 border-l-4 border-gold rounded-r-2xl p-4 lg:p-5 mb-6 text-sm text-brown-800">
+      <div class="font-bold mb-1"><i class="fas fa-lightbulb text-gold mr-1"></i> 사용법</div>
+      <ul class="list-disc pl-5 space-y-1 text-brown-700">
+        <li><b>가격칸</b>에 자유롭게 입력 가능 (예: <code>80만원</code>, <code>50만원~</code>, <code>문의</code>, <code>20,000원</code>)</li>
+        <li><b>SIGN</b> 체크 시 금색 강조(SIGNATURE 라벨) 표시</li>
+        <li><b>공개</b> 토글로 특정 항목을 숨길 수 있음 (회색 = 숨김)</li>
+        <li>수정 후 <b>저장</b> 버튼 클릭 → 즉시 반영. 한 그룹의 모든 행을 한번에 저장하려면 그룹 헤더의 <b>그룹 일괄 저장</b> 클릭</li>
+      </ul>
+    </div>
+
+    {/* 그룹 카드들 */}
+    <div class="space-y-5">
+      {groups.map((g, gi) => (
+        <div class="bg-ivory rounded-2xl shadow-card overflow-hidden border border-brown-100" data-group-card={String(g.sort_group)}>
+          {/* 그룹 헤더 */}
+          <div class="flex items-center justify-between px-4 lg:px-6 py-4 bg-brown-50 border-b border-brown-200 flex-wrap gap-3">
+            <button type="button" class="flex items-center gap-3 text-left flex-1 min-w-0" data-toggle-group={String(g.sort_group)}>
+              <div class="w-10 h-10 rounded-xl bg-brown-950 text-gold flex items-center justify-center shrink-0">
+                <i class={`fas ${g.category_icon || 'fa-tooth'}`}></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] tracking-[0.25em] text-brown-500 font-bold">
+                  CATEGORY · {String(gi + 1).padStart(2,'0')} · 총 {g.rows.length}개
+                </div>
+                <div class="display text-lg lg:text-xl font-bold text-brown-900 truncate">{g.category}</div>
+              </div>
+              <i class="fas fa-chevron-down text-brown-500 text-sm ml-2 shrink-0 transition-transform" data-chevron={String(g.sort_group)}></i>
+            </button>
+            <button type="button" class="btn-primary text-xs whitespace-nowrap" data-bulk-save={String(g.sort_group)}>
+              <i class="fas fa-save"></i> 그룹 일괄 저장
+            </button>
+          </div>
+
+          {/* 그룹 안내(group_note) 편집 */}
+          <div class="px-4 lg:px-6 py-3 border-b border-brown-100 bg-cream/50 flex items-center gap-2 flex-wrap" data-group-body={String(g.sort_group)}>
+            <span class="text-[10px] tracking-[0.2em] font-bold text-brown-500 whitespace-nowrap">그룹 상단 안내</span>
+            <input type="text"
+                   class="flex-1 min-w-[200px] px-3 py-2 rounded-lg border border-brown-200 bg-ivory text-sm"
+                   placeholder="예: 부가세 10% 별도"
+                   value={g.group_note || ''}
+                   data-group-note={String(g.sort_group)} />
+            <button type="button" class="btn-outline text-xs whitespace-nowrap" data-save-group-note={String(g.sort_group)}>
+              <i class="fas fa-save"></i> 안내 저장
+            </button>
+          </div>
+
+          {/* 항목들 */}
+          <div class="divide-y divide-brown-100" data-group-rows={String(g.sort_group)}>
+            {g.rows.map(row => (
+              <div class={`px-4 lg:px-6 py-4 grid lg:grid-cols-12 gap-3 items-center ${row.is_highlight ? 'bg-gold/5' : ''} ${!row.is_published ? 'opacity-50' : ''}`} data-row-id={String(row.id)}>
+                {/* 항목명 */}
+                <div class="lg:col-span-4">
+                  <label class="text-[9px] tracking-[0.25em] font-bold text-brown-400 lg:hidden">항목명</label>
+                  <input type="text" data-field="name" value={row.name}
+                         class="w-full px-3 py-2 rounded-lg border border-brown-200 bg-ivory text-sm font-semibold text-brown-900 focus:border-brown-600 focus:outline-none" />
+                </div>
+                {/* 가격 */}
+                <div class="lg:col-span-2">
+                  <label class="text-[9px] tracking-[0.25em] font-bold text-brown-400 lg:hidden">가격</label>
+                  <input type="text" data-field="price" value={row.price}
+                         class="w-full px-3 py-2 rounded-lg border border-gold/40 bg-gold/5 text-base font-black text-brown-950 text-right focus:border-gold focus:outline-none" />
+                </div>
+                {/* 비고 */}
+                <div class="lg:col-span-3">
+                  <label class="text-[9px] tracking-[0.25em] font-bold text-brown-400 lg:hidden">비고</label>
+                  <input type="text" data-field="note" value={row.note || ''} placeholder="비고 (선택)"
+                         class="w-full px-3 py-2 rounded-lg border border-brown-200 bg-ivory text-xs text-brown-700 focus:border-brown-600 focus:outline-none" />
+                </div>
+                {/* 토글들 */}
+                <div class="lg:col-span-2 flex items-center gap-3 text-xs">
+                  <label class="inline-flex items-center gap-1 cursor-pointer">
+                    <input type="checkbox" data-field="is_highlight" checked={row.is_highlight === 1} class="w-4 h-4 accent-amber-500" />
+                    <span class="font-bold text-amber-700">SIGN</span>
+                  </label>
+                  <label class="inline-flex items-center gap-1 cursor-pointer">
+                    <input type="checkbox" data-field="is_published" checked={row.is_published === 1} class="w-4 h-4 accent-emerald-500" />
+                    <span class="font-bold text-emerald-700">공개</span>
+                  </label>
+                </div>
+                {/* 액션 */}
+                <div class="lg:col-span-1 flex gap-1 justify-end">
+                  <button type="button" class="px-2.5 py-2 rounded-lg bg-brown-900 text-ivory text-xs hover:bg-brown-950" data-save-row={String(row.id)} title="저장">
+                    <i class="fas fa-save"></i>
+                  </button>
+                  <button type="button" class="px-2.5 py-2 rounded-lg bg-rose-50 text-rose-700 text-xs hover:bg-rose-100" data-delete-row={String(row.id)} title="삭제">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 새 항목 추가 */}
+          <div class="px-4 lg:px-6 py-4 bg-cream/40 border-t border-brown-200 flex gap-2 flex-wrap items-center" data-new-row={String(g.sort_group)}>
+            <input type="text" placeholder="새 항목명" data-new-field="name"
+                   class="flex-1 min-w-[180px] px-3 py-2 rounded-lg border border-brown-200 bg-ivory text-sm" />
+            <input type="text" placeholder="가격 (예: 80만원)" data-new-field="price"
+                   class="w-32 px-3 py-2 rounded-lg border border-gold/40 bg-gold/5 text-sm font-bold text-right" />
+            <input type="text" placeholder="비고" data-new-field="note"
+                   class="flex-1 min-w-[140px] px-3 py-2 rounded-lg border border-brown-200 bg-ivory text-xs" />
+            <button type="button" class="btn-primary text-xs whitespace-nowrap" data-add-row={String(g.sort_group)}>
+              <i class="fas fa-plus"></i> 추가
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <script dangerouslySetInnerHTML={{__html: `
+      (function(){
+        // === 그룹 접기/펼치기 ===
+        document.querySelectorAll('[data-toggle-group]').forEach(function(btn){
+          btn.addEventListener('click', function(){
+            var g = btn.getAttribute('data-toggle-group');
+            var rows = document.querySelector('[data-group-rows="'+g+'"]');
+            var body = document.querySelector('[data-group-body="'+g+'"]');
+            var newrow = document.querySelector('[data-new-row="'+g+'"]');
+            var chev = document.querySelector('[data-chevron="'+g+'"]');
+            var hidden = rows.style.display === 'none';
+            rows.style.display = hidden ? '' : 'none';
+            body.style.display = hidden ? '' : 'none';
+            newrow.style.display = hidden ? '' : 'none';
+            if(chev) chev.style.transform = hidden ? '' : 'rotate(-90deg)';
+          });
+        });
+        document.getElementById('feesCollapseAll').addEventListener('click', function(){
+          document.querySelectorAll('[data-group-rows]').forEach(function(r){r.style.display='none'});
+          document.querySelectorAll('[data-group-body]').forEach(function(r){r.style.display='none'});
+          document.querySelectorAll('[data-new-row]').forEach(function(r){r.style.display='none'});
+          document.querySelectorAll('[data-chevron]').forEach(function(c){c.style.transform='rotate(-90deg)'});
+        });
+        document.getElementById('feesExpandAll').addEventListener('click', function(){
+          document.querySelectorAll('[data-group-rows]').forEach(function(r){r.style.display=''});
+          document.querySelectorAll('[data-group-body]').forEach(function(r){r.style.display=''});
+          document.querySelectorAll('[data-new-row]').forEach(function(r){r.style.display=''});
+          document.querySelectorAll('[data-chevron]').forEach(function(c){c.style.transform=''});
+        });
+
+        // === 행 데이터 추출 ===
+        function rowPayload(rowEl){
+          return {
+            name: rowEl.querySelector('[data-field="name"]').value.trim(),
+            price: rowEl.querySelector('[data-field="price"]').value.trim(),
+            note: rowEl.querySelector('[data-field="note"]').value.trim() || null,
+            is_highlight: rowEl.querySelector('[data-field="is_highlight"]').checked ? 1 : 0,
+            is_published: rowEl.querySelector('[data-field="is_published"]').checked ? 1 : 0
+          };
+        }
+
+        // === 단일 행 저장 ===
+        document.querySelectorAll('[data-save-row]').forEach(function(btn){
+          btn.addEventListener('click', async function(){
+            var id = btn.getAttribute('data-save-row');
+            var rowEl = btn.closest('[data-row-id]');
+            try {
+              var r = await fetch('/api/admin/fees/'+id, {
+                method: 'PUT',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(rowPayload(rowEl))
+              });
+              var j = await r.json();
+              if(!j.ok) throw new Error(j.error || '저장 실패');
+              window.adminToast('저장 완료');
+              // 시각 피드백
+              if(rowPayload(rowEl).is_highlight===1) rowEl.classList.add('bg-gold/5'); else rowEl.classList.remove('bg-gold/5');
+              if(rowPayload(rowEl).is_published===1) rowEl.classList.remove('opacity-50'); else rowEl.classList.add('opacity-50');
+            } catch(err) { window.adminToast('실패: '+err.message, 'err') }
+          });
+        });
+
+        // === 행 삭제 ===
+        document.querySelectorAll('[data-delete-row]').forEach(function(btn){
+          btn.addEventListener('click', async function(){
+            if(!confirm('이 항목을 삭제하시겠습니까?')) return;
+            var id = btn.getAttribute('data-delete-row');
+            var rowEl = btn.closest('[data-row-id]');
+            try {
+              var r = await fetch('/api/admin/fees/'+id, { method: 'DELETE' });
+              var j = await r.json();
+              if(!j.ok) throw new Error(j.error || '삭제 실패');
+              rowEl.remove();
+              window.adminToast('삭제 완료');
+            } catch(err) { window.adminToast('실패: '+err.message, 'err') }
+          });
+        });
+
+        // === 그룹 일괄 저장 ===
+        document.querySelectorAll('[data-bulk-save]').forEach(function(btn){
+          btn.addEventListener('click', async function(){
+            var g = btn.getAttribute('data-bulk-save');
+            var rows = document.querySelectorAll('[data-group-rows="'+g+'"] [data-row-id]');
+            var items = [];
+            rows.forEach(function(rowEl){
+              var p = rowPayload(rowEl);
+              p.id = parseInt(rowEl.getAttribute('data-row-id'), 10);
+              items.push(p);
+            });
+            try {
+              var r = await fetch('/api/admin/fees/bulk', {
+                method: 'PUT',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ items: items })
+              });
+              var j = await r.json();
+              if(!j.ok) throw new Error(j.error || '저장 실패');
+              window.adminToast(j.affected+'건 저장 완료');
+            } catch(err) { window.adminToast('실패: '+err.message, 'err') }
+          });
+        });
+
+        // === 그룹 안내 저장 ===
+        document.querySelectorAll('[data-save-group-note]').forEach(function(btn){
+          btn.addEventListener('click', async function(){
+            var g = btn.getAttribute('data-save-group-note');
+            var input = document.querySelector('[data-group-note="'+g+'"]');
+            try {
+              var r = await fetch('/api/admin/fees/group-note', {
+                method: 'PUT',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ sort_group: parseInt(g,10), group_note: input.value })
+              });
+              var j = await r.json();
+              if(!j.ok) throw new Error(j.error || '저장 실패');
+              window.adminToast('안내 저장 완료');
+            } catch(err) { window.adminToast('실패: '+err.message, 'err') }
+          });
+        });
+
+        // === 새 행 추가 ===
+        document.querySelectorAll('[data-add-row]').forEach(function(btn){
+          btn.addEventListener('click', async function(){
+            var g = btn.getAttribute('data-add-row');
+            var card = btn.closest('[data-group-card]');
+            var newBox = document.querySelector('[data-new-row="'+g+'"]');
+            var name = newBox.querySelector('[data-new-field="name"]').value.trim();
+            var price = newBox.querySelector('[data-new-field="price"]').value.trim();
+            var note = newBox.querySelector('[data-new-field="note"]').value.trim();
+            if(!name || !price) return window.adminToast('항목명과 가격은 필수입니다.', 'err');
+            try {
+              var r = await fetch('/api/admin/fees', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ sort_group: parseInt(g,10), name: name, price: price, note: note || null })
+              });
+              var j = await r.json();
+              if(!j.ok) throw new Error(j.error || '추가 실패');
+              window.adminToast('추가 완료 — 새로고침');
+              setTimeout(function(){ location.reload() }, 600);
+            } catch(err) { window.adminToast('실패: '+err.message, 'err') }
+          });
+        });
+      })();
+    `}}/>
+  </AdminShell>
+)
+
+/* =========================================================================
+   SEO/AEO 가이드 — Google Search Console / Naver Webmaster 등록 가이드
+   ========================================================================= */
+export const AdminSeoGuidePage = ({ stats }: { stats: { blog: number, ba: number, doctors: number, treatments: number, sitemaps: string[] } }) => (
+  <AdminShell active="seo">
+    <ToastBootstrap />
+    <div class="mb-6 lg:mb-8 flex items-center justify-between flex-wrap gap-3">
+      <div>
+        <h1 class="display text-3xl lg:text-4xl font-light text-brown-900">SEO · AEO 가이드</h1>
+        <p class="text-brown-600 text-sm mt-2">구글 · 네이버에서 컬럼·비포애프터가 빵빵 터지게 만드는 셀프 가이드</p>
+      </div>
+      <div class="flex gap-2">
+        <a href="/sitemap.xml" target="_blank" class="btn-outline text-xs"><i class="fas fa-file-code mr-1"></i>sitemap.xml</a>
+        <a href="/robots.txt" target="_blank" class="btn-outline text-xs"><i class="fas fa-robot mr-1"></i>robots.txt</a>
+        <a href="/llms.txt" target="_blank" class="btn-outline text-xs"><i class="fas fa-brain mr-1"></i>llms.txt</a>
+      </div>
+    </div>
+
+    {/* 현황 카드 */}
+    <div class="grid md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-ivory rounded-2xl shadow-card p-5">
+        <div class="text-xs text-brown-500 tracking-widest mb-2">색인 대상 컬럼</div>
+        <div class="display text-3xl text-brown-900">{stats.blog}<span class="text-sm text-brown-500 ml-1">건</span></div>
+      </div>
+      <div class="bg-ivory rounded-2xl shadow-card p-5">
+        <div class="text-xs text-brown-500 tracking-widest mb-2">색인 대상 비포애프터</div>
+        <div class="display text-3xl text-brown-900">{stats.ba}<span class="text-sm text-brown-500 ml-1">건</span></div>
+      </div>
+      <div class="bg-ivory rounded-2xl shadow-card p-5">
+        <div class="text-xs text-brown-500 tracking-widest mb-2">원장 페이지</div>
+        <div class="display text-3xl text-brown-900">{stats.doctors}<span class="text-sm text-brown-500 ml-1">명</span></div>
+      </div>
+      <div class="bg-ivory rounded-2xl shadow-card p-5">
+        <div class="text-xs text-brown-500 tracking-widest mb-2">진료 페이지</div>
+        <div class="display text-3xl text-brown-900">{stats.treatments}<span class="text-sm text-brown-500 ml-1">개</span></div>
+      </div>
+    </div>
+
+    {/* STEP 1: Google Search Console */}
+    <div class="bg-ivory rounded-2xl shadow-card p-6 lg:p-8 mb-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">1</div>
+        <h2 class="display text-2xl text-brown-900">Google Search Console 등록</h2>
+      </div>
+      <ol class="space-y-3 text-sm text-brown-800 list-decimal list-inside ml-2 leading-relaxed">
+        <li><a href="https://search.google.com/search-console" target="_blank" class="text-blue-600 underline">search.google.com/search-console</a> 접속 → 속성 추가 → <strong>URL 접두어</strong> 선택</li>
+        <li>주소 입력: <code class="bg-brown-100 px-2 py-0.5 rounded">https://daegu365dc.com</code></li>
+        <li>소유권 확인 방법: <strong>HTML 태그</strong> 선택 → 메타 태그 복사 (예: <code class="bg-brown-100 px-2 py-0.5 rounded">&lt;meta name="google-site-verification" content="ABC123..."&gt;</code>)</li>
+        <li>복사한 <strong>content 값만</strong> 복사 → 개발팀에게 전달 (renderer.tsx의 verification 메타에 삽입 필요)</li>
+        <li>등록 후 좌측 메뉴 → <strong>Sitemaps</strong> → 다음 4개 모두 제출:
+          <div class="mt-2 bg-brown-50 border border-brown-200 rounded p-3 font-mono text-xs space-y-1">
+            <div>sitemap.xml</div>
+            <div>sitemap-main.xml</div>
+            <div>sitemap-blog.xml</div>
+            <div>sitemap-cases.xml</div>
+            <div>sitemap-content.xml</div>
+          </div>
+        </li>
+        <li>좌측 <strong>URL 검사</strong> → 새 글 URL 입력 → "색인 생성 요청" 클릭 (포스팅마다 수동 푸시 가능)</li>
+      </ol>
+    </div>
+
+    {/* STEP 2: Naver Webmaster */}
+    <div class="bg-ivory rounded-2xl shadow-card p-6 lg:p-8 mb-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold">2</div>
+        <h2 class="display text-2xl text-brown-900">네이버 서치어드바이저 등록</h2>
+      </div>
+      <ol class="space-y-3 text-sm text-brown-800 list-decimal list-inside ml-2 leading-relaxed">
+        <li><a href="https://searchadvisor.naver.com" target="_blank" class="text-green-600 underline">searchadvisor.naver.com</a> 접속 → 네이버 로그인 → 사이트 등록</li>
+        <li>주소: <code class="bg-brown-100 px-2 py-0.5 rounded">https://daegu365dc.com</code></li>
+        <li>소유 확인: <strong>HTML 태그</strong> 선택 → content 값 복사 → 개발팀 전달 (naver-site-verification)</li>
+        <li>등록 후 좌측 <strong>요청 → 사이트맵 제출</strong> → <code class="bg-brown-100 px-2 py-0.5 rounded">sitemap.xml</code> 제출 (sitemapindex 자동 인식)</li>
+        <li>좌측 <strong>요청 → 웹페이지 수집</strong> → 새 글 URL 입력 → 수집 요청 (네이버는 수동 요청 필수)</li>
+        <li><strong>RSS 등록 권장</strong>: 좌측 RSS 제출 → <code class="bg-brown-100 px-2 py-0.5 rounded">https://daegu365dc.com/rss.xml</code> (구현 예정 시)</li>
+      </ol>
+    </div>
+
+    {/* STEP 3: 포스팅 체크리스트 */}
+    <div class="bg-ivory rounded-2xl shadow-card p-6 lg:p-8 mb-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-gold text-brown-950 flex items-center justify-center font-bold">3</div>
+        <h2 class="display text-2xl text-brown-900">포스팅마다 체크할 SEO 7계명</h2>
+      </div>
+      <div class="space-y-3 text-sm text-brown-800">
+        <div class="flex gap-3"><i class="fas fa-check-circle text-green-600 mt-1"></i><div><strong>제목에 핵심 키워드 + 지역</strong> (예: "대구 임플란트 가격, 365치과가 솔직하게 알려드립니다") - 32자 이내 권장</div></div>
+        <div class="flex gap-3"><i class="fas fa-check-circle text-green-600 mt-1"></i><div><strong>Meta Description 직접 작성</strong> (70~155자) - 검색결과에 그대로 노출됨. 자동 생성보다 압도적으로 강력</div></div>
+        <div class="flex gap-3"><i class="fas fa-check-circle text-green-600 mt-1"></i><div><strong>키워드 5종 필수 포함</strong>: 임플란트, 인비절라인, 라미네이트, 글로우네이트, 치아교정 - 자동 보완되지만 본문/키워드란에 직접 넣으면 더 강함</div></div>
+        <div class="flex gap-3"><i class="fas fa-check-circle text-green-600 mt-1"></i><div><strong>썸네일 + OG 이미지 설정</strong> - 카톡/페북/네이버 공유 시 썸네일 자동 노출</div></div>
+        <div class="flex gap-3"><i class="fas fa-check-circle text-green-600 mt-1"></i><div><strong>Before/After ALT 텍스트</strong> - 구글 이미지 검색 유입의 핵심. 비포애프터 폼에 직접 입력</div></div>
+        <div class="flex gap-3"><i class="fas fa-check-circle text-green-600 mt-1"></i><div><strong>본문은 H2/H3로 구조화</strong> - 단순 P 태그만 쓰면 검색엔진이 구조를 못 읽음. 어드민 H2/H3 버튼 활용</div></div>
+        <div class="flex gap-3"><i class="fas fa-check-circle text-green-600 mt-1"></i><div><strong>발행 후 GSC + 네이버에 URL 수동 색인 요청</strong> - 자동 크롤링 기다리면 1~4주, 수동 요청은 1~3일</div></div>
+      </div>
+    </div>
+
+    {/* STEP 4: 시스템이 자동으로 해주는 것 */}
+    <div class="bg-gradient-to-br from-amber-50 to-ivory rounded-2xl shadow-card p-6 lg:p-8 mb-6 border border-amber-200">
+      <div class="flex items-center gap-3 mb-4">
+        <i class="fas fa-magic text-2xl text-gold"></i>
+        <h2 class="display text-2xl text-brown-900">시스템이 자동으로 처리 중인 SEO/AEO</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-3 text-sm text-brown-800">
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>JSON-LD 구조화 데이터</strong> 자동 삽입 (Article, BlogPosting, MedicalCaseStudy)</div></div>
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>OpenGraph + Twitter Card</strong> 자동 생성 (SNS 공유 미리보기)</div></div>
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>Canonical URL</strong> 자동 (중복 콘텐츠 방지)</div></div>
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>image:image sitemap</strong> 자동 (구글 이미지 검색 색인)</div></div>
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>AI 봇 허용</strong> (GPTBot, ClaudeBot, PerplexityBot) - ChatGPT/Claude/Perplexity 답변에 인용</div></div>
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>llms.txt</strong> 자동 제공 (AI 답변엔진 최적화)</div></div>
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>Description 3단 폴백</strong> (직접입력 → 요약 → 본문자동추출)</div></div>
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>키워드 5종 자동 보완</strong> (임플란트/인비절라인/라미네이트/글로우네이트/치아교정)</div></div>
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>분할 sitemap 4종</strong> (main/blog/cases/content) - 대용량 크롤링 최적화</div></div>
+        <div class="flex gap-2"><i class="fas fa-bolt text-gold mt-1"></i><div><strong>Author/Publisher 스키마</strong> (E-E-A-T: 의료 전문성 자동 표기)</div></div>
+      </div>
+    </div>
+
+    {/* STEP 5: 색인 안되는 글 진단 */}
+    <div class="bg-ivory rounded-2xl shadow-card p-6 lg:p-8 mb-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold">!</div>
+        <h2 class="display text-2xl text-brown-900">"왜 검색이 안 되지?" 자가 진단 체크</h2>
+      </div>
+      <ul class="space-y-2 text-sm text-brown-800">
+        <li><i class="fas fa-question-circle text-rose-600 mr-2"></i><strong>발행한 지 얼마나 됐나?</strong> - 신규 사이트는 첫 색인까지 2~8주 걸림. GSC 색인 요청 안 했으면 더 오래</li>
+        <li><i class="fas fa-question-circle text-rose-600 mr-2"></i><strong>"공개" 체크 했나?</strong> - 어드민 폼 하단 공개 체크박스 확인</li>
+        <li><i class="fas fa-question-circle text-rose-600 mr-2"></i><strong>"검색노출 차단(noindex)" 실수로 체크?</strong> - 새로 추가된 SEO 섹션의 noindex 체크박스 확인</li>
+        <li><i class="fas fa-question-circle text-rose-600 mr-2"></i><strong>GSC에 sitemap 제출했나?</strong> - 위 STEP 1·5번 확인</li>
+        <li><i class="fas fa-question-circle text-rose-600 mr-2"></i><strong>제목·본문에 키워드 들어갔나?</strong> - 검색엔진은 본문에 키워드 없으면 안 색인</li>
+        <li><i class="fas fa-question-circle text-rose-600 mr-2"></i><strong>본문 글자 수 충분?</strong> - 300자 미만 짧은 글은 색인 우선순위 낮음. 800자 이상 권장</li>
+        <li><i class="fas fa-question-circle text-rose-600 mr-2"></i><strong>"site:daegu365dc.com" 구글 검색</strong> - 색인된 페이지 수 확인 (목표: 100+)</li>
+      </ul>
+    </div>
+
+    {/* 빠른 액션 */}
+    <div class="bg-brown-900 text-ivory rounded-2xl p-6 lg:p-8">
+      <h3 class="display text-xl mb-4"><i class="fas fa-rocket mr-2 text-gold"></i>지금 바로 할 수 있는 액션</h3>
+      <div class="grid md:grid-cols-2 gap-3">
+        <a href="https://search.google.com/search-console" target="_blank" class="bg-brown-800 hover:bg-brown-700 rounded-lg p-4 transition">
+          <div class="font-bold text-gold mb-1">→ GSC에서 색인 요청</div>
+          <div class="text-xs text-brown-300">URL 검사 → 색인 생성 요청</div>
+        </a>
+        <a href="https://searchadvisor.naver.com" target="_blank" class="bg-brown-800 hover:bg-brown-700 rounded-lg p-4 transition">
+          <div class="font-bold text-gold mb-1">→ 네이버에서 수집 요청</div>
+          <div class="text-xs text-brown-300">요청 → 웹페이지 수집</div>
+        </a>
+        <a href="https://search.google.com/test/rich-results" target="_blank" class="bg-brown-800 hover:bg-brown-700 rounded-lg p-4 transition">
+          <div class="font-bold text-gold mb-1">→ 리치 결과 테스트</div>
+          <div class="text-xs text-brown-300">JSON-LD 정상 작동 확인</div>
+        </a>
+        <a href="https://pagespeed.web.dev" target="_blank" class="bg-brown-800 hover:bg-brown-700 rounded-lg p-4 transition">
+          <div class="font-bold text-gold mb-1">→ PageSpeed 테스트</div>
+          <div class="text-xs text-brown-300">속도가 SEO 핵심</div>
+        </a>
+      </div>
+    </div>
+  </AdminShell>
 )

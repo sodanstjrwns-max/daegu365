@@ -10,6 +10,34 @@ export const HomePage = () => (
     <Navbar />
 
     {/* ================================================== */}
+    {/* 0. 진료안내 컴팩트 띠 — 메인 페이지 전용, ivory 톤 (PPT PC3-S4 절충안 C) */}
+    {/* ================================================== */}
+    <div class="hidden lg:block bg-ivory border-b border-brown-200/60">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-10">
+        <div class="flex items-center gap-1 overflow-x-auto py-2 text-[12.5px] font-medium tracking-tight text-brown-800">
+          <span class="shrink-0 px-2.5 py-1 text-[10px] tracking-[0.22em] text-brown-500 font-bold uppercase">진료안내</span>
+          <span class="shrink-0 w-px h-3.5 bg-brown-300 mx-0.5"></span>
+          <a href="/treatments/implant" class="shrink-0 px-2.5 py-1 rounded-full text-brown-900 font-semibold hover:bg-gold/15 hover:text-brown-950 transition border border-gold/40">✦ 수면임플란트</a>
+          <a href="/treatments/ortho" class="shrink-0 px-2.5 py-1 rounded-full text-brown-900 font-semibold hover:bg-gold/15 hover:text-brown-950 transition border border-gold/40">✦ 인비절라인 교정</a>
+          <a href="/treatments/lamineer" class="shrink-0 px-2.5 py-1 rounded-full text-brown-900 font-semibold hover:bg-gold/15 hover:text-brown-950 transition border border-gold/40">✦ 비니크 라미네이트</a>
+          <span class="shrink-0 w-px h-3.5 bg-brown-300 mx-1"></span>
+          <a href="/treatments/sleep-therapy" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">수면치료</a>
+          <a href="/treatments/painless-anesthesia" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">4단계 무통마취</a>
+          <a href="/treatments/airflow-gbt" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">에어플로우 GBT</a>
+          <a href="/treatments/cavity-endo-crown" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">충치·신경·크라운</a>
+          <a href="/treatments/perio" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">치주치료</a>
+          <a href="/treatments/pediatric" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">소아치과</a>
+          <a href="/treatments/pediatric-ortho" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">소아교정</a>
+          <a href="/treatments/whitening" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">전문가 미백</a>
+          <a href="/treatments/prosthetic" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">보철</a>
+          <a href="/treatments/qray" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">Q-ray</a>
+          <a href="/treatments/in-house-lab" class="shrink-0 px-2.5 py-1 rounded-full hover:bg-brown-100 transition">기공실</a>
+          <a href="/treatments" class="shrink-0 ml-auto px-2.5 py-1 rounded-full bg-brown-900 text-gold hover:bg-brown-950 transition font-semibold">전체 보기 →</a>
+        </div>
+      </div>
+    </div>
+
+    {/* ================================================== */}
     {/* 1. CINEMATIC HERO                                   */}
     {/* ================================================== */}
     <section class="cinematic-hero">
@@ -22,48 +50,81 @@ export const HomePage = () => (
       />
 
       {/* Side meta */}
-      <div class="side-meta hidden lg:block">DAEGU 365 DENTAL · EST. 2024 · KOREA</div>
+      <div class="side-meta hidden lg:block">DAEGU 365 DENTAL · EST. 2025 · KOREA</div>
       <div class="side-meta side-meta-right hidden lg:block">NORTH DISTRICT · CHIMSAN-RO 148</div>
 
       <div class="cinematic-hero-content max-w-[1440px] mx-auto px-6 lg:px-12 pt-32 pb-24 min-h-screen flex flex-col justify-between">
-        {/* Top bar */}
+        {/* Top bar — PPT PC3 슬라이드 2·5: LIVE 표시 로고 옆 / 상단 정보 박스 + 상담예약·전화 버튼 */}
         <div class="flex flex-wrap items-center justify-between gap-6 fade-in">
-          <div class="ribbon">
-            <i class="fas fa-shield-heart"></i>
-            <span>평생 임플란트 보증</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="ribbon">
+              <i class="fas fa-shield-heart"></i>
+              <span>평생 보증 임플란트</span>
+            </div>
+            <div class="hidden md:inline-flex items-center gap-2 text-xs text-ivory/85 px-3 py-1.5 rounded-full bg-brown-950/40 border border-ivory/15 backdrop-blur-sm">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span class="font-semibold tracking-wider">LIVE</span>
+              <span class="text-ivory/40">·</span>
+              <span>현재 진료 중</span>
+            </div>
           </div>
-          <div class="hidden md:flex items-center gap-4 text-sm text-ivory/80">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-            </span>
-            <span class="font-medium">LIVE · 현재 진료 중</span>
-            <span class="text-ivory/30">|</span>
-            <span>월·목 <strong>21:00</strong>까지</span>
+          <div class="hidden md:flex items-center gap-2">
+            <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md" style="background:#FEE500;color:#191919;">
+              <i class="fas fa-comment"></i>
+              <span>상담예약</span>
+            </a>
+            <a href="tel:053-357-0365" class="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-full transition shadow-md" style="background:var(--gold);color:var(--brown-950);">
+              <i class="fas fa-phone"></i>
+              <span style="white-space:nowrap;">053-357-0365</span>
+            </a>
           </div>
         </div>
 
+        {/* PPT PC3 슬라이드 2 — 상단 정보 박스 (7인 협진 / 365일 / 평일 야간 21시 / 대구침산동) */}
+        <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-2 mt-6 fade-in">
+          {[
+            { icon: 'fa-user-doctor', label: '전문의 7인 협진', sub: 'SPECIALIZED TEAM' },
+            { icon: 'fa-calendar-days', label: '365일 연중무휴', sub: 'ALWAYS OPEN' },
+            { icon: 'fa-moon', label: '평일 야간 21시까지', sub: 'LATE NIGHT' },
+            { icon: 'fa-location-dot', label: '대구 북구 침산동', sub: 'CHIMSAN-DONG' },
+          ].map((b: any) => (
+            <div class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-brown-950/40 border border-ivory/10 backdrop-blur-sm hover:border-gold/40 transition">
+              <div class="w-9 h-9 flex items-center justify-center rounded-full bg-gold/15 text-gold">
+                <i class={`fas ${b.icon}`}></i>
+              </div>
+              <div class="flex flex-col leading-tight">
+                <span class="text-[9px] tracking-[0.2em] text-gold font-bold uppercase">{b.sub}</span>
+                <span class="text-sm font-semibold text-ivory" style="white-space:nowrap;">{b.label}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
         {/* Headline block */}
-        <div class="max-w-5xl">
+        <div class="max-w-5xl hero-headline-block">
           <div class="section-label mb-10 fade-in" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.4);">
-            SINCE 2024 · 대구 북구
+            SINCE 2025 · 대구 북구
           </div>
 
-          <h1 class="reveal-lines text-ivory font-black leading-[0.9] tracking-[-0.05em]" style="font-size:clamp(3rem, 9vw, 9rem);">
+          {/* PPT PC3 슬라이드 3 — 글씨 크기 축소 (8.4rem → 6.4rem), '괜찮습' 하단 잘림 방지 padding 강화 */}
+          <h1 class="reveal-lines hero-h1 text-ivory font-black leading-[0.92] tracking-[-0.045em]" style="font-size:clamp(2rem, 6.4vw, 6.4rem); padding-bottom:0.22em;">
             <span class="block overflow-hidden">
               <span class="reveal-word"><span style="--d:0s">치과가</span></span>{' '}
-              <span class="reveal-word"><span style="--d:.05s">두려워도,</span></span>
+              <span class="reveal-word"><span style="--d:.05s">두려워도</span></span>
             </span>
-            <span class="block overflow-hidden mt-2">
+            <span class="block overflow-hidden mt-3 hero-h1-line2" style="padding-bottom:0.28em; line-height:1.12;">
               <span class="reveal-word"><span style="--d:.14s" class="t-gold">괜찮습니다</span></span>
-              <span class="reveal-word"><span style="--d:.2s">.</span></span>
             </span>
           </h1>
 
           <div class="mt-10 grid md:grid-cols-2 gap-8 items-end max-w-4xl">
-            <p class="t-lead text-ivory/85 fade-in" style="color:rgba(253,251,247,0.85);">
-              치과공포증을 가졌던 의사가 만드는, <strong class="text-gold font-semibold">두려움 없는 치과</strong>.<br/>
-              수면임플란트 · 인비절라인 · VINIQUE 라미네이트 전문.
+            <p class="t-lead text-ivory/85 fade-in hero-lead" style="color:rgba(253,251,247,0.85);">
+              {/* PPT 모바일 슬라이드 1·6 / PC1 슬라이드 3 — 슬래시 단위 줄바꿈 + 마침표 제거, 한 줄 유지 */}
+              <span class="hero-lead-line-1" style="font-size:clamp(0.92rem, 1.45vw, 1.18rem); white-space:nowrap;">치과공포증을 가졌던 의사가 만드는<br/><strong class="text-gold font-semibold">두려움 없는 치과</strong></span>
+              <span class="block hero-lead-line-2 mt-2" style="font-size:clamp(0.82rem, 1.25vw, 1.05rem); white-space:nowrap;">수면임플란트 · 인비절라인 · VINIQUE 라미네이트 전문</span>
             </p>
 
             <div class="flex flex-wrap gap-3 fade-in">
@@ -73,23 +134,23 @@ export const HomePage = () => (
               </a>
               <a href="tel:053-357-0365" class="btn-outline magnetic" style="border-color:var(--ivory); color:var(--ivory);">
                 <i class="fas fa-phone"></i>
-                <span>053-357-0365</span>
+                <span style="white-space:nowrap;">053-357-0365</span>
               </a>
             </div>
           </div>
         </div>
 
-        {/* Bottom strip */}
+        {/* Bottom strip — PPT 모바일 슬라이드 2: 7명'의' 조사 추가 + 줄변경 / 임플란트 평생 보증 어순 변경 */}
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-12 pt-14 border-t border-ivory/10 fade-in">
           {[
-            { num: '365', label: '일 연중무휴' },
-            { num: '7', label: '명 전문 의료진' },
-            { num: '21:00', label: '월·목 야간진료' },
-            { num: '∞', label: '평생 임플란트 보증' },
+            { num: '365', unit: '일', label: '연중무휴', stack: true },
+            { num: '7', unit: '명의', label: '전문 의료진', stack: true },
+            { num: '21:00', unit: '', label: '월·목 야간진료' },
+            { num: '∞', unit: '', label: '평생 보증 임플란트' },
           ].map((s: any) => (
-            <div>
-              <div class="display text-4xl lg:text-5xl font-black text-ivory tracking-tight leading-none mb-2">
-                {s.num}
+            <div class="hero-stat">
+              <div class="display hero-stat-num font-black text-ivory tracking-tight leading-none mb-2">
+                {s.num}{s.unit && <span class={`hero-stat-unit text-ivory ${s.stack ? 'hero-stat-unit-stack' : 'ml-1'}`}>{s.unit}</span>}
               </div>
               <div class="text-xs tracking-[0.25em] text-ivory/60 font-semibold">
                 {s.label}
@@ -121,7 +182,7 @@ export const HomePage = () => (
         <span class="gold">✦</span>
         <span>평생보증</span>
         <span class="gold">✦</span>
-        <span class="outline">SINCE 2024</span>
+        <span class="outline">SINCE 2025</span>
         <span class="gold">✦</span>
         <span>수면임플란트</span>
         <span class="gold">✦</span>
@@ -133,7 +194,7 @@ export const HomePage = () => (
         <span class="gold">✦</span>
         <span>평생보증</span>
         <span class="gold">✦</span>
-        <span class="outline">SINCE 2024</span>
+        <span class="outline">SINCE 2025</span>
         <span class="gold">✦</span>
       </div>
     </section>
@@ -148,7 +209,7 @@ export const HomePage = () => (
             <div class="section-label mb-8 fade-in">MANIFESTO · 01</div>
             <h2 class="t-display mb-8 fade-in">
               <span class="t-gold">공감</span>으로<br/>시작해서<br/>
-              <span class="t-outline">신뢰</span>로<br/>완성합니다
+              <span class="text-brown-900">신뢰</span>로<br/>완성합니다
             </h2>
             <p class="t-lead mb-8 max-w-md fade-in">
               어린 시절 치과 진료실 문 앞에서 돌아섰던 기억.<br/>
@@ -170,7 +231,7 @@ export const HomePage = () => (
               <img src="/static/images/macro-veneer.jpg" alt="세라믹 베니어 매크로" loading="lazy" />
             </div>
             <div class="eg-3 bg-brown-950 text-ivory rounded-[20px] p-8 flex flex-col justify-center">
-              <div class="text-[10px] tracking-[0.3em] text-gold mb-3 font-bold">SINCE 2024</div>
+              <div class="text-[10px] tracking-[0.3em] text-gold mb-3 font-bold">SINCE 2025</div>
               <div class="display text-3xl font-black leading-tight tracking-tight">
                 "필요한 만큼,<br/>정직하게"
               </div>
@@ -195,13 +256,17 @@ export const HomePage = () => (
         <div class="flex flex-wrap justify-between items-end gap-6 fade-in">
           <div class="max-w-2xl">
             <div class="section-label mb-6">SIGNATURE · 02</div>
-            <h2 class="t-display">
-              <span class="t-outline">시그니처</span><br/>
-              <span class="t-gold">진료 6선</span>
+            <h2 class="t-display signature-title" style="font-family: 'Pretendard', 'Noto Sans KR', sans-serif; letter-spacing:-0.02em; font-weight:800; line-height:1.05;">
+              <span class="signature-keyword">시그니처</span><br/>
+              <span class="t-gold">진료 3선</span>
             </h2>
           </div>
+          {/* PPT 모바일 슬라이드 4 — 옆으로 넘겨보세요 안내(중복 제거) */}
           <div class="flex items-center gap-3 text-brown-600 text-sm">
-            <span class="font-semibold tracking-wider">DRAG · SCROLL →</span>
+            <span class="font-semibold tracking-wider inline-flex items-center gap-2">
+              <i class="fas fa-hand-pointer"></i>
+              옆으로 넘겨보세요 →
+            </span>
             <div class="flex gap-1">
               <span class="w-8 h-px bg-brown-400"></span>
               <span class="w-4 h-px bg-brown-300"></span>
@@ -219,16 +284,25 @@ export const HomePage = () => (
               <i class="fas fa-star"></i>
               <span>FLAGSHIP SERVICES</span>
             </div>
-            <h3 class="t-headline text-brown-900 mb-6">
+            <p class="t-headline text-brown-900 mb-6">
               분야별 전문의가<br/>함께 설계하는<br/>
-              <span class="t-gold">3가지 시그니처</span>
-            </h3>
-            <p class="t-lead mb-8">
-              수면 진정 + 4단계 무통마취 + 원내 디지털 기공실로<br/>
-              공포 없이, 정확하게, 빠르게.
+              <span class="t-gold">3가지 핵심 진료</span>
+            </p>
+            {/* PPT 모바일 슬라이드 4 — 슬래시 줄바꿈 + 마침표 제거 */}
+            <p class="t-lead mb-8 flagship-lead">
+              <span class="block" style="font-size:clamp(0.82rem, 1.25vw, 1.05rem);">
+                수면 진정 <span class="text-brown-400">/</span><br class="md:hidden"/>
+                4단계 무통마취 <span class="text-brown-400">/</span><br class="md:hidden"/>
+                원내 디지털 기공실로
+              </span>
+              <span class="block mt-2" style="font-size:clamp(0.88rem, 1.35vw, 1.1rem);">
+                공포 없이 <span class="text-brown-400">/</span>
+                정확하게 <span class="text-brown-400">/</span>
+                빠르게
+              </span>
             </p>
             <a href="/treatments" class="btn-primary btn-shine magnetic">
-              <span>전체 진료 17종 보기</span>
+              <span>전체 진료 보기</span>
               <i class="fas fa-arrow-right"></i>
             </a>
           </div>
@@ -244,49 +318,22 @@ export const HomePage = () => (
               points: ['수면 진정 + 무통마취', '메가젠 BD · 오스템 BA', '평생 임플란트 보증'],
             },
             {
-              slug: 'lamineer',
-              name: 'VINIQUE',
-              tagline: '프리미엄 라미네이트',
-              num: '02',
-              // 매크로 베니어 컷 — 라미네이트 결과 자체를 보여주는 이미지로 스왑
-              img: '/static/images/macro-veneer.jpg',
-              points: ['얼굴형·스마일 라인 설계', '최소 삭제 · 자연광택', '원내 디지털 기공실'],
-            },
-            {
               slug: 'ortho',
               name: '인비절라인',
-              tagline: '투명하게, 자유롭게',
-              num: '03',
+              tagline: '투명하게, 자유롭게 (교정)',
+              num: '02',
               // 투명 인비절라인 얼라이너 매크로 컷 (R2, 4K)
               img: '/r2/images/treatments/invisalign-aligner.jpg',
               points: ['인비절라인 공인 의료진', '3D 시뮬레이션', '티 나지 않는 교정'],
             },
             {
-              slug: 'painless-anesthesia',
-              name: '4단계 무통마취',
-              tagline: '주사 공포 제거',
-              num: '04',
-              // 극세 주사 바늘 정물 매크로 컷 (R2, 4K, 따뜻한 톤)
-              img: '/r2/images/treatments/painless-needle.jpg',
-              points: ['가글 → 도포 → 무통기 → 본마취', '앰플 워머 사용', '극세 주사 바늘'],
-            },
-            {
-              slug: 'sleep-therapy',
-              name: '수면치료 시스템',
-              tagline: '잠드는 사이 끝',
-              num: '05',
-              // 평온하게 쉬는 환자 사이드컷 (R2, 4K, 골드톤)
-              img: '/r2/images/treatments/sleep-therapy-serene.jpg',
-              points: ['전문 마취과 협진', '생체 신호 실시간 모니터', '응급 대응 시스템'],
-            },
-            {
-              slug: 'airflow-gbt',
-              name: 'AIRFLOW GBT',
-              tagline: '무통 스케일링',
-              num: '06',
-              // 펄세센트 클렌징 파우더 캐스케이드 (R2, 4K, 샴페인톤)
-              img: '/r2/images/treatments/airflow-powder.jpg',
-              points: ['온수·공기·고운 분말', '시린이·임플란트 가능', '바이오필름 완전 제거'],
+              slug: 'lamineer',
+              name: 'VINIQUE',
+              tagline: '프리미엄 라미네이트',
+              num: '03',
+              // 매크로 베니어 컷 — 라미네이트 결과 자체를 보여주는 이미지로 스왑
+              img: '/static/images/macro-veneer.jpg',
+              points: ['얼굴형·스마일 라인 설계', '최소 삭제 · 자연광택', '원내 디지털 기공실'],
             },
           ].map((t: any) => (
             <a href={`/treatments/${t.slug}`} class="h-scroll-card group block">
@@ -334,28 +381,52 @@ export const HomePage = () => (
         <div>
           {[
             {
+              /* PPT 모바일 슬라이드 1·5 — 마침표/쉼표 제거 */
               num: 365,
               suffix: '일',
               label: 'ALWAYS OPEN',
-              desc: '주말, 공휴일에도 쉬지 않습니다. 갑작스런 치통·사고에도 언제든 진료받으실 수 있도록 연중무휴 운영합니다.'
+              lines: [
+                '월·목요일은 21시까지 야간진료',
+                '주말과 공휴일에도 쉬지 않습니다',
+                '갑작스런 치통·사고에도',
+                '언제든 진료받으실 수 있도록',
+                '연중무휴 운영합니다',
+              ],
             },
             {
               num: 7,
               suffix: '명',
               label: 'SPECIALIZED TEAM',
-              desc: '대표원장 1명 + 진료원장 6명. 보존·치주·소아·교정·보철·심미 각 분야 전문의가 하나의 케이스를 함께 설계합니다.'
+              lines: [
+                '대표원장 1명 + 진료원장 6명',
+                '보존·치주·소아·교정·보철·심미',
+                '각 분야 전문의가',
+                '하나의 케이스를 함께 설계합니다',
+              ],
             },
             {
+              /* PPT 모바일 슬라이드 5 — 순서 변경: 직장인/학생 → 월·목 21시 순으로 / 마침표·쉼표 제거 */
               num: 21,
               suffix: ':00 PM',
               label: 'LATE NIGHT HOURS',
-              desc: '월·목요일은 21시까지 진료합니다. 직장인도, 학생도, 일상을 포기하지 않고 치료받으실 수 있도록.'
+              lines: [
+                '직장인도 학생도',
+                '일상을 포기하지 않도록',
+                '월·목요일은 21시까지 진료합니다',
+              ],
             },
             {
-              num: 3,
+              /* PPT 모바일 슬라이드 1·5 — 마침표 제거 */
+              num: 4,
               suffix: '단계',
               label: 'PAINLESS PROTOCOL',
-              desc: '가글 → 도포 마취제 → 무통마취기 → 본마취. 주사의 공포를 제거한 대구365치과만의 4단계 프로토콜.'
+              lines: [
+                '가글 → 도포 마취제',
+                '→ 무통마취기 → 본마취',
+                '주사의 공포를 제거한',
+                '대구365치과만의',
+                '4단계 프로토콜',
+              ],
             },
           ].map((s: any) => (
             <div class="mega-stat fade-in">
@@ -367,11 +438,78 @@ export const HomePage = () => (
                   </div>
                 </div>
                 <div class="mega-stat-desc">
-                  {s.desc}
+                  {s.lines.map((line: string) => (
+                    <span class="block">{line}</span>
+                  ))}
                 </div>
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+
+    {/* ================================================== */}
+    {/* 5.5 메인 진료안내 섹션 — PPT PC3 슬라이드 4 신설        */}
+    {/* ================================================== */}
+    <section class="py-28 lg:py-36 bg-ivory">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div class="flex flex-wrap justify-between items-end mb-12 gap-6 fade-in">
+          <div class="max-w-xl">
+            <div class="section-label mb-6">TREATMENTS · 04</div>
+            <h2 class="t-display" style="letter-spacing:-0.02em; line-height:1.05;">
+              전체 <span class="t-gold">진료안내</span>
+            </h2>
+          </div>
+          <p class="t-lead max-w-md text-brown-700">
+            13개 진료 영역, 7인의 전문의가 함께 설계하는 정밀 협진
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 fade-in-stagger">
+          {[
+            { slug: 'implant',              name: '수면임플란트',   icon: 'fa-tooth',        tag: '핵심' },
+            { slug: 'ortho',                name: '인비절라인',     icon: 'fa-grin',         tag: '핵심' },
+            { slug: 'lamineer',             name: '비니크 라미네이트', icon: 'fa-star',         tag: '핵심' },
+            { slug: 'sleep-therapy',        name: '수면치료',       icon: 'fa-bed' },
+            { slug: 'painless-anesthesia',  name: '4단계 무통마취', icon: 'fa-syringe' },
+            { slug: 'airflow-gbt',          name: '에어플로우 GBT', icon: 'fa-wind' },
+            { slug: 'pediatric-ortho',      name: '소아 교정장치',  icon: 'fa-child' },
+            { slug: 'cavity-endo-crown',    name: '충치·신경치료',  icon: 'fa-tooth' },
+            { slug: 'perio',                name: '치주치료',       icon: 'fa-heart-pulse' },
+            { slug: 'pediatric',            name: '소아치과',       icon: 'fa-baby' },
+            { slug: 'whitening',            name: '전문가 미백',    icon: 'fa-magic-wand-sparkles' },
+            { slug: 'qray',                 name: 'Q-ray 정밀진단', icon: 'fa-microscope' },
+            { slug: 'in-house-lab',         name: '디지털 기공실',  icon: 'fa-gears' },
+            { slug: 'prosthetic',           name: '보철',           icon: 'fa-crown' },
+            { slug: 'icon-resin',           name: '아이콘 레진',    icon: 'fa-droplet' },
+            { slug: 'prevention',           name: '예방치과',       icon: 'fa-shield' },
+          ].map((t: any) => (
+            <a href={`/treatments/${t.slug}`} class="group relative block p-5 md:p-6 rounded-2xl border border-brown-200 bg-ivory hover:border-gold hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              {t.tag && (
+                <span class="absolute top-3 right-3 text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full bg-gold text-brown-950">
+                  {t.tag}
+                </span>
+              )}
+              <div class="w-11 h-11 rounded-xl bg-brown-950/5 group-hover:bg-gold/15 flex items-center justify-center mb-3 transition">
+                <i class={`fas ${t.icon} text-brown-700 group-hover:text-gold text-lg transition`}></i>
+              </div>
+              <div class="display text-sm md:text-base font-black tracking-tight text-brown-900 leading-tight">
+                {t.name}
+              </div>
+              <div class="text-[10px] text-brown-400 mt-2 flex items-center gap-1 group-hover:text-gold transition">
+                <span>자세히</span>
+                <i class="fas fa-arrow-right text-[9px]"></i>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div class="text-center mt-10 fade-in">
+          <a href="/treatments" class="btn-outline magnetic">
+            <span>전체 진료 목록 보기</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
       </div>
     </section>
@@ -383,15 +521,15 @@ export const HomePage = () => (
       <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="flex flex-wrap justify-between items-end mb-16 gap-6 fade-in">
           <div class="max-w-xl">
-            <div class="section-label mb-6">MEDICAL TEAM · 04</div>
-            <h2 class="t-display">
-              <span class="t-outline">7인의</span><br/>
+            <div class="section-label mb-6">MEDICAL TEAM · 05</div>
+            <h2 class="t-display medical-team-title" style="letter-spacing:-0.02em; line-height:1.05;">
+              <span class="medical-team-keyword">7인의</span><br/>
               <span class="t-gold">전문 의료진</span>
             </h2>
           </div>
           <p class="t-lead max-w-md">
-            보존·치주·소아·교정·보철·심미. <br/>
-            각 분야 전문의가 하나의 케이스를 함께 설계합니다.
+            보존·치주·소아·교정·<br class="md:hidden"/>보철·심미.<br class="hidden md:inline"/>
+            각 분야 전문의가<br class="md:hidden"/> 하나의 케이스를<br class="md:hidden"/> 함께 설계합니다.
           </p>
         </div>
 
@@ -407,14 +545,15 @@ export const HomePage = () => (
             <div class="section-label mb-6" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.3);">
               FOUNDER · DIRECTOR
             </div>
-            <h3 class="display text-5xl lg:text-7xl font-black mb-4 tracking-tight leading-none">
-              김성주 <span class="t-outline" style="-webkit-text-stroke-color:var(--gold);">대표원장</span>
+            <h3 class="display founder-name-line font-black mb-4 tracking-tight leading-none" style="text-shadow: 0 2px 20px rgba(0,0,0,0.7); white-space:nowrap;">
+              <span class="founder-name">김성주</span><span class="founder-title">대표원장</span>
             </h3>
             <p class="text-xl lg:text-2xl text-brown-200 leading-relaxed max-w-3xl mb-8 font-medium">
-              "환자의 두려움에 공감하고, 꼭 필요한 정직한 치료만 권합니다.<br/>
-              한 번에 끝내려 하지 않고, 평생 함께 갈 수 있는 치아를 만듭니다."
+              "환자의 두려움에 공감하고,<br class="md:hidden"/> 꼭 필요한 정직한 치료만 권합니다.<br/>
+              한 번에 끝내려 하지 않고,<br class="md:hidden"/> 평생 함께 갈 수 있는 치아를 만듭니다."
             </p>
-            <div class="flex flex-wrap gap-3 mb-8">
+            {/* PPT 모바일 슬라이드 6 — 김성주 카드 하단 노란 tag 영역 모바일에서 숨김 (PC에서만 노출) */}
+            <div class="hidden md:flex flex-wrap gap-3 mb-8 founder-tags">
               <span class="tag tag-gold">서울대 치의학과</span>
               <span class="tag tag-gold">통합치의학과 전문의</span>
               <span class="tag tag-gold">수면임플란트</span>
@@ -427,12 +566,36 @@ export const HomePage = () => (
           </div>
         </a>
 
+        {/* PPT PC3 슬라이드 8 — "어떤 원장님께 진료받고 싶으신가요?" 진료과별 가이드 */}
+        <div class="mb-10 fade-in">
+          <div class="text-center mb-6">
+            <h3 class="display text-2xl md:text-3xl font-black tracking-tight text-brown-900">
+              어떤 원장님께 <span class="t-gold">진료받고 싶으신가요?</span>
+            </h3>
+            <p class="text-sm text-brown-600 mt-2">진료과별로 전문의를 한눈에 확인하세요</p>
+          </div>
+          <div class="flex flex-wrap justify-center gap-2">
+            {[
+              { dep: '보존과',   doctors: '정재헌·최혜정·김상원' },
+              { dep: '교정과',   doctors: '김진덕' },
+              { dep: '소아치과', doctors: '한지은' },
+              { dep: '치주과',   doctors: '이서영' },
+              { dep: '통합치의학과', doctors: '김성주 대표원장' },
+            ].map((d: any) => (
+              <a href="/doctors" class="inline-flex flex-col items-center gap-1 px-5 py-3 rounded-2xl border border-brown-300 bg-ivory hover:border-gold hover:shadow-md transition">
+                <span class="text-[10px] tracking-[0.25em] text-gold font-bold">{d.dep}</span>
+                <span class="text-sm font-semibold text-brown-900">{d.doctors}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+
         <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-4 fade-in-stagger">
           {[
             { slug: 'jung-jaeheon',  name: '정재헌', pos: '보존과 전문의',   spec: '보존·심미 치료',     img: '/r2/images/doctors/jung-jaeheon.jpg' },
-            { slug: 'choi-hyejung',  name: '최혜정', pos: '보존과 전문의',   spec: '보존·정직 치료',     img: '/r2/images/doctors/choi-hyejung.jpg' },
+            { slug: 'choi-hyejung',  name: '최혜정', pos: '보존과 전문의',   spec: '보존·정직 치료',     img: '/r2/images/doctors/kim-jinduk.jpg' },
             { slug: 'han-jieun',     name: '한지은', pos: '소아치과 전문의', spec: '소아·따뜻한 기억',   img: '/r2/images/doctors/han-jieun.jpg' },
-            { slug: 'kim-jinduk',    name: '김진덕', pos: '교정과 전문의',   spec: '교정·자신감 미소',   img: '/r2/images/doctors/kim-jinduk.jpg' },
+            { slug: 'kim-jinduk',    name: '김진덕', pos: '교정과 전문의',   spec: '교정·자신감 미소',   img: '/r2/images/doctors/choi-hyejung.jpg' },
             { slug: 'kim-sangwon',   name: '김상원', pos: '보존과 전문의',   spec: '자연치아 보존',     img: '/r2/images/doctors/kim-sangwon.jpg' },
             { slug: 'lee-seoyoung',  name: '이서영', pos: '치주과 전문의',   spec: '치주·세심한 케어',   img: '/r2/images/doctors/lee-seoyoung.jpg' },
           ].map((d: any) => (
@@ -443,6 +606,11 @@ export const HomePage = () => (
               <div class="text-[10px] tracking-[0.3em] text-brown-500 mb-1 font-bold">{d.pos.toUpperCase()}</div>
               <div class="display text-lg font-black tracking-tight mb-1">{d.name} 원장</div>
               <div class="text-xs text-brown-500">{d.spec}</div>
+              {/* PPT PC3 슬라이드 10·12 — 원장 프로필 카드에 예약 버튼 추가 */}
+              <div class="mt-3 flex items-center gap-1.5 text-[10px] font-bold text-gold opacity-0 group-hover:opacity-100 transition">
+                <i class="fas fa-calendar-check"></i>
+                <span>이 원장님께 예약하기</span>
+              </div>
             </a>
           ))}
         </div>
@@ -474,7 +642,8 @@ export const HomePage = () => (
               <span class="t-gold">무엇이 다른가</span>
             </h2>
             <p class="t-lead mb-10" style="color:rgba(253,251,247,0.75);">
-              단순한 진료가 아닙니다. 환자 한 분의 두려움부터 평생 관리까지,<br/>
+              단순한 진료가 아닙니다.<br/>
+              환자 한 분의 두려움부터 평생 관리까지,<br/>
               전 과정을 시스템으로 설계했습니다.
             </p>
             <div class="badge-row justify-start opacity-100">
@@ -514,7 +683,7 @@ export const HomePage = () => (
               {
                 step: '05 · TIME',
                 title: '365일 · 야간 진료',
-                desc: '주말, 공휴일에도 쉬지 않습니다. 월·목요일은 21시까지. 일상을 포기하지 않고 치료받으실 수 있도록 시간을 맞춰드립니다.'
+                desc: '월·목요일은 21시까지 야간진료, 주말·공휴일에도 쉬지 않습니다. 일상을 포기하지 않고 치료받으실 수 있도록 시간을 맞춰드립니다.'
               },
             ].map((f: any) => (
               <div class="timeline-item">
@@ -549,21 +718,21 @@ export const HomePage = () => (
               quote: '진료 중에 제가 불편해하는 걸 바로 알아차리시고 중간중간 괜찮냐고 물어봐주세요. 20년 넘게 치과를 피했는데, 여기선 끝까지 버틸 수 있었어요.',
               author: '김**님',
               meta: '수면임플란트 · 40대 여성',
-              avatar: '/static/images/testimonial-smile.jpg',
+              initial: 'K',
               stars: 5,
             },
             {
               quote: '다른 치과에서 6개를 빼야 한다고 했는데, 대구365에서는 2개만 치료하면 된다고 하시더라고요. "꼭 필요한 치료만"이라는 말이 진짜였습니다.',
               author: '박**님',
               meta: '보존치료 · 50대 남성',
-              avatar: '/static/images/testimonial-smile.jpg',
+              initial: 'P',
               stars: 5,
             },
             {
               quote: 'VINIQUE로 라미네이트 했는데, 자연스러워서 친구들도 못 알아봐요. 근데 사진 찍을 때 확실히 달라진 게 보이는 거예요. 최고의 선택.',
               author: '이**님',
               meta: 'VINIQUE 라미네이트 · 30대 여성',
-              avatar: '/static/images/testimonial-smile.jpg',
+              initial: 'L',
               stars: 5,
             },
           ].map((t: any) => (
@@ -573,8 +742,8 @@ export const HomePage = () => (
               </div>
               <p class="testimonial-quote">"{t.quote}"</p>
               <div class="testimonial-author">
-                <div class="testimonial-avatar">
-                  <img src={t.avatar} alt={t.author} loading="lazy" />
+                <div class="testimonial-monogram" aria-hidden="true">
+                  {t.initial}
                 </div>
                 <div>
                   <div class="font-bold text-brown-900 tracking-tight">{t.author}</div>
@@ -583,6 +752,10 @@ export const HomePage = () => (
               </div>
             </div>
           ))}
+        </div>
+
+        <div class="mt-8 text-center text-[11px] text-brown-500/70 tracking-wide max-w-2xl mx-auto fade-in">
+          ※ 위 후기는 환자 동의를 받은 실제 진료 경험을 정리한 것이며, 개인정보 보호를 위해 식별 가능한 사진은 게시하지 않습니다.
         </div>
 
         <div class="mt-16 text-center fade-in">
@@ -605,7 +778,7 @@ export const HomePage = () => (
           <div class="lg:col-span-7">
             <div class="section-label mb-6">FACILITY · 07</div>
             <h2 class="t-display mb-8">
-              <span class="t-outline">프리미엄</span><br/>
+              <span class="text-brown-900">프리미엄</span><br/>
               <span class="t-gold">치과 공간</span>
             </h2>
             <p class="t-lead">
@@ -858,6 +1031,84 @@ export const HomePage = () => (
               </div>
             </a>
           ))}
+        </div>
+      </div>
+    </section>
+
+    {/* ================================================== */}
+    {/* 11.5 요일별 진료 스케줄 — PPT PC1 슬라이드 12 신설      */}
+    {/* ================================================== */}
+    <section class="py-24 bg-cream relative overflow-hidden">
+      <div class="max-w-[1100px] mx-auto px-6 lg:px-12">
+        <div class="text-center mb-12 fade-in">
+          <div class="section-label mb-6 mx-auto inline-block">SCHEDULE · 09</div>
+          <h2 class="t-display mb-4">
+            요일별 <span class="t-gold">진료 스케줄</span>
+          </h2>
+          <p class="t-lead text-brown-700 max-w-2xl mx-auto">
+            월·목 21시 야간진료 · 토·일 정상 진료 · 공휴일에도 쉬지 않습니다
+          </p>
+        </div>
+
+        <div class="rounded-[24px] shadow-xl overflow-hidden border border-brown-200 bg-ivory fade-in">
+          <div class="grid grid-cols-7 text-center text-xs md:text-sm font-bold bg-brown-950 text-ivory">
+            {['월','화','수','목','금','토','일'].map((d, i) => (
+              <div class={`py-4 tracking-wider ${i >= 5 ? 'text-gold' : ''}`}>{d}</div>
+            ))}
+          </div>
+          <div class="grid grid-cols-7 text-center text-[11px] md:text-sm">
+            {[
+              { day: '월', open: '09:30', close: '21:00', highlight: true },
+              { day: '화', open: '09:30', close: '18:30' },
+              { day: '수', open: '09:30', close: '18:30' },
+              { day: '목', open: '09:30', close: '21:00', highlight: true },
+              { day: '금', open: '09:30', close: '18:30' },
+              { day: '토', open: '09:30', close: '17:00', weekend: true },
+              { day: '일', open: '09:30', close: '17:00', weekend: true },
+            ].map((d: any) => (
+              <div class={`py-6 border-r border-brown-100 last:border-r-0 ${d.highlight ? 'bg-gold/10' : d.weekend ? 'bg-brown-50' : ''}`}>
+                <div class={`display text-base md:text-lg font-black tracking-tight ${d.highlight ? 'text-gold' : 'text-brown-900'}`}>
+                  {d.open}
+                </div>
+                <div class="text-[10px] text-brown-400 my-1">~</div>
+                <div class={`display text-base md:text-lg font-black tracking-tight ${d.highlight ? 'text-gold' : 'text-brown-900'}`}>
+                  {d.close}
+                </div>
+                {d.highlight && (
+                  <div class="text-[9px] md:text-[10px] mt-2 font-bold text-gold tracking-wider">
+                    야간진료
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-brown-100 text-xs">
+            <div class="bg-ivory p-5 flex items-center gap-3">
+              <i class="fas fa-utensils text-gold"></i>
+              <div>
+                <div class="font-bold text-brown-900">점심시간</div>
+                <div class="text-brown-600 mt-0.5">13:00 – 14:00 (평일)</div>
+              </div>
+            </div>
+            <div class="bg-ivory p-5 flex items-center gap-3">
+              <i class="fas fa-moon text-gold"></i>
+              <div>
+                <div class="font-bold text-brown-900">야간진료</div>
+                <div class="text-brown-600 mt-0.5">월·목 21:00까지</div>
+              </div>
+            </div>
+            <div class="bg-ivory p-5 flex items-center gap-3">
+              <i class="fas fa-calendar-check text-gold"></i>
+              <div>
+                <div class="font-bold text-brown-900">공휴일</div>
+                <div class="text-brown-600 mt-0.5">365일 연중무휴 진료</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-8 text-xs text-brown-500 fade-in">
+          ※ 진료 마감 30분 전까지 접수 부탁드립니다 · 사전 예약 환자 우선 진료
         </div>
       </div>
     </section>

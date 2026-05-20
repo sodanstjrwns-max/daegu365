@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, DoctorProfileBlock } from '../components/Layout'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -10,35 +9,41 @@ import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/type
    - 4단계 무통마취 + 수면치료 결합 가능 강조
    ============================================================ */
 
+// PPT PC2 슬라이드 29 — 01 단계 이모지 추가, 모든 step에 emoji 보강
 const FIRST_VISIT = [
   {
     step: '01',
+    emoji: '👋',
     title: '편안한 첫 인사',
-    desc: '치과복 대신 평상복으로, 진료 의자에 눕히지 않고 앉아서 시작합니다. “장비 만져보기”부터.',
+    desc: '치과복 대신 평상복으로, 진료 의자에 눕히지 않고 앉아서 시작합니다. "장비 만져보기"부터.',
     icon: 'fa-hand-wave',
   },
   {
     step: '02',
+    emoji: '👁️',
     title: 'TSD 기법 (Tell-Show-Do)',
-    desc: '말로 알려주고 → 보여주고 → 그제서야 시행. 어떤 도구도 “몰래” 사용하지 않습니다.',
+    desc: '말로 알려주고 → 보여주고 → 그제서야 시행. 어떤 도구도 "몰래" 사용하지 않습니다.',
     icon: 'fa-eye',
   },
   {
     step: '03',
+    emoji: '📸',
     title: '구강 점검 + 사진',
-    desc: '거울로 함께 보는 시간. “여기 까만 점이 있네?” 아이가 “자기 입”을 알게 됩니다.',
+    desc: '거울로 함께 보는 시간. "여기 까만 점이 있네?" 아이가 "자기 입"을 알게 됩니다.',
     icon: 'fa-camera',
   },
   {
     step: '04',
+    emoji: '🛡️',
     title: '불소·실란트 (선택)',
-    desc: '협조도가 좋으면 첫 방문에 예방 처치까지. 안 되면 다음 방문으로 미루는 “여유”.',
+    desc: '협조도가 좋으면 첫 방문에 예방 처치까지. 안 되면 다음 방문으로 미루는 "여유".',
     icon: 'fa-shield-heart',
   },
   {
     step: '05',
+    emoji: '⭐',
     title: '칭찬 의식',
-    desc: '시술 끝났다고 끝이 아닙니다. 작은 보상·스티커로 “치과 = 좋은 곳” 기억을 만듭니다.',
+    desc: '시술 끝났다고 끝이 아닙니다. 작은 보상·스티커로 "치과 = 좋은 곳" 기억을 만듭니다.',
     icon: 'fa-star',
   },
 ]
@@ -229,7 +234,8 @@ export const PediatricTreatmentPage = ({
           </div>
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 pt-10 border-t" style="border-color:rgba(253,251,247,0.2);">
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">3단계</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">협조도 맞춤 시스템</div></div>
-            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">+ 4단계</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">무통마취 기본 적용</div></div>
+            {/* PPT PC2 슬라이드 28 — "+ 4단계" 표시 제거 */}
+            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">4단계</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">무통마취 기본 적용</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">웃음가스</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">N2O 진정 보조</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">365日</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">연중무휴 진료</div></div>
           </div>
@@ -237,13 +243,6 @@ export const PediatricTreatmentPage = ({
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("pediatric")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
-
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="grid lg:grid-cols-12 gap-16">
@@ -309,8 +308,11 @@ export const PediatricTreatmentPage = ({
           <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-5">
             {FIRST_VISIT.map((s: any) => (
               <div class="bg-cream p-6 rounded-xl border-t-4 border-gold">
-                <div class="t-gold display text-3xl font-bold mb-3">{s.step}</div>
-                <i class={`fas ${s.icon} text-gold text-xl mb-3`}></i>
+                <div class="flex items-center justify-between mb-3">
+                  <div class="t-gold display text-3xl font-bold">{s.step}</div>
+                  {/* PPT PC2 슬라이드 29 — 도형 안 이모지 (모든 step 동일 적용) */}
+                  <div class="w-10 h-10 rounded-full bg-gold/15 flex items-center justify-center text-xl" aria-hidden="true">{s.emoji}</div>
+                </div>
                 <h3 class="t-display text-base mb-2">{s.title}</h3>
                 <p class="t-body text-xs text-brown-700">{s.desc}</p>
               </div>
@@ -376,7 +378,7 @@ export const PediatricTreatmentPage = ({
             ))}
           </div>
           <div class="mt-12 text-center">
-            <a href="/fees" class="text-sm text-gold underline">전체 수가 안내 보기 →</a>
+            <a href="/fees" class="text-sm text-gold underline">전체 비용 안내 보기 →</a>
           </div>
         </div>
       </section>
@@ -496,6 +498,16 @@ export const PediatricTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 28-29 — 소아치과 담당 한지은 원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="han-jieun"
+        name="한지은"
+        position="소아치과 전문의"
+        quote={'아이의 첫 치과 기억은 평생을 따라갑니다.\n저는 치료보다 먼저, 아이가 치과를 좋아하게 만드는 시간을 만듭니다.'}
+        credentials={['소아치과 전문의', '행동조절·놀이치료', '소아 수면치료 협진']}
+        treatmentLabel="소아치과"
+      />
 
       <Footer />
     </>

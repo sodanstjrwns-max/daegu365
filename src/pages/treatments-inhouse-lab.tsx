@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer } from '../components/Layout'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -85,14 +84,6 @@ export const InhouseLabPage = ({
           </div>
         </div>
       </section>
-
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("in-house-lab")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
-
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-5xl mx-auto px-6 lg:px-12">
           <div class="grid lg:grid-cols-12 gap-12 items-start">
@@ -102,10 +93,16 @@ export const InhouseLabPage = ({
             </div>
             <div class="lg:col-span-8 space-y-6">
               <p class="t-lead text-brown-700">
-                보철의 품질은 <strong class="t-gold">기공실의 정밀도</strong>에서 결정됩니다. 아무리 잘 본을 떠도 기공실에서 색·형태·교합이 어긋나면 환자 입에서 어색해지죠.
+                보철의 품질은 <strong class="t-gold">기공실의 정밀도</strong>에서 결정됩니다.<br/>
+                아무리 잘 본을 떠도 기공실에서 색·형태·교합이 어긋나면<br/>
+                환자 입에서 어색해지죠.
               </p>
               <p class="text-brown-700 leading-relaxed">
-                대구365치과는 원내 디지털 기공실 D.LAB을 운영합니다. 환자 입에서 즉시 조정 가능한 거리, 외주 왕복이 없는 속도, 외주 마진을 제거한 합리성. 이 셋을 모두 갖추는 유일한 방법입니다.
+                대구365치과는 원내 디지털 기공실 D.LAB을 운영합니다.<br/>
+                환자 입에서 즉시 조정 가능한 거리,<br/>
+                외주 왕복이 없는 속도,<br/>
+                외주 마진을 제거한 합리성.<br/>
+                이 셋을 모두 갖추는 유일한 방법입니다.
               </p>
             </div>
           </div>

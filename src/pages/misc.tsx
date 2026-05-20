@@ -16,11 +16,27 @@ export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
       </section>
       <section class="py-16 max-w-5xl mx-auto px-6">
         {main && (
-          <a href={`/notices/${main.id}`} class="block mb-10 p-10 rounded-3xl bg-brown-950 text-ivory hover:bg-brown-900 transition fade-in">
-            <div class="text-xs tracking-widest text-gold mb-4">★ MAIN</div>
-            <h2 class="display text-3xl font-black tracking-tight mb-4">{main.title}</h2>
-            <div class="text-brown-300 text-sm" dangerouslySetInnerHTML={{__html: main.content.replace(/<[^>]+>/g,'').substring(0,120)+'...'}}></div>
-            <div class="mt-6 text-xs text-brown-400">{main.created_at?.split('T')[0]} · 조회 {main.view_count}</div>
+          <a href={`/notices/${main.id}`} class="block mb-10 rounded-3xl bg-brown-950 text-ivory hover:bg-brown-900 transition fade-in overflow-hidden">
+            {main.thumbnail_url ? (
+              <div class="grid md:grid-cols-2 gap-0">
+                <div class="aspect-[4/3] md:aspect-auto overflow-hidden bg-brown-900">
+                  <img src={main.thumbnail_url} alt={main.title} loading="lazy" class="w-full h-full object-cover hover:scale-105 transition duration-500" />
+                </div>
+                <div class="p-10 flex flex-col justify-center">
+                  <div class="text-xs tracking-widest text-gold mb-4">★ MAIN</div>
+                  <h2 class="display text-3xl font-black tracking-tight mb-4">{main.title}</h2>
+                  <div class="text-brown-300 text-sm" dangerouslySetInnerHTML={{__html: main.content.replace(/<[^>]+>/g,'').substring(0,120)+'...'}}></div>
+                  <div class="mt-6 text-xs text-brown-400">{main.created_at?.split('T')[0]} · 조회 {main.view_count}</div>
+                </div>
+              </div>
+            ) : (
+              <div class="p-10">
+                <div class="text-xs tracking-widest text-gold mb-4">★ MAIN</div>
+                <h2 class="display text-3xl font-black tracking-tight mb-4">{main.title}</h2>
+                <div class="text-brown-300 text-sm" dangerouslySetInnerHTML={{__html: main.content.replace(/<[^>]+>/g,'').substring(0,120)+'...'}}></div>
+                <div class="mt-6 text-xs text-brown-400">{main.created_at?.split('T')[0]} · 조회 {main.view_count}</div>
+              </div>
+            )}
           </a>
         )}
         {rest.length === 0 && !main ? (
@@ -29,12 +45,21 @@ export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
           <div class="divide-y divide-brown-200">
             {rest.map(n => (
               <a href={`/notices/${n.id}`} class="group block py-6 fade-in">
-                <div class="flex items-start justify-between gap-4">
-                  <div class="flex-1">
+                <div class="flex items-start gap-5">
+                  {n.thumbnail_url ? (
+                    <div class="w-24 h-24 md:w-32 md:h-24 flex-shrink-0 rounded-xl overflow-hidden bg-cream">
+                      <img src={n.thumbnail_url} alt={n.title} loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                    </div>
+                  ) : (
+                    <div class="w-24 h-24 md:w-32 md:h-24 flex-shrink-0 rounded-xl placeholder-img flex items-center justify-center">
+                      <i class="fas fa-bullhorn text-2xl"></i>
+                    </div>
+                  )}
+                  <div class="flex-1 min-w-0">
                     <h3 class="display text-xl font-medium group-hover:text-brown-700 transition mb-2">{n.title}</h3>
                     <div class="text-xs text-brown-500">{n.created_at?.split('T')[0]} · 조회 {n.view_count}</div>
                   </div>
-                  <i class="fas fa-arrow-right text-brown-400 group-hover:text-brown-700 group-hover:translate-x-1 transition mt-2"></i>
+                  <i class="fas fa-arrow-right text-brown-400 group-hover:text-brown-700 group-hover:translate-x-1 transition mt-2 flex-shrink-0"></i>
                 </div>
               </a>
             ))}
@@ -260,8 +285,31 @@ export const DirectionsPage = () => (
     </section>
     <section class="py-16 max-w-5xl mx-auto px-6">
       <h2 class="display text-3xl font-black tracking-tight text-brown-900 mb-8 text-center">대구365치과 위치 안내</h2>
-      <div class="aspect-[16/9] rounded-3xl overflow-hidden mb-12 fade-in shadow-lux">
-        <iframe src="https://map.kakao.com/?urlX=473870&urlY=1119810&urlLevel=3&map_type=TYPE_MAP" class="w-full h-full" title="대구365치과 위치"></iframe>
+      <div class="aspect-[16/9] rounded-3xl overflow-hidden mb-6 fade-in shadow-lux relative">
+        <iframe
+          src="https://map.kakao.com/?map_type=TYPE_MAP&itemId=27339974&q=%EB%8C%80%EA%B5%AC365%EC%B9%98%EA%B3%BC&urlX=473870&urlY=1119810&urlLevel=3"
+          class="w-full h-full border-0"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="대구365치과 위치 — 카카오맵"
+        ></iframe>
+      </div>
+      <div class="flex flex-wrap gap-3 justify-center mb-12 fade-in">
+        <a href="https://map.kakao.com/?q=%EB%8C%80%EA%B5%AC%EA%B4%91%EC%97%AD%EC%8B%9C%20%EB%B6%81%EA%B5%AC%20%EC%B9%A8%EC%82%B0%EB%A1%9C%20148"
+           target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-yellow-400 text-brown-950 hover:opacity-90 transition">
+          <i class="fas fa-map-marker-alt"></i> 카카오맵에서 길찾기
+        </a>
+        <a href="https://map.naver.com/p/search/%EB%8C%80%EA%B5%AC365%EC%B9%98%EA%B3%BC"
+           target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white hover:opacity-90 transition" style="background:#03C75A;">
+          <span class="text-[11px] font-black bg-white text-[#03C75A] rounded px-1.5">N</span> 네이버 지도
+        </a>
+        <a href="https://maps.google.com/?q=%EB%8C%80%EA%B5%AC365%EC%B9%98%EA%B3%BC+%EB%8C%80%EA%B5%AC+%EB%B6%81%EA%B5%AC+%EC%B9%A8%EC%82%B0%EB%A1%9C+148"
+           target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-brown-950 text-ivory hover:opacity-90 transition">
+          <i class="fab fa-google"></i> Google Maps
+        </a>
       </div>
       <h2 class="display text-3xl font-black tracking-tight text-brown-900 mb-8 mt-4 text-center">병원 정보 한눈에 보기</h2>
       <div class="grid md:grid-cols-2 gap-6 fade-in">
@@ -361,7 +409,7 @@ export const FeesPage = ({ fees }: { fees: any[] }) => {
       <section class="pt-20 pb-12 bg-cream">
         <div class="max-w-4xl mx-auto px-6 text-center">
           <div class="section-label mb-6">FEES</div>
-          <h1 class="t-display mb-6 fade-in">수가 안내</h1>
+          <h1 class="t-display mb-6 fade-in">비용 안내</h1>
           <p class="text-brown-700 max-w-2xl mx-auto fade-in text-sm">
             아래 비용은 참고용이며, 실제 비용은 진단·난이도·재료에 따라 달라질 수 있습니다. 정확한 비용은 상담 시 안내드립니다.
           </p>

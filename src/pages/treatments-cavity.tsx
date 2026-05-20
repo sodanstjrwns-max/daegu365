@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, DoctorProfileBlock } from '../components/Layout'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -52,7 +51,7 @@ const PHILOSOPHY = [
   {
     icon: 'fa-shield-heart',
     title: '내 치아가 가장 좋다',
-    desc: '한 번 깎은 치아는 돌아오지 않습니다. 가능한 보존, 불가피할 때만 삭제—이것이 대구365치과의 보존 우선 원칙입니다.',
+    desc: '한 번 깎은 치아는 돌아오지 않습니다.<br/>가능한 보존, 불가피할 때만 삭제. 이것이 대구365치과의 보존 우선 원칙입니다.',
   },
   {
     icon: 'fa-microscope',
@@ -187,13 +186,6 @@ export const CavityTreatmentPage = ({
       </section>
 
       {/* 2. WHAT IS — 충치란 */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("cavity-endo-crown")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
-
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-5xl mx-auto px-6 lg:px-12">
           <div class="grid lg:grid-cols-12 gap-12 items-start">
@@ -445,6 +437,16 @@ export const CavityTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 25 — 충치·신경치료·크라운 담당 정재헌 원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="jung-jaeheon"
+        name="정재헌"
+        position="통합진료센터장 · 보존과 전문의"
+        quote={'저를 만난 것이 환자분 인생에서\n절대 손해가 되지 않게 하겠습니다.'}
+        credentials={['보존과 전문의', '미세현미경 신경치료', '심미 보존 수복']}
+        treatmentLabel="충치·신경치료·크라운"
+      />
 
       <Footer />
     </>

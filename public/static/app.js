@@ -16,34 +16,21 @@
   });
 })();
 
-// ============= CUSTOM CURSOR (desktop only) =============
+// ============= CUSTOM CURSOR (desktop only — SINGLE cursor, no lag) =============
 (function() {
   if (window.matchMedia('(pointer: coarse)').matches) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   document.addEventListener('DOMContentLoaded', () => {
+    // 단일 커서로 통합 (ring 제거 — 두 개가 따로 움직여 어지러운 문제 해결)
     const dot = document.createElement('div');
     dot.className = 'custom-cursor';
-    const ring = document.createElement('div');
-    ring.className = 'custom-cursor-ring';
     document.body.appendChild(dot);
-    document.body.appendChild(ring);
 
-    let mx = 0, my = 0, rx = 0, ry = 0;
     window.addEventListener('mousemove', (e) => {
-      mx = e.clientX; my = e.clientY;
-      dot.style.left = mx + 'px';
-      dot.style.top = my + 'px';
+      dot.style.left = e.clientX + 'px';
+      dot.style.top = e.clientY + 'px';
     });
-
-    const raf = () => {
-      rx += (mx - rx) * 0.18;
-      ry += (my - ry) * 0.18;
-      ring.style.left = rx + 'px';
-      ring.style.top = ry + 'px';
-      requestAnimationFrame(raf);
-    };
-    raf();
 
     // Hover state on interactive elements
     document.addEventListener('mouseover', (e) => {
@@ -58,14 +45,8 @@
     });
 
     // Hide cursor when leaving window
-    document.addEventListener('mouseleave', () => {
-      dot.style.opacity = '0';
-      ring.style.opacity = '0';
-    });
-    document.addEventListener('mouseenter', () => {
-      dot.style.opacity = '1';
-      ring.style.opacity = '1';
-    });
+    document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; });
   });
 })();
 
@@ -143,11 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const p = Math.min(1, (now - start) / duration);
         const val = Math.round(ease(p) * target);
         el.innerHTML = val.toLocaleString() + suffix;
-        if (p < 1) requestAnimationFrame(step);
+        if (p < 1) {
+          requestAnimationFrame(step);
+        } else {
+          // Guarantee final value matches target exactly (fixes off-by-one on small targets like 4)
+          el.innerHTML = target.toLocaleString() + suffix;
+        }
       };
       requestAnimationFrame(step);
     });
-  }, { threshold: 0.4 });
+  }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
   counters.forEach(c => counterIO.observe(c));
 
   // ----- Current year -----
@@ -311,45 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ============= v3 · CURSOR TRAIL (subtle, hero only) =============
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.matchMedia('(pointer: coarse)').matches) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const hero = document.querySelector('.cinematic-hero');
-  if (!hero) return;
-
-  const trailCount = 8;
-  const trails = [];
-  for (let i = 0; i < trailCount; i++) {
-    const t = document.createElement('div');
-    t.className = 'cursor-trail';
-    t.style.transform = 'scale(0)';
-    document.body.appendChild(t);
-    trails.push(t);
-  }
-
-  let inHero = false;
-  hero.addEventListener('mouseenter', () => inHero = true);
-  hero.addEventListener('mouseleave', () => {
-    inHero = false;
-    trails.forEach(t => t.style.transform = 'scale(0)');
-  });
-
-  const positions = Array(trailCount).fill({ x: 0, y: 0 });
-  hero.addEventListener('mousemove', (e) => {
-    positions.unshift({ x: e.clientX, y: e.clientY });
-    positions.length = trailCount;
-    trails.forEach((t, i) => {
-      const p = positions[i] || positions[0];
-      t.style.left = p.x + 'px';
-      t.style.top = p.y + 'px';
-      const s = 1 - (i / trailCount);
-      t.style.transform = `translate(-50%, -50%) scale(${s})`;
-      t.style.opacity = s * 0.7;
-    });
-  });
-});
+// ============= v3 · CURSOR TRAIL — DISABLED (PPT S2: 두 개의 커서가 따로 움직여 어지러움) =============
+// 단일 커서(custom-cursor)만 유지. 트레일 제거.
 
 // ============= Before/After Slider =============
 window.initBASlider = function(root) {
@@ -362,7 +311,7 @@ window.initBASlider = function(root) {
     const rect = root.getBoundingClientRect();
     let pct = ((x - rect.left) / rect.width) * 100;
     pct = Math.max(0, Math.min(100, pct));
-    after.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
+    after.style.clipPath = `inset(0 0 0 ${pct}%)`;
     handle.style.left = pct + '%';
   };
 
@@ -407,3 +356,91 @@ window.toast = function(msg, type = 'info') {
     setTimeout(() => t.remove(), 300);
   }, 2500);
 };
+
+// ============= 상담예약 3단계 모달 (PPT PC3 슬라이드 13-14) =============
+(function() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('consultModal');
+    const openBtn = document.getElementById('openConsultModal');
+    const closeBtn = document.getElementById('closeConsultModal');
+    const prevBtn = document.getElementById('consultPrev');
+    const nextBtn = document.getElementById('consultNext');
+    const submitBtn = document.getElementById('consultSubmit');
+    if (!modal) return;
+
+    let currentStep = 1;
+    const totalSteps = 3;
+
+    const showStep = (n) => {
+      currentStep = n;
+      modal.querySelectorAll('[data-step-panel]').forEach(el => {
+        el.classList.toggle('hidden', el.dataset.stepPanel !== String(n));
+      });
+      modal.querySelectorAll('[data-step-title]').forEach(el => {
+        el.classList.toggle('hidden', el.dataset.stepTitle !== String(n));
+      });
+      modal.querySelectorAll('[data-step-indicator]').forEach(el => {
+        const i = Number(el.dataset.stepIndicator);
+        const c = el.querySelector('.step-circle');
+        if (c) {
+          if (i <= n) { c.style.background = 'var(--gold)'; c.style.color = 'var(--brown-950)'; }
+          else { c.style.background = ''; c.style.color = ''; c.classList.remove('bg-gold','text-brown-950'); }
+        }
+      });
+      prevBtn && prevBtn.classList.toggle('hidden', n === 1);
+      nextBtn && nextBtn.classList.toggle('hidden', n === totalSteps);
+      submitBtn && submitBtn.classList.toggle('hidden', n !== totalSteps);
+    };
+
+    const openModal = () => {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      showStep(1);
+    };
+    const closeModal = () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    };
+
+    openBtn && openBtn.addEventListener('click', openModal);
+    closeBtn && closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+
+    nextBtn && nextBtn.addEventListener('click', () => { if (currentStep < totalSteps) showStep(currentStep + 1); });
+    prevBtn && prevBtn.addEventListener('click', () => { if (currentStep > 1) showStep(currentStep - 1); });
+
+    submitBtn && submitBtn.addEventListener('click', () => {
+      const name = modal.querySelector('input[name="consult-name"]').value.trim();
+      const phone = modal.querySelector('input[name="consult-phone"]').value.trim();
+      const agree = modal.querySelector('input[name="consult-agree"]').checked;
+      if (!name || !phone) { window.toast && window.toast('성함과 연락처를 입력해주세요'); return; }
+      if (!agree) { window.toast && window.toast('개인정보 수집·이용에 동의해주세요'); return; }
+      window.toast && window.toast('상담 예약 요청이 접수되었습니다. 곧 연락드리겠습니다.');
+      setTimeout(closeModal, 1200);
+    });
+  });
+})();
+
+// ============= 스크롤 시 플로팅 버튼 강조 (PPT PC3 슬라이드 15) =============
+(function() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const fab = document.getElementById('floatingActions');
+    if (!fab) return;
+    let scrolled = false;
+    window.addEventListener('scroll', () => {
+      const isScrolled = window.scrollY > 200;
+      if (isScrolled === scrolled) return;
+      scrolled = isScrolled;
+      if (scrolled) {
+        fab.style.transform = 'translateY(-4px) scale(1.02)';
+        fab.style.filter = 'drop-shadow(0 8px 24px rgba(201,168,118,0.35))';
+      } else {
+        fab.style.transform = '';
+        fab.style.filter = '';
+      }
+    }, { passive: true });
+  });
+})();

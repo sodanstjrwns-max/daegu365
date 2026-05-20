@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -9,29 +8,100 @@ import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/type
    - 무삭제·최소삭제 프로토콜, 원내 D.LAB 디지털 기공실
    ============================================================ */
 
-const MATERIALS = [
+/* ============================================================
+   VINIQUE 2-Tier 라인업 (2026 라미네이트 가이드)
+   - Standard: 입문용 솔루션, Nano Hybrid Ceramic, 213MPa, 1년 보증
+   - Premium:  완벽 솔루션, Glass Ceramic Lithium Disilicate, 510MPa, 5년 보증
+   ============================================================ */
+const VINIQUE_TIERS = [
   {
-    name: 'e.max (이맥스)',
-    type: '리튬 디실리케이트',
-    price: '60만원~',
-    badge: 'SIGNATURE',
-    desc: '독일 Ivoclar의 프리미엄 글래스 세라믹. 자연치와 가장 유사한 반투명도와 광택.',
-    points: ['최고급 심미성', '자연스러운 투명감', '얇고 강한 박막 구현'],
+    tier: 'STANDARD',
+    name: 'VINIQUE Standard',
+    tagline: '자연스러운 변화와 합리적 가격',
+    headline: '라미네이트가 처음이거나 두려운 분께',
+    material: 'Nano Hybrid Ceramic',
+    materialKr: '나노 하이브리드 세라믹',
+    block: 'Denbio NT Mill Hybrid (CAD/CAM 디스크)',
+    strength: 213,
+    warranty: '1년',
+    image: '/r2/images/treatments/vinique/nt-mill-hybrid-disk.jpg',
+    desc: '나노입자 세라믹(0.3~0.7㎛ 필러)으로 자연치아와 유사한 질감을 구현합니다. 최소 삭제 프로토콜로 자연 치아 건강을 우선적으로 보호합니다.',
+    points: [
+      '최소 삭제 — 자연치 건강 우선 보호',
+      '나노 소재 — 0.3~0.7㎛ 필러로 정교한 심미성',
+      '합리적 가격 — 입문용 솔루션',
+      '추천: 앞니 벌어짐, 블랙 트라이앵글, 미세 형태 개선',
+    ],
   },
   {
-    name: '지르코니아',
-    type: '고강도 세라믹',
-    price: '60만원~',
-    desc: '강도와 내구성이 뛰어난 단단한 세라믹. 후방 치아·이갈이 환자에게 적합.',
-    points: ['높은 강도', '파절 저항', '장기 안정성'],
+    tier: 'PREMIUM',
+    name: 'VINIQUE Premium',
+    tagline: '압도적 심미와 높은 강도',
+    headline: '형태와 색상을 동시에 완벽하게',
+    material: 'Glass Ceramic (Lithium Disilicate)',
+    materialKr: '글라스 세라믹 리튬 디실리케이트',
+    block: 'Rosetta SP / IPS e.max® Press (LS₂ 잉곳)',
+    strength: 510,
+    warranty: '5년',
+    image: '/r2/images/treatments/vinique/rosetta-emax-ingots.jpg',
+    desc: '프리미엄 글라스 세라믹 블록으로 치아의 형태와 색상을 동시에 완벽하게 개선합니다. Standard 대비 2.4배 강한 510MPa 굴곡강도로 5년의 반영구적 보증을 제공합니다.',
+    points: [
+      '강력한 강도 — Standard 대비 2.4배 (510MPa 굴곡강도)',
+      '5년 반영구 보증 — 글로벌 프리미엄 등급',
+      'Smile Design — 3D 구강스캔 + 안면 분석 시뮬레이션',
+      '추천: 형태 + 색상 동시 개선, 스마일 라인 교정',
+    ],
+    badge: 'BEST',
+  },
+]
+
+/* 라인업 비교 매트릭스 (PPT 3페이지 기반) */
+const TIER_MATRIX = [
+  { row: '주요 소재',  std: '나노 하이브리드 세라믹',         pre: '글라스 세라믹 리튬 디실리케이트' },
+  { row: '굴곡 강도',  std: '213 MPa',                     pre: '510 MPa (Standard 대비 2.4×)' },
+  { row: '보증 기간',  std: '1년',                          pre: '5년 (반영구)' },
+  { row: '주요 특징',  std: '합리적 가격, 자연스러운 변화',     pre: '예측 가능한 Smile Design, 완벽한 개선' },
+  { row: '권장 케이스', std: '가벼운 형태 개선, 미세 조정',     pre: '형태 + 색상 동시 개선, 스마일라인 교정' },
+  { row: '추천 환자',  std: '라미네이트가 처음이신 분',         pre: '높은 품질 보증과 내구성을 원하는 분' },
+]
+
+/* 원내 D.LAB STUDIO 365 갤러리 (실제 시술 공정 입증) */
+const DLAB_GALLERY = [
+  {
+    img: '/r2/images/treatments/vinique/dlab-overview.jpg',
+    title: 'D.LAB STUDIO 365',
+    caption: '환자 대기실에서 직접 보이는 원내 디지털 기공실. 외주 대기 시간 0, 당일 조정 가능.',
+    span: 'lg:col-span-2 lg:row-span-2',
   },
   {
-    name: 'VINIQUE Custom',
-    type: '맞춤 디자인 라미네이트',
-    price: '상담 안내',
-    badge: 'EXCLUSIVE',
-    desc: '얼굴형·스마일라인·치아 톤을 분석해 환자만의 미소를 설계하는 대구365치과 시그니처.',
-    points: ['디지털 스마일 디자인', '원내 D.LAB 직접 제작', '당일 미세조정 가능'],
+    img: '/r2/images/treatments/vinique/milling-machine.jpg',
+    title: 'CAD/CAM 5축 밀링',
+    caption: '세라믹 디스크를 마이크로 단위로 정밀 가공하는 5축 밀링 머신.',
+  },
+  {
+    img: '/r2/images/treatments/vinique/dlab-cad-station.jpg',
+    title: 'Smile Design CAD',
+    caption: '3D 구강스캔 데이터로 환자만의 미소를 디지털 설계.',
+  },
+  {
+    img: '/r2/images/treatments/vinique/dlab-microscope.jpg',
+    title: '현미경 정밀 마감',
+    caption: '베니어 가장자리(margin)를 현미경으로 미세 조정 — 자연스러운 라인 완성.',
+  },
+  {
+    img: '/r2/images/treatments/vinique/dlab-furnace.jpg',
+    title: '세라믹 소결 퍼니스',
+    caption: '고온 소결로 세라믹 강도와 광택을 최대치로 끌어올립니다.',
+  },
+  {
+    img: '/r2/images/treatments/vinique/veneer-model-1829.jpg',
+    title: 'Try-In 시연',
+    caption: '실제 모형에 베니어를 시연 — 부착 전 형태·색·교합 최종 확인.',
+  },
+  {
+    img: '/r2/images/treatments/vinique/veneer-macro-brush.jpg',
+    title: '완성 베니어',
+    caption: '0.3~0.7mm 박막 — 자연치 광택 그대로의 라미네이트 1매.',
   },
 ]
 
@@ -229,9 +299,9 @@ export const LamineerTreatmentPage = ({
       {/* 1. CINEMATIC HERO */}
       <section class="relative bg-brown-950 text-ivory pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden">
         <img
-          src="/r2/images/journal/before-after.jpg?v=3"
-          alt="VINIQUE 라미네이트"
-          class="absolute inset-0 w-full h-full object-cover opacity-15"
+          src="/r2/images/treatments/vinique/vinique-package.jpg"
+          alt="VINIQUE 프리미엄 라미네이트 패키지"
+          class="absolute inset-0 w-full h-full object-cover opacity-20"
           loading="eager"
         />
         <div class="absolute inset-0" style="background:linear-gradient(95deg, rgba(20,14,8,0.96) 0%, rgba(20,14,8,0.92) 35%, rgba(26,18,10,0.7) 70%, rgba(26,18,10,0.55) 100%);"></div>
@@ -280,12 +350,6 @@ export const LamineerTreatmentPage = ({
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("lamineer")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("lamineer")
@@ -300,23 +364,37 @@ export const LamineerTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-[1100px] mx-auto px-6 lg:px-12">
-          <div class="grid lg:grid-cols-12 gap-12 mb-16">
-            <div class="lg:col-span-4 fade-in">
+          <div class="grid lg:grid-cols-12 gap-12 mb-16 items-center">
+            <div class="lg:col-span-5 fade-in lamineer-whatis-head">
               <div class="section-label mb-6">WHAT IS · 02</div>
-              <h2 class="t-display">
-                <span class="t-outline">라미</span><br/>
-                <span class="t-gold">네이트</span><br/>란?
+              {/* PPT 슬라이드 14: "라미네이트란?" 한 줄 표기 + 폰트 통일 (네이트랑 동일하게) */}
+              <h2 class="lamineer-whatis-title font-black">
+                <span class="lamineer-whatis-keyword">라미</span><span class="lamineer-whatis-rest">네이트</span><span class="lamineer-whatis-mark">란?</span>
               </h2>
+              <p class="mt-6 text-sm tracking-[0.2em] text-brown-500 font-semibold uppercase">Laminate Veneer</p>
             </div>
-            <div class="lg:col-span-8 fade-in space-y-6 text-brown-700 text-lg leading-relaxed">
+            <div class="lg:col-span-7 fade-in space-y-6 text-brown-700 text-lg leading-relaxed">
               <p>
-                <strong class="text-brown-900">라미네이트(Laminate Veneer)</strong>는 치아 앞면에 얇은 세라믹 박막을 붙여 치아의 모양·색·배열을 자연스럽게 개선하는 심미 보철입니다.
-                두께 <strong class="text-brown-900">0.3~0.7mm</strong>의 박막으로, 케이스에 따라 무삭제 라미네이트도 가능합니다.
+                <strong class="text-brown-900">라미네이트(Laminate Veneer)</strong>는<br class="hidden md:inline"/>
+                치아 앞면에 얇은 세라믹 박막을 붙여<br class="hidden md:inline"/>
+                치아의 모양·색·배열을 자연스럽게 개선하는<br class="hidden md:inline"/>
+                심미 보철입니다.
               </p>
               <p>
-                대구365치과 <strong class="text-brown-900">VINIQUE</strong>는 단순히 치아를 하얗게 만드는 것이 아닙니다.
-                얼굴형·성별·연령·스마일라인을 종합적으로 분석해 <strong class="text-brown-900">환자만의 자연스러운 미소를 디지털로 설계</strong>합니다.
-                목업(Mock-up)으로 결과를 미리 확인한 후 진행하기 때문에, 후회 없는 선택이 가능합니다.
+                두께 <strong class="text-brown-900">0.3~0.7mm</strong>의 박막으로,<br class="hidden md:inline"/>
+                케이스에 따라 무삭제 라미네이트도 가능합니다.
+              </p>
+              <p>
+                대구365치과 <strong class="text-brown-900">VINIQUE</strong>는<br class="hidden md:inline"/>
+                단순히 치아를 하얗게 만드는 것이 아닙니다.
+              </p>
+              <p>
+                얼굴형·성별·연령·스마일라인을 종합적으로 분석해<br class="hidden md:inline"/>
+                <strong class="text-brown-900">환자만의 자연스러운 미소를 디지털로 설계</strong>합니다.
+              </p>
+              <p>
+                목업(Mock-up)으로 결과를 미리 확인한 후 진행하기 때문에,<br class="hidden md:inline"/>
+                후회 없는 선택이 가능합니다.
               </p>
             </div>
           </div>
@@ -381,44 +459,258 @@ export const LamineerTreatmentPage = ({
         </div>
       </section>
 
-      {/* 4. MATERIALS */}
+      {/* 4. MATERIALS — VINIQUE 2-Tier 라인업 */}
       <section id="materials" class="py-24 lg:py-32 bg-ivory scroll-mt-24">
-        <div class="max-w-[1200px] mx-auto px-6 lg:px-12">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-12">
           <div class="mb-16 fade-in">
-            <div class="section-label mb-6">MATERIALS · 04</div>
+            <div class="section-label mb-6">LINEUP · 04</div>
             <h2 class="t-display mb-6">
-              <span class="t-outline">프리미엄</span> <span class="t-gold">세라믹</span>
+              <span class="t-outline">VINIQUE</span> <span class="t-gold">2-Tier</span><br/>
+              <span class="text-brown-900">라인업</span>
             </h2>
             <p class="t-lead max-w-3xl">
-              <strong class="text-brown-900">라미네이트 60만원</strong> (1치당, 부가세 10% 별도).
-              모든 재료는 글로벌 프리미엄 등급만 사용합니다.
+              합리적인 입문용 <strong class="text-brown-900">Standard</strong>부터 압도적 심미·강도의 <strong class="text-brown-900">Premium</strong>까지.<br/>
+              모든 라인업은 원내 D.LAB STUDIO 365에서 직접 제작합니다.
             </p>
           </div>
 
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 fade-in-stagger">
-            {MATERIALS.map((m: any) => (
-              <div class={`relative bg-cream rounded-2xl p-7 border-2 transition-all duration-500 hover:-translate-y-1 hover:shadow-lux ${m.badge ? 'border-gold/60' : 'border-brown-200/60'}`}>
-                {m.badge && (
-                  <div class="absolute -top-3 left-7 text-[9px] tracking-[0.25em] font-bold text-brown-950 bg-gold px-3 py-1 rounded-full">{m.badge}</div>
+          {/* 2-Tier 카드 */}
+          <div class="grid lg:grid-cols-2 gap-6 mb-16 fade-in-stagger">
+            {VINIQUE_TIERS.map((t: any) => (
+              <div class={`relative bg-cream rounded-3xl overflow-hidden border-2 transition-all duration-500 hover:-translate-y-1 hover:shadow-lux ${t.badge ? 'border-gold' : 'border-brown-200/60'}`}>
+                {t.badge && (
+                  <div class="absolute top-6 right-6 text-[10px] tracking-[0.25em] font-bold text-brown-950 bg-gold px-4 py-1.5 rounded-full z-10">{t.badge}</div>
                 )}
-                <div class="text-[10px] tracking-[0.3em] text-brown-500 mb-3 font-bold">{m.type}</div>
-                <h3 class="display text-2xl font-black tracking-tight mb-3 text-brown-900">{m.name}</h3>
-                <div class="display text-3xl font-black text-brown-900 mb-5">{m.price}</div>
-                <p class="text-sm text-brown-700 leading-relaxed mb-5">{m.desc}</p>
-                <ul class="space-y-2 border-t border-brown-200 pt-5">
-                  {m.points.map((p: string) => (
-                    <li class="flex gap-2 items-start text-xs text-brown-700">
-                      <i class="fas fa-check text-gold text-[10px] mt-1"></i>
-                      <span>{p}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div class="aspect-[16/9] bg-brown-100 overflow-hidden">
+                  <img src={t.image} alt={t.name} class="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <div class="p-8 lg:p-10">
+                  <div class="text-[10px] tracking-[0.4em] text-gold mb-3 font-bold">{t.tier}</div>
+                  <h3 class="display text-3xl lg:text-4xl font-black tracking-tight mb-2 text-brown-900">{t.name}</h3>
+                  <p class="text-sm text-brown-600 mb-5 italic">{t.tagline}</p>
+                  <div class="bg-brown-950 text-ivory rounded-xl p-4 mb-6">
+                    <div class="text-[10px] tracking-[0.25em] text-gold mb-1 font-bold">HEADLINE</div>
+                    <div class="text-sm font-semibold">{t.headline}</div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3 mb-5">
+                    <div class="bg-ivory rounded-lg p-3 border border-brown-200/60">
+                      <div class="text-[9px] tracking-[0.2em] text-brown-500 mb-1 font-bold">FLEXURAL STRENGTH</div>
+                      <div class="display text-2xl font-black text-brown-900">{t.strength} <span class="text-xs">MPa</span></div>
+                    </div>
+                    <div class="bg-ivory rounded-lg p-3 border border-brown-200/60">
+                      <div class="text-[9px] tracking-[0.2em] text-brown-500 mb-1 font-bold">WARRANTY</div>
+                      <div class="display text-2xl font-black text-brown-900">{t.warranty}</div>
+                    </div>
+                  </div>
+                  <div class="text-xs text-brown-600 mb-2">
+                    <strong>소재:</strong> {t.materialKr}
+                  </div>
+                  <div class="text-xs text-brown-600 mb-5">
+                    <strong>블록:</strong> {t.block}
+                  </div>
+                  <p class="text-sm text-brown-700 leading-relaxed mb-5">{t.desc}</p>
+                  <ul class="space-y-2 border-t border-brown-200 pt-5">
+                    {t.points.map((p: string) => (
+                      <li class="flex gap-2 items-start text-xs text-brown-700">
+                        <i class="fas fa-check text-gold text-[10px] mt-1"></i>
+                        <span>{p}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 굴곡 강도 비교 차트 — 시각화 */}
+          <div class="bg-brown-950 text-ivory rounded-3xl p-8 lg:p-12 mb-12 fade-in">
+            <div class="text-[10px] tracking-[0.4em] text-gold mb-3 font-bold">FLEXURAL STRENGTH · 굴곡 강도</div>
+            <h3 class="display text-3xl lg:text-4xl font-black tracking-tight mb-8" style="color:#fdfbf7;">
+              Premium은 Standard 대비 <span style="color:var(--gold);">2.4배</span> 더 강합니다
+            </h3>
+            <div class="space-y-6">
+              {/* Standard 바 */}
+              <div>
+                <div class="flex justify-between items-baseline mb-2">
+                  <div class="text-sm font-bold text-ivory">VINIQUE Standard</div>
+                  <div class="display text-2xl font-black" style="color:var(--gold);">213 MPa</div>
+                </div>
+                <div class="h-4 bg-ivory/10 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-brown-400 to-brown-300 rounded-full" style="width:42%;"></div>
+                </div>
+                <div class="text-[10px] text-ivory/50 mt-1">나노 하이브리드 세라믹</div>
+              </div>
+              {/* Premium 바 */}
+              <div>
+                <div class="flex justify-between items-baseline mb-2">
+                  <div class="text-sm font-bold text-ivory">VINIQUE Premium</div>
+                  <div class="display text-3xl font-black" style="color:var(--gold);">510 MPa</div>
+                </div>
+                <div class="h-4 bg-ivory/10 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full" style="width:100%; background:linear-gradient(90deg, var(--gold), #e9c98a);"></div>
+                </div>
+                <div class="text-[10px] text-ivory/50 mt-1">글라스 세라믹 리튬 디실리케이트 (LS₂)</div>
+              </div>
+            </div>
+            <p class="text-xs text-ivory/60 mt-6 leading-relaxed">
+              ※ 굴곡 강도(Flexural Strength)는 라미네이트가 외부 압력·교합력에 견디는 정도를 나타내는 핵심 지표입니다.
+              510MPa 글라스 세라믹은 자연 치아 법랑질(법랑질 약 380MPa)을 능가하는 강도를 가집니다.
+            </p>
+          </div>
+
+          {/* 라인업 비교 매트릭스 */}
+          <div class="bg-cream rounded-2xl border border-brown-200/60 overflow-hidden shadow-sm fade-in">
+            <div class="grid grid-cols-3 gap-3 px-6 lg:px-8 py-4 bg-brown-50 border-b border-brown-200 text-[10px] lg:text-xs tracking-[0.2em] font-bold text-brown-600">
+              <div>구분</div>
+              <div>VINIQUE Standard</div>
+              <div class="text-gold">VINIQUE Premium</div>
+            </div>
+            {TIER_MATRIX.map((row: any, i: number) => (
+              <div class={`grid grid-cols-3 gap-3 px-6 lg:px-8 py-5 items-center text-xs lg:text-sm ${i > 0 ? 'border-t border-brown-100' : ''}`}>
+                <div class="font-bold text-brown-900">{row.row}</div>
+                <div class="text-brown-700">{row.std}</div>
+                <div class="text-brown-800 bg-gold/8 -mx-2 px-2 py-1 rounded font-semibold">{row.pre}</div>
               </div>
             ))}
           </div>
 
           <div class="mt-6 text-xs text-brown-500">
-            ※ 부가세 10% 별도. 진단 결과·치아 개수에 따라 최종 비용이 안내됩니다.
+            ※ 부가세 10% 별도. 진단 결과·치아 개수에 따라 최종 비용이 안내됩니다. 가격은 상담 시 정확히 안내드립니다.
+          </div>
+        </div>
+      </section>
+
+      {/* 4-2. D.LAB STUDIO 365 갤러리 — 원내 디지털 기공실 */}
+      <section class="py-24 lg:py-32 bg-brown-950 text-ivory overflow-hidden">
+        <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
+          <div class="mb-16 fade-in max-w-3xl">
+            <div class="text-[10px] tracking-[0.4em] text-gold mb-6 font-bold">D.LAB STUDIO 365 · 04-2</div>
+            <h2 class="display font-black tracking-tight leading-[0.95] mb-8" style="font-size:clamp(2.5rem, 5vw, 5rem); color:#fdfbf7;">
+              <span class="block">당일 조정 가능한</span>
+              <span class="block italic" style="color:var(--gold);">원내 디지털</span>
+              <span class="block">기공실</span>
+            </h2>
+            <p class="text-lg leading-relaxed" style="color:rgba(253,251,247,0.85);">
+              VINIQUE는 외주 제작이 아닙니다. 환자 대기실에서 직접 보이는 <strong style="color:var(--gold);">D.LAB STUDIO 365</strong>에서
+              CAD 디자인 → 5축 밀링 → 세라믹 소결 → 현미경 마감까지 직접 진행합니다. 외주 대기 0, 당일 조정 가능.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 fade-in-stagger" style="grid-auto-rows:220px;">
+            {DLAB_GALLERY.map((g: any) => (
+              <div class={`relative rounded-2xl overflow-hidden group border border-ivory/10 ${g.span || ''}`}>
+                <img src={g.img} alt={g.title} class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+                <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(20,14,8,0) 40%, rgba(20,14,8,0.92) 100%);"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-5 lg:p-6">
+                  <h3 class="display text-lg lg:text-xl font-black tracking-tight mb-1.5" style="color:#fdfbf7;">{g.title}</h3>
+                  <p class="text-xs leading-relaxed" style="color:rgba(253,251,247,0.7);">{g.caption}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="grid md:grid-cols-4 gap-4 mt-12 pt-12 border-t border-ivory/15 fade-in">
+            {[
+              { num: '0', label: '외주 대기 시간' },
+              { num: '5축', label: 'CAD/CAM 밀링' },
+              { num: '당일', label: '시연·조정 가능' },
+              { num: '365', label: '연중 직접 제작' },
+            ].map((s: any) => (
+              <div>
+                <div class="display text-3xl lg:text-5xl font-black tracking-tight leading-none mb-2" style="color:var(--gold);">{s.num}</div>
+                <div class="text-[10px] lg:text-xs tracking-[0.25em] font-semibold" style="color:rgba(253,251,247,0.6);">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4-3. CINEMATIC BEFORE & AFTER — 사이니지 마스터 영상 */}
+      <section class="py-24 lg:py-32 bg-ivory overflow-hidden">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-12">
+          <div class="mb-12 lg:mb-16 fade-in max-w-3xl">
+            <div class="section-label mb-6">BEFORE &amp; AFTER · 04-3</div>
+            <h2 class="t-display mb-6">
+              <span class="text-brown-900">실제</span> <span class="t-gold">비포애프터</span><br/>
+              <span class="text-brown-900">시네마틱</span>
+            </h2>
+            <p class="t-lead">
+              대구365치과 사이니지에서 상영 중인 <strong class="text-brown-900">VINIQUE 비포애프터 마스터 영상</strong>.
+              실제 환자분의 미소 변화를 4K 세로형으로 담았습니다.
+            </p>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center fade-in">
+            {/* 9:16 세로 영상 플레이어 */}
+            <div class="lg:col-span-5">
+              <div class="relative mx-auto" style="max-width:380px;">
+                <div class="absolute -inset-3 bg-gradient-to-br from-gold/30 via-brown-200/0 to-brown-900/20 rounded-[2.5rem] blur-2xl opacity-60" aria-hidden="true"></div>
+                <div class="relative bg-brown-950 rounded-[2rem] p-3 shadow-lux">
+                  <div class="relative rounded-[1.5rem] overflow-hidden bg-black" style="aspect-ratio: 9/16;">
+                    <video
+                      src="/r2/videos/treatments/vinique/vinique-beforeafter-master.mp4"
+                      poster="/r2/images/treatments/vinique/vinique-package.jpg"
+                      class="absolute inset-0 w-full h-full object-cover"
+                      autoplay
+                      loop
+                      muted
+                      playsinline
+                      preload="metadata"
+                      controls
+                      controlslist="nodownload"
+                    ></video>
+                    <div class="absolute top-4 left-4 bg-brown-950/85 backdrop-blur-sm px-3 py-1.5 rounded-full text-[9px] tracking-[0.3em] font-bold pointer-events-none" style="color:var(--gold);">
+                      VINIQUE
+                    </div>
+                    <div class="absolute top-4 right-4 flex items-center gap-1.5 bg-red-600/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-[9px] tracking-[0.2em] font-bold text-white pointer-events-none">
+                      <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                      LIVE
+                    </div>
+                  </div>
+                </div>
+                <div class="text-center mt-5 text-xs text-brown-500 tracking-wider">
+                  <i class="fas fa-volume-mute mr-1.5"></i> 음소거 자동재생 — 사운드는 컨트롤바에서 ON
+                </div>
+              </div>
+            </div>
+
+            {/* 우측 카피 + 메타 */}
+            <div class="lg:col-span-7">
+              <div class="grid grid-cols-3 gap-3 lg:gap-4 mb-8">
+                {[
+                  { num: '4K', label: '세로형 마스터' },
+                  { num: '20s', label: '시네마틱 컷' },
+                  { num: '실사례', label: '환자 동의 후 공개' },
+                ].map((s: any) => (
+                  <div class="bg-cream rounded-2xl p-4 lg:p-5 border border-brown-200/60 text-center">
+                    <div class="display text-2xl lg:text-3xl font-black text-brown-900 tracking-tight leading-none mb-1.5">{s.num}</div>
+                    <div class="text-[9px] lg:text-[10px] tracking-[0.2em] text-brown-500 font-semibold">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div class="space-y-5 text-brown-700 leading-relaxed">
+                <p>
+                  대구365치과 진료 대기실에 설치된 <strong class="text-brown-900">사이니지 디스플레이</strong>에서 직접 상영 중인 마스터 영상입니다.
+                  치아 변색·앞니 사이 벌어짐·길이 불균형이 <strong class="text-brown-900">VINIQUE 디자인</strong>으로 어떻게 변화했는지 한 컷에 담았습니다.
+                </p>
+                <p>
+                  영상 속 결과물은 모두 <strong class="text-brown-900">원내 D.LAB STUDIO 365</strong>에서 직접 제작·시연·미세 조정을 거친 케이스입니다.
+                  외주 라미네이트로는 구현하기 어려운 <strong class="text-brown-900">자연치 광택</strong>과 <strong class="text-brown-900">스마일라인</strong>을 직접 확인해 보세요.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-3 mt-8">
+                <a href="/before-after?group=lamineer" class="btn-primary btn-shine magnetic">
+                  <span>VINIQUE 케이스 더 보기</span>
+                  <i class="fas fa-arrow-right text-sm"></i>
+                </a>
+                <a href="tel:053-357-0365" class="btn-outline magnetic">
+                  <i class="fas fa-phone"></i>
+                  <span>디자인 상담</span>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -459,7 +751,7 @@ export const LamineerTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">PROCESS · 06</div>
             <h2 class="t-display mb-6">
-              <span class="t-outline">7단계</span><br/>
+              <span class="text-brown-900">7단계</span><br/>
               <span class="t-gold">디자인 여정</span>
             </h2>
             <p class="t-lead max-w-3xl">진단부터 평생 관리까지, 미소가 완성되는 모든 과정.</p>
@@ -498,7 +790,7 @@ export const LamineerTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">CARE GUIDE · 07</div>
             <h2 class="t-display">
-              <span class="t-outline">시술 전·후</span><br/>
+              <span class="text-brown-900">시술 전·후</span><br/>
               <span class="t-gold">관리 가이드</span>
             </h2>
           </div>
@@ -687,6 +979,16 @@ export const LamineerTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 13-14 — 비니크 프리미엄 라미네이트 담당 최혜정 원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="choi-hyejung"
+        name="최혜정"
+        position="비니크(라미네이트) 센터장 · 보존과 전문의"
+        quote={'결과를\n본래의 치아처럼.'}
+        credentials={['비니크(라미네이트) 센터장', '보존과 전문의', 'VINIQUE 디자인 워크플로우']}
+        treatmentLabel="비니크 프리미엄 라미네이트"
+      />
 
       <Footer />
     </>

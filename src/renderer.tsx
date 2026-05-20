@@ -30,10 +30,10 @@ export const SITE = {
   lng: 128.584,
   logo: 'https://daegu365dc.kr/static/images/logo-vertical-gold.png',
   logoHorizontal: 'https://daegu365dc.kr/static/images/logo-horizontal-brown.png',
-  founded: '2024',
+  founded: '2025',
   sameAs: [
     'https://blog.naver.com/nowhere2721',
-    'https://www.instagram.com/chee_jaeee/',
+    'https://www.instagram.com/daegu365dc_',
     'http://pf.kakao.com/_PGaxmn',
   ]
 }
@@ -243,44 +243,159 @@ export const videoObjectSchema = (opts: {
   "inLanguage": "ko"
 })
 
-/** Article 스키마 강화 — 블로그 */
+/** Article 스키마 — 구글 권장 풀 스펙 (NewsArticle 호환) */
 export const articleSchema = (opts: {
   title: string
   description: string
   slug: string
   authorName?: string
   authorSlug?: string
+  authorPosition?: string
   publishedTime?: string
   modifiedTime?: string
   image?: string
+  keywords?: string
+  wordCount?: number
+  articleSection?: string
 }) => ({
   "@context": "https://schema.org",
-  "@type": "Article",
+  "@type": ["Article", "BlogPosting"],
   "@id": `${SITE.url}/blog/${opts.slug}#article`,
   "headline": opts.title,
+  "name": opts.title,
   "description": opts.description,
   "url": `${SITE.url}/blog/${opts.slug}`,
-  ...(opts.image && { "image": opts.image }),
+  "image": opts.image ? {
+    "@type": "ImageObject",
+    "url": opts.image,
+    "width": 1200,
+    "height": 630
+  } : {
+    "@type": "ImageObject",
+    "url": `${SITE.url}/static/og-default.svg`,
+    "width": 1200,
+    "height": 630
+  },
   "datePublished": opts.publishedTime,
   "dateModified": opts.modifiedTime || opts.publishedTime,
-  "author": opts.authorSlug ? {
+  ...(opts.keywords && { "keywords": opts.keywords }),
+  ...(opts.wordCount && { "wordCount": opts.wordCount }),
+  ...(opts.articleSection && { "articleSection": opts.articleSection }),
+  "author": opts.authorSlug && opts.authorName ? {
     "@type": "Person",
     "@id": `${SITE.url}/doctors/${opts.authorSlug}#physician`,
     "name": opts.authorName,
+    "jobTitle": opts.authorPosition || '치과의사',
+    "worksFor": { "@type": "Dentist", "@id": `${SITE.url}/#dentist`, "name": SITE.name },
     "url": `${SITE.url}/doctors/${opts.authorSlug}`
-  } : { "@type": "Organization", "@id": `${SITE.url}/#dentist` },
+  } : {
+    "@type": "Organization",
+    "@id": `${SITE.url}/#dentist`,
+    "name": SITE.name,
+    "url": SITE.url
+  },
   "publisher": {
     "@type": "Organization",
     "@id": `${SITE.url}/#dentist`,
     "name": SITE.name,
-    "logo": { "@type": "ImageObject", "url": SITE.logo }
+    "logo": { "@type": "ImageObject", "url": SITE.logo, "width": 600, "height": 60 }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": `${SITE.url}/blog/${opts.slug}`
   },
+  "isAccessibleForFree": true,
   "inLanguage": "ko-KR"
 })
+
+/** 비포애프터 케이스 스키마 — MedicalCaseStudy + Article 듀얼 */
+export const caseStudySchema = (opts: {
+  id: number
+  title: string
+  description: string
+  beforeImage?: string
+  afterImage?: string
+  beforeAlt?: string
+  afterAlt?: string
+  doctorName?: string
+  doctorSlug?: string
+  treatmentName?: string
+  treatmentSlug?: string
+  createdAt?: string
+  updatedAt?: string
+}) => {
+  const images: any[] = []
+  if (opts.beforeImage) images.push({
+    "@type": "ImageObject",
+    "url": opts.beforeImage,
+    "caption": opts.beforeAlt || `${opts.title} - 치료 전`,
+    "representativeOfPage": true
+  })
+  if (opts.afterImage) images.push({
+    "@type": "ImageObject",
+    "url": opts.afterImage,
+    "caption": opts.afterAlt || `${opts.title} - 치료 후`
+  })
+  return [
+    // (1) MedicalCaseStudy — 의료 도메인 신호
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalCaseStudy",
+      "@id": `${SITE.url}/before-after/${opts.id}#case`,
+      "name": opts.title,
+      "description": opts.description,
+      "url": `${SITE.url}/before-after/${opts.id}`,
+      ...(images.length > 0 && { "image": images }),
+      ...(opts.treatmentName && {
+        "medicalSpecialty": "Dentistry",
+        "about": {
+          "@type": "MedicalProcedure",
+          "@id": `${SITE.url}/treatments/${opts.treatmentSlug}#procedure`,
+          "name": opts.treatmentName
+        }
+      }),
+      ...(opts.doctorSlug && opts.doctorName && {
+        "author": {
+          "@type": "Physician",
+          "@id": `${SITE.url}/doctors/${opts.doctorSlug}#physician`,
+          "name": opts.doctorName,
+          "url": `${SITE.url}/doctors/${opts.doctorSlug}`
+        }
+      }),
+      "provider": { "@id": `${SITE.url}/#dentist` },
+      "datePublished": opts.createdAt,
+      "dateModified": opts.updatedAt || opts.createdAt
+    },
+    // (2) Article — 구글이 인덱싱 잘하는 보조 스키마
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "@id": `${SITE.url}/before-after/${opts.id}#article`,
+      "headline": opts.title,
+      "description": opts.description,
+      "url": `${SITE.url}/before-after/${opts.id}`,
+      ...(images[0] && { "image": images[0] }),
+      "datePublished": opts.createdAt,
+      "dateModified": opts.updatedAt || opts.createdAt,
+      "publisher": {
+        "@type": "Organization",
+        "@id": `${SITE.url}/#dentist`,
+        "name": SITE.name,
+        "logo": { "@type": "ImageObject", "url": SITE.logo }
+      },
+      "author": opts.doctorSlug && opts.doctorName ? {
+        "@type": "Person",
+        "@id": `${SITE.url}/doctors/${opts.doctorSlug}#physician`,
+        "name": opts.doctorName
+      } : { "@id": `${SITE.url}/#dentist` },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `${SITE.url}/before-after/${opts.id}`
+      },
+      "inLanguage": "ko-KR"
+    }
+  ]
+}
 
 // ============================================================
 //  Renderer
@@ -289,6 +404,7 @@ export const articleSchema = (opts: {
 export const renderer = jsxRenderer(({
   children, title, description, keywords, canonical, ogImage,
   ogType, jsonLd, breadcrumb, publishedTime, modifiedTime, author,
+  robots,
   naverVerify: nv, googleVerify: gv, msVerify: mv
 }: any, c: any) => {
   // 환경변수 우선, props fallback (wrangler secret put 으로 한 번에 박기 위함)
@@ -327,8 +443,10 @@ export const renderer = jsxRenderer(({
         <title>{pageTitle}</title>
         <meta name="description" content={pageDesc} />
         <meta name="keywords" content={pageKw} />
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <meta name="googlebot" content="index, follow" />
+        <meta name="robots" content={robots || "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
+        <meta name="googlebot" content={robots || "index, follow, max-image-preview:large, max-snippet:-1"} />
+        <meta name="bingbot" content={robots || "index, follow"} />
+        <meta name="yeti" content={robots || "index, follow"} />
         {naverVerify && <meta name="naver-site-verification" content={naverVerify} />}
         {googleVerify && <meta name="google-site-verification" content={googleVerify} />}
         {msVerify && <meta name="msvalidate.01" content={msVerify} />}

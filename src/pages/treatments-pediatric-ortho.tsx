@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -134,23 +133,27 @@ const PROCESS = [
 const WHY_US = [
   {
     icon: 'fa-bullseye',
-    title: '골든타임을 놓치지 않는 정밀 진단',
-    desc: '파노라마·세팔로·기도 분석까지 입체적 진단. “지금 시작해야 하는지” 정확히 판단합니다.',
+    emoji: '🎯',
+    title: '골든타임을 놓치지 않는\n정밀 진단',
+    desc: '파노라마·세팔로·기도 분석까지\n입체적 진단.\n"지금 시작해야 하는지" 정확히 판단합니다.',
   },
   {
     icon: 'fa-puzzle-piece',
-    title: '6종 장치 풀라인업',
-    desc: 'RPE·근기능·페이스마스크·MRC·공간유지·할터만까지 한 곳에서. 케이스마다 가장 적합한 장치 선택.',
+    emoji: '🧩',
+    title: '6종 장치\n풀라인업',
+    desc: 'RPE·근기능·페이스마스크·MRC·\n공간유지·할터만까지 한 곳에서.\n케이스마다 가장 적합한 장치 선택.',
   },
   {
     icon: 'fa-handshake',
-    title: '부모 동행 시스템',
-    desc: '아이 협조도가 1차 교정의 성패를 좌우합니다. 매 점검마다 부모님과 함께 진행 상황을 공유합니다.',
+    emoji: '🤝',
+    title: '부모 동행\n시스템',
+    desc: '아이 협조도가 1차 교정의 성패를 좌우합니다.\n매 점검마다 부모님과 함께\n진행 상황을 공유합니다.',
   },
   {
     icon: 'fa-route',
-    title: '평생 관리 로드맵',
-    desc: '1차 교정 → 영구치 맹출 추적 → 2차 인비절라인까지. 한 병원에서 평생 관리되는 장점.',
+    emoji: '🗺️',
+    title: '평생 관리\n로드맵',
+    desc: '1차 교정 → 영구치 맹출 추적\n→ 2차 인비절라인까지.\n한 병원에서 평생 관리되는 장점.',
   },
 ]
 
@@ -241,12 +244,6 @@ export const PediatricOrthoTreatmentPage = ({
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("pediatric-ortho")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("pediatric-ortho")
@@ -577,6 +574,16 @@ export const PediatricOrthoTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 24 — 소아 교정장치 담당 이서영 원장 프로필 박스 (원장님 PPT 지시) */}
+      <DoctorProfileBlock
+        slug="lee-seoyoung"
+        name="이서영"
+        position="치주과 전문의"
+        quote={'성장기 아이의 잇몸과 치아 토대를 함께 살펴야, 교정이 안정적으로 자리잡습니다.\n늦지 않게, 그러나 서두르지 않게 — 아이의 성장 속도에 맞춰 단계적으로 접근합니다.'}
+        credentials={['치주과 전문의', '소아 성장기 잇몸 케어', '교정 협진']}
+        treatmentLabel="소아 교정장치"
+      />
 
       <Footer />
     </>

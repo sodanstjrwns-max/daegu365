@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, DoctorProfileBlock } from '../components/Layout'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -26,13 +25,14 @@ const PROCESS = [
   { step: '06', name: '리콜·유지관리', desc: '3·6개월 맞춤 리콜. 재발 차단이 핵심.' },
 ]
 
+// PPT PC2 슬라이드 27 — 도형 안에 이모지 추가
 const WHY_US = [
-  { title: '에어플로우(GBT) 연계', desc: '치주치료 전 GBT 8단계로 바이오필름 완벽 제거. 치료 효과 극대화.' },
-  { title: '치주낭 정밀 측정', desc: '6포인트 차팅으로 치아 하나하나 정밀 평가. 시각화된 진단서 제공.' },
-  { title: '확대경·마이크로스코프', desc: '잇몸선 아래 치석을 6배 확대 시야로 정확히 제거.' },
-  { title: '4단계 무통마취', desc: 'SRP·치주수술 모두 무통마취 기본 적용. 추가 비용 없음.' },
-  { title: '뼈이식·재생술', desc: '소실된 치조골을 재생. 발치 직전 단계도 살릴 수 있는 골재생술 시행.' },
-  { title: '평생 유지 관리', desc: '치료보다 중요한 것은 재발 차단. 3·6개월 리콜 시스템 운영.' },
+  { emoji: '💨', title: '에어플로우(GBT) 연계', desc: '치주치료 전 GBT 8단계로 바이오필름 완벽 제거. 치료 효과 극대화.' },
+  { emoji: '📐', title: '치주낭 정밀 측정', desc: '6포인트 차팅으로 치아 하나하나 정밀 평가. 시각화된 진단서 제공.' },
+  { emoji: '🔬', title: '확대경·마이크로스코프', desc: '잇몸선 아래 치석을 6배 확대 시야로 정확히 제거.' },
+  { emoji: '💉', title: '4단계 무통마취', desc: 'SRP·치주수술 모두 무통마취 기본 적용. 추가 비용 없음.' },
+  { emoji: '🦴', title: '뼈이식·재생술', desc: '소실된 치조골을 재생. 발치 직전 단계도 살릴 수 있는 골재생술 시행.' },
+  { emoji: '🔄', title: '평생 유지 관리', desc: '치료보다 중요한 것은 재발 차단. 3·6개월 리콜 시스템 운영.' },
 ]
 
 const HOME_CARE = [
@@ -82,20 +82,13 @@ export const PerioTreatmentPage = ({
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 pt-10 border-t" style="border-color:rgba(253,251,247,0.2);">
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">5단계</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">정밀 진단</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">GBT</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">에어플로우 연계</div></div>
-            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">3·6個月</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">맞춤 리콜</div></div>
-            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">365日</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">연중무휴 진료</div></div>
+            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1" style="white-space:nowrap;">3·6개월</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">맞춤 리콜</div></div>
+            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1" style="white-space:nowrap;">365일</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">연중무휴 진료</div></div>
           </div>
         </div>
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("perio")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
-
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-5xl mx-auto px-6 lg:px-12">
           <div class="grid lg:grid-cols-12 gap-12 items-start">
@@ -162,8 +155,12 @@ export const PerioTreatmentPage = ({
             <h2 class="t-display">대구365치과의 <span class="t-gold italic">정밀함.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {WHY_US.map((w) => (
+            {WHY_US.map((w: any) => (
               <div class="p-7 rounded-xl bg-ivory border border-brown-200">
+                {/* PPT PC2 슬라이드 27 — 도형 안 이모지 */}
+                <div class="w-14 h-14 rounded-full bg-gold/10 flex items-center justify-center mb-4 text-2xl" aria-hidden="true">
+                  <span>{w.emoji}</span>
+                </div>
                 <h3 class="t-display text-xl mb-3">{w.title}</h3>
                 <p class="text-brown-700 text-sm leading-relaxed">{w.desc}</p>
               </div>
@@ -291,6 +288,16 @@ export const PerioTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 26-27 — 치주치료 담당 이서영 원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="lee-seoyoung"
+        name="이서영"
+        position="치주과 전문의"
+        quote={'잇몸 출혈은 사소한 신호가 아닙니다.\n조기에 잡으면 평생 자기 치아로 살 수 있고, 늦으면 임플란트가 답이 됩니다.'}
+        credentials={['치주과 전문의', '잇몸 수술·재생 치료', '정기 유지관리(SPT)']}
+        treatmentLabel="치주치료"
+      />
 
       <Footer />
     </>

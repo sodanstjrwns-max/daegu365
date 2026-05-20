@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -32,13 +31,14 @@ const PROCESS = [
   { step: '06', name: '유지 관리', desc: '6개월 정기 검진으로 마진·교합 모니터링. 평생 사용 목표.' },
 ]
 
+// PPT PC2 슬라이드 34 — 도형 안 이모지 추가
 const WHY_US = [
-  { title: '원내 디지털 기공실', desc: 'In-house D.LAB으로 색상·형태를 즉시 조정. 외주 보철의 불일치를 제거.' },
-  { title: 'iTero 디지털 스캔', desc: '5D 스캐너로 분진·구역질 없는 정밀 인상. 다중 재제작 방지.' },
-  { title: 'CAD/CAM 제작', desc: '컴퓨터 설계·밀링으로 마진 정밀도 ↑. 누출률 ↓.' },
-  { title: '교합 분석', desc: '디지털 교합기로 씹는 힘 분포 시각화. 보철 수명 ↑.' },
-  { title: '심미 색상 매칭', desc: '인접 자연치와 색·투명도 정밀 매칭. 자연스러운 마무리.' },
-  { title: '보증 시스템', desc: '재제작 보증으로 안심. 자세한 보증 조건은 상담 안내.' },
+  { emoji: '🏭', title: '원내 디지털 기공실', desc: 'In-house D.LAB으로 색상·형태를 즉시 조정.\n외주 보철의 불일치를 제거.' },
+  { emoji: '📡', title: 'iTero 디지털 스캔', desc: '5D 스캐너로 분진·구역질 없는 정밀 인상.\n다중 재제작 방지.' },
+  { emoji: '💻', title: 'CAD/CAM 제작', desc: '컴퓨터 설계·밀링으로 마진 정밀도 ↑.\n누출률 ↓.' },
+  { emoji: '⚖️', title: '교합 분석', desc: '디지털 교합기로 씹는 힘 분포 시각화.\n보철 수명 ↑.' },
+  { emoji: '🎨', title: '심미 색상 매칭', desc: '인접 자연치와 색·투명도 정밀 매칭.\n자연스러운 마무리.' },
+  { emoji: '🛡️', title: '보증 시스템', desc: '재제작 보증으로 안심.\n자세한 보증 조건은 상담 안내.' },
 ]
 
 const DEFAULT_FAQS: FAQ[] = [
@@ -80,17 +80,10 @@ export const ProstheticTreatmentPage = ({
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">In-house</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">원내 D.LAB 운영</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">iTero</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">5D 디지털 스캔</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">CAD/CAM</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">정밀 밀링 제작</div></div>
-            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">35~50万</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">재료별 합리가</div></div>
+            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1" style="white-space:nowrap;">35~50만원</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">재료별 합리가</div></div>
           </div>
         </div>
       </section>
-
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("prosthetic")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("prosthetic")
@@ -112,10 +105,15 @@ export const ProstheticTreatmentPage = ({
             </div>
             <div class="lg:col-span-8 space-y-6">
               <p class="t-lead text-brown-700">
-                손상되거나 잃은 치아 부위를 인공 재료로 복원하는 시술이에요. <strong class="t-gold">기능·심미·내구성</strong>이 동시에 충족되어야 진짜 보철입니다.
+                손상되거나 잃은 치아 부위를 인공 재료로 복원하는 시술이에요.<br/>
+                <strong class="t-gold">기능·심미·내구성</strong>이 동시에 충족되어야 진짜 보철입니다.
               </p>
               <p class="text-brown-700 leading-relaxed">
-                대구365치과는 본뜨기부터 제작까지 원내 디지털 기공실에서 직접 처리합니다. 외주 불일치를 없애고, 환자 입에서 직접 색상·형태를 조정해 마진 정밀도를 극대화합니다.
+                대구365치과는 본뜨기부터 제작까지<br/>
+                원내 디지털 기공실에서 직접 처리합니다.<br/>
+                외주 불일치를 없애고,<br/>
+                환자 입에서 직접 색상·형태를 조정해<br/>
+                마진 정밀도를 극대화합니다.
               </p>
             </div>
           </div>
@@ -177,10 +175,15 @@ export const ProstheticTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16"><div class="section-label mb-6">WHY DAEGU365 · 05</div><h2 class="t-display">대구365치과의 <span class="t-gold italic">정밀함.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {WHY_US.map((w) => (
+            {WHY_US.map((w: any) => (
               <div class="p-7 rounded-xl bg-cream border border-brown-200">
+                {/* PPT PC2 슬라이드 34 — 도형 안 이모지 */}
+                <div class="w-14 h-14 rounded-full bg-gold/10 flex items-center justify-center mb-4 text-2xl" aria-hidden="true">
+                  <span>{w.emoji}</span>
+                </div>
                 <h3 class="t-display text-xl mb-3">{w.title}</h3>
-                <p class="text-brown-700 text-sm leading-relaxed">{w.desc}</p>
+                {/* PPT PC2 슬라이드 33 — 본문 의미단위 줄바꿈 */}
+                <p class="text-brown-700 text-sm leading-relaxed whitespace-pre-line">{w.desc}</p>
               </div>
             ))}
           </div>
@@ -264,6 +267,16 @@ export const ProstheticTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 33-34 — 보철 담당 김성주 대표원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="kim-seongju"
+        name="김성주"
+        position="대표원장 · 통합치의학과 전문의"
+        quote={'보철은 단순히 씌우는 일이 아닙니다.\n환자의 평생 저작 습관을 함께 설계해야 비로소 오래갑니다.'}
+        credentials={['서울대 치의학과', '통합치의학과 전문의', '원내 디지털 기공실 운영']}
+        treatmentLabel="보철"
+      />
 
       <Footer />
     </>

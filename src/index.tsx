@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import {
   renderer, SITE,
-  medicalProcedureSchema, physicianSchema, videoObjectSchema, articleSchema
+  medicalProcedureSchema, physicianSchema, videoObjectSchema, articleSchema, caseStudySchema
 } from './renderer'
 import type { Bindings } from './lib/types'
 import {
@@ -17,6 +17,7 @@ import { MissionPage } from './pages/mission'
 import { DoctorsListPage, DoctorDetailPage } from './pages/doctors'
 import { TreatmentsListPage, TreatmentDetailPage } from './pages/treatments'
 import { ImplantTreatmentPage } from './pages/treatments-implant'
+import { ImplantGeneralTreatmentPage } from './pages/treatments-implant-general'
 import { LamineerTreatmentPage } from './pages/treatments-lamineer'
 import { OrthoTreatmentPage } from './pages/treatments-ortho'
 import { SleepTherapyTreatmentPage } from './pages/treatments-sleep'
@@ -42,13 +43,19 @@ import {
   FAQPage, DirectionsPage, HoursPage
 } from './pages/misc'
 import { FeesPage } from './pages/fees'
+import { PlayHubPage } from './pages/play'
+import { PlayDefensePage } from './pages/play-defense'
+import { PlayBtiPage } from './pages/play-bti'
+import { PlayRushPage } from './pages/play-rush'
 import { SignupPage, LoginPage, AdminLoginPage } from './pages/auth'
 import { Navbar, Footer } from './components/Layout'
 import {
   AdminDashboard, AdminMembersPage,
   AdminBAListPage, AdminBAFormPage,
   AdminBlogListPage, AdminBlogFormPage,
-  AdminNoticesListPage, AdminNoticeFormPage
+  AdminNoticesListPage, AdminNoticeFormPage,
+  AdminFeesPage,
+  AdminSeoGuidePage
 } from './pages/admin'
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -84,9 +91,20 @@ const PROCEDURE_META: Record<string, {
     indication: ['치아 결손 1개 이상', '브릿지·틀니로 불편하신 분', '치과공포증으로 시술이 어려웠던 분', '뼈가 부족해 식립이 거절되었던 분'],
     cost: '120만원~'
   },
+  'implant-general': {
+    name: '임플란트',
+    description: '대구365치과 일반 임플란트. 픽스처 + 맞춤기둥 + 지르코니아 크라운이 모두 포함된 패키지 가격(1개 100~180만원)으로 정찰제 운영. 메가젠 ST·오스템 BA·메가젠 BD·오스템 SOI·스트라우만 앤서지 5종 픽스처, 디지털 가이드 수술, 4단계 무통마취. 픽스처 5년·상부보철 평생 보증.',
+    bodyLocation: '구강 / 상하악골',
+    procedureType: 'SurgicalProcedure',
+    preparation: 'CBCT·파노라마 정밀 진단, 골밀도 평가, 전신 건강 상태 체크',
+    followup: '시술 직후 익일 내원, 1주·1개월·3개월·6개월 정기 점검, 평생 보증 리콜',
+    howPerformed: '4단계 무통마취 → 디지털 가이드 식립 → 7~24주 골유착 대기 → 맞춤기둥+지르코니아 크라운 장착',
+    indication: ['치아 결손 1~소수개', '브릿지·틀니 대신 자연치 회복을 원하시는 분', '합리적 정찰제 패키지를 선호하시는 분', '평생 보증·정기 관리가 필요하신 분'],
+    cost: '100~180만원 (1개, 패키지)'
+  },
   'lamineer': {
     name: 'VINIQUE 라미네이트',
-    description: '0.3mm 미세 보철 프리미엄 라미네이트. 이마젝스·E.max·지르코니아 라미네이트로 자연치 삭제를 최소화하고, 원내 디지털 기공실(D.LAB)에서 즉시 색상·교합 조정. 결혼·면접·이벤트 직전에도 가능한 심미 보철.',
+    description: '0.3mm 미세 보철 VINIQUE 프리미엄 라미네이트. Standard(나노 하이브리드 213MPa) / Premium(글라스 세라믹 510MPa) 2-Tier 라인업. 자연치 삭제를 최소화하고, 원내 디지털 기공실(D.LAB)에서 즉시 색상·교합 조정. 결혼·면접·이벤트 직전에도 가능한 심미 보철.',
     bodyLocation: '치아 전치부',
     procedureType: 'TherapeuticProcedure',
     preparation: 'iTero 5D 스캔, 미소선 분석, 셰이드 매칭, 디지털 시뮬레이션',
@@ -370,7 +388,7 @@ app.get('/doctors/:slug', async (c) => {
   return c.render(
     <DoctorDetailPage doctor={doctor} treatments={treatments.results as any} cases={cases.results as any} />, {
       title: `${doctor.name} ${doctor.position}`,
-      description: `${doctor.name} ${doctor.position} — ${doctor.philosophy?.substring(0,140) || ''}`,
+      description: `${doctor.name} ${doctor.position}. ${(doctor.philosophy || '').replace(/[—ㅡ–]/g, ' ').replace(/\s{2,}/g, ' ').substring(0,140)}`,
       canonical: `https://daegu365dc.kr/doctors/${slug}`,
       ogImage: ogUrl.doctor(doctor.name, doctor.position || '', specialty || undefined),
       ogType: 'profile',
@@ -411,7 +429,11 @@ app.get('/treatments/:slug', async (c) => {
   const doctors = (allDocs.results as any[]).filter(d => {
     try { return JSON.parse(d.specialties || '[]').includes(slug) } catch { return false }
   })
-  const cases = await c.env.DB.prepare('SELECT * FROM before_afters WHERE treatment_slug=? AND is_published=1 ORDER BY id DESC LIMIT 6').bind(slug).all()
+  // 임플란트 페이지는 'implant' / 'implant-general' 케이스를 통합 노출
+  const isImplantPage = (slug === 'implant' || slug === 'implant-general')
+  const cases = isImplantPage
+    ? await c.env.DB.prepare("SELECT * FROM before_afters WHERE treatment_slug IN ('implant','implant-general') AND is_published=1 ORDER BY id DESC LIMIT 6").all()
+    : await c.env.DB.prepare('SELECT * FROM before_afters WHERE treatment_slug=? AND is_published=1 ORDER BY id DESC LIMIT 6').bind(slug).all()
   const dictTerms = await c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? ORDER BY id LIMIT 20').bind(slug).all()
 
   // FAQPage schema
@@ -450,6 +472,25 @@ app.get('/treatments/:slug', async (c) => {
     )
   }
 
+  if (slug === 'implant-general') {
+    return c.render(
+      <ImplantGeneralTreatmentPage
+        treatment={treatment}
+        faqs={faqs.results as any}
+        doctors={doctors}
+        cases={cases.results as any}
+        dictTerms={dictTerms.results as any}
+      />, {
+        title: `임플란트 — 검증된 표준, 합리적 선택 | 대구365치과`,
+        description: `픽스처+맞춤기둥+지르코니아 크라운 포함 패키지 100~180만원(1개 기준). 메가젠·오스템·스트라우만 5종 픽스처, 디지털 가이드 수술, 픽스처 5년·상부보철 평생 보증. 대구365치과 임플란트.`,
+        canonical: `https://daegu365dc.kr/treatments/implant-general`,
+        ogImage: ogUrl.treatment('임플란트', '검증된 표준, 합리적 선택', '임플란트'),
+        breadcrumb: treatmentBC,
+        jsonLd: treatmentSchemas
+      }
+    )
+  }
+
   if (slug === 'lamineer') {
     return c.render(
       <LamineerTreatmentPage
@@ -460,7 +501,7 @@ app.get('/treatments/:slug', async (c) => {
         dictTerms={dictTerms.results as any}
       />, {
         title: `VINIQUE 라미네이트 — 자연을 닮은 미세 보철 | 대구365치과`,
-        description: `0.3mm 미세 보철, 이마젝스·E.max·지르코니아 라미네이트. 자연치 삭제 최소화, In-house D.LAB 디지털 보철. 대구365치과 VINIQUE 라미네이트.`,
+        description: `0.3mm 미세 보철, VINIQUE 라미네이트 Standard(213MPa)/Premium(510MPa) 2-Tier 라인업. 자연치 삭제 최소화, In-house D.LAB 디지털 보철. 대구365치과 VINIQUE 라미네이트.`,
         canonical: `https://daegu365dc.kr/treatments/lamineer`,
         ogImage: ogUrl.treatment('VINIQUE 라미네이트', '자연을 닮은 0.3mm 미세 보철', '심미보철'),
         breadcrumb: treatmentBC,
@@ -789,18 +830,36 @@ app.get('/treatments/:slug', async (c) => {
 // --- Before/After ---
 app.get('/before-after', async (c) => {
   const session = await getSession(c)
-  const { treatment, doctor, region, age, gender } = c.req.query()
+  const { group, doctor } = c.req.query()
+
+  // 카테고리 그룹 → 슬러그 매핑 (페이지 컴포넌트의 TREATMENT_GROUPS와 동기화)
+  // - 임플란트는 'implant'/'implant-general' 두 슬러그 케이스를 통합 노출
+  // - 라미네이트는 'lamineer'/'vinique' 두 슬러그 통합 (legacy 호환)
+  const GROUP_SLUGS: Record<string, string[]> = {
+    'implant':           ['implant', 'implant-general'],
+    'ortho':             ['ortho'],
+    'lamineer':          ['lamineer', 'vinique'],
+    'cavity-endo-crown': ['cavity-endo-crown'],
+    'perio':             ['perio'],
+    'pediatric':         ['pediatric'],
+    'pediatric-ortho':   ['pediatric-ortho'],
+    'whitening':         ['whitening'],
+    'icon-resin':        ['icon-resin'],
+    'prosthetic':        ['prosthetic'],
+    'aesthetic':         ['aesthetic'],
+    'conservative':      ['conservative'],
+    'general':           ['general'],
+  }
 
   const where: string[] = ['is_published=1']
   const binds: any[] = []
-  if (treatment) { where.push('treatment_slug=?'); binds.push(treatment) }
-  if (doctor) { where.push('doctor_slug=?'); binds.push(doctor) }
-  if (age) { where.push('age_group=?'); binds.push(age) }
-  if (gender) { where.push('gender=?'); binds.push(gender) }
-  if (region) {
-    where.push('(region_dong LIKE ? OR region_sigungu LIKE ? OR region_sido LIKE ?)')
-    binds.push(`%${region}%`, `%${region}%`, `%${region}%`)
+  if (group && GROUP_SLUGS[group]) {
+    const slugs = GROUP_SLUGS[group]
+    const placeholders = slugs.map(() => '?').join(',')
+    where.push(`treatment_slug IN (${placeholders})`)
+    binds.push(...slugs)
   }
+  if (doctor) { where.push('doctor_slug=?'); binds.push(doctor) }
   const q = `SELECT * FROM before_afters WHERE ${where.join(' AND ')} ORDER BY id DESC`
   const items = await c.env.DB.prepare(q).bind(...binds).all()
   const doctors = await c.env.DB.prepare('SELECT * FROM doctors ORDER BY display_order').all()
@@ -811,7 +870,7 @@ app.get('/before-after', async (c) => {
       items={items.results as any}
       doctors={doctors.results as any}
       treatments={treatments.results as any}
-      filters={{ treatment, doctor, region, age, gender }}
+      filters={{ group, doctor }}
       isLoggedIn={!!session}
     />, {
       title: '비포애프터 — 실제 치료 사례',
@@ -839,46 +898,66 @@ app.get('/before-after/:id', async (c) => {
   ])
 
   const session = await getSession(c)
+
+  // SEO 메타 자동 빌더 — 키워드 강제 주입
+  const treatmentLabel = treatment?.name || '치료'
+  const doctorLabel = doctor?.name ? `${doctor.name} ${doctor.position || '원장'}` : '대구365치과 의료진'
+  const regionLabel = item.region_dong || item.region_sigungu || '대구 북구'
+
+  // description fallback 강화
+  const autoDesc = item.meta_description
+    || item.description?.substring(0, 155)
+    || `${item.title} — ${treatmentLabel} ${item.treatment_period || ''} 치료 사례. ${doctorLabel} 진료. ${regionLabel} 대구365치과의 검증된 ${treatmentLabel} Before/After 실제 결과.`
+
+  // keywords 자동 조합 (필수 5개 + 케이스별 변수)
+  const baseKeywords = '임플란트,인비절라인,라미네이트,글로우네이트,치아교정,대구치과,대구365치과,침산동치과,북구치과'
+  const autoKeywords = item.meta_keywords
+    || `${treatmentLabel},${item.title},${doctorLabel},${regionLabel} ${treatmentLabel},대구 ${treatmentLabel},${baseKeywords}`
+
+  // 이미지 alt 자동 빌더
+  const beforeAlt = item.before_alt || `${item.title} Before — ${treatmentLabel} 치료 전 (${doctorLabel} · ${regionLabel} 대구365치과)`
+  const afterAlt = item.after_alt || `${item.title} After — ${treatmentLabel} 치료 후 (${doctorLabel} · ${regionLabel} 대구365치과)`
+
+  // OG 이미지: DB의 og_image > 비포 사진 > 자동 OG 생성
+  const beforePhoto = item.intra_before_url || item.pano_before_url
+  const afterPhoto = item.intra_after_url || item.pano_after_url
+  const ogImage = item.og_image || beforePhoto || ogUrl.beforeAfter(item.title, treatment?.name || undefined, doctor?.name ? `${doctor.name} ${doctor.position || ''}`.trim() : undefined)
+
+  // 인덱스 차단 옵션
+  const robotsOverride = item.noindex ? 'noindex, nofollow' : undefined
+
   return c.render(
-    <BeforeAfterDetailPage item={item} doctor={doctor} treatment={treatment} isLoggedIn={!!session} />, {
-      title: `${item.title} · 치료사례`,
-      description: item.description?.substring(0, 160) || '',
+    <BeforeAfterDetailPage item={{...item, before_alt: beforeAlt, after_alt: afterAlt}} doctor={doctor} treatment={treatment} isLoggedIn={!!session} />, {
+      title: `${item.title} · ${treatmentLabel} 치료사례 | ${doctorLabel}`,
+      description: autoDesc,
+      keywords: autoKeywords,
       canonical: `https://daegu365dc.kr/before-after/${id}`,
-      ogImage: ogUrl.beforeAfter(
-        item.title,
-        treatment?.name || undefined,
-        doctor?.name ? `${doctor.name} ${doctor.position || ''}`.trim() : undefined
-      ),
+      ogImage,
+      ogType: 'article',
+      publishedTime: item.created_at,
+      modifiedTime: item.updated_at || item.created_at,
+      author: doctor?.name || '대구365치과',
+      ...(robotsOverride && { robots: robotsOverride }),
       breadcrumb: [
         { name: '홈', url: '/' },
         { name: '비포애프터', url: '/before-after' },
         { name: item.title, url: `/before-after/${id}` }
       ],
-      jsonLd: {
-        "@context": "https://schema.org",
-        "@type": "MedicalCaseStudy",
-        "@id": `${SITE.url}/before-after/${id}#case`,
-        "name": item.title,
-        "description": item.description || '',
-        "url": `${SITE.url}/before-after/${id}`,
-        ...(item.before_image && { "image": [item.before_image, item.after_image].filter(Boolean) }),
-        ...(treatment && {
-          "medicalSpecialty": "Dentistry",
-          "about": {
-            "@type": "MedicalProcedure",
-            "@id": `${SITE.url}/treatments/${treatment.slug}#procedure`,
-            "name": treatment.name
-          }
-        }),
-        ...(doctor && {
-          "author": {
-            "@id": `${SITE.url}/doctors/${doctor.slug}#physician`,
-            "@type": "Physician",
-            "name": doctor.name
-          }
-        }),
-        "provider": { "@id": `${SITE.url}/#dentist` }
-      }
+      jsonLd: caseStudySchema({
+        id,
+        title: item.title,
+        description: autoDesc,
+        beforeImage: beforePhoto,
+        afterImage: afterPhoto,
+        beforeAlt,
+        afterAlt,
+        doctorName: doctor?.name,
+        doctorSlug: doctor?.slug,
+        treatmentName: treatment?.name,
+        treatmentSlug: treatment?.slug,
+        createdAt: item.created_at,
+        updatedAt: item.updated_at || item.created_at
+      })
     }
   )
 })
@@ -928,16 +1007,47 @@ app.get('/blog/:slug', async (c) => {
     : null
   const related = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE id!=? AND is_published=1 ORDER BY id DESC LIMIT 4').bind(post.id).all()
 
+  // description fallback 3단계: meta_description > excerpt > 본문에서 자동 추출
+  const stripHtml = (html: string) => (html || '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&[a-z]+;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  const bodyText = stripHtml(post.content || '')
+  const autoDesc = post.meta_description
+    || post.excerpt
+    || bodyText.substring(0, 155)
+    || `${post.title} — 대구365치과 ${author?.name || '의료진'} 칼럼. 임플란트·인비절라인·라미네이트·치아교정 전문.`
+
+  // keywords 자동 조합 (필수 5개 + 작성자 + 카테고리)
+  const baseKeywords = '임플란트,인비절라인,라미네이트,글로우네이트,치아교정,대구치과,대구365치과,침산동치과,북구치과'
+  const autoKeywords = post.meta_keywords
+    || `${post.title},${author?.name || '대구365치과'} ${author?.position || ''},${baseKeywords}`
+
+  // OG 이미지 fallback
+  const ogImage = post.og_image
+    || post.thumbnail_url
+    || ogUrl.blog(post.title, author?.name ? `${author.name} ${author.position || ''}`.trim() : undefined)
+
+  const robotsOverride = post.noindex ? 'noindex, nofollow' : undefined
+
+  // 본문 단어 수 (스키마용)
+  const wordCount = bodyText.split(/\s+/).filter(Boolean).length
+
   return c.render(<BlogDetailPage post={post} author={author} related={related.results as any} />, {
     title: post.title,
-    description: post.meta_description || post.excerpt,
-    keywords: post.meta_keywords,
+    description: autoDesc,
+    keywords: autoKeywords,
     canonical: `https://daegu365dc.kr/blog/${slug}`,
-    ogImage: ogUrl.blog(post.title, author?.name ? `${author.name} ${author.position || ''}`.trim() : undefined),
+    ogImage,
     ogType: 'article',
     publishedTime: post.created_at,
     modifiedTime: post.updated_at || post.created_at,
     author: author?.name || '대구365치과',
+    ...(robotsOverride && { robots: robotsOverride }),
     breadcrumb: [
       { name: '홈', url: '/' },
       { name: '블로그', url: '/blog' },
@@ -945,13 +1055,17 @@ app.get('/blog/:slug', async (c) => {
     ],
     jsonLd: articleSchema({
       title: post.title,
-      description: post.meta_description || post.excerpt || '',
+      description: autoDesc,
       slug,
       authorName: author?.name,
       authorSlug: author?.slug,
+      authorPosition: author?.position,
       publishedTime: post.created_at,
       modifiedTime: post.updated_at || post.created_at,
-      image: post.thumbnail_url || ogUrl.blog(post.title)
+      image: ogImage,
+      keywords: autoKeywords,
+      wordCount,
+      articleSection: '치과 의학정보'
     })
   })
 })
@@ -1126,13 +1240,96 @@ app.get('/hours', (c) => c.render(<HoursPage />, {
     { name: '진료시간', url: '/hours' }
   ]
 }))
-app.get('/fees', (c) => c.render(<FeesPage />, {
-  title: '비급여 의료수가표 · 수가 안내',
-  description: '대구365치과 비급여 의료수가표. 임플란트·교정·라미네이트·보철·소아치과 등 전 항목 투명 공개. 진료 전 정확한 비용을 안내드립니다.',
-  canonical: 'https://daegu365dc.kr/fees',
+// fees 그룹 빌더 헬퍼 — DB에서 그룹별로 묶어 FeeGroup[] 반환
+async function loadFeesGroups(DB: D1Database) {
+  try {
+    const r = await DB.prepare(
+      `SELECT id, category, category_icon, group_note, name, price, note, is_highlight, is_published, sort_group, sort_order
+       FROM fees
+       WHERE is_published = 1
+       ORDER BY sort_group ASC, sort_order ASC, id ASC`
+    ).all<any>()
+    const rows = r.results || []
+    if (rows.length === 0) return []
+    const groupMap = new Map<number, any>()
+    for (const row of rows) {
+      const key = row.sort_group
+      if (!groupMap.has(key)) {
+        groupMap.set(key, {
+          category: row.category,
+          icon: row.category_icon || 'fa-tooth',
+          groupNote: row.group_note || undefined,
+          rows: []
+        })
+      }
+      groupMap.get(key).rows.push({
+        name: row.name,
+        price: row.price,
+        note: row.note || undefined,
+        highlight: row.is_highlight === 1
+      })
+    }
+    return Array.from(groupMap.values())
+  } catch (e) {
+    console.error('loadFeesGroups error', e)
+    return []
+  }
+}
+
+app.get('/fees', async (c) => {
+  const groups = await loadFeesGroups(c.env.DB)
+  return c.render(<FeesPage groups={groups} />, {
+    title: '비용 안내 · 비급여 의료수가표',
+    description: '대구365치과 비용 안내. 임플란트·인비절라인·라미네이트·치아교정·보철·소아치과 등 비급여 전 항목 투명 공개. 진료 전 정확한 비용을 안내드립니다.',
+    canonical: 'https://daegu365dc.kr/fees',
+    breadcrumb: [
+      { name: '홈', url: '/' },
+      { name: '비용 안내', url: '/fees' }
+    ]
+  })
+})
+
+// --- 🎮 PLAY · 게임존 (서울비디치과 /games 벤치마킹 → 대구365 3종) ---
+app.get('/play', (c) => c.render(<PlayHubPage />, {
+  title: '🎮 플레이 · 대구365 게임존 | 치석 디펜스 · 치아BTI · 365 RUSH',
+  description: '대구365치과가 만든 무료 미니게임 3종. 치석 디펜스(슈팅), 치아BTI(16유형 심리테스트), 365 RUSH(무한 러너)를 즐기고 점수 자랑하고 예약까지!',
+  canonical: 'https://daegu365dc.kr/play',
   breadcrumb: [
     { name: '홈', url: '/' },
-    { name: '비급여 의료수가표', url: '/fees' }
+    { name: '플레이', url: '/play' }
+  ]
+}))
+
+app.get('/play/defense', (c) => c.render(<PlayDefensePage />, {
+  title: '🛡️ 치석 디펜스 · 대구365 플레이 | 스케일러로 치석 격추!',
+  description: '치석·세균·플라그를 스케일러로 격추하는 종스크롤 슈팅 게임. 90초 도전 모드. 대구365치과 무료 미니게임.',
+  canonical: 'https://daegu365dc.kr/play/defense',
+  breadcrumb: [
+    { name: '홈', url: '/' },
+    { name: '플레이', url: '/play' },
+    { name: '치석 디펜스', url: '/play/defense' }
+  ]
+}))
+
+app.get('/play/bti', (c) => c.render(<PlayBtiPage />, {
+  title: '🧬 치아BTI · 16가지 구강 유형 테스트 | 대구365 플레이',
+  description: '12문항 2분이면 끝! 나의 구강 유형은? 16가지 타입과 맞춤 진료·원장 추천까지. 대구365치과 무료 심리테스트.',
+  canonical: 'https://daegu365dc.kr/play/bti',
+  breadcrumb: [
+    { name: '홈', url: '/' },
+    { name: '플레이', url: '/play' },
+    { name: '치아BTI', url: '/play/bti' }
+  ]
+}))
+
+app.get('/play/rush', (c) => c.render(<PlayRushPage />, {
+  title: '🏃 365 RUSH · 30초 러너 게임 | 대구365 플레이',
+  description: '점프와 슬라이드로 충치·치석·사탕을 피해라! 30초 무한 러너 게임. 대구365치과 무료 미니게임.',
+  canonical: 'https://daegu365dc.kr/play/rush',
+  breadcrumb: [
+    { name: '홈', url: '/' },
+    { name: '플레이', url: '/play' },
+    { name: '365 RUSH', url: '/play/rush' }
   ]
 }))
 
@@ -1596,8 +1793,8 @@ app.get('/admin/before-after/new', async (c) => {
 app.post('/admin/before-after/new', async (c) => {
   const b = await c.req.parseBody()
   await c.env.DB.prepare(
-    `INSERT INTO before_afters (title,description,pano_before_url,pano_after_url,intra_before_url,intra_after_url,age_group,gender,treatment_slug,region_sido,region_sigungu,region_dong,doctor_slug,treatment_period,is_published)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+    `INSERT INTO before_afters (title,description,pano_before_url,pano_after_url,intra_before_url,intra_after_url,age_group,gender,treatment_slug,region_sido,region_sigungu,region_dong,doctor_slug,treatment_period,is_published,meta_description,meta_keywords,og_image,before_alt,after_alt,noindex)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
   ).bind(
     String(b.title||''), String(b.description||''),
     String(b.pano_before_url||'') || null, String(b.pano_after_url||'') || null,
@@ -1606,7 +1803,10 @@ app.post('/admin/before-after/new', async (c) => {
     String(b.treatment_slug||''), String(b.region_sido||''),
     String(b.region_sigungu||''), String(b.region_dong||''),
     String(b.doctor_slug||''), String(b.treatment_period||''),
-    b.is_published ? 1 : 0
+    b.is_published ? 1 : 0,
+    String(b.meta_description||'') || null, String(b.meta_keywords||'') || null,
+    String(b.og_image||'') || null, String(b.before_alt||'') || null,
+    String(b.after_alt||'') || null, b.noindex ? 1 : 0
   ).run()
   return c.redirect('/admin/before-after')
 })
@@ -1624,7 +1824,7 @@ app.post('/admin/before-after/:id/edit', async (c) => {
   const id = parseInt(c.req.param('id'), 10)
   const b = await c.req.parseBody()
   await c.env.DB.prepare(
-    `UPDATE before_afters SET title=?,description=?,pano_before_url=?,pano_after_url=?,intra_before_url=?,intra_after_url=?,age_group=?,gender=?,treatment_slug=?,region_sido=?,region_sigungu=?,region_dong=?,doctor_slug=?,treatment_period=?,is_published=? WHERE id=?`
+    `UPDATE before_afters SET title=?,description=?,pano_before_url=?,pano_after_url=?,intra_before_url=?,intra_after_url=?,age_group=?,gender=?,treatment_slug=?,region_sido=?,region_sigungu=?,region_dong=?,doctor_slug=?,treatment_period=?,is_published=?,meta_description=?,meta_keywords=?,og_image=?,before_alt=?,after_alt=?,noindex=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`
   ).bind(
     String(b.title||''), String(b.description||''),
     String(b.pano_before_url||'') || null, String(b.pano_after_url||'') || null,
@@ -1633,7 +1833,10 @@ app.post('/admin/before-after/:id/edit', async (c) => {
     String(b.treatment_slug||''), String(b.region_sido||''),
     String(b.region_sigungu||''), String(b.region_dong||''),
     String(b.doctor_slug||''), String(b.treatment_period||''),
-    b.is_published ? 1 : 0, id
+    b.is_published ? 1 : 0,
+    String(b.meta_description||'') || null, String(b.meta_keywords||'') || null,
+    String(b.og_image||'') || null, String(b.before_alt||'') || null,
+    String(b.after_alt||'') || null, b.noindex ? 1 : 0, id
   ).run()
   return c.redirect('/admin/before-after')
 })
@@ -1655,13 +1858,15 @@ app.get('/admin/blog/new', async (c) => {
 app.post('/admin/blog/new', async (c) => {
   const b = await c.req.parseBody()
   await c.env.DB.prepare(
-    `INSERT INTO blog_posts (slug,title,excerpt,content,thumbnail_url,author_doctor_slug,meta_description,meta_keywords,is_published)
-     VALUES (?,?,?,?,?,?,?,?,?)`
+    `INSERT INTO blog_posts (slug,title,excerpt,content,thumbnail_url,author_doctor_slug,meta_description,meta_keywords,og_image,noindex,is_published)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?)`
   ).bind(
     String(b.slug||''), String(b.title||''), String(b.excerpt||''),
     String(b.content||''), String(b.thumbnail_url||'') || null,
     String(b.author_doctor_slug||''), String(b.meta_description||''),
-    String(b.meta_keywords||''), b.is_published ? 1 : 0
+    String(b.meta_keywords||''),
+    String(b.og_image||'') || null, b.noindex ? 1 : 0,
+    b.is_published ? 1 : 0
   ).run()
   return c.redirect('/admin/blog')
 })
@@ -1678,12 +1883,14 @@ app.post('/admin/blog/:id/edit', async (c) => {
   const id = parseInt(c.req.param('id'), 10)
   const b = await c.req.parseBody()
   await c.env.DB.prepare(
-    `UPDATE blog_posts SET slug=?,title=?,excerpt=?,content=?,thumbnail_url=?,author_doctor_slug=?,meta_description=?,meta_keywords=?,is_published=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`
+    `UPDATE blog_posts SET slug=?,title=?,excerpt=?,content=?,thumbnail_url=?,author_doctor_slug=?,meta_description=?,meta_keywords=?,og_image=?,noindex=?,is_published=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`
   ).bind(
     String(b.slug||''), String(b.title||''), String(b.excerpt||''),
     String(b.content||''), String(b.thumbnail_url||'') || null,
     String(b.author_doctor_slug||''), String(b.meta_description||''),
-    String(b.meta_keywords||''), b.is_published ? 1 : 0, id
+    String(b.meta_keywords||''),
+    String(b.og_image||'') || null, b.noindex ? 1 : 0,
+    b.is_published ? 1 : 0, id
   ).run()
   return c.redirect('/admin/blog')
 })
@@ -1735,6 +1942,150 @@ app.post('/admin/notices/:id/delete', async (c) => {
   const id = parseInt(c.req.param('id'), 10)
   await c.env.DB.prepare('DELETE FROM notices WHERE id=?').bind(id).run()
   return c.redirect('/admin/notices')
+})
+
+// ============================================================
+// Admin: 수가 관리 (Fees)
+// ============================================================
+
+// GET /admin/fees — 수가 관리 페이지
+app.get('/admin/fees', async (c) => {
+  if (!(await isAdmin(c))) return c.redirect('/admin/login')
+  const r = await c.env.DB.prepare(
+    `SELECT id, category, category_icon, group_note, name, price, note, is_highlight, is_published, sort_group, sort_order
+     FROM fees
+     ORDER BY sort_group ASC, sort_order ASC, id ASC`
+  ).all<any>()
+  const rows = r.results || []
+  // 그룹별로 묶기
+  const groupMap = new Map<number, any>()
+  for (const row of rows) {
+    const key = row.sort_group
+    if (!groupMap.has(key)) {
+      groupMap.set(key, {
+        category: row.category,
+        category_icon: row.category_icon || 'fa-tooth',
+        group_note: row.group_note,
+        sort_group: row.sort_group,
+        rows: []
+      })
+    }
+    groupMap.get(key).rows.push({
+      id: row.id, name: row.name, price: row.price, note: row.note,
+      is_highlight: row.is_highlight, is_published: row.is_published, sort_order: row.sort_order
+    })
+  }
+  const groups = Array.from(groupMap.values())
+  return c.render(<AdminFeesPage groups={groups} />, { title: 'Admin · 수가 관리' })
+})
+
+// GET /admin/seo — SEO/AEO 가이드 페이지
+app.get('/admin/seo', async (c) => {
+  if (!(await isAdmin(c))) return c.redirect('/admin/login')
+  const [blogCount, baCount, doctorCount, treatmentCount] = await Promise.all([
+    c.env.DB.prepare('SELECT COUNT(*) AS n FROM blog_posts WHERE is_published=1').first<any>(),
+    c.env.DB.prepare('SELECT COUNT(*) AS n FROM before_afters WHERE is_published=1').first<any>(),
+    c.env.DB.prepare('SELECT COUNT(*) AS n FROM doctors').first<any>(),
+    c.env.DB.prepare('SELECT COUNT(*) AS n FROM treatments').first<any>(),
+  ])
+  const stats = {
+    blog: blogCount?.n || 0,
+    ba: baCount?.n || 0,
+    doctors: doctorCount?.n || 0,
+    treatments: treatmentCount?.n || 0,
+    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-blog.xml', 'sitemap-cases.xml', 'sitemap-content.xml']
+  }
+  return c.render(<AdminSeoGuidePage stats={stats} />, { title: 'Admin · SEO 가이드', robots: 'noindex,nofollow' })
+})
+
+// PUT /api/admin/fees/:id — 단일 행 업데이트
+app.put('/api/admin/fees/:id', async (c) => {
+  if (!(await isAdmin(c))) return c.json({ ok: false, error: 'unauthorized' }, 401)
+  const id = parseInt(c.req.param('id'), 10)
+  const b = await c.req.json() as any
+  if (!b.name || !b.price) return c.json({ ok: false, error: 'name & price required' }, 400)
+  await c.env.DB.prepare(
+    `UPDATE fees SET name=?, price=?, note=?, is_highlight=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`
+  ).bind(
+    String(b.name), String(b.price),
+    b.note ? String(b.note) : null,
+    b.is_highlight ? 1 : 0,
+    b.is_published ? 1 : 0,
+    id
+  ).run()
+  return c.json({ ok: true })
+})
+
+// PUT /api/admin/fees/bulk — 여러 행 일괄 업데이트
+app.put('/api/admin/fees/bulk', async (c) => {
+  if (!(await isAdmin(c))) return c.json({ ok: false, error: 'unauthorized' }, 401)
+  const b = await c.req.json() as any
+  const items = Array.isArray(b.items) ? b.items : []
+  if (items.length === 0) return c.json({ ok: false, error: 'no items' }, 400)
+  let affected = 0
+  for (const it of items) {
+    if (!it.id || !it.name || !it.price) continue
+    await c.env.DB.prepare(
+      `UPDATE fees SET name=?, price=?, note=?, is_highlight=?, is_published=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`
+    ).bind(
+      String(it.name), String(it.price),
+      it.note ? String(it.note) : null,
+      it.is_highlight ? 1 : 0,
+      it.is_published ? 1 : 0,
+      parseInt(it.id, 10)
+    ).run()
+    affected++
+  }
+  return c.json({ ok: true, affected })
+})
+
+// PUT /api/admin/fees/group-note — 그룹 안내 문구 일괄 업데이트
+app.put('/api/admin/fees/group-note', async (c) => {
+  if (!(await isAdmin(c))) return c.json({ ok: false, error: 'unauthorized' }, 401)
+  const b = await c.req.json() as any
+  const sortGroup = parseInt(b.sort_group, 10)
+  if (isNaN(sortGroup)) return c.json({ ok: false, error: 'invalid sort_group' }, 400)
+  await c.env.DB.prepare(
+    `UPDATE fees SET group_note=?, updated_at=CURRENT_TIMESTAMP WHERE sort_group=?`
+  ).bind(b.group_note ? String(b.group_note) : null, sortGroup).run()
+  return c.json({ ok: true })
+})
+
+// POST /api/admin/fees — 새 행 추가
+app.post('/api/admin/fees', async (c) => {
+  if (!(await isAdmin(c))) return c.json({ ok: false, error: 'unauthorized' }, 401)
+  const b = await c.req.json() as any
+  const sortGroup = parseInt(b.sort_group, 10)
+  if (isNaN(sortGroup) || !b.name || !b.price) {
+    return c.json({ ok: false, error: 'sort_group, name, price required' }, 400)
+  }
+  // 같은 그룹의 카테고리/아이콘/안내 가져와서 신규 행에 적용
+  const ref = await c.env.DB.prepare(
+    `SELECT category, category_icon, group_note FROM fees WHERE sort_group=? LIMIT 1`
+  ).bind(sortGroup).first<any>()
+  if (!ref) return c.json({ ok: false, error: 'group not found' }, 404)
+  const maxOrder = await c.env.DB.prepare(
+    `SELECT COALESCE(MAX(sort_order), 0) AS m FROM fees WHERE sort_group=?`
+  ).bind(sortGroup).first<any>()
+  const nextOrder = (maxOrder?.m || 0) + 1
+  const result = await c.env.DB.prepare(
+    `INSERT INTO fees (category, category_icon, group_note, name, price, note, is_highlight, is_published, sort_group, sort_order)
+     VALUES (?, ?, ?, ?, ?, ?, 0, 1, ?, ?)`
+  ).bind(
+    ref.category, ref.category_icon, ref.group_note,
+    String(b.name), String(b.price),
+    b.note ? String(b.note) : null,
+    sortGroup, nextOrder
+  ).run()
+  return c.json({ ok: true, id: result.meta.last_row_id })
+})
+
+// DELETE /api/admin/fees/:id — 행 삭제
+app.delete('/api/admin/fees/:id', async (c) => {
+  if (!(await isAdmin(c))) return c.json({ ok: false, error: 'unauthorized' }, 401)
+  const id = parseInt(c.req.param('id'), 10)
+  await c.env.DB.prepare('DELETE FROM fees WHERE id=?').bind(id).run()
+  return c.json({ ok: true })
 })
 
 // ============ robots + sitemap + llms.txt + manifest ============
@@ -1843,7 +2194,7 @@ app.get('/llms.txt', async (c) => {
   lines.push(`- [의료진 칼럼 (블로그)](${base}/blog)`)
   lines.push(`- [치과 백과사전 (500+ 용어)](${base}/dictionary)`)
   lines.push(`- [자주 묻는 질문 (250+ FAQ)](${base}/faq)`)
-  lines.push(`- [비급여 의료수가표](${base}/fees)`)
+  lines.push(`- [비용 안내](${base}/fees)`)
   lines.push(`- [오시는 길](${base}/directions)`)
   lines.push('')
   lines.push('## 차별점')
@@ -1862,74 +2213,173 @@ app.get('/llms.txt', async (c) => {
   return c.text(lines.join('\n'), 200, { 'Content-Type': 'text/plain; charset=utf-8' })
 })
 
+// ============ Sitemap helpers ============
+const sitemapIso = (v: any): string => {
+  if (!v) return new Date().toISOString().substring(0, 10)
+  try {
+    const d = new Date(typeof v === 'string' ? v.replace(' ', 'T') : v)
+    if (isNaN(d.getTime())) return new Date().toISOString().substring(0, 10)
+    return d.toISOString().substring(0, 10)
+  } catch { return new Date().toISOString().substring(0, 10) }
+}
+const xmlEscape = (s: any): string => {
+  if (s == null) return ''
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
+// ============ Sitemap Index ============
 app.get('/sitemap.xml', async (c) => {
   const base = SITE.url
-  // 컬럼 가용성: updated_at 보유 = blog_posts, notices / 그 외 테이블은 created_at 만 있음
-  const [doctors, treatments, blogs, ba, dict, regions, notices] = await Promise.all([
-    c.env.DB.prepare('SELECT slug, created_at FROM doctors').all(),
+  const today = new Date().toISOString().substring(0, 10)
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>${base}/sitemap-main.xml</loc><lastmod>${today}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-blog.xml</loc><lastmod>${today}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-cases.xml</loc><lastmod>${today}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-content.xml</loc><lastmod>${today}</lastmod></sitemap>
+</sitemapindex>`
+  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+})
+
+// ============ Sitemap: Main (static + doctors + treatments + notices + regions) ============
+app.get('/sitemap-main.xml', async (c) => {
+  const base = SITE.url
+  const today = new Date().toISOString().substring(0, 10)
+  const [doctors, treatments, notices, regions] = await Promise.all([
+    c.env.DB.prepare('SELECT slug, name, photo_url, created_at FROM doctors').all(),
     c.env.DB.prepare('SELECT slug, created_at FROM treatments').all(),
-    c.env.DB.prepare('SELECT slug, updated_at, created_at FROM blog_posts WHERE is_published=1').all(),
-    c.env.DB.prepare('SELECT id, created_at FROM before_afters WHERE is_published=1').all(),
-    c.env.DB.prepare('SELECT slug, created_at FROM dictionary').all(),
-    c.env.DB.prepare('SELECT slug, created_at FROM region_seo').all(),
     c.env.DB.prepare('SELECT id, updated_at, created_at FROM notices WHERE is_published=1').all(),
+    c.env.DB.prepare('SELECT slug, created_at FROM region_seo').all(),
   ])
 
-  // ISO 8601 형식 lastmod 변환 (없으면 빈 문자열 → 태그 생략)
-  const iso = (v: any): string => {
-    if (!v) return ''
-    try {
-      const d = new Date(typeof v === 'string' ? v.replace(' ', 'T') : v)
-      if (isNaN(d.getTime())) return ''
-      return d.toISOString().substring(0, 10) // YYYY-MM-DD
-    } catch { return '' }
-  }
-  const todayIso = new Date().toISOString().substring(0, 10)
-
   const urls: string[] = []
-  const add = (loc: string, pri = '0.8', chf = 'weekly', lastmod = todayIso) => {
-    const lm = lastmod ? `<lastmod>${lastmod}</lastmod>` : ''
-    urls.push(`<url><loc>${base}${loc}</loc>${lm}<priority>${pri}</priority><changefreq>${chf}</changefreq></url>`)
+  const addUrl = (loc: string, pri = '0.8', chf = 'weekly', lastmod = today, image?: { url: string; caption?: string; title?: string }) => {
+    const img = image && image.url ? `\n    <image:image><image:loc>${xmlEscape(image.url)}</image:loc>${image.title ? `<image:title>${xmlEscape(image.title)}</image:title>` : ''}${image.caption ? `<image:caption>${xmlEscape(image.caption)}</image:caption>` : ''}</image:image>` : ''
+    urls.push(`  <url><loc>${base}${loc}</loc><lastmod>${lastmod}</lastmod><priority>${pri}</priority><changefreq>${chf}</changefreq>${img}</url>`)
   }
 
-  // 정적 페이지
-  add('/', '1.0', 'daily')
-  add('/mission', '0.9', 'monthly')
-  add('/doctors', '0.9', 'monthly')
-  add('/treatments', '0.9', 'monthly')
-  add('/before-after', '0.9', 'weekly')
-  add('/blog', '0.9', 'weekly')
-  add('/notices', '0.7', 'weekly')
-  add('/dictionary', '0.8', 'monthly')
-  add('/faq', '0.8', 'monthly')
-  add('/directions', '0.7', 'yearly')
-  add('/hours', '0.6', 'yearly')
-  add('/fees', '0.7', 'monthly')
+  addUrl('/', '1.0', 'daily')
+  addUrl('/mission', '0.9', 'monthly')
+  addUrl('/doctors', '0.9', 'monthly')
+  addUrl('/treatments', '0.9', 'monthly')
+  addUrl('/before-after', '0.9', 'weekly')
+  addUrl('/blog', '0.9', 'weekly')
+  addUrl('/notices', '0.7', 'weekly')
+  addUrl('/directions', '0.7', 'yearly')
+  addUrl('/hours', '0.6', 'yearly')
+  addUrl('/fees', '0.7', 'monthly')
 
-  // 동적 페이지 (lastmod 자동 반영)
   ;(doctors.results as any[]).forEach((d: any) =>
-    add(`/doctors/${d.slug}`, '0.8', 'monthly', iso(d.created_at))
+    addUrl(`/doctors/${d.slug}`, '0.85', 'monthly', sitemapIso(d.created_at),
+      d.photo_url ? { url: d.photo_url, title: `${d.name} 원장`, caption: `대구365치과 ${d.name} 원장` } : undefined)
   )
   ;(treatments.results as any[]).forEach((t: any) =>
-    add(`/treatments/${t.slug}`, '0.9', 'monthly', iso(t.created_at))
-  )
-  ;(blogs.results as any[]).forEach((b: any) =>
-    add(`/blog/${b.slug}`, '0.7', 'weekly', iso(b.updated_at || b.created_at))
-  )
-  ;(ba.results as any[]).forEach((b: any) =>
-    add(`/before-after/${b.id}`, '0.7', 'monthly', iso(b.created_at))
+    addUrl(`/treatments/${t.slug}`, '0.9', 'monthly', sitemapIso(t.created_at))
   )
   ;(notices.results as any[]).forEach((n: any) =>
-    add(`/notices/${n.id}`, '0.6', 'monthly', iso(n.updated_at || n.created_at))
-  )
-  ;(dict.results as any[]).forEach((d: any) =>
-    add(`/dictionary/${d.slug}`, '0.5', 'monthly', iso(d.created_at))
+    addUrl(`/notices/${n.id}`, '0.6', 'monthly', sitemapIso(n.updated_at || n.created_at))
   )
   ;(regions.results as any[]).forEach((r: any) =>
-    add(`/region/${r.slug}`, '0.7', 'monthly', iso(r.created_at))
+    addUrl(`/region/${r.slug}`, '0.7', 'monthly', sitemapIso(r.created_at))
   )
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>`
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${urls.join('\n')}
+</urlset>`
+  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+})
+
+// ============ Sitemap: Blog ============
+app.get('/sitemap-blog.xml', async (c) => {
+  const base = SITE.url
+  // noindex 컬럼 없을 수도 있어 COALESCE 보호
+  let blogs: any
+  try {
+    blogs = await c.env.DB.prepare(
+      'SELECT slug, title, og_image, thumbnail_url, updated_at, created_at FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0'
+    ).all()
+  } catch {
+    blogs = await c.env.DB.prepare(
+      'SELECT slug, title, thumbnail_url, updated_at, created_at FROM blog_posts WHERE is_published=1'
+    ).all()
+  }
+
+  const urls: string[] = []
+  ;(blogs.results as any[]).forEach((b: any) => {
+    const imgUrl = b.og_image || b.thumbnail_url
+    const img = imgUrl
+      ? `\n    <image:image><image:loc>${xmlEscape(imgUrl)}</image:loc><image:title>${xmlEscape(b.title)}</image:title><image:caption>${xmlEscape(b.title)} - 대구365치과 컬럼</image:caption></image:image>`
+      : ''
+    urls.push(`  <url><loc>${base}/blog/${b.slug}</loc><lastmod>${sitemapIso(b.updated_at || b.created_at)}</lastmod><priority>0.85</priority><changefreq>weekly</changefreq>${img}</url>`)
+  })
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${urls.join('\n')}
+</urlset>`
+  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+})
+
+// ============ Sitemap: Before & After Cases ============
+app.get('/sitemap-cases.xml', async (c) => {
+  const base = SITE.url
+  let ba: any
+  try {
+    ba = await c.env.DB.prepare(
+      'SELECT id, title, og_image, intra_before_url, intra_after_url, pano_before_url, pano_after_url, before_alt, after_alt, treatment_slug, updated_at, created_at FROM before_afters WHERE is_published=1 AND COALESCE(noindex,0)=0'
+    ).all()
+  } catch {
+    ba = await c.env.DB.prepare(
+      'SELECT id, title, intra_before_url, intra_after_url, pano_before_url, pano_after_url, treatment_slug, created_at FROM before_afters WHERE is_published=1'
+    ).all()
+  }
+
+  const urls: string[] = []
+  ;(ba.results as any[]).forEach((b: any) => {
+    const images: string[] = []
+    const push = (url: string, title: string, caption: string) => {
+      if (!url) return
+      images.push(`    <image:image><image:loc>${xmlEscape(url)}</image:loc><image:title>${xmlEscape(title)}</image:title><image:caption>${xmlEscape(caption)}</image:caption></image:image>`)
+    }
+    if (b.og_image) push(b.og_image, b.title || '치료 전후 사례', `${b.title || '치료 전후'} - 대구365치과 비포애프터`)
+    const beforeUrl = b.intra_before_url || b.pano_before_url
+    const afterUrl = b.intra_after_url || b.pano_after_url
+    if (beforeUrl) push(beforeUrl, b.before_alt || `${b.title || '치료 전'} 비포`, b.before_alt || `${b.title || ''} 치료 전 사진`)
+    if (afterUrl) push(afterUrl, b.after_alt || `${b.title || '치료 후'} 애프터`, b.after_alt || `${b.title || ''} 치료 후 사진`)
+    const imgXml = images.length ? '\n' + images.join('\n') : ''
+    urls.push(`  <url><loc>${base}/before-after/${b.id}</loc><lastmod>${sitemapIso(b.updated_at || b.created_at)}</lastmod><priority>0.85</priority><changefreq>monthly</changefreq>${imgXml}</url>`)
+  })
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${urls.join('\n')}
+</urlset>`
+  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+})
+
+// ============ Sitemap: Content (Dictionary + FAQ) ============
+app.get('/sitemap-content.xml', async (c) => {
+  const base = SITE.url
+  const today = new Date().toISOString().substring(0, 10)
+  const dict = await c.env.DB.prepare('SELECT slug, created_at FROM dictionary').all()
+
+  const urls: string[] = []
+  urls.push(`  <url><loc>${base}/dictionary</loc><lastmod>${today}</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>`)
+  urls.push(`  <url><loc>${base}/faq</loc><lastmod>${today}</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>`)
+  ;(dict.results as any[]).forEach((d: any) =>
+    urls.push(`  <url><loc>${base}/dictionary/${d.slug}</loc><lastmod>${sitemapIso(d.created_at)}</lastmod><priority>0.6</priority><changefreq>monthly</changefreq></url>`)
+  )
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join('\n')}
+</urlset>`
   return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
 })
 

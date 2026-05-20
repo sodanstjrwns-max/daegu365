@@ -32,7 +32,7 @@ export const TLDR_DATA: Record<string, TldrEntry> = {
     bullets: [
       { label: '가격', value: '60만원 ~ (재료별)' },
       { label: '치아 삭제량', value: '0.3mm (일반 라미네이트 0.5~1mm)' },
-      { label: '재료', value: '이마젝스 / E.max / 지르코니아' },
+      { label: '라인업', value: 'VINIQUE Standard / Premium' },
       { label: '소요 기간', value: '2~3회 내원 (1~2주)' },
       { label: '제작', value: '원내 D.LAB 즉시 조정' },
       { label: '추천 대상', value: '변색·모양·간격 고민 / 단기 결과' },

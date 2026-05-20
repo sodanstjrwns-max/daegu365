@@ -25,8 +25,14 @@ export const BlogListPage = ({ posts, doctors }: { posts: BlogPost[], doctors: D
             const author = doctors.find(d => d.slug === p.author_doctor_slug)
             return (
               <a href={`/blog/${p.slug}`} class="group fade-in">
-                <div class="aspect-[16/10] placeholder-img rounded-2xl mb-5 overflow-hidden group-hover:shadow-lux transition">
-                  <i class="fas fa-newspaper text-4xl"></i>
+                <div class="aspect-[16/10] rounded-2xl mb-5 overflow-hidden group-hover:shadow-lux transition relative bg-cream">
+                  {p.thumbnail_url ? (
+                    <img src={p.thumbnail_url} alt={p.title} loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                  ) : (
+                    <div class="w-full h-full placeholder-img flex items-center justify-center">
+                      <i class="fas fa-newspaper text-4xl"></i>
+                    </div>
+                  )}
                 </div>
                 <div class="text-xs tracking-widest text-brown-500 mb-3">
                   {author ? `by ${author.name} ${author.position}` : 'DAEGU365'}
@@ -82,7 +88,13 @@ export const BlogDetailPage = ({ post, author, related }: { post: BlogPost, auth
           <div class="grid md:grid-cols-2 gap-6">
             {related.map(r => (
               <a href={`/blog/${r.slug}`} class="group">
-                <div class="aspect-[16/9] placeholder-img rounded-xl mb-3"><i class="fas fa-newspaper"></i></div>
+                <div class="aspect-[16/9] rounded-xl mb-3 overflow-hidden relative bg-cream">
+                  {r.thumbnail_url ? (
+                    <img src={r.thumbnail_url} alt={r.title} loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                  ) : (
+                    <div class="w-full h-full placeholder-img flex items-center justify-center"><i class="fas fa-newspaper"></i></div>
+                  )}
+                </div>
                 <h3 class="display text-lg font-medium group-hover:text-brown-700">{r.title}</h3>
               </a>
             ))}

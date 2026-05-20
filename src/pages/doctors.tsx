@@ -2,12 +2,13 @@ import { Navbar, Footer } from '../components/Layout'
 import type { Doctor, Treatment, BeforeAfter, BlogPost } from '../lib/types'
 
 // 의료진 슬러그 → 프로필 사진 매핑 (파일명 기준 7명 + 단체 4장)
+// PPT 모바일 슬라이드 7 + PC1 슬라이드 13 — 최혜정 ↔ 김진덕 사진 서로 교체
 const DOCTOR_PHOTO: Record<string, string> = {
   'kim-seongju':  '/r2/images/doctors/kim-seongju.jpg',
   'jung-jaeheon': '/r2/images/doctors/jung-jaeheon.jpg',
   'kim-sangwon':  '/r2/images/doctors/kim-sangwon.jpg',
-  'choi-hyejung': '/r2/images/doctors/choi-hyejung.jpg',
-  'kim-jinduk':   '/r2/images/doctors/kim-jinduk.jpg',
+  'choi-hyejung': '/r2/images/doctors/kim-jinduk.jpg',
+  'kim-jinduk':   '/r2/images/doctors/choi-hyejung.jpg',
   'han-jieun':    '/r2/images/doctors/han-jieun.jpg',
   'lee-seoyoung': '/r2/images/doctors/lee-seoyoung.jpg',
 }
@@ -16,6 +17,7 @@ const getDoctorPhoto = (slug: string) =>
 
 // 의료진 슬러그 → 인터뷰 영상 R2 스트리밍 라우트 매핑
 // (R2 버킷 daegu365dc-assets 의 한글 master 파일을 /api/videos/:slug 라우트로 서빙)
+// ※ 영상은 R2 파일명과 슬러그가 정상 매칭됨 (사진만 스왑 처리됨)
 const DOCTOR_VIDEO: Record<string, string> = {
   'kim-seongju':  '/api/videos/kim-seongju',
   'jung-jaeheon': '/api/videos/jung-jaeheon',
@@ -32,72 +34,186 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
   <>
     <Navbar />
 
-    {/* HERO with team group photo */}
+    {/* HERO — PPT PC3-S2 반영: 메인 단체사진 삭제, 타이포 중심 + 칩 + CTA */}
     <section class="relative bg-brown-950 text-ivory overflow-hidden">
-      {/* 머리 윗부분 여유 공간 확보 — 높이를 키우고, 사진을 아래쪽 정렬해서 인물의 머리·어깨·상체가 모두 노출되도록 */}
-      <div class="relative h-[78vh] min-h-[640px] md:min-h-[720px] overflow-hidden">
-        <img
-          src="/r2/images/doctors/team-horizontal-smile.jpg"
-          alt="대구365치과 의료진 7인"
-          class="w-full h-full object-cover object-[center_85%]"
-          style="animation: kenburns-doctors 24s ease-in-out infinite alternate;"
-        />
-        {/* 머리 위 여백을 더 확보하기 위해 상단 어둡기 살짝 줄이고, 헤드라인 가독성은 중앙 글로우로 보조 */}
-        <div
-          class="absolute inset-0"
-          style="background:
-            linear-gradient(180deg, rgba(28,18,11,0.45) 0%, rgba(28,18,11,0.25) 35%, rgba(28,18,11,0.55) 70%, rgba(28,18,11,1) 100%),
-            radial-gradient(ellipse at center 60%, rgba(28,18,11,0.55) 0%, transparent 60%);"
-        ></div>
-        {/* 카피는 아래쪽 1/3 지점에 배치 — 인물 머리와 겹치지 않도록 */}
-        <div class="absolute inset-x-0 bottom-0 pb-20 md:pb-28">
-          <div class="text-center px-6 fade-in">
-            <div class="text-xs tracking-[0.5em] text-gold mb-6">MEDICAL TEAM · 7</div>
-            <h1 class="display text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] text-ivory mb-8">
-              <span class="block text-ivory">7명의</span>
-              <span class="block italic text-gold">전문 의료진</span>
-            </h1>
-            <p class="text-brown-200 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-              보존·치주·소아·교정. 각 분야 전문성을 갖춘 의료진이<br/>
-              협진으로 완성도 있는 치료를 제공합니다.
-            </p>
-          </div>
+      {/* 배경 — 부드러운 그라데이션 + 골드 글로우 (단체 사진 제거) */}
+      <div
+        class="absolute inset-0"
+        style="background:
+          radial-gradient(ellipse at 20% 30%, rgba(201,168,118,0.18) 0%, transparent 55%),
+          radial-gradient(ellipse at 80% 70%, rgba(201,168,118,0.10) 0%, transparent 50%),
+          linear-gradient(180deg, #1a1108 0%, #2a1a0d 100%);"
+      ></div>
+      {/* 장식 라인 */}
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent"></div>
+
+      <div class="relative max-w-[1280px] mx-auto px-6 lg:px-12 py-28 md:py-36 text-center fade-in">
+        <div class="text-xs tracking-[0.5em] text-gold mb-8 font-bold">MEDICAL TEAM · 대구365치과</div>
+
+        {/* 7인의 전문 의료진 — 폰트 키움 (PPT 요청) */}
+        <h1 class="display font-black tracking-tight leading-[0.92] text-ivory mb-10"
+            style="font-size: clamp(3.5rem, 9vw, 8rem);">
+          <span class="block">7인의</span>
+          <span class="block italic text-gold mt-2">전문 의료진</span>
+        </h1>
+
+        {/* 4개 칩 — 7인 협진 / 365일 진료 / 평일 야간 21시 / 대구침산동 */}
+        <div class="flex flex-wrap justify-center gap-3 md:gap-4 mb-12 max-w-3xl mx-auto">
+          {[
+            { icon: 'fa-user-doctor', text: '7인 협진' },
+            { icon: 'fa-calendar-check', text: '365일 진료' },
+            { icon: 'fa-moon', text: '평일 야간 21시' },
+            { icon: 'fa-location-dot', text: '대구 침산동' },
+          ].map(chip => (
+            <div class="flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-gold/40 bg-gold/5 backdrop-blur-sm">
+              <i class={`fas ${chip.icon} text-gold text-sm`}></i>
+              <span class="text-sm md:text-base font-semibold text-ivory tracking-wide">{chip.text}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* 카피 */}
+        <p class="text-brown-200 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-12">
+          보존 · 치주 · 소아 · 교정, 각 분야 전문성을 갖춘 의료진이<br class="hidden md:inline"/>
+          협진으로 완성도 있는 치료를 제공합니다.
+        </p>
+
+        {/* 2개 CTA — 상담예약하기 + 전화번호 */}
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center max-w-xl mx-auto">
+          <button
+            type="button"
+            onclick="window.dispatchEvent(new Event('open-consultation-modal'))"
+            class="group flex-1 flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gold text-brown-950 font-bold tracking-wide hover:bg-gold-light hover:-translate-y-0.5 transition-all shadow-lg shadow-gold/20"
+          >
+            <i class="fas fa-calendar-check"></i>
+            <span>상담예약하기</span>
+            <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+          </button>
+          <a
+            href="tel:053-357-0365"
+            class="group flex-1 flex items-center justify-center gap-3 px-8 py-4 rounded-full border-2 border-gold/60 text-gold font-bold tracking-wide hover:bg-gold/10 hover:border-gold transition-all"
+          >
+            <i class="fas fa-phone"></i>
+            <span>053-357-0365</span>
+          </a>
         </div>
       </div>
 
-      {/* HERO 전용 Ken Burns — 머리 윗부분이 잘리지 않도록 object-position 기준에서 미세하게만 움직임 */}
-      <style>{`
-        @keyframes kenburns-doctors {
-          0%   { transform: scale(1.04); }
-          100% { transform: scale(1.10); }
-        }
-      `}</style>
+      {/* 하단 장식 라인 */}
+      <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent"></div>
     </section>
 
     <section class="py-24 max-w-[1440px] mx-auto px-6 lg:px-12">
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 fade-in-stagger">
-        {doctors.map(d => (
-          <a href={`/doctors/${d.slug}`} class="group block">
-            <div class="img-frame aspect-[3/4] rounded-[24px] mb-6 overflow-hidden group-hover:shadow-xl transition-all duration-500">
-              <img
-                src={getDoctorPhoto(d.slug)}
-                alt={`${d.name} ${d.is_representative ? '대표원장' : d.position}`}
-                loading="lazy"
-                class="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-700"
-              />
+        {/* PPT PC3-S7 반영: 전문의 배지 글자 키움 + 사진 사이즈 축소 + 이름·문구 가독성 강화 */}
+        {doctors.map(d => {
+          const specialtyLabel = d.is_representative ? '대표원장' : d.position
+          return (
+            <a href={`/doctors/${d.slug}`} class="group block bg-cream rounded-[24px] overflow-hidden border border-brown-200/60 hover:border-gold/60 hover:shadow-xl transition-all duration-500">
+              {/* 사진 — 4:5 비율로 줄임 (기존 3:4보다 짧음) */}
+              <div class="img-frame aspect-[4/5] overflow-hidden bg-brown-100 relative">
+                <img
+                  src={getDoctorPhoto(d.slug)}
+                  alt={`${d.name} ${specialtyLabel}`}
+                  loading="lazy"
+                  class="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-700"
+                />
+                {/* 사진 위 그라데이션 — 하단 정보 가독성 보조 */}
+                <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-cream via-cream/40 to-transparent"></div>
+              </div>
+
+              {/* 정보 영역 — 패딩 늘림 + 글자 키움 */}
+              <div class="px-6 pt-5 pb-7">
+                {/* 전문의 배지 — 골드 칩으로 강조 (PPT 요청: 크기 키우기) */}
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/15 border border-gold/40 mb-4">
+                  <i class="fas fa-user-doctor text-gold text-xs"></i>
+                  <span class="text-[13px] md:text-sm font-bold text-brown-900 tracking-wide">
+                    {specialtyLabel}
+                  </span>
+                </div>
+
+                {/* 이름 — 좀 더 크게 */}
+                <h3 class="display text-3xl md:text-[2rem] font-black tracking-tight mb-3 text-brown-900">
+                  {d.name} <span class="text-gold text-xl">원장</span>
+                </h3>
+
+                {/* 메시지 */}
+                <p class="text-brown-700 text-sm leading-relaxed line-clamp-2 min-h-[2.6em]">
+                  {d.message}
+                </p>
+
+                {/* 프로필 보기 CTA */}
+                <div class="mt-5 pt-5 border-t border-brown-200 flex items-center justify-between text-sm font-bold text-brown-900 group-hover:text-gold transition-colors">
+                  <span>프로필 보기</span>
+                  <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </div>
+              </div>
+            </a>
+          )
+        })}
+      </div>
+    </section>
+
+    {/* WEEKLY SCHEDULE — 요일별 진료 스케줄표 */}
+    <section class="py-24 bg-brown-950 text-ivory relative overflow-hidden">
+      <div class="blob" style="width:500px;height:500px;background:#c9a876;top:-150px;right:-100px;opacity:0.12;"></div>
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
+        <div class="text-center mb-16 fade-in">
+          <div class="text-xs tracking-[0.5em] text-gold mb-6">WEEKLY SCHEDULE</div>
+          <h2 class="display text-4xl md:text-5xl font-black tracking-tight text-ivory mb-6">
+            원장님 <span class="t-gold italic">7인</span> 요일별 진료 스케줄
+          </h2>
+          <p class="text-brown-200 max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
+            방문 전 원하시는 원장님의 진료 요일을 미리 확인하세요.<br/>
+            요일별 진료 시간이 다르므로, 예약 시 참고 부탁드립니다.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-7 gap-4 fade-in-stagger">
+          {[
+            { day: '월', en: 'MON', hours: '09:30 ~ 21:00', doctors: ['김성주', '정재헌', '김상원'], extra: { name: '이서영', hours: '09:30 ~ 19:00' }, late: true },
+            { day: '화', en: 'TUE', hours: '09:30 ~ 18:30', doctors: ['정재헌', '김상원', '최혜정', '한지은'] },
+            { day: '수', en: 'WED', hours: '09:30 ~ 18:30', doctors: ['정재헌', '김상원', '최혜정', '이서영'] },
+            { day: '목', en: 'THU', hours: '09:30 ~ 21:00', doctors: ['김성주', '최혜정', '이서영', '김진덕'], late: true },
+            { day: '금', en: 'FRI', hours: '09:30 ~ 18:30', doctors: ['김성주', '정재헌', '김상원', '김진덕'] },
+            { day: '토', en: 'SAT', hours: '09:30 ~ 17:00', doctors: ['김성주', '최혜정', '김진덕', '한지은'] },
+            { day: '일', en: 'SUN', hours: '09:30 ~ 17:00', doctors: ['김성주', '정재헌', '김상원', '이서영'], holiday: true },
+          ].map((d: any) => (
+            <div class={`schedule-card rounded-2xl p-5 ${d.late ? 'schedule-card-late' : ''} ${d.holiday ? 'schedule-card-holiday' : ''}`}
+                 style={`background: ${d.late ? 'linear-gradient(160deg, rgba(201,168,118,0.18), rgba(201,168,118,0.04))' : d.holiday ? 'linear-gradient(160deg, rgba(193,72,72,0.12), rgba(193,72,72,0.03))' : 'rgba(255,250,240,0.04)'}; border: 1px solid ${d.late ? 'rgba(201,168,118,0.35)' : d.holiday ? 'rgba(193,72,72,0.3)' : 'rgba(201,168,118,0.15)'};`}>
+              <div class="flex items-baseline justify-between mb-3">
+                <div class="display text-3xl font-black text-ivory leading-none">{d.day}</div>
+                <div class="text-[9px] tracking-[0.3em] text-gold font-bold">{d.en}</div>
+              </div>
+              <div class={`text-[11px] font-semibold tracking-wider mb-4 pb-3 border-b border-ivory/10 ${d.late ? 'text-gold' : d.holiday ? 'text-red-300' : 'text-brown-200'}`}>
+                {d.hours}
+                {d.late && <span class="ml-2 inline-block px-1.5 py-0.5 rounded bg-gold/20 text-gold text-[8px] tracking-widest">야간</span>}
+                {d.holiday && <span class="ml-2 inline-block px-1.5 py-0.5 rounded bg-red-400/20 text-red-300 text-[8px] tracking-widest">공휴</span>}
+              </div>
+              <ul class="space-y-1.5">
+                {d.doctors.map((name: string) => (
+                  <li class="flex items-center gap-2 text-sm text-ivory/90">
+                    <span class="text-gold text-[10px]">●</span>
+                    <span>Dr. {name}</span>
+                  </li>
+                ))}
+                {d.extra && (
+                  <li class="flex items-start gap-2 text-sm text-ivory/75 pt-1.5 mt-1.5 border-t border-ivory/10">
+                    <span class="text-gold text-[10px] mt-1.5">●</span>
+                    <span>
+                      Dr. {d.extra.name}<br/>
+                      <span class="text-[10px] text-brown-300">{d.extra.hours}</span>
+                    </span>
+                  </li>
+                )}
+              </ul>
             </div>
-            <div class="text-[10px] tracking-[0.3em] text-brown-500 mb-2 font-bold">
-              {(d.is_representative ? '대표원장' : d.position).toUpperCase()}
-            </div>
-            <h3 class="display text-3xl font-black tracking-tight mb-3">{d.name}</h3>
-            <p class="text-brown-600 text-sm leading-relaxed line-clamp-2">
-              {d.message}
-            </p>
-            <div class="mt-5 text-sm text-brown-800 flex items-center gap-2 font-semibold group-hover:gap-4 transition-all">
-              프로필 보기 <i class="fas fa-arrow-right text-xs"></i>
-            </div>
-          </a>
-        ))}
+          ))}
+        </div>
+
+        <div class="mt-10 text-center text-[11px] text-brown-300/80 tracking-wide max-w-2xl mx-auto fade-in">
+          ※ 점심시간 13:00 ~ 14:00 · 진료 일정은 사정에 따라 변동될 수 있으니 예약 시 재확인 부탁드립니다.
+        </div>
       </div>
     </section>
 
@@ -111,7 +227,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           </h2>
           <p class="mt-6 text-brown-700 max-w-2xl mx-auto leading-relaxed">
             7인의 전문의가 한 자리에서 케이스를 검토하고 진단합니다.
-            한 환자의 모든 진료를 같은 기준으로 — 그것이 협진의 약속입니다.
+            한 환자의 모든 진료를 같은 기준으로, 그것이 협진의 약속입니다.
           </p>
         </div>
 
@@ -152,9 +268,122 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
       </div>
     </section>
 
+    {/* PPT PC3-S8 반영: 의료진 메뉴 제일 하단 — "어떤 원장님께 진료받고 싶으신가요?" 진료과목 매칭 섹션 */}
+    <section class="py-24 lg:py-32 bg-brown-950 text-ivory relative overflow-hidden">
+      <div class="blob" style="width:480px;height:480px;background:#c9a876;bottom:-160px;left:-120px;opacity:0.12;"></div>
+      <div class="blob" style="width:360px;height:360px;background:#c9a876;top:-80px;right:-100px;opacity:0.08;"></div>
+
+      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 relative">
+        <div class="text-center mb-16 fade-in">
+          <div class="text-xs tracking-[0.5em] text-gold mb-6 font-bold">FIND YOUR DOCTOR</div>
+          <h2 class="display text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-ivory mb-6 leading-tight">
+            어떤 원장님께<br/>
+            진료받고 <span class="italic text-gold">싶으신가요?</span>
+          </h2>
+          <p class="text-brown-200 max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
+            진료 분야별로 담당 전문의를 안내해드립니다.<br class="hidden md:inline"/>
+            아래에서 원하시는 진료를 선택하시면 담당 원장님 프로필로 이동합니다.
+          </p>
+        </div>
+
+        {/* 진료분야별 매칭 카드 */}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 fade-in-stagger">
+          {[
+            { icon: 'fa-bed', title: '수면 임플란트', sub: '4단계 무통마취 · 평생 보증', doctor: '김성주 대표원장', slug: 'kim-seongju', href: '/treatments/implant', accent: 'gold' },
+            { icon: 'fa-tooth', title: '충치 · 신경치료 · 크라운', sub: '보존이 가능하면 보존부터', doctor: '정재헌 원장', slug: 'jung-jaeheon', href: '/treatments/cavity' },
+            { icon: 'fa-leaf', title: '자연치아 살리기', sub: '재신경치료 · 재생 근관치료', doctor: '김상원 원장', slug: 'kim-sangwon', href: '/treatments/conservative' },
+            { icon: 'fa-gem', title: '비니크 라미네이트', sub: '0.3mm 박막 심미보철', doctor: '최혜정 원장', slug: 'choi-hyejung', href: '/treatments/lamineer', accent: 'gold' },
+            { icon: 'fa-grip', title: '인비절라인 · 교정', sub: '성장기 · 중장년 · 디지털 교정', doctor: '김진덕 원장', slug: 'kim-jinduk', href: '/treatments/ortho' },
+            { icon: 'fa-child', title: '소아치과 · 소아교정', sub: '웃음가스 진정치료 · 인비절라인 퍼스트', doctor: '한지은 원장', slug: 'han-jieun', href: '/treatments/pediatric' },
+            { icon: 'fa-shield-heart', title: '치주치료 · 평생관리', sub: '에어플로우 GBT · 잇몸치료', doctor: '이서영 원장', slug: 'lee-seoyoung', href: '/treatments/perio' },
+            { icon: 'fa-wind', title: '에어플로우 GBT', sub: '스케일링이 아닌 첨단 잇몸케어', doctor: '이서영 원장', slug: 'lee-seoyoung', href: '/treatments/airflow' },
+            { icon: 'fa-syringe', title: '4단계 무통마취', sub: '가글 → 도포 → 무통기 → 본마취', doctor: '김성주 대표원장', slug: 'kim-seongju', href: '/treatments/anesthesia' },
+          ].map((item: any) => (
+            <a href={item.href}
+               class={`group relative block p-6 rounded-2xl border transition-all duration-500 hover:-translate-y-1 ${
+                 item.accent === 'gold'
+                   ? 'border-gold/40 bg-gold/8 hover:border-gold hover:bg-gold/12'
+                   : 'border-ivory/15 bg-ivory/5 hover:border-gold/50 hover:bg-ivory/8'
+               }`}
+               style={item.accent === 'gold' ? 'background: linear-gradient(135deg, rgba(201,168,118,0.15), rgba(201,168,118,0.05));' : ''}>
+              <div class="flex items-start gap-4">
+                <div class={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                  item.accent === 'gold' ? 'bg-gold/25 text-gold' : 'bg-ivory/10 text-gold'
+                }`}>
+                  <i class={`fas ${item.icon} text-lg`}></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="display text-lg font-black tracking-tight text-ivory mb-1.5 group-hover:text-gold transition-colors">
+                    {item.title}
+                  </h3>
+                  <p class="text-xs text-brown-300 mb-3 leading-relaxed">{item.sub}</p>
+                  <div class="flex items-center justify-between pt-3 border-t border-ivory/10">
+                    <span class="text-sm font-bold text-gold">{item.doctor}</span>
+                    <i class="fas fa-arrow-right text-xs text-gold group-hover:translate-x-1 transition-transform"></i>
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        {/* 추가 CTA */}
+        <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center max-w-xl mx-auto fade-in">
+          <button
+            type="button"
+            onclick="window.dispatchEvent(new Event('open-consultation-modal'))"
+            class="group flex-1 flex items-center justify-center gap-3 px-7 py-4 rounded-full bg-gold text-brown-950 font-bold tracking-wide hover:bg-gold-light hover:-translate-y-0.5 transition-all shadow-lg shadow-gold/20"
+          >
+            <i class="fas fa-calendar-check"></i>
+            <span>상담예약하기</span>
+          </button>
+          <a
+            href="tel:053-357-0365"
+            class="group flex-1 flex items-center justify-center gap-3 px-7 py-4 rounded-full border-2 border-gold/60 text-gold font-bold tracking-wide hover:bg-gold/10 hover:border-gold transition-all"
+          >
+            <i class="fas fa-phone"></i>
+            <span>053-357-0365</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <Footer />
   </>
 )
+
+// ───────────────────────────────────────────────
+// 의료진 텍스트 정제 헬퍼 (PPT 1차 수정건 일괄 반영)
+// - "제목 — 부제" 형태에서 "ㅡ"(긴 대시·em-dash) 제거 → 한 줄 정리
+// - 인용구 끝에 닫는 따옴표 보정
+// - signature 끝의 "." 보정
+// ───────────────────────────────────────────────
+const stripEmDash = (text: string): string => {
+  if (!text) return text
+  // " — " / " ㅡ " / " – " (em/en/긴대시) → " · " (가운뎃점)으로 치환
+  // 일반 hyphen "-"은 단어 구분에 쓰이므로 보존
+  // 멱등성 보장: 이미 " · "로 변환된 경우 그대로 유지
+  // 원장님 요청 #3: em/en/긴대시(— ㅡ –) 모두 완전 제거 (공백으로 치환)
+  // 일반 hyphen "-"은 단어 구분(예: SCRP-1)에 쓰이므로 보존
+  return text
+    .replace(/\s*[—ㅡ–]\s*/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+}
+
+// 인용문 정제 헬퍼
+// - JSX 측에서 따옴표 장식을 직접 감싸므로(예: "{intro}"), 본문 안의 따옴표는 모두 제거해야
+//   화면에 따옴표가 두 번 찍히지 않음.
+// - 본문 양쪽 끝 따옴표("/"/"/" 등)와 본문 내부 따옴표를 일괄 제거해 깔끔한 텍스트만 반환.
+const ensureClosingQuote = (text: string): string => {
+  if (!text) return text
+  let t = text.trim()
+  // 본문에 포함된 모든 큰따옴표 제거 (스마트 따옴표 포함)
+  t = t.replace(/["“”„‟"]/g, '')
+  // 정리 후 양 끝 공백/마침표 중복 정리
+  t = t.replace(/\s+/g, ' ').trim()
+  return t
+}
 
 export const DoctorDetailPage = ({
   doctor, treatments, cases
@@ -167,6 +396,44 @@ export const DoctorDetailPage = ({
   type InterviewData = { intro?: string, sections?: InterviewSection[], qa?: InterviewQA[], signature?: string }
   let interview: InterviewData | null = null
   try { interview = doctor.interview ? JSON.parse(doctor.interview) as InterviewData : null } catch { interview = null }
+
+  // 인터뷰 데이터에 ㅡ(em-dash) 일괄 제거 — PPT 1차 수정건 S14~S42 요청 반영
+  // - 제목/부제: ㅡ 삭제 + 한 줄 정리
+  // - 본문: ㅡ 삭제 (단, 줄바꿈 \n은 보존)
+  // - 인용문(intro/signature): 닫는 따옴표 보정 + ㅡ 제거
+  const stripEmDashKeepNewlines = (text: string): string => {
+    if (!text) return text
+    return text
+      .split('\n')
+      .map(line => stripEmDash(line))
+      .join('\n')
+  }
+  // 원장님 요청 #4: 인터뷰 섹션 제목의 가운뎃점(·) / 중간점류 → 줄바꿈으로 교체
+  const splitMiddleDot = (text: string): string => {
+    if (!text) return text
+    return text
+      .replace(/\s*[·‧․∙•・]\s*/g, '\n')
+      .replace(/\n+/g, '\n')
+      .trim()
+  }
+  if (interview) {
+    if (interview.intro) interview.intro = ensureClosingQuote(stripEmDash(interview.intro))
+    if (interview.signature) interview.signature = ensureClosingQuote(stripEmDash(interview.signature))
+    if (interview.sections) {
+      interview.sections = interview.sections.map(s => ({
+        title: splitMiddleDot(stripEmDash(s.title)),
+        content: stripEmDashKeepNewlines(s.content),
+      }))
+    }
+    if (interview.qa) {
+      interview.qa = interview.qa.map(qa => ({
+        q: stripEmDash(qa.q),
+        a: stripEmDashKeepNewlines(qa.a),
+      }))
+    }
+  }
+
+  const cleanedMessage = ensureClosingQuote(stripEmDash(doctor.message || ''))
   const videoUrl = getDoctorVideo(doctor.slug)
 
   return (
@@ -195,9 +462,26 @@ export const DoctorDetailPage = ({
               <h1 class="t-display mb-3 leading-none">
                 {doctor.name} <span class="t-gold">{doctor.position}</span>
               </h1>
+              {/* PPT PC2 슬라이드 1 — 경북대학교 외래교수 등 핵심 학력 hero에 배지로 강조 */}
+              {(() => {
+                const allCreds = [...education, ...career]
+                const credentialBadges = allCreds.filter(c =>
+                  /외래교수|임상교수|전문의|박사|석사|인정의|펠로우/.test(c)
+                ).slice(0, 4)
+                return credentialBadges.length > 0 ? (
+                  <div class="flex flex-wrap gap-2 mb-4">
+                    {credentialBadges.map(c => (
+                      <span class="inline-flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-full bg-brown-950/5 border border-brown-300 text-brown-700 font-semibold tracking-tight">
+                        <i class="fas fa-certificate text-gold text-[10px]"></i>
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                ) : null
+              })()}
               <div class="gold-divider my-6"></div>
-              <div class="pullquote mb-8">
-                {doctor.message}
+              <div class="pullquote mb-8" style="white-space: pre-line;">
+                {cleanedMessage}
               </div>
               <div class="flex flex-wrap gap-2 mb-8">
                 {specialties.map(s => {
@@ -206,43 +490,97 @@ export const DoctorDetailPage = ({
                   return <a href={`/treatments/${t.slug}`} class="tag tag-gold">{t.name}</a>
                 })}
               </div>
+
+              {/* PPT PC3 슬라이드 10·12 — 의사 프로필 hero에 상담예약·전화 CTA 버튼 */}
+              <div class="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onclick="document.getElementById('openConsultModal')?.click()"
+                  class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm shadow-md transition hover:shadow-lg"
+                  style="background:linear-gradient(135deg, var(--gold), var(--brown-500));color:var(--brown-950);"
+                  aria-label={`${doctor.name} 원장님께 상담 예약하기`}
+                >
+                  <i class="fas fa-calendar-check"></i>
+                  <span>{doctor.name} 원장님께 상담예약</span>
+                </button>
+                <a
+                  href="tel:053-357-0365"
+                  class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm shadow-md transition hover:shadow-lg"
+                  style="background:var(--brown-950);color:var(--gold);"
+                  aria-label="전화 상담"
+                >
+                  <i class="fas fa-phone"></i>
+                  <span style="white-space:nowrap;">053-357-0365</span>
+                </a>
+                <a
+                  href="https://naver.me/GhSIroMf"
+                  target="_blank"
+                  rel="noopener"
+                  class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold text-sm shadow-md transition hover:shadow-lg"
+                  style="background:#03C75A;color:#fff;"
+                  aria-label="네이버 예약"
+                >
+                  <span class="text-[11px] font-black" style="background:#fff;color:#03C75A;border-radius:4px;padding:1px 5px;">N</span>
+                  <span>네이버 예약</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* PHILOSOPHY */}
+      {/* PHILOSOPHY — 원장님 요청 #1: 여유있는 줄바꿈 + #3: 대시 제거 */}
       <section class="py-24 max-w-5xl mx-auto px-6">
         <div class="fade-in">
           <div class="section-label mb-6">PHILOSOPHY</div>
           <h2 class="display text-4xl font-black tracking-tight mb-8">진료 철학</h2>
-          <p class="text-brown-700 text-lg leading-relaxed">{doctor.philosophy}</p>
+          <p class="text-brown-700 text-lg md:text-xl leading-[2.1] md:leading-[2.2] whitespace-pre-line tracking-[-0.005em]">
+            {(doctor.philosophy || '')
+              .replace(/\s*[—ㅡ–]\s*/g, ' ')
+              .replace(/([。.!?])\s+/g, '$1\n\n')
+              .replace(/[ \t]{2,}/g, ' ')
+              .trim()}
+          </p>
         </div>
       </section>
 
-      {/* EDU & CAREER */}
+      {/* EDU & CAREER — PPT PC3 슬라이드 11: 읽기 쉬운 카드형 디자인 */}
       <section class="py-24 bg-cream">
-        <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-16">
-          <div class="fade-in">
-            <div class="section-label mb-6">EDUCATION</div>
-            <h2 class="display text-3xl font-black tracking-tight mb-8">학력</h2>
+        <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10">
+          <div class="fade-in bg-ivory rounded-3xl p-8 lg:p-10 shadow-card border border-brown-100">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-full bg-gold/15 text-gold flex items-center justify-center">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div>
+                <div class="section-label mb-1">EDUCATION</div>
+                <h2 class="display text-2xl font-black tracking-tight text-brown-900">학력</h2>
+              </div>
+            </div>
             <ul class="space-y-3">
-              {education.map(e => (
-                <li class="flex gap-3 text-brown-700">
-                  <span class="text-gold">·</span>
-                  <span>{e}</span>
+              {education.map((e) => (
+                <li class="flex gap-3 items-start py-2 border-b border-brown-100 last:border-b-0">
+                  <i class="fas fa-circle text-gold text-[6px] mt-2.5 flex-shrink-0"></i>
+                  <span class="text-brown-800 leading-relaxed text-[15px]">{e}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div class="fade-in">
-            <div class="section-label mb-6">CAREER</div>
-            <h2 class="display text-3xl font-black tracking-tight mb-8">경력</h2>
+          <div class="fade-in bg-ivory rounded-3xl p-8 lg:p-10 shadow-card border border-brown-100">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-full bg-brown-950/10 text-brown-800 flex items-center justify-center">
+                <i class="fas fa-briefcase-medical"></i>
+              </div>
+              <div>
+                <div class="section-label mb-1">CAREER</div>
+                <h2 class="display text-2xl font-black tracking-tight text-brown-900">경력</h2>
+              </div>
+            </div>
             <ul class="space-y-3">
-              {career.map(c => (
-                <li class="flex gap-3 text-brown-700">
-                  <span class="text-gold">·</span>
-                  <span>{c}</span>
+              {career.map((c) => (
+                <li class="flex gap-3 items-start py-2 border-b border-brown-100 last:border-b-0">
+                  <i class="fas fa-circle text-brown-700 text-[6px] mt-2.5 flex-shrink-0"></i>
+                  <span class="text-brown-800 leading-relaxed text-[15px]">{c}</span>
                 </li>
               ))}
             </ul>
@@ -258,12 +596,17 @@ export const DoctorDetailPage = ({
           <div class="max-w-4xl mx-auto px-6 lg:px-12 relative">
             <div class="text-center mb-20 fade-in">
               <div class="text-xs tracking-[0.5em] text-gold mb-6">INTERVIEW</div>
-              <h2 class="display text-4xl md:text-5xl font-black tracking-tight text-ivory mb-8">
-                {doctor.name} <em class="italic text-gold">{doctor.position}</em>의 이야기
+              {/* PPT PC1 슬라이드 29 — 자격(position) 줄과 이름·이야기 줄을 분리해 잘림 방지 */}
+              <h2 class="display text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-ivory mb-8 leading-[1.2]">
+                <span class="block text-base md:text-lg lg:text-xl italic text-gold font-medium mb-3 tracking-tight">
+                  {doctor.position}
+                </span>
+                <span class="block">{doctor.name} 원장의 이야기</span>
               </h2>
               {interview.intro && (
+                /* 원장님 요청 #2: 앞 큰따옴표 제거 — 닫는 따옴표만 남김 */
                 <p class="text-brown-200 text-lg leading-relaxed max-w-3xl mx-auto italic">
-                  "{interview.intro}"
+                  {interview.intro}”
                 </p>
               )}
               <div class="gold-divider mx-auto mt-10" style="background:#c9a876;"></div>
@@ -308,7 +651,8 @@ export const DoctorDetailPage = ({
                     <div class="text-[10px] tracking-[0.4em] text-gold mb-3 font-bold">
                       {String(i + 1).padStart(2, '0')}
                     </div>
-                    <h3 class="display text-xl md:text-2xl font-black tracking-tight text-ivory leading-tight">
+                    {/* 원장님 요청 #4: 제목 안의 중간점(·)을 줄바꿈으로 표시 */}
+                    <h3 class="display text-xl md:text-2xl font-black tracking-tight text-ivory leading-[1.35] whitespace-pre-line">
                       {s.title}
                     </h3>
                   </div>
@@ -326,7 +670,7 @@ export const DoctorDetailPage = ({
                 <div class="text-center mb-12 fade-in">
                   <div class="text-xs tracking-[0.5em] text-gold mb-6">Q &amp; A</div>
                   <h3 class="display text-3xl md:text-4xl font-black tracking-tight text-ivory">
-                    원장에게 <em class="italic text-gold">묻습니다</em>
+                    {doctor.name}<em class="italic text-gold"> 원장에게 묻습니다</em>
                   </h3>
                 </div>
                 <div class="space-y-8">
@@ -349,11 +693,12 @@ export const DoctorDetailPage = ({
             {interview.signature && (
               <div class="mt-24 text-center fade-in">
                 <div class="gold-divider mx-auto mb-8" style="background:#c9a876;"></div>
+                {/* 원장님 요청 #2 (일관성): signature도 앞 큰따옴표 제거 + 요청 #3: 장식 대시 제거 */}
                 <p class="display text-2xl md:text-3xl italic text-gold leading-relaxed max-w-3xl mx-auto">
-                  "{interview.signature}"
+                  {interview.signature}”
                 </p>
                 <div class="text-xs tracking-[0.4em] text-brown-300 mt-8">
-                  — {doctor.name} {doctor.position}
+                  {doctor.name} {doctor.is_representative ? '대표원장' : doctor.position}
                 </div>
               </div>
             )}
@@ -374,10 +719,17 @@ export const DoctorDetailPage = ({
             <a href={`/before-after?doctor=${doctor.slug}`} class="link-underline display italic">전체 보기 →</a>
           </div>
           <div class="grid md:grid-cols-3 gap-6">
-            {cases.slice(0, 3).map((ba) => (
-              <a href={`/before-after/${ba.id}`} class="fade-in lux-card p-0 overflow-hidden">
-                <div class="aspect-[4/3] placeholder-img">
-                  <i class="fas fa-images"></i>
+            {cases.slice(0, 3).map((ba) => {
+              const beforeImg = ba.intra_before_url || ba.pano_before_url
+              return (
+              <a href={`/before-after/${ba.id}`} class="fade-in lux-card p-0 overflow-hidden group">
+                <div class="aspect-[4/3] relative overflow-hidden bg-cream">
+                  {beforeImg ? (
+                    <img src={beforeImg} alt={`${ba.title} - Before`} loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                  ) : (
+                    <div class="w-full h-full placeholder-img flex items-center justify-center"><i class="fas fa-images text-3xl"></i></div>
+                  )}
+                  <span class="absolute top-3 left-3 bg-brown-950/70 text-ivory text-[10px] tracking-[0.2em] px-2 py-1 rounded">BEFORE</span>
                 </div>
                 <div class="p-6">
                   <div class="flex gap-2 mb-3">
@@ -387,10 +739,87 @@ export const DoctorDetailPage = ({
                   <div class="display text-lg font-medium">{ba.title}</div>
                 </div>
               </a>
-            ))}
+              )
+            })}
           </div>
         </section>
       )}
+
+      {/* PPT PC3-S12 반영: 원장님 프로필 — 진료케이스 밑에 3개 CTA 블록
+          1) 다른 의료진 보기  2) 상담받으세요 (모달)  3) 진료받고 싶으시다면 (전화) */}
+      <section class="py-24 lg:py-28 bg-brown-950 text-ivory relative overflow-hidden">
+        <div class="blob" style="width:400px;height:400px;background:#c9a876;top:-100px;right:-80px;opacity:0.10;"></div>
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-12 relative">
+          <div class="text-center mb-12 fade-in">
+            <div class="text-xs tracking-[0.5em] text-gold mb-6 font-bold">NEXT STEP</div>
+            <h2 class="display text-3xl md:text-5xl font-black tracking-tight text-ivory leading-tight">
+              <em class="italic text-gold">{doctor.name} 원장님</em>께<br/>
+              상담받고 싶으시다면
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5 fade-in-stagger">
+            {/* CTA 1: 다른 의료진 보기 */}
+            <a href="/doctors" class="group block p-7 rounded-2xl border border-ivory/15 bg-ivory/5 hover:border-gold/50 hover:bg-ivory/8 transition-all duration-500 hover:-translate-y-1">
+              <div class="w-14 h-14 rounded-2xl bg-ivory/10 text-gold flex items-center justify-center mb-5 group-hover:bg-gold/20 transition-colors">
+                <i class="fas fa-users text-xl"></i>
+              </div>
+              <h3 class="display text-xl font-black tracking-tight text-ivory mb-2">
+                다른 의료진 보기
+              </h3>
+              <p class="text-sm text-brown-300 mb-5 leading-relaxed">
+                7인의 전문 의료진 프로필을 한눈에 확인하세요.
+              </p>
+              <div class="flex items-center gap-2 text-sm font-bold text-gold group-hover:gap-3 transition-all">
+                <span>전체 프로필 보기</span>
+                <i class="fas fa-arrow-right text-xs"></i>
+              </div>
+            </a>
+
+            {/* CTA 2: 상담받으세요 (모달) */}
+            <button
+              type="button"
+              onclick="window.dispatchEvent(new Event('open-consultation-modal'))"
+              class="group block text-left p-7 rounded-2xl border border-gold/40 transition-all duration-500 hover:-translate-y-1 hover:border-gold"
+              style="background: linear-gradient(135deg, rgba(201,168,118,0.15), rgba(201,168,118,0.05));"
+            >
+              <div class="w-14 h-14 rounded-2xl bg-gold/25 text-gold flex items-center justify-center mb-5 group-hover:bg-gold/40 transition-colors">
+                <i class="fas fa-comments text-xl"></i>
+              </div>
+              <h3 class="display text-xl font-black tracking-tight text-ivory mb-2">
+                <span class="text-gold">{doctor.name} 원장님</span>께<br/>
+                상담받으세요
+              </h3>
+              <p class="text-sm text-brown-200 mb-5 leading-relaxed">
+                온라인 상담예약으로 편하게 시작하세요.
+              </p>
+              <div class="flex items-center gap-2 text-sm font-bold text-gold group-hover:gap-3 transition-all">
+                <i class="fas fa-calendar-check"></i>
+                <span>상담예약하기</span>
+                <i class="fas fa-arrow-right text-xs"></i>
+              </div>
+            </button>
+
+            {/* CTA 3: 진료받고 싶으시다면 (전화) */}
+            <a href="tel:053-357-0365" class="group block p-7 rounded-2xl border border-ivory/15 bg-ivory/5 hover:border-gold/50 hover:bg-ivory/8 transition-all duration-500 hover:-translate-y-1">
+              <div class="w-14 h-14 rounded-2xl bg-ivory/10 text-gold flex items-center justify-center mb-5 group-hover:bg-gold/20 transition-colors">
+                <i class="fas fa-phone text-xl"></i>
+              </div>
+              <h3 class="display text-xl font-black tracking-tight text-ivory mb-2">
+                <span class="text-gold">{doctor.name} 원장님</span>께<br/>
+                진료받고 싶으시다면
+              </h3>
+              <p class="text-sm text-brown-300 mb-5 leading-relaxed">
+                바로 전화로 예약하실 수 있습니다.
+              </p>
+              <div class="flex items-center gap-2 text-base font-black text-gold group-hover:gap-3 transition-all">
+                <i class="fas fa-phone"></i>
+                <span>053-357-0365</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </>

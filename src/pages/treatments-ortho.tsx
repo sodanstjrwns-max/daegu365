@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -318,12 +317,6 @@ export const OrthoTreatmentPage = ({
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("ortho")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("ortho")
@@ -338,24 +331,34 @@ export const OrthoTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-[1100px] mx-auto px-6 lg:px-12">
-          <div class="grid lg:grid-cols-12 gap-12 mb-16">
-            <div class="lg:col-span-4 fade-in">
+          <div class="grid lg:grid-cols-12 gap-12 mb-16 items-center">
+            <div class="lg:col-span-5 fade-in ortho-whatis-head">
               <div class="section-label mb-6">WHAT IS · 02</div>
-              <h2 class="t-display">
-                <span class="t-outline">인비절</span><br/>
-                <span class="t-gold">라인</span><br/>이란?
+              {/* PPT 슬라이드 15: "인비절라인이란?" 한 줄 표기 + 폰트 통일 (라인과 동일) */}
+              <h2 class="ortho-whatis-title font-black">
+                <span class="ortho-whatis-keyword">인비절</span><span class="ortho-whatis-rest">라인</span><span class="ortho-whatis-mark">이란?</span>
               </h2>
+              <p class="mt-6 text-sm tracking-[0.2em] text-brown-500 font-semibold uppercase">Invisalign</p>
             </div>
-            <div class="lg:col-span-8 fade-in space-y-6 text-brown-700 text-lg leading-relaxed">
+            <div class="lg:col-span-7 fade-in space-y-6 text-brown-700 text-lg leading-relaxed">
               <p>
-                <strong class="text-brown-900">인비절라인(Invisalign)</strong>은 미국 Align Technology가 개발한 투명 얼라이너 교정 시스템입니다.
-                전 세계 <strong class="text-brown-900">9백만 명 이상</strong>이 사용한 글로벌 표준이며,
-                투명한 플라스틱 얼라이너를 단계별로 교체하며 치아를 이동시키는 방식입니다.
+                <strong class="text-brown-900">인비절라인(Invisalign)</strong>은<br class="hidden md:inline"/>
+                미국 Align Technology가 개발한<br class="hidden md:inline"/>
+                투명 얼라이너 교정 시스템입니다.
               </p>
               <p>
-                대구365치과는 <strong class="text-brown-900">인비절라인 공인 교정의</strong>가 상주하며,
-                3D iTero 스캐너 + ClinCheck 시뮬레이션으로 <strong class="text-brown-900">치료 결과를 미리 보고 시작</strong>합니다.
-                메탈 브라켓 교정과 동일한 결과를, 훨씬 편안하고 심미적으로 받으실 수 있습니다.
+                전 세계 <strong class="text-brown-900">9백만 명 이상</strong>이 사용한 글로벌 표준이며,<br class="hidden md:inline"/>
+                투명한 플라스틱 얼라이너를 단계별로 교체하며<br class="hidden md:inline"/>
+                치아를 이동시키는 방식입니다.
+              </p>
+              <p>
+                대구365치과는 <strong class="text-brown-900">인비절라인 공인 교정의</strong>가 상주하며,<br class="hidden md:inline"/>
+                3D iTero 스캐너 + ClinCheck 시뮬레이션으로<br class="hidden md:inline"/>
+                <strong class="text-brown-900">치료 결과를 미리 보고 시작</strong>합니다.
+              </p>
+              <p>
+                메탈 브라켓 교정과 동일한 결과를,<br class="hidden md:inline"/>
+                훨씬 편안하고 심미적으로 받으실 수 있습니다.
               </p>
             </div>
           </div>
@@ -427,7 +430,7 @@ export const OrthoTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">PACKAGES · 04</div>
             <h2 class="t-display mb-6">
-              <span class="t-outline">6종</span> <span class="t-gold">교정 패키지</span>
+              <span class="text-brown-900">6종</span> <span class="t-gold">교정 패키지</span>
             </h2>
             <p class="t-lead max-w-3xl">
               부정교합 정도와 라이프스타일에 맞는 패키지를 선택할 수 있어요.
@@ -465,7 +468,7 @@ export const OrthoTreatmentPage = ({
                 <h3 class="display text-2xl font-black tracking-tight">교정 추가 항목</h3>
               </div>
               <a href="/fees" class="text-xs tracking-wider text-gold inline-flex items-center gap-2 font-bold">
-                전체 수가표 <i class="fas fa-arrow-right text-[10px]"></i>
+                전체 비용 안내 <i class="fas fa-arrow-right text-[10px]"></i>
               </a>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -516,7 +519,7 @@ export const OrthoTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">PROCESS · 06</div>
             <h2 class="t-display mb-6">
-              <span class="t-outline">7단계</span><br/>
+              <span class="text-brown-900">7단계</span><br/>
               <span class="t-gold">교정 여정</span>
             </h2>
             <p class="t-lead max-w-3xl">진단부터 평생 유지까지, 인비절라인 전 과정을 안내합니다.</p>
@@ -555,7 +558,7 @@ export const OrthoTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">CARE GUIDE · 07</div>
             <h2 class="t-display">
-              <span class="t-outline">교정 중·후</span><br/>
+              <span class="text-brown-900">교정 중·후</span><br/>
               <span class="t-gold">관리 가이드</span>
             </h2>
           </div>
@@ -744,6 +747,16 @@ export const OrthoTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 — 인비절라인 치아교정 담당 김진덕 원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="kim-jinduk"
+        name="김진덕"
+        position="교정과 전문의"
+        quote={'교정은 시간을 사는 일입니다.\n환자분의 얼굴선과 라이프스타일에 맞게 설계해야, 1년 뒤 사진 앞에서 웃을 수 있습니다.'}
+        credentials={['교정과 전문의', '인비절라인 공인 닥터', '디지털 ClinCheck 시뮬레이션']}
+        treatmentLabel="인비절라인 치아교정"
+      />
 
       <Footer />
     </>

@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -36,22 +35,22 @@ const SAFETY_SYSTEM = [
 const INDICATIONS = [
   {
     title: '치과공포증',
-    desc: '드릴 소리·바늘에 대한 극심한 두려움으로 치과 방문 자체가 어려운 분.',
+    desc: '드릴 소리·바늘에 대한 극심한 두려움으로\n치과 방문 자체가 어려운 분.',
     icon: 'fa-face-grimace',
   },
   {
     title: '구역반사가 심한 분',
-    desc: '인상 채득·진료 도구만 닿아도 구역반사가 심해 진료 진행이 어려운 분.',
+    desc: '인상 채득·진료 도구만 닿아도\n구역반사가 심해 진료 진행이 어려운 분.',
     icon: 'fa-face-flushed',
   },
   {
     title: '장시간 수술',
-    desc: '다수 임플란트·전악 보철처럼 2시간 이상 누워있어야 하는 시술이 부담스러운 분.',
+    desc: '다수 임플란트·전악 보철처럼\n2시간 이상 누워있어야 하는 시술이 부담스러운 분.',
     icon: 'fa-clock',
   },
   {
     title: '심리적 긴장이 큰 분',
-    desc: '시술 자체보다 대기·치과의 분위기에서 오는 긴장으로 혈압·심박이 급상승하는 분.',
+    desc: '시술 자체보다 대기·치과의 분위기에서 오는 긴장으로\n혈압·심박이 급상승하는 분.',
     icon: 'fa-heart-circle-bolt',
   },
   {
@@ -99,7 +98,7 @@ const PROCESS = [
     step: '05',
     title: '회복실 케어',
     duration: '약 30~60분',
-    desc: '별도 회복실로 이동, 의식이 또렷해질 때까지 1:1 케어. 어지러움·메스꺼움 없이 안전하게 깨어나도록 돕습니다.',
+    desc: '별도 회복실로 이동,\n의식이 또렷해질 때까지 1:1 케어.\n어지러움·메스꺼움 없이 안전하게 깨어나도록 돕습니다.',
     detail: ['회복실 이동', '의식 수준 회복 평가', '귀가 가능 판정', '주의사항 안내'],
   },
   {
@@ -114,23 +113,27 @@ const PROCESS = [
 const WHY_US = [
   {
     icon: 'fa-shield-check',
-    title: '치과공포증 의사가 만든 시스템',
-    desc: '대표원장 본인이 치과 진료실 문 앞에서 돌아섰던 경험으로 설계한, 환자의 두려움을 가장 잘 이해하는 진정 시스템.',
+    emoji: '🛡️',
+    title: '치과공포증 의사가\n만든 시스템',
+    desc: '대표원장 본인이 치과 진료실 문 앞에서 돌아섰던 경험으로 설계한,\n환자의 두려움을 가장 잘 이해하는 진정 시스템.',
   },
   {
     icon: 'fa-microscope',
-    title: '진정 + 4단계 무통마취 병행',
-    desc: '의식하 진정만으로는 부족합니다. 가글마취→도포마취→무통마취기→본마취까지 단계별 무통 프로토콜을 함께 적용합니다.',
+    emoji: '✨',
+    title: '진정 · 4단계\n무통마취 병행',
+    desc: '의식하 진정만으로는 부족합니다.\n가글마취 → 도포마취 → 무통마취기 → 본마취까지\n단계별 무통 프로토콜을 함께 적용합니다.',
   },
   {
     icon: 'fa-heart-pulse',
-    title: '4지표 실시간 모니터링',
-    desc: '심전도·혈압·산소포화도·호흡수를 시술 전 과정 동안 동시에 추적. 모든 변화는 진료팀과 별도의 모니터팀이 함께 봅니다.',
+    emoji: '💓',
+    title: '4지표 실시간\n모니터링',
+    desc: '심전도·혈압·산소포화도·호흡수를\n시술 전 과정 동안 동시에 추적.\n모든 변화는 진료팀과 별도의 모니터팀이 함께 봅니다.',
   },
   {
     icon: 'fa-clock-rotate-left',
-    title: '한 번 누우면 끝나는 통합 진료',
-    desc: '여러 진료를 단발 방문에 끝내고 싶은 분께 최적. 임플란트·신경치료·발치까지 한 번의 진정으로 완료 가능합니다.',
+    emoji: '⏱️',
+    title: '한 번 누우면\n끝나는 통합 진료',
+    desc: '여러 진료를 단발 방문에 끝내고 싶은 분께 최적.\n임플란트·신경치료·발치까지\n한 번의 진정으로 완료 가능합니다.',
   },
 ]
 
@@ -233,19 +236,14 @@ export const SleepTherapyTreatmentPage = ({
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 pt-10 border-t border-ivory/20">
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">4지표</div><div class="text-sm opacity-70">심전도·혈압·산소·호흡 동시 모니터링</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">1:1</div><div class="text-sm opacity-70">회복실 1:1 케어</div></div>
-            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">+ 4단계</div><div class="text-sm opacity-70">무통마취 병행</div></div>
+            {/* PPT PC2 슬라이드 16 — "+ 4단계" 표시 제거, 한 줄 표기 */}
+            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">4단계</div><div class="text-sm opacity-70">무통마취 병행</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">365日</div><div class="text-sm opacity-70">연중무휴 상담</div></div>
           </div>
         </div>
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("sleep-therapy")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("sleep-therapy")
@@ -263,20 +261,33 @@ export const SleepTherapyTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-16">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 02</div>
-              <h2 class="t-display">
-                의식하 진정,<br/>
-                <span class="t-gold italic">전신마취가 아닙니다.</span>
+              {/* PPT 슬라이드 16 반영: 한 줄 표기 + 폰트 통일 */}
+              <h2 class="sleep-whatis-title font-black">
+                <span class="sleep-whatis-keyword">의식하 진정,</span>
+                <span class="sleep-whatis-mark"> 전신마취가 아닙니다.</span>
               </h2>
             </div>
             <div class="lg:col-span-7 space-y-6 t-body text-lg">
               <p>
-                <b>의식하 진정(IV Sedation)</b>은 정맥으로 소량의 진정제를 천천히 주입해, 환자분이 꿈결 같은 편안함 속에서 진료를 받으시도록 돕는 마취 방식입니다.
+                <b>의식하 진정(IV Sedation)</b>은<br class="hidden md:inline"/>
+                정맥으로 소량의 진정제를 천천히 주입해,<br class="hidden md:inline"/>
+                환자분이 꿈결 같은 편안함 속에서<br class="hidden md:inline"/>
+                진료를 받으시도록 돕는 마취 방식입니다.
               </p>
               <p>
-                <b>전신마취와 다릅니다.</b> 호흡과 자발 반응은 유지된 채, 의식만 흐려지는 상태입니다. 시술 후에는 대부분 진료 과정을 기억하지 못하지만, 회복은 전신마취보다 훨씬 빠르고 가볍습니다.
+                <b>전신마취와 다릅니다.</b><br class="hidden md:inline"/>
+                호흡과 자발 반응은 유지된 채,<br class="hidden md:inline"/>
+                의식만 흐려지는 상태입니다.
               </p>
               <p>
-                대구365치과의 수면치료는 단순한 진정에서 그치지 않습니다. <b>4단계 무통마취 프로토콜과 함께 적용</b>하여, 진정으로 마음을 가라앉히고 무통마취로 통증을 차단하는 이중 안심 구조를 갖췄습니다.
+                시술 후에는 대부분 진료 과정을 기억하지 못하지만,<br class="hidden md:inline"/>
+                회복은 전신마취보다 훨씬 빠르고 가볍습니다.
+              </p>
+              <p>
+                대구365치과의 수면치료는 단순한 진정에서 그치지 않습니다.<br class="hidden md:inline"/>
+                <b>4단계 무통마취 프로토콜과 함께 적용</b>하여,<br class="hidden md:inline"/>
+                진정으로 마음을 가라앉히고 무통마취로 통증을 차단하는<br class="hidden md:inline"/>
+                이중 안심 구조를 갖췄습니다.
               </p>
               <div class="grid grid-cols-2 gap-4 pt-4">
                 <div class="border-l-2 border-gold pl-4">
@@ -306,11 +317,11 @@ export const SleepTherapyTreatmentPage = ({
           <div class="grid md:grid-cols-2 gap-6">
             {WHY_US.map((f: any, i: number) => (
               <div class="bg-ivory p-8 lg:p-10 rounded-xl">
-                <div class="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center mb-4">
-                  <i class={`fas ${f.icon} text-gold text-xl`}></i>
+                <div class="w-14 h-14 rounded-full bg-gold/10 flex items-center justify-center mb-4 text-2xl" aria-hidden="true">
+                  <span>{f.emoji}</span>
                 </div>
-                <h3 class="t-display text-xl mb-3">{f.title}</h3>
-                <p class="t-body text-brown-700">{f.desc}</p>
+                <h3 class="t-display text-xl mb-3" style="white-space:pre-line;">{f.title}</h3>
+                <p class="t-body text-brown-700" style="white-space:pre-line;">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -364,7 +375,7 @@ export const SleepTherapyTreatmentPage = ({
               <div class="bg-ivory p-6 lg:p-8 rounded-xl">
                 <i class={`fas ${ind.icon} text-gold text-2xl mb-4`}></i>
                 <h3 class="t-display text-lg mb-2">{ind.title}</h3>
-                <p class="t-body text-sm text-brown-700">{ind.desc}</p>
+                <p class="t-body text-sm text-brown-700" style="white-space:pre-line;">{ind.desc}</p>
               </div>
             ))}
           </div>
@@ -599,6 +610,16 @@ export const SleepTherapyTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 16-18 — 수면치료 담당 김성주 대표원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="kim-seongju"
+        name="김성주"
+        position="대표원장 · 통합치의학과 전문의"
+        quote={'치과공포증을 가졌던 의사로서, 두려움 없는 진료를 직접 설계했습니다.\n수면치료는 단순한 마취가 아니라, 환자의 기억을 바꾸는 시스템입니다.'}
+        credentials={['서울대 치의학과', '통합치의학과 전문의', '의식하 진정 시스템 설계']}
+        treatmentLabel="수면치료"
+      />
 
       <Footer />
     </>

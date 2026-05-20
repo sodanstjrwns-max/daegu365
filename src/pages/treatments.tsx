@@ -3,7 +3,7 @@ import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/type
 
 export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) => {
   const core = treatments.filter(t => t.is_core)
-  const specialtySlugs = ['vinique', 'sleep-therapy', 'painless-anesthesia', 'airflow-gbt', 'pediatric-ortho']
+  const specialtySlugs = ['implant-general', 'vinique', 'sleep-therapy', 'painless-anesthesia', 'airflow-gbt', 'pediatric-ortho']
   const specialty = treatments.filter(t => !t.is_core && specialtySlugs.includes(t.slug))
   const others = treatments.filter(t => !t.is_core && !specialtySlugs.includes(t.slug))
 

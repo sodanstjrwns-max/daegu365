@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -36,11 +35,12 @@ const PROCESS = [
   { step: '06', name: '톤 측정·관리법', desc: 'After 톤 기록·사진. 음식·관리법 안내. 후속 셀프 키트 제공 가능.' },
 ]
 
+// PPT PC2 슬라이드 30 — 도형 안 이모지 추가
 const CARE = [
-  { icon: 'fa-mug-hot', title: '커피·차·와인', desc: '시술 후 48시간 절제. 이후도 빨대 사용 권장.' },
-  { icon: 'fa-ban-smoking', title: '흡연 금지', desc: '니코틴 착색은 미백 효과를 가장 빨리 무력화시킵니다.' },
-  { icon: 'fa-toothbrush', title: '미백 치약', desc: '주 2~3회 보조 사용. 매일 사용은 마모를 가속화.' },
-  { icon: 'fa-calendar-check', title: '6개월 리터치', desc: '톤 유지를 위한 단기 보충 세션. 가벼운 케어.' },
+  { emoji: '☕', icon: 'fa-mug-hot', title: '커피·차·와인', desc: '시술 후 48시간 절제. 이후도 빨대 사용 권장.' },
+  { emoji: '🚭', icon: 'fa-ban-smoking', title: '흡연 금지', desc: '니코틴 착색은 미백 효과를 가장 빨리 무력화시킵니다.' },
+  { emoji: '🪥', icon: 'fa-toothbrush', title: '미백 치약', desc: '주 2~3회 보조 사용. 매일 사용은 마모를 가속화.' },
+  { emoji: '📅', icon: 'fa-calendar-check', title: '6개월 리터치', desc: '톤 유지를 위한 단기 보충 세션. 가벼운 케어.' },
 ]
 
 const DEFAULT_FAQS: FAQ[] = [
@@ -90,12 +90,6 @@ export const WhiteningTreatmentPage = ({
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("whitening")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("whitening")
@@ -117,10 +111,14 @@ export const WhiteningTreatmentPage = ({
             </div>
             <div class="lg:col-span-8 space-y-6">
               <p class="t-lead text-brown-700">
-                치아를 깎거나 표면에 무언가를 붙이는 시술이 아닙니다. <strong class="t-gold">에나멜 안쪽의 색소를 분해</strong>해 자연치 본연의 밝기를 회복시키는 시술이에요.
+                <strong class="t-gold">미백은, 색소 분해입니다.</strong><br/>
+                치아를 깎거나 표면에 무언가를 붙이는 시술이 아닙니다.<br/>
+                <strong class="t-gold">에나멜 안쪽의 색소를 분해</strong>해 자연치 본연의 밝기를 회복시키는 시술이에요.
               </p>
               <p class="text-brown-700 leading-relaxed">
-                커피·홍차·와인·니코틴·노화로 누적된 색소가 분해되면서 톤이 단계적으로 밝아집니다. 시술 후에도 자연치이며, 라미네이트와 달리 보철물이 아닙니다.
+                커피·홍차·와인·니코틴·노화로 누적된 색소가 분해되면서<br/>
+                톤이 단계적으로 밝아집니다.<br/>
+                시술 후에도 자연치이며, 라미네이트와 달리 보철물이 아닙니다.
               </p>
             </div>
           </div>
@@ -204,10 +202,11 @@ export const WhiteningTreatmentPage = ({
             <h2 class="t-display">시술 후 <span class="t-gold italic">관리.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {CARE.map((c) => (
+            {CARE.map((c: any) => (
               <div class="p-7 rounded-xl bg-cream border border-brown-200">
-                <div class="w-12 h-12 rounded-2xl bg-brown-950 text-gold flex items-center justify-center mb-4 text-lg">
-                  <i class={`fas ${c.icon}`}></i>
+                {/* PPT PC2 슬라이드 30 — 도형 안 이모지 */}
+                <div class="w-12 h-12 rounded-2xl bg-brown-950 text-gold flex items-center justify-center mb-4 text-xl" aria-hidden="true">
+                  <span>{c.emoji}</span>
                 </div>
                 <h3 class="t-display text-lg mb-2">{c.title}</h3>
                 <p class="text-sm text-brown-700">{c.desc}</p>
@@ -297,6 +296,16 @@ export const WhiteningTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 30 — 전문가 미백 담당 최혜정 원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="choi-hyejung"
+        name="최혜정"
+        position="보존과 전문의"
+        quote={'미백은 빠르게 하는 것보다, 시리지 않게 안전하게 하는 것이 중요합니다.\n환자분의 치아 상태에 맞춰 농도와 시간을 조정합니다.'}
+        credentials={['보존과 전문의', '전문가 미백 프로토콜', '심미 보존 수복']}
+        treatmentLabel="전문가 미백"
+      />
 
       <Footer />
     </>

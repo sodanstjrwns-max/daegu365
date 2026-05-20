@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, ComparisonTable } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -94,19 +93,13 @@ export const QrayTreatmentPage = ({
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 pt-10 border-t" style="border-color:rgba(253,251,247,0.2);">
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">QLF</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">정량 형광 기술</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">방사선 0</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">청색광 진단</div></div>
-            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">5~10分</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">검진 통합 진행</div></div>
+            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1" style="white-space:nowrap;">5~10분</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">검진 통합 진행</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">기본 포함</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">정기 검진 시</div></div>
           </div>
         </div>
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("qray")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("qray")

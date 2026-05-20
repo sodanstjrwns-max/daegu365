@@ -1,5 +1,4 @@
-import { Navbar, Footer, TldrBox, ComparisonTable } from '../components/Layout'
-import { tldrFor } from '../lib/tldr-data'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -29,7 +28,7 @@ const GBT_STEPS = [
   {
     step: '04',
     name: '에어플로우 (Airflow)',
-    desc: '에리스리톨 분말과 미세한 물·공기를 혼합해 분사. 치아·잇몸 손상 없이 플라크와 착색을 동시에 제거합니다.',
+    desc: '에리스리톨 분말과 미세한 물·공기를 혼합해 분사.\n치아·잇몸 손상 없이\n플라크와 착색을 동시에 제거합니다.',
   },
   {
     step: '05',
@@ -84,12 +83,12 @@ const VS_GENERAL = [
 const INDICATIONS = [
   {
     title: '임플란트 환자',
-    desc: '임플란트 주위염 예방의 핵심. 일반 스케일러는 임플란트 표면을 긁어 박테리아 부착을 늘립니다. GBT는 표면을 보호합니다.',
+    desc: '임플란트 주위염 예방의 핵심.\n일반 스케일러는 임플란트 표면을 긁어\n박테리아 부착을 늘립니다.\nGBT는 표면을 보호합니다.',
     icon: 'fa-screwdriver-wrench',
   },
   {
     title: '교정 치료 중',
-    desc: '브라켓·와이어·인비절라인 어태치먼트 주변은 칫솔이 닿기 어려운 사각지대. GBT가 정밀 세정합니다.',
+    desc: '브라켓·와이어·인비절라인 어태치먼트 주변은\n칫솔이 닿기 어려운 사각지대.\nGBT가 정밀 세정합니다.',
     icon: 'fa-grip-lines',
   },
   {
@@ -104,7 +103,7 @@ const INDICATIONS = [
   },
   {
     title: '구취가 신경 쓰이는 분',
-    desc: '구취 원인의 80% 이상이 구강 내 박테리아·플라크. 시각화 후 정밀 제거로 즉각적 변화.',
+    desc: '구취 원인의 80% 이상이\n구강 내 박테리아·플라크.\n시각화 후 정밀 제거로 즉각적 변화.',
     icon: 'fa-wind',
   },
   {
@@ -117,23 +116,27 @@ const INDICATIONS = [
 const WHY_US = [
   {
     icon: 'fa-certificate',
-    title: 'EMS 스위스 정품 장비',
-    desc: 'GBT 프로토콜의 원조 EMS Switzerland 정식 장비 운영. 분말·노즐·압력 모두 정품 표준.',
+    emoji: '🏅',
+    title: 'EMS 스위스\n정품 장비',
+    desc: 'GBT 프로토콜의 원조\nEMS Switzerland 정식 장비 운영.\n분말·노즐·압력 모두 정품 표준.',
   },
   {
     icon: 'fa-list-ol',
-    title: '8단계 표준 프로토콜 준수',
-    desc: '한 단계도 생략하지 않는 풀 GBT 시퀀스. 시술 시간이 길어도 표준대로 진행합니다.',
+    emoji: '📋',
+    title: '8단계 표준\n프로토콜 준수',
+    desc: '한 단계도 생략하지 않는 풀 GBT 시퀀스.\n시술 시간이 길어도\n표준대로 진행합니다.',
   },
   {
     icon: 'fa-eye',
-    title: '플라크 시각화로 환자 동기 부여',
-    desc: '단순 처치를 넘어 평생 위생 습관을 만드는 코칭. 환자분이 “보면서” 배우십니다.',
+    emoji: '👁️',
+    title: '플라크 시각화로\n환자 동기 부여',
+    desc: '단순 처치를 넘어\n평생 위생 습관을 만드는 코칭.\n환자분이 "보면서" 배우십니다.',
   },
   {
     icon: 'fa-clock-rotate-left',
-    title: '맞춤 리콜 시스템',
-    desc: '구강 위생 위험도에 따라 3·6·12개월 맞춤 리콜. PRM 시스템으로 자동 알림 발송.',
+    emoji: '⏱️',
+    title: '맞춤 리콜\n시스템',
+    desc: '구강 위생 위험도에 따라\n3·6·12개월 맞춤 리콜.\nPRM 시스템으로 자동 알림 발송.',
   },
 ]
 
@@ -216,12 +219,6 @@ export const AirflowGBTTreatmentPage = ({
       </section>
 
       {/* 2. WHAT IS */}
-
-      {/* 1.5 TL;DR — AEO 핵심 요약 (LLM 인용 직격) */}
-      {(() => {
-        const _tldr = tldrFor("airflow-gbt")
-        return _tldr ? <TldrBox summary={_tldr.summary} bullets={_tldr.bullets} cta={_tldr.cta} label={_tldr.label} /> : null
-      })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("airflow-gbt")
@@ -239,20 +236,36 @@ export const AirflowGBTTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-16">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 02</div>
-              <h2 class="t-display">
-                GBT는 “스케일링”이<br/>
-                <span class="t-gold italic">아닙니다.</span>
+              {/* PPT 슬라이드 22 반영: 한 줄 표기 + 폰트 통일 */}
+              <h2 class="airflow-whatis-title font-black">
+                <span class="airflow-whatis-keyword">GBT는 "스케일링"이</span>
+                <span class="airflow-whatis-mark"> 아닙니다.</span>
               </h2>
             </div>
             <div class="lg:col-span-7 space-y-6 t-body text-lg">
               <p>
-                <b>GBT(Guided Biofilm Therapy)</b>는 스위스 EMS사가 개발한 차세대 구강 위생 시스템입니다. 단일 처치가 아닌 <b>8단계 표준 프로토콜</b>로 운영되며, 전 세계 임상에서 “치아 손상 없는 위생 관리”의 새로운 기준이 되었습니다.
+                <b>GBT(Guided Biofilm Therapy)</b>는<br class="hidden md:inline"/>
+                스위스 EMS사가 개발한<br class="hidden md:inline"/>
+                차세대 구강 위생 시스템입니다.
               </p>
               <p>
-                전통적인 스케일링이 “단단한 치석을 금속으로 긁어내는” 방식이었다면, GBT는 <b>“플라크(생물막)를 가시화한 뒤 미세 분말과 물로 부드럽게 씻어내는”</b> 방식입니다. 플라크는 모든 충치·치주염의 시작점입니다.
+                단일 처치가 아닌 <b>8단계 표준 프로토콜</b>로 운영되며,<br class="hidden md:inline"/>
+                전 세계 임상에서 "치아 손상 없는 위생 관리"의<br class="hidden md:inline"/>
+                새로운 기준이 되었습니다.
               </p>
               <p>
-                대구365치과는 EMS 스위스 정품 장비를 운영하며, 8단계 프로토콜을 한 단계도 생략하지 않고 표준대로 진행합니다.
+                전통적인 스케일링이<br class="hidden md:inline"/>
+                "단단한 치석을 금속으로 긁어내는" 방식이었다면,<br class="hidden md:inline"/>
+                GBT는 <b>"플라크(생물막)를 가시화한 뒤<br class="hidden md:inline"/>
+                미세 분말과 물로 부드럽게 씻어내는"</b> 방식입니다.
+              </p>
+              <p>
+                플라크는 모든 충치·치주염의 시작점입니다.
+              </p>
+              <p>
+                대구365치과는 EMS 스위스 정품 장비를 운영하며,<br class="hidden md:inline"/>
+                8단계 프로토콜을 한 단계도 생략하지 않고<br class="hidden md:inline"/>
+                표준대로 진행합니다.
               </p>
               <div class="grid grid-cols-2 gap-4 pt-4">
                 <div class="border-l-2 border-brown-300 pl-4">
@@ -366,7 +379,7 @@ export const AirflowGBTTreatmentPage = ({
               <div class="bg-cream p-6 lg:p-8 rounded-xl">
                 <i class={`fas ${ind.icon} text-gold text-2xl mb-4`}></i>
                 <h3 class="t-display text-lg mb-2">{ind.title}</h3>
-                <p class="t-body text-sm text-brown-700">{ind.desc}</p>
+                <p class="t-body text-sm text-brown-700" style="white-space:pre-line;">{ind.desc}</p>
               </div>
             ))}
           </div>
@@ -481,6 +494,16 @@ export const AirflowGBTTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {/* PPT PC2 슬라이드 22-23 — 에어플로우(GBT) 담당 이서영 원장 프로필 박스 */}
+      <DoctorProfileBlock
+        slug="lee-seoyoung"
+        name="이서영"
+        position="치주과 전문의"
+        quote={'잇몸병은 치아 자체보다 더 빠르게 진행됩니다.\n에어플로우 GBT는 통증 없이 바이오필름을 제거해, 잇몸의 시간을 되돌립니다.'}
+        credentials={['치주과 전문의', 'GBT 가이드 케어', '정기 유지관리 전문']}
+        treatmentLabel="에어플로우 GBT"
+      />
 
       <Footer />
     </>
