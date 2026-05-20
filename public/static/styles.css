@@ -116,30 +116,45 @@ h1, .hero-headline, .display-hero {
 
 /* Editorial display sizes
    ⭐ 한글 어절 보호: word-break: keep-all + overflow-wrap: break-word
-   → "뼈가 부족해/도" 같은 어절 분리 방지 (의미 단위 줄바꿈 유지) */
+   → "뼈가 부족해/도" 같은 어절 분리 방지 (의미 단위 줄바꿈 유지)
+   ⭐ 모바일 최소값을 줄여서 좁은 컬럼에서 어절이 글자단위로 깨지는 현상 방지
+   ⭐ italic span(t-gold)의 우측 글자 잘림 방지 padding 추가 */
 .t-hero {
-  font-size: clamp(3rem, 9vw, 8.5rem);
+  font-size: clamp(2.4rem, 9vw, 8.5rem);
   font-weight: 900;
   letter-spacing: -0.05em;
-  line-height: 0.95;
+  line-height: 1;
   word-break: keep-all;
   overflow-wrap: break-word;
 }
 .t-display {
-  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-size: clamp(1.9rem, 6vw, 5rem);
   font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1.02;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
   word-break: keep-all;
   overflow-wrap: break-word;
 }
 .t-headline {
-  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  font-size: clamp(1.5rem, 3.5vw, 3rem);
   font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1.1;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
   word-break: keep-all;
   overflow-wrap: break-word;
+}
+
+/* italic span(.t-gold + .italic, em.italic 등)의 우측 글자 잘림 방지
+   - italic은 글자를 우측으로 기울이기 때문에 inline 박스의 우측에서 픽셀이 깎임
+   - background-clip:text를 쓰는 .t-gold는 padding-right를 줘도 그라데이션 영역은 유지됨 */
+.t-display .italic, .t-display em,
+.t-headline .italic, .t-headline em,
+.t-hero .italic, .t-hero em,
+.t-display .t-gold,
+.t-headline .t-gold,
+.t-hero .t-gold {
+  padding-right: 0.06em;
+  margin-right: -0.02em;
 }
 .t-eyebrow {
   font-size: 0.75rem;
