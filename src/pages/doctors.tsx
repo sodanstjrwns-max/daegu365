@@ -155,67 +155,237 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
       </div>
     </section>
 
-    {/* WEEKLY SCHEDULE — 요일별 진료 스케줄표 */}
-    <section class="py-24 bg-brown-950 text-ivory relative overflow-hidden">
+    {/* WEEKLY SCHEDULE — 인터랙티브 요일 탭 + 오늘 진료 원장 카드 */}
+    <section id="weekly-schedule-section" class="py-24 bg-brown-950 text-ivory relative overflow-hidden">
       <div class="blob" style="width:500px;height:500px;background:#c9a876;top:-150px;right:-100px;opacity:0.12;"></div>
       <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
-        <div class="text-center mb-16 fade-in">
+        <div class="text-center mb-12 fade-in">
           <div class="text-xs tracking-[0.5em] text-gold mb-6">WEEKLY SCHEDULE</div>
-          <h2 class="display text-4xl md:text-5xl font-black tracking-tight text-ivory mb-6">
-            원장님 <span class="t-gold italic">7인</span> 요일별 진료 스케줄
+          {/* 7인 글자 잘림 방지 — whitespace-nowrap + 폭 여유 */}
+          <h2 class="display text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-ivory mb-6 leading-[1.15]" style="padding:0.1em 0.05em;">
+            <span class="inline-block" style="white-space:nowrap;">원장님 <span class="t-gold italic" style="padding:0 0.08em;">7인</span></span>{' '}
+            <span class="inline-block">요일별 진료 스케줄</span>
           </h2>
           <p class="text-brown-200 max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
-            방문 전 원하시는 원장님의 진료 요일을 미리 확인하세요.<br/>
-            요일별 진료 시간이 다르므로, 예약 시 참고 부탁드립니다.
+            오늘 진료 중인 원장님을 한눈에 — 요일을 눌러 다른 날 스케줄을 확인하세요.
           </p>
         </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-7 gap-4 fade-in-stagger">
+        {/* 요일 탭 — 7개 버튼 */}
+        <div class="flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-10 fade-in" id="weekly-tabs">
           {[
-            { day: '월', en: 'MON', hours: '09:30 ~ 21:00', doctors: ['김성주', '정재헌', '김상원'], extra: { name: '이서영', hours: '09:30 ~ 19:00' }, late: true },
-            { day: '화', en: 'TUE', hours: '09:30 ~ 18:30', doctors: ['정재헌', '김상원', '최혜정', '한지은'] },
-            { day: '수', en: 'WED', hours: '09:30 ~ 18:30', doctors: ['정재헌', '김상원', '최혜정', '이서영'] },
-            { day: '목', en: 'THU', hours: '09:30 ~ 21:00', doctors: ['김성주', '최혜정', '이서영', '김진덕'], late: true },
-            { day: '금', en: 'FRI', hours: '09:30 ~ 18:30', doctors: ['김성주', '정재헌', '김상원', '김진덕'] },
-            { day: '토', en: 'SAT', hours: '09:30 ~ 17:00', doctors: ['김성주', '최혜정', '김진덕', '한지은'] },
-            { day: '일', en: 'SUN', hours: '09:30 ~ 17:00', doctors: ['김성주', '정재헌', '김상원', '이서영'], holiday: true },
-          ].map((d: any) => (
-            <div class={`schedule-card rounded-2xl p-5 ${d.late ? 'schedule-card-late' : ''} ${d.holiday ? 'schedule-card-holiday' : ''}`}
-                 style={`background: ${d.late ? 'linear-gradient(160deg, rgba(201,168,118,0.18), rgba(201,168,118,0.04))' : d.holiday ? 'linear-gradient(160deg, rgba(193,72,72,0.12), rgba(193,72,72,0.03))' : 'rgba(255,250,240,0.04)'}; border: 1px solid ${d.late ? 'rgba(201,168,118,0.35)' : d.holiday ? 'rgba(193,72,72,0.3)' : 'rgba(201,168,118,0.15)'};`}>
-              <div class="flex items-baseline justify-between mb-3">
-                <div class="display text-3xl font-black text-ivory leading-none">{d.day}</div>
-                <div class="text-[9px] tracking-[0.3em] text-gold font-bold">{d.en}</div>
-              </div>
-              <div class={`text-[11px] font-semibold tracking-wider mb-4 pb-3 border-b border-ivory/10 ${d.late ? 'text-gold' : d.holiday ? 'text-red-300' : 'text-brown-200'}`}>
-                {d.hours}
-                {d.late && <span class="ml-2 inline-block px-1.5 py-0.5 rounded bg-gold/20 text-gold text-[8px] tracking-widest">야간</span>}
-                {d.holiday && <span class="ml-2 inline-block px-1.5 py-0.5 rounded bg-red-400/20 text-red-300 text-[8px] tracking-widest">공휴</span>}
-              </div>
-              <ul class="space-y-1.5">
-                {d.doctors.map((name: string) => (
-                  <li class="flex items-center gap-2 text-sm text-ivory/90">
-                    <span class="text-gold text-[10px]">●</span>
-                    <span>Dr. {name}</span>
-                  </li>
-                ))}
-                {d.extra && (
-                  <li class="flex items-start gap-2 text-sm text-ivory/75 pt-1.5 mt-1.5 border-t border-ivory/10">
-                    <span class="text-gold text-[10px] mt-1.5">●</span>
-                    <span>
-                      Dr. {d.extra.name}<br/>
-                      <span class="text-[10px] text-brown-300">{d.extra.hours}</span>
-                    </span>
-                  </li>
-                )}
-              </ul>
-            </div>
+            { key: 'mon', day: '월', en: 'MON', hours: '09:30 ~ 21:00', late: true },
+            { key: 'tue', day: '화', en: 'TUE', hours: '09:30 ~ 18:30' },
+            { key: 'wed', day: '수', en: 'WED', hours: '09:30 ~ 18:30' },
+            { key: 'thu', day: '목', en: 'THU', hours: '09:30 ~ 21:00', late: true },
+            { key: 'fri', day: '금', en: 'FRI', hours: '09:30 ~ 18:30' },
+            { key: 'sat', day: '토', en: 'SAT', hours: '09:30 ~ 17:00' },
+            { key: 'sun', day: '일', en: 'SUN', hours: '09:30 ~ 17:00', holiday: true },
+          ].map((t: any) => (
+            <button
+              type="button"
+              class="weekly-tab group flex flex-col items-center justify-center min-w-[68px] sm:min-w-[88px] px-3 sm:px-5 py-3 sm:py-4 rounded-2xl border transition-all"
+              data-day={t.key}
+              data-hours={t.hours}
+              data-late={t.late ? '1' : ''}
+              data-holiday={t.holiday ? '1' : ''}
+              style="background:rgba(255,250,240,0.04); border-color:rgba(201,168,118,0.18);"
+            >
+              <span class="display text-2xl sm:text-3xl font-black leading-none">{t.day}</span>
+              <span class="text-[9px] sm:text-[10px] tracking-[0.25em] text-gold/70 font-bold mt-1.5">{t.en}</span>
+              {t.late && <span class="text-[8px] mt-1 px-1.5 py-0.5 rounded bg-gold/20 text-gold tracking-widest">야간</span>}
+              {t.holiday && <span class="text-[8px] mt-1 px-1.5 py-0.5 rounded bg-red-400/20 text-red-300 tracking-widest">공휴</span>}
+            </button>
           ))}
         </div>
 
-        <div class="mt-10 text-center text-[11px] text-brown-300/80 tracking-wide max-w-2xl mx-auto fade-in">
+        {/* 선택된 요일 헤더 — 진료시간 + 오늘 표시 */}
+        <div class="text-center mb-8 fade-in" id="weekly-active-header">
+          <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-gold/10 border border-gold/30">
+            <i class="far fa-clock text-gold"></i>
+            <span class="text-sm text-ivory/90">
+              <span id="weekly-active-day" class="font-bold text-gold">월요일</span>
+              <span class="mx-2 text-ivory/40">·</span>
+              <span id="weekly-active-hours" class="font-semibold">09:30 ~ 21:00</span>
+            </span>
+            <span id="weekly-today-badge" class="hidden ml-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 border border-green-400/40 text-green-300 text-[10px] font-bold tracking-wider">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+              TODAY
+            </span>
+          </div>
+        </div>
+
+        {/* 원장 프로필 카드 영역 — 요일별 표시 전환 */}
+        <div id="weekly-doctors-stage" class="relative">
+          {(() => {
+            // 한국어 이름 → slug + 직책 매핑 (사진 가져오기 위함)
+            const NAME_TO_SLUG: Record<string, string> = {
+              '김성주': 'kim-seongju',
+              '정재헌': 'jung-jaeheon',
+              '김상원': 'kim-sangwon',
+              '최혜정': 'choi-hyejung',
+              '김진덕': 'kim-jinduk',
+              '한지은': 'han-jieun',
+              '이서영': 'lee-seoyoung',
+            }
+            const SCHEDULE: Record<string, { doctors: { name: string; hours?: string; tag?: string }[] }> = {
+              mon: { doctors: [
+                { name: '김성주' }, { name: '정재헌' }, { name: '김상원' },
+                { name: '이서영', hours: '09:30 ~ 19:00', tag: '단축' },
+              ]},
+              tue: { doctors: [
+                { name: '정재헌' }, { name: '김상원' }, { name: '최혜정' }, { name: '한지은' },
+              ]},
+              wed: { doctors: [
+                { name: '정재헌' }, { name: '김상원' }, { name: '최혜정' }, { name: '이서영' },
+              ]},
+              thu: { doctors: [
+                { name: '김성주' }, { name: '최혜정' }, { name: '이서영' }, { name: '김진덕' },
+              ]},
+              fri: { doctors: [
+                { name: '김성주' }, { name: '정재헌' }, { name: '김상원' }, { name: '김진덕' },
+              ]},
+              sat: { doctors: [
+                { name: '김성주' }, { name: '최혜정' }, { name: '김진덕' }, { name: '한지은' },
+              ]},
+              sun: { doctors: [
+                { name: '김성주' }, { name: '정재헌' }, { name: '김상원' }, { name: '이서영' },
+              ]},
+            }
+            // 각 의료진의 직책 (대표원장/원장)을 doctors prop에서 추출
+            const positionMap: Record<string, string> = {}
+            doctors.forEach((d: any) => {
+              positionMap[d.name] = d.is_representative ? '대표원장' : '원장'
+            })
+
+            return Object.entries(SCHEDULE).map(([dayKey, info]) => (
+              <div
+                class="weekly-doctors-panel fade-in-stagger"
+                data-day-panel={dayKey}
+                style="display:none;"
+              >
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-[1200px] mx-auto">
+                  {info.doctors.map(doc => {
+                    const slug = NAME_TO_SLUG[doc.name]
+                    const photo = slug ? getDoctorPhoto(slug) : '/r2/images/doctors/team-horizontal-smile.jpg'
+                    const pos = positionMap[doc.name] || '원장'
+                    return (
+                      <a
+                        href={slug ? `/doctors/${slug}` : '/doctors'}
+                        class="weekly-doctor-card group block rounded-2xl overflow-hidden border border-ivory/10 hover:border-gold/50 transition-all duration-500 bg-gradient-to-b from-ivory/[0.04] to-ivory/[0.02] hover:shadow-2xl"
+                      >
+                        {/* 프로필 사진 — 4:5 */}
+                        <div class="relative aspect-[4/5] overflow-hidden bg-brown-900">
+                          <img
+                            src={photo}
+                            alt={`${doc.name} ${pos}`}
+                            loading="lazy"
+                            class="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-700"
+                          />
+                          <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-brown-950 via-brown-950/60 to-transparent"></div>
+                          {/* 배지 — 좌상단 */}
+                          <div class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brown-950/70 backdrop-blur-sm border border-gold/40">
+                            <i class="fas fa-user-doctor text-gold text-[10px]"></i>
+                            <span class="text-[10px] font-bold text-gold tracking-wider">{pos}</span>
+                          </div>
+                          {/* 단축 진료 등 태그 */}
+                          {doc.tag && (
+                            <div class="absolute top-3 right-3 inline-flex items-center px-2 py-0.5 rounded-full bg-orange-400/20 backdrop-blur-sm border border-orange-300/40 text-orange-200 text-[9px] font-bold tracking-wider">
+                              {doc.tag}
+                            </div>
+                          )}
+                          {/* 이름 — 사진 위 */}
+                          <div class="absolute inset-x-0 bottom-0 p-4">
+                            <div class="display text-xl md:text-2xl font-black text-ivory leading-tight tracking-tight">
+                              {doc.name} <span class="text-gold text-base">원장</span>
+                            </div>
+                            {doc.hours && (
+                              <div class="mt-1.5 inline-flex items-center gap-1 text-[10px] text-gold font-semibold">
+                                <i class="far fa-clock"></i>
+                                <span>{doc.hours}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        {/* 푸터 — 프로필 보기 */}
+                        <div class="px-4 py-3 flex items-center justify-between text-[11px] font-bold text-ivory/70 group-hover:text-gold transition-colors">
+                          <span class="tracking-wider">프로필 보기</span>
+                          <i class="fas fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                      </a>
+                    )
+                  })}
+                </div>
+              </div>
+            ))
+          })()}
+        </div>
+
+        <div class="mt-12 text-center text-[11px] text-brown-300/80 tracking-wide max-w-2xl mx-auto fade-in">
           ※ 점심시간 13:00 ~ 14:00 · 진료 일정은 사정에 따라 변동될 수 있으니 예약 시 재확인 부탁드립니다.
         </div>
       </div>
+
+      {/* 인터랙티브 스크립트 — 요일 탭 전환 + 오늘 자동 선택 */}
+      <script dangerouslySetInnerHTML={{ __html: `
+(function() {
+  var DAY_KEYS = ['sun','mon','tue','wed','thu','fri','sat']; // JS getDay() 인덱스 순서
+  var DAY_LABELS = {
+    mon:'월요일', tue:'화요일', wed:'수요일', thu:'목요일',
+    fri:'금요일', sat:'토요일', sun:'일요일'
+  };
+
+  function selectDay(key, isAuto) {
+    // 탭 active 토글
+    document.querySelectorAll('#weekly-tabs .weekly-tab').forEach(function(btn) {
+      var active = btn.getAttribute('data-day') === key;
+      if (active) {
+        btn.style.background = 'linear-gradient(160deg, rgba(201,168,118,0.35), rgba(201,168,118,0.12))';
+        btn.style.borderColor = 'rgba(201,168,118,0.7)';
+        btn.style.transform = 'translateY(-2px)';
+        btn.style.boxShadow = '0 10px 25px -8px rgba(201,168,118,0.4)';
+      } else {
+        btn.style.background = 'rgba(255,250,240,0.04)';
+        btn.style.borderColor = 'rgba(201,168,118,0.18)';
+        btn.style.transform = '';
+        btn.style.boxShadow = '';
+      }
+    });
+
+    // 패널 전환
+    document.querySelectorAll('#weekly-doctors-stage .weekly-doctors-panel').forEach(function(p) {
+      p.style.display = (p.getAttribute('data-day-panel') === key) ? 'block' : 'none';
+    });
+
+    // 헤더 갱신 (진료시간 + 요일명)
+    var activeBtn = document.querySelector('#weekly-tabs .weekly-tab[data-day="'+key+'"]');
+    if (activeBtn) {
+      var hours = activeBtn.getAttribute('data-hours') || '';
+      document.getElementById('weekly-active-day').textContent = DAY_LABELS[key] || '';
+      document.getElementById('weekly-active-hours').textContent = hours;
+    }
+
+    // TODAY 배지 — 실제 오늘이면 표시
+    var todayKey = DAY_KEYS[new Date().getDay()];
+    var todayBadge = document.getElementById('weekly-today-badge');
+    if (todayBadge) {
+      todayBadge.style.display = (key === todayKey) ? 'inline-flex' : 'none';
+    }
+  }
+
+  // 초기화 — 오늘 요일 자동 선택
+  document.addEventListener('DOMContentLoaded', function() {
+    var todayKey = DAY_KEYS[new Date().getDay()];
+    selectDay(todayKey, true);
+
+    document.querySelectorAll('#weekly-tabs .weekly-tab').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        selectDay(btn.getAttribute('data-day'), false);
+      });
+    });
+  });
+})();
+      `}} />
     </section>
 
     {/* TEAM GROUP — 다양한 단체 컷 (가로 + 세로 비율 매거진 레이아웃) */}
