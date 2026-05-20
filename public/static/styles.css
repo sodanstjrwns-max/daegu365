@@ -144,6 +144,27 @@ h1, .hero-headline, .display-hero {
   overflow-wrap: break-word;
 }
 
+/* WHAT IS 섹션 전용 헤드라인 — t-display의 굵기·자간을 유지하면서
+   좁은 col-span 컬럼(4~5)에 안전하게 들어가도록 사이즈를 한 단계 낮춤
+   - 모바일: 2rem, 데스크탑: max 3.2rem
+   - 우측 italic/마침표 잘림 방지를 위한 충분한 padding-right 확보 */
+.whatis-headline {
+  font-size: clamp(1.75rem, 3.6vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.14;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  /* 컨테이너 자체에 우측 여유 — italic 글자가 컬럼 경계에 닿을 때 잘리지 않도록 */
+  padding-right: 0.15em;
+}
+.whatis-headline .italic,
+.whatis-headline em,
+.whatis-headline .t-gold {
+  padding-right: 0.14em;
+  margin-right: -0.02em;
+}
+
 /* italic span(.t-gold + .italic, em.italic 등)의 우측 글자 잘림 방지
    - italic은 글자를 우측으로 기울이기 때문에 inline 박스의 우측에서 픽셀이 깎임
    - background-clip:text를 쓰는 .t-gold는 padding-right를 줘도 그라데이션 영역은 유지됨 */
@@ -2250,4 +2271,106 @@ h1, .hero-headline, .display-hero {
     white-space: normal;
   }
   .ortho-whatis-head { margin-bottom: 4px; }
+}
+
+/* ============================================================
+   AIRFLOW · WHAT IS — PPT 슬라이드 22 반영
+   - 'GBT는 "스케일링"이 아닙니다.' 한 줄 표기, 키워드 강조
+   ============================================================ */
+.airflow-whatis-title {
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  color: var(--brown-900);
+  word-break: keep-all;
+  padding-right: 0.15em;
+}
+.airflow-whatis-keyword {
+  display: inline-block;
+  color: var(--brown-900);
+  letter-spacing: -0.025em;
+  margin-right: 0.05em;
+}
+.airflow-whatis-mark {
+  display: inline-block;
+  color: var(--gold);
+  letter-spacing: -0.025em;
+  padding-right: 0.1em;
+}
+@media (max-width: 768px) {
+  .airflow-whatis-title {
+    font-size: clamp(1.7rem, 7.2vw, 2.3rem);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+}
+
+/* ============================================================
+   ANESTHESIA · WHAT IS — PPT 슬라이드 19 반영
+   - '치과 통증의 정체를 먼저 이해해야 합니다.'
+   ============================================================ */
+.anesthesia-whatis-title {
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  color: var(--brown-900);
+  word-break: keep-all;
+  padding-right: 0.15em;
+}
+.anesthesia-whatis-keyword {
+  display: inline-block;
+  color: var(--brown-900);
+  letter-spacing: -0.025em;
+  margin-right: 0.05em;
+}
+.anesthesia-whatis-mark {
+  display: inline-block;
+  color: var(--gold);
+  letter-spacing: -0.025em;
+  padding-right: 0.1em;
+}
+@media (max-width: 768px) {
+  .anesthesia-whatis-title {
+    font-size: clamp(1.7rem, 7.2vw, 2.3rem);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+}
+
+/* ============================================================
+   SLEEP · WHAT IS — PPT 슬라이드 16 반영
+   - '의식하 진정, 전신마취가 아닙니다.'
+   ============================================================ */
+.sleep-whatis-title {
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  color: var(--brown-900);
+  word-break: keep-all;
+  padding-right: 0.15em;
+}
+.sleep-whatis-keyword {
+  display: inline-block;
+  color: var(--brown-900);
+  letter-spacing: -0.025em;
+  margin-right: 0.05em;
+}
+.sleep-whatis-mark {
+  display: inline-block;
+  color: var(--gold);
+  letter-spacing: -0.025em;
+  padding-right: 0.1em;
+}
+@media (max-width: 768px) {
+  .sleep-whatis-title {
+    font-size: clamp(1.7rem, 7.2vw, 2.3rem);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
 }

@@ -311,7 +311,7 @@ export const ImplantGeneralTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-12 mb-16">
             <div class="lg:col-span-4 fade-in">
               <div class="section-label mb-6">WHAT IS · 02</div>
-              <h2 class="t-display">
+              <h2 class="whatis-headline">
                 <span class="text-brown-900">임플란트</span><br/>
                 <span class="t-gold">란?</span>
               </h2>

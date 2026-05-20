@@ -117,7 +117,7 @@ export const QrayTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="t-display" style="font-size:clamp(1.8rem,4.2vw,3.4rem);line-height:1.12">Q-ray는,<br/><span class="t-gold italic">빛으로 보는 진단</span>입니다.</h2>
+              <h2 class="whatis-headline">Q-ray는,<br/><span class="t-gold italic">빛으로 보는 진단</span>입니다.</h2>
             </div>
             <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">

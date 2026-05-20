@@ -249,7 +249,7 @@ export const PediatricTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-16">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 02</div>
-              <h2 class="t-display">
+              <h2 class="whatis-headline">
                 첫 치과는<br/>
                 <span class="t-gold italic">“기억의 설계”입니다.</span>
               </h2>
