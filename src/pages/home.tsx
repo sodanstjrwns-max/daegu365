@@ -32,21 +32,12 @@ export const HomePage = () => (
       <div class="cinematic-hero-content max-w-[1440px] mx-auto px-6 lg:px-12 pt-32 pb-24 min-h-screen flex flex-col justify-between">
         {/* TOP GROUP — 평생보증/LIVE → 4-카드 → SINCE 2025 라벨을 균일 mt-6 간격으로 묶음 */}
         <div>
-          {/* Top bar — PPT PC3 슬라이드 2·5: LIVE 표시 로고 옆 / 상단 정보 박스 + 상담예약·전화 버튼 */}
+          {/* Top bar — PPT PC3 슬라이드 2·5: 상담예약·전화 버튼 (LIVE는 상단 메뉴바 로고 옆으로 이동) */}
           <div class="flex flex-wrap items-center justify-between gap-6 fade-in">
             <div class="flex flex-wrap items-center gap-3">
               <div class="ribbon">
                 <i class="fas fa-shield-heart"></i>
                 <span>평생 보증 임플란트</span>
-              </div>
-              <div class="hidden md:inline-flex items-center gap-2 text-xs text-ivory/85 px-3 py-1.5 rounded-full bg-brown-950/40 border border-ivory/15 backdrop-blur-sm">
-                <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span class="font-semibold tracking-wider">LIVE</span>
-                <span class="text-ivory/40">·</span>
-                <span>현재 진료 중</span>
               </div>
             </div>
             <div class="hidden md:flex items-center gap-2">

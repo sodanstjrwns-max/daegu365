@@ -7,15 +7,33 @@ export const Navbar = () => (
     <nav class="fixed top-0 left-0 right-0 z-50 nav-blur">
       <div class="max-w-[1440px] mx-auto px-6 lg:px-10">
         <div class="flex items-center justify-between h-24 lg:h-[104px]">
-          <a href="/" class="flex items-center group shrink-0" aria-label="대구365치과 홈">
-            <img
-              src="/static/images/logo-horizontal-brown.png"
-              alt="대구365치과 DAEGU 365 DENTAL CLINIC"
-              class="h-12 lg:h-16 w-auto transition-transform duration-500 group-hover:scale-[1.03]"
-              style="max-width:none;"
-              width="332" height="115"
-            />
-          </a>
+          <div class="flex items-center gap-3 shrink-0">
+            <a href="/" class="flex items-center group" aria-label="대구365치과 홈">
+              <img
+                src="/static/images/logo-horizontal-brown.png"
+                alt="대구365치과 DAEGU 365 DENTAL CLINIC"
+                class="h-12 lg:h-16 w-auto transition-transform duration-500 group-hover:scale-[1.03]"
+                style="max-width:none;"
+                width="332" height="115"
+              />
+            </a>
+            {/* LIVE 진료 상태 — 영업시간에 따라 자동 갱신 (스크립트로 텍스트/색상 변경) */}
+            <div
+              id="nav-live-status"
+              class="hidden md:inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border transition"
+              style="background:rgba(34,197,94,0.10); border-color:rgba(34,197,94,0.35); color:#15803d;"
+              role="status"
+              aria-live="polite"
+            >
+              <span class="relative flex h-2 w-2">
+                <span id="nav-live-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span id="nav-live-dot" class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span id="nav-live-label" class="font-bold tracking-wider">LIVE</span>
+              <span class="opacity-40">·</span>
+              <span id="nav-live-text" class="font-semibold">현재 진료 중</span>
+            </div>
+          </div>
 
           <div class="hidden lg:flex items-center gap-8 xl:gap-10">
             <a href="/mission" class="nav-link">병원미션</a>
@@ -112,6 +130,88 @@ export const Navbar = () => (
       </div>
 
     </nav>
+
+    {/* LIVE 진료 상태 자동 갱신 — 영업시간 (월·목 09:30~21:00, 화·수·금 09:30~18:30, 토·일 09:30~17:00, 점심 13:00~14:00) */}
+    <script dangerouslySetInnerHTML={{ __html: `
+(function(){
+  function getStatus(){
+    var now = new Date();
+    var day = now.getDay(); // 0=Sun ~ 6=Sat
+    var mins = now.getHours() * 60 + now.getMinutes();
+    // 요일별 영업시간 (분 단위)
+    var SCHEDULE = {
+      0: { open: 9*60+30, close: 17*60 },        // 일
+      1: { open: 9*60+30, close: 21*60 },        // 월 야간
+      2: { open: 9*60+30, close: 18*60+30 },     // 화
+      3: { open: 9*60+30, close: 18*60+30 },     // 수
+      4: { open: 9*60+30, close: 21*60 },        // 목 야간
+      5: { open: 9*60+30, close: 18*60+30 },     // 금
+      6: { open: 9*60+30, close: 17*60 }         // 토
+    };
+    var LUNCH_OPEN = 13*60;
+    var LUNCH_CLOSE = 14*60;
+    var s = SCHEDULE[day];
+    if (!s) return { state:'closed', label:'CLOSED', text:'금일 휴진' };
+    if (mins < s.open) return { state:'soon', label:'SOON', text:'오픈 준비 중' };
+    if (mins >= s.close) return { state:'closed', label:'CLOSED', text:'진료 마감' };
+    // 점심시간 (평일만)
+    if (day >= 1 && day <= 5 && mins >= LUNCH_OPEN && mins < LUNCH_CLOSE) {
+      return { state:'lunch', label:'LUNCH', text:'점심시간' };
+    }
+    return { state:'open', label:'LIVE', text:'현재 진료 중' };
+  }
+
+  function paint(){
+    var el = document.getElementById('nav-live-status');
+    if (!el) return;
+    var st = getStatus();
+    var dot = document.getElementById('nav-live-dot');
+    var ping = document.getElementById('nav-live-ping');
+    var label = document.getElementById('nav-live-label');
+    var text = document.getElementById('nav-live-text');
+    if (!dot || !label || !text) return;
+
+    if (st.state === 'open') {
+      el.style.background = 'rgba(34,197,94,0.10)';
+      el.style.borderColor = 'rgba(34,197,94,0.35)';
+      el.style.color = '#15803d';
+      dot.style.background = '#22c55e';
+      if (ping) ping.style.background = '#4ade80';
+      if (ping) ping.style.display = 'inline-flex';
+    } else if (st.state === 'lunch') {
+      el.style.background = 'rgba(234,179,8,0.10)';
+      el.style.borderColor = 'rgba(234,179,8,0.4)';
+      el.style.color = '#a16207';
+      dot.style.background = '#eab308';
+      if (ping) ping.style.background = '#facc15';
+      if (ping) ping.style.display = 'inline-flex';
+    } else if (st.state === 'soon') {
+      el.style.background = 'rgba(59,130,246,0.10)';
+      el.style.borderColor = 'rgba(59,130,246,0.35)';
+      el.style.color = '#1d4ed8';
+      dot.style.background = '#3b82f6';
+      if (ping) ping.style.background = '#60a5fa';
+      if (ping) ping.style.display = 'inline-flex';
+    } else {
+      el.style.background = 'rgba(120,113,108,0.12)';
+      el.style.borderColor = 'rgba(120,113,108,0.35)';
+      el.style.color = '#57534e';
+      dot.style.background = '#a8a29e';
+      if (ping) ping.style.display = 'none';
+    }
+    label.textContent = st.label;
+    text.textContent = st.text;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', paint);
+  } else {
+    paint();
+  }
+  // 1분마다 자동 갱신
+  setInterval(paint, 60000);
+})();
+    ` }} />
 
     {/* Mobile Menu */}
     <div id="mobileMenu" class="mobile-menu lg:hidden">
