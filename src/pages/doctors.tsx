@@ -104,57 +104,6 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
       <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent"></div>
     </section>
 
-    <section class="py-24 max-w-[1440px] mx-auto px-6 lg:px-12">
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 fade-in-stagger">
-        {/* PPT PC3-S7 v2 — 참고사진 스타일: 사진 축소(3/4) + 배지·이름·메시지 가독성 대폭 강화 */}
-        {doctors.map(d => {
-          const specialtyLabel = d.is_representative ? '대표원장' : d.position
-          return (
-            <a href={`/doctors/${d.slug}`} class="doctor-card group block bg-cream rounded-[20px] overflow-hidden border border-brown-200/60 hover:border-gold/70 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500">
-              {/* 사진 — 3:4 비율로 축소 (이전 4:5 → 더 짧고 컴팩트) */}
-              <div class="img-frame aspect-[3/4] overflow-hidden bg-brown-100 relative">
-                <img
-                  src={getDoctorPhoto(d.slug)}
-                  alt={`${d.name} ${specialtyLabel}`}
-                  loading="lazy"
-                  class="w-full h-full object-cover object-[center_18%] group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-
-              {/* 정보 영역 — 패딩 늘림 + 글자 키움 */}
-              <div class="px-5 pt-5 pb-6">
-                {/* 전문의 배지 — 골드 채움 칩 (가독성 대폭 강화) */}
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md mb-3 shadow-sm" style="background:linear-gradient(135deg, #c9a876 0%, #b08a4a 100%);">
-                  <i class="fas fa-user-doctor text-white text-[11px]"></i>
-                  <span class="text-[13px] md:text-[14px] font-black text-white tracking-wide" style="letter-spacing:0.02em;">
-                    {specialtyLabel}
-                  </span>
-                </div>
-
-                {/* 이름 + 진료과 한 줄 */}
-                <h3 class="display font-black tracking-tight mb-3 text-brown-950 leading-tight" style="font-size:clamp(1.6rem, 2.2vw, 2rem);">
-                  {d.name} <span class="text-brown-500 font-bold" style="font-size:0.7em;">원장</span>
-                </h3>
-
-                {/* 메시지 — 골드 좌측 보더 + 따옴표 강조 */}
-                <div class="relative pl-3 border-l-[3px] border-gold/70 mb-5">
-                  <p class="text-brown-800 text-[14px] leading-[1.55] font-medium line-clamp-2 min-h-[2.85em]">
-                    <span class="text-gold/80 font-bold mr-0.5">"</span>{d.message}<span class="text-gold/80 font-bold ml-0.5">"</span>
-                  </p>
-                </div>
-
-                {/* 프로필 보기 CTA */}
-                <div class="pt-4 border-t border-brown-200 flex items-center justify-between text-[13px] font-bold text-brown-900 group-hover:text-gold transition-colors">
-                  <span class="tracking-wide">프로필 보기</span>
-                  <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                </div>
-              </div>
-            </a>
-          )
-        })}
-      </div>
-    </section>
-
     {/* WEEKLY SCHEDULE — 인터랙티브 요일 탭 + 오늘 진료 원장 카드 */}
     <section id="weekly-schedule-section" class="py-24 bg-brown-950 text-ivory relative overflow-hidden">
       <div class="blob" style="width:500px;height:500px;background:#c9a876;top:-150px;right:-100px;opacity:0.12;"></div>
@@ -386,6 +335,57 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
   });
 })();
       `}} />
+    </section>
+
+    <section class="py-24 max-w-[1440px] mx-auto px-6 lg:px-12">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 fade-in-stagger">
+        {/* PPT PC3-S7 v2 — 참고사진 스타일: 사진 축소(3/4) + 배지·이름·메시지 가독성 대폭 강화 */}
+        {doctors.map(d => {
+          const specialtyLabel = d.is_representative ? '대표원장' : d.position
+          return (
+            <a href={`/doctors/${d.slug}`} class="doctor-card group block bg-cream rounded-[20px] overflow-hidden border border-brown-200/60 hover:border-gold/70 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500">
+              {/* 사진 — 3:4 비율로 축소 (이전 4:5 → 더 짧고 컴팩트) */}
+              <div class="img-frame aspect-[3/4] overflow-hidden bg-brown-100 relative">
+                <img
+                  src={getDoctorPhoto(d.slug)}
+                  alt={`${d.name} ${specialtyLabel}`}
+                  loading="lazy"
+                  class="w-full h-full object-cover object-[center_18%] group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+
+              {/* 정보 영역 — 패딩 늘림 + 글자 키움 */}
+              <div class="px-5 pt-5 pb-6">
+                {/* 전문의 배지 — 골드 채움 칩 (가독성 대폭 강화) */}
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md mb-3 shadow-sm" style="background:linear-gradient(135deg, #c9a876 0%, #b08a4a 100%);">
+                  <i class="fas fa-user-doctor text-white text-[11px]"></i>
+                  <span class="text-[13px] md:text-[14px] font-black text-white tracking-wide" style="letter-spacing:0.02em;">
+                    {specialtyLabel}
+                  </span>
+                </div>
+
+                {/* 이름 + 진료과 한 줄 */}
+                <h3 class="display font-black tracking-tight mb-3 text-brown-950 leading-tight" style="font-size:clamp(1.6rem, 2.2vw, 2rem);">
+                  {d.name} <span class="text-brown-500 font-bold" style="font-size:0.7em;">원장</span>
+                </h3>
+
+                {/* 메시지 — 골드 좌측 보더 + 따옴표 강조 */}
+                <div class="relative pl-3 border-l-[3px] border-gold/70 mb-5">
+                  <p class="text-brown-800 text-[14px] leading-[1.55] font-medium line-clamp-2 min-h-[2.85em]">
+                    <span class="text-gold/80 font-bold mr-0.5">"</span>{d.message}<span class="text-gold/80 font-bold ml-0.5">"</span>
+                  </p>
+                </div>
+
+                {/* 프로필 보기 CTA */}
+                <div class="pt-4 border-t border-brown-200 flex items-center justify-between text-[13px] font-bold text-brown-900 group-hover:text-gold transition-colors">
+                  <span class="tracking-wide">프로필 보기</span>
+                  <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </div>
+              </div>
+            </a>
+          )
+        })}
+      </div>
     </section>
 
     {/* TEAM GROUP — 다양한 단체 컷 (가로 + 세로 비율 매거진 레이아웃) */}
