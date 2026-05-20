@@ -203,9 +203,7 @@ export const AestheticTreatmentPage = ({
         <div class="absolute inset-0 opacity-15" style="background-image:url('/r2/images/clinic/care-luxury-room.jpg?v=1');background-size:cover;background-position:center;"></div>
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 08</div>
-          <h2 class="t-display text-4xl lg:text-6xl mb-6" style="color:#fdfbf7; text-shadow:0 2px 12px rgba(0,0,0,0.4);">
-            치아가 아닌,<br/><span class="italic" style="color:#c9a876;">미소를 디자인합니다.</span>
-          </h2>
+          <h2 class="contact-headline">치아가 아닌,<br/><span class="italic">미소를 디자인합니다.</span></h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길</a>

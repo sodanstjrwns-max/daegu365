@@ -158,6 +158,37 @@ h1, .hero-headline, .display-hero {
   /* 컨테이너 자체에 우측 여유 — italic 글자가 컬럼 경계에 닿을 때 잘리지 않도록 */
   padding-right: 0.15em;
 }
+/* CONTACT(FINAL CTA) 섹션 헤드라인 — 어두운 배경 위 한 줄 카피 */
+.contact-headline {
+  font-size: clamp(1.9rem, 4.2vw, 3.4rem);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  color: #fdfbf7;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  padding-right: 0.15em;
+  margin-bottom: 1.25rem;
+}
+.contact-headline .italic,
+.contact-headline em,
+.contact-headline .accent {
+  font-style: italic;
+  color: #c9a876;
+  padding-right: 0.16em;
+  margin-right: -0.02em;
+  display: inline-block;
+}
+.contact-lead {
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  line-height: 1.55;
+  color: #fdfbf7;
+  opacity: 0.88;
+  margin-bottom: 2.25rem;
+  word-break: keep-all;
+}
+
 .whatis-headline .italic,
 .whatis-headline em,
 .whatis-headline .t-gold {

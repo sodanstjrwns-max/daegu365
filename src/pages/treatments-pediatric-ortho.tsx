@@ -560,13 +560,9 @@ export const PediatricOrthoTreatmentPage = ({
         <div class="absolute inset-0 opacity-10" style="background-image:url('/r2/images/clinic/precision-arch-corridor.jpg?v=1');background-size:cover;background-position:center;"></div>
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 12</div>
-          <h2 class="t-display text-4xl lg:text-6xl mb-6" style="color:#fdfbf7; text-shadow:0 2px 12px rgba(0,0,0,0.4);">
-            7세,<br/>
-            <span class="italic" style="color:#c9a876;">한 번의 검진이 평생을 바꿉니다.</span>
-          </h2>
-          <p class="t-lead text-lg lg:text-xl mb-10" style="color:#fdfbf7; opacity:0.9;">
-            첫 진단은 “시작”이 아니라 “필요한지 확인”입니다.
-          </p>
+          <h2 class="contact-headline">7세,<br/>
+            <span class="italic">한 번의 검진이 평생을 바꿉니다.</span></h2>
+          <p class="contact-lead">첫 진단은 “시작”이 아니라 “필요한지 확인”입니다.</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길 <i class="fas fa-arrow-right ml-2"></i></a>

@@ -596,13 +596,9 @@ export const SleepTherapyTreatmentPage = ({
         <div class="absolute inset-0 opacity-10" style="background-image:url('/r2/images/clinic/care-luxury-room.jpg?v=1');background-size:cover;background-position:center;"></div>
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 13</div>
-          <h2 class="t-display text-4xl lg:text-6xl mb-6" style="color:#fdfbf7; text-shadow:0 2px 12px rgba(0,0,0,0.4);">
-            치과의 기억은<br/>
-            <span class="italic" style="color:#c9a876;">바꿀 수 있습니다.</span>
-          </h2>
-          <p class="t-lead text-lg lg:text-xl mb-10" style="color:#fdfbf7; opacity:0.9;">
-            상담은 무료입니다. 두려움부터, 천천히 풀어드릴게요.
-          </p>
+          <h2 class="contact-headline">치과의 기억은<br/>
+            <span class="italic">바꿀 수 있습니다.</span></h2>
+          <p class="contact-lead">상담은 무료입니다. 두려움부터, 천천히 풀어드릴게요.</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길 <i class="fas fa-arrow-right ml-2"></i></a>
