@@ -1541,6 +1541,132 @@ app.get('/api/addresses', async (c) => {
   return c.json({ items: items.results })
 })
 
+// ============ 온라인 상담·예약 신청 API ============
+// 환자가 모달에서 작성 → 우리 D1에 직접 저장 (네이버 X)
+// 페이션트 퍼널의 핵심 데이터 소스
+app.post('/api/consultations', async (c) => {
+  try {
+    const body = await c.req.json().catch(() => ({} as any))
+    const treatment      = String(body.treatment || '').trim()
+    const treatment_tier = String(body.treatment_tier || '').trim() || null
+    const name           = String(body.name || '').trim()
+    const phone_raw      = String(body.phone || '').trim()
+    const birth_year     = String(body.birth_year || '').trim() || null
+    const gender         = String(body.gender || '').trim() || null
+    const preferred_date = String(body.preferred_date || '').trim() || null
+    const preferred_time = String(body.preferred_time || '').trim() || null
+    const message        = String(body.message || '').trim() || null
+    const privacy_agreed   = body.privacy_agreed ? 1 : 0
+    const marketing_agreed = body.marketing_agreed ? 1 : 0
+    const source_channel = String(body.source_channel || 'web_modal').trim()
+    const source_page    = String(body.source_page || '').trim() || null
+
+    // ===== 검증 =====
+    if (!treatment) return c.json({ ok: false, error: 'treatment_required', message: '진료 항목을 선택해주세요' }, 400)
+    if (!name || name.length < 2) return c.json({ ok: false, error: 'name_required', message: '이름을 입력해주세요' }, 400)
+    if (name.length > 30) return c.json({ ok: false, error: 'name_too_long' }, 400)
+
+    // 연락처: 숫자만 추출 후 10~11자리 검증
+    const phone_digits = phone_raw.replace(/[^0-9]/g, '')
+    if (phone_digits.length < 10 || phone_digits.length > 11) {
+      return c.json({ ok: false, error: 'phone_invalid', message: '연락처를 정확히 입력해주세요 (10-11자리 숫자)' }, 400)
+    }
+    const phone = phone_digits.length === 11
+      ? `${phone_digits.slice(0,3)}-${phone_digits.slice(3,7)}-${phone_digits.slice(7)}`
+      : `${phone_digits.slice(0,3)}-${phone_digits.slice(3,6)}-${phone_digits.slice(6)}`
+
+    if (!privacy_agreed) {
+      return c.json({ ok: false, error: 'privacy_required', message: '개인정보 수집·이용 동의가 필요합니다' }, 400)
+    }
+
+    // 길이 제한 (DoS 방어)
+    const messageSafe = message ? message.slice(0, 1000) : null
+
+    // 메타
+    const ip = c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || null
+    const ua = c.req.header('User-Agent') || null
+
+    // ===== 간단 레이트리밋: 동일 전화로 10분 이내 중복 차단 =====
+    const recent = await c.env.DB.prepare(
+      `SELECT id FROM consultations WHERE phone = ? AND created_at > datetime('now','-10 minutes') LIMIT 1`
+    ).bind(phone).first()
+    if (recent) {
+      return c.json({ ok: false, error: 'duplicate', message: '방금 동일한 번호로 신청이 접수되었습니다. 잠시 후 다시 시도해주세요.' }, 429)
+    }
+
+    // ===== INSERT =====
+    const result = await c.env.DB.prepare(
+      `INSERT INTO consultations
+       (treatment, treatment_tier, name, phone, birth_year, gender,
+        preferred_date, preferred_time, message,
+        privacy_agreed, marketing_agreed, source_channel, source_page,
+        ip_address, user_agent, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new')`
+    ).bind(
+      treatment, treatment_tier, name, phone, birth_year, gender,
+      preferred_date, preferred_time, messageSafe,
+      privacy_agreed, marketing_agreed, source_channel, source_page,
+      ip, ua
+    ).run()
+
+    return c.json({
+      ok: true,
+      id: result.meta.last_row_id,
+      message: '상담 신청이 접수되었습니다. 곧 연락드리겠습니다.',
+    })
+  } catch (e: any) {
+    console.error('[consultations] insert failed', e)
+    return c.json({ ok: false, error: 'server_error', message: '잠시 후 다시 시도해주세요' }, 500)
+  }
+})
+
+// 어드민: 상담 신청 목록
+app.get('/api/admin/consultations', async (c) => {
+  if (!(await isAdmin(c))) return c.json({ ok: false, error: 'unauthorized' }, 401)
+  const status = c.req.query('status') || ''
+  const limit = Math.min(parseInt(c.req.query('limit') || '50', 10), 200)
+  const offset = parseInt(c.req.query('offset') || '0', 10)
+  const where = status ? 'WHERE status = ?' : ''
+  const sql = `SELECT * FROM consultations ${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`
+  const stmt = status
+    ? c.env.DB.prepare(sql).bind(status, limit, offset)
+    : c.env.DB.prepare(sql).bind(limit, offset)
+  const rows = await stmt.all()
+  const total = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM consultations ${where}`
+  ).bind(...(status ? [status] : [])).first<any>()
+  return c.json({ ok: true, items: rows.results, total: total?.n || 0 })
+})
+
+// 어드민: 상담 신청 상태 업데이트
+app.post('/api/admin/consultations/:id', async (c) => {
+  if (!(await isAdmin(c))) return c.json({ ok: false, error: 'unauthorized' }, 401)
+  const id = parseInt(c.req.param('id'), 10)
+  if (!id) return c.json({ ok: false, error: 'invalid_id' }, 400)
+  const body = await c.req.json().catch(() => ({} as any))
+  const status = String(body.status || '').trim()
+  const memo   = body.internal_memo !== undefined ? String(body.internal_memo) : null
+  const assigned_to = body.assigned_to !== undefined ? String(body.assigned_to) : null
+
+  const allowedStatus = ['new', 'contacted', 'booked', 'no_show', 'completed', 'cancelled']
+  const sets: string[] = []
+  const vals: any[] = []
+  if (status && allowedStatus.includes(status)) {
+    sets.push('status = ?')
+    vals.push(status)
+    if (status === 'contacted') sets.push(`contacted_at = COALESCE(contacted_at, CURRENT_TIMESTAMP)`)
+    if (status === 'booked')    sets.push(`booked_at = CURRENT_TIMESTAMP`)
+  }
+  if (memo !== null)        { sets.push('internal_memo = ?'); vals.push(memo) }
+  if (assigned_to !== null) { sets.push('assigned_to = ?');   vals.push(assigned_to) }
+  if (sets.length === 0) return c.json({ ok: false, error: 'nothing_to_update' }, 400)
+
+  sets.push('updated_at = CURRENT_TIMESTAMP')
+  vals.push(id)
+  await c.env.DB.prepare(`UPDATE consultations SET ${sets.join(', ')} WHERE id = ?`).bind(...vals).run()
+  return c.json({ ok: true })
+})
+
 // ============ Auth ============
 app.get('/signup', (c) => c.render(<SignupPage />, { title: '회원가입' }))
 

@@ -357,19 +357,52 @@ window.toast = function(msg, type = 'info') {
   }, 2500);
 };
 
-// ============= 편리한 예약·상담 모달 v2 (슬라이드 14 — 단일 페이지) =============
+// ============= 편리한 예약·상담 모달 v3 (2-Step + 우리 DB 직접 저장) =============
+// STEP 1: 진료 선택 → STEP 2: 본인정보 입력 → POST /api/consultations → STEP 3: 완료
 (function() {
   document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('consultModal');
-    const openBtn = document.getElementById('openConsultModal');
-    const closeBtn = document.getElementById('closeConsultModal');
-    const submitBtn = document.getElementById('consultSubmit');
     if (!modal) return;
 
+    // ===== Element 캐시 =====
+    const $ = (id) => document.getElementById(id);
+    const openBtn       = $('openConsultModal');
+    const closeBtn      = $('closeConsultModal');
+    const step1         = $('consultStep1');
+    const step2         = $('consultStep2');
+    const step3         = $('consultStep3');
+    const nextBtn       = $('consultNextBtn');
+    const prevBtn       = $('consultPrevBtn');
+    const backBtn       = $('consultBackBtn'); // STEP2의 "변경" 버튼
+    const submitBtn     = $('consultSubmit');
+    const doneBtn       = $('consultDoneBtn');
+    const selLabel      = $('consultSelectedLabel');
+    const stepLine      = $('consultStepLine');
+    const panelSubtitle = $('consultPanelSubtitle');
+    const submitLabel   = $('consultSubmitLabel');
+    const submitSpinner = $('consultSubmitSpinner');
+    const receiptId     = $('consultReceiptId');
+    const stepDots      = modal.querySelectorAll('.consult-step-dot');
+
+    // 입력 필드
+    const nameInput      = $('consultName');
+    const phoneInput     = $('consultPhone');
+    const dateInput      = $('consultDate');
+    const timeInput      = $('consultTime');
+    const messageInput   = $('consultMessage');
+    const privacyInput   = $('consultPrivacy');
+    const marketingInput = $('consultMarketing');
+
+    // ===== 상태 =====
+    let currentStep = 1;
+    let selectedTreatment = null;
+
+    // ===== 모달 open/close =====
     const openModal = () => {
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
+      goToStep(1);
     };
     const closeModal = () => {
       modal.classList.add('hidden');
@@ -377,26 +410,182 @@ window.toast = function(msg, type = 'info') {
       document.body.style.overflow = '';
     };
 
-    openBtn && openBtn.addEventListener('click', openModal);
+    openBtn  && openBtn.addEventListener('click', openModal);
     closeBtn && closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
-
-    // 다른 컴포넌트에서 모달 열기 — window event 디스패치 지원
     window.addEventListener('open-consultation-modal', openModal);
 
-    // "다음 단계" → 진료 선택 확인 후 네이버 예약으로 연결
-    submitBtn && submitBtn.addEventListener('click', () => {
+    // ===== 단계 전환 =====
+    const goToStep = (step) => {
+      currentStep = step;
+      // 패널 표시
+      [step1, step2, step3].forEach(el => el && el.classList.add('hidden'));
+      if (step === 1) { step1 && step1.classList.remove('hidden'); panelSubtitle && (panelSubtitle.textContent = '① 진료 항목을 선택해주세요.'); }
+      if (step === 2) { step2 && step2.classList.remove('hidden'); panelSubtitle && (panelSubtitle.textContent = '② 본인 정보를 입력해주세요.'); }
+      if (step === 3) { step3 && step3.classList.remove('hidden'); panelSubtitle && (panelSubtitle.textContent = '상담 신청이 정상 접수되었습니다.'); }
+
+      // 인디케이터
+      stepDots.forEach(dot => {
+        const s = parseInt(dot.getAttribute('data-step'), 10);
+        dot.classList.remove('consult-step-active', 'consult-step-done');
+        if (s < step) dot.classList.add('consult-step-done');
+        else if (s === step) dot.classList.add('consult-step-active');
+      });
+      if (stepLine) stepLine.style.background = step >= 2 ? '#c9a45e' : '#e8dcc8';
+
+      // 모달 스크롤 위로
+      modal.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // ===== STEP1 → STEP2 (다음 단계) =====
+    nextBtn && nextBtn.addEventListener('click', () => {
       const selected = modal.querySelector('input[name="consult-treatment"]:checked');
       if (!selected) {
-        window.toast && window.toast('진료 항목을 선택해주세요');
+        window.toast && window.toast('진료 항목을 선택해주세요', 'error');
         return;
       }
-      window.toast && window.toast(selected.value + ' 진료 예약을 진행합니다');
+      selectedTreatment = selected.value;
+      if (selLabel) selLabel.textContent = selectedTreatment;
+      goToStep(2);
+      // 이름 필드에 자동 포커스
+      setTimeout(() => nameInput && nameInput.focus(), 250);
+    });
+
+    // ===== STEP2 → STEP1 (이전 / 변경) =====
+    const goBackToStep1 = () => goToStep(1);
+    prevBtn && prevBtn.addEventListener('click', goBackToStep1);
+    backBtn && backBtn.addEventListener('click', goBackToStep1);
+
+    // ===== 전화번호 자동 포맷 =====
+    const formatPhone = (raw) => {
+      const d = raw.replace(/[^0-9]/g, '').slice(0, 11);
+      if (d.length <= 3) return d;
+      if (d.length <= 7) return d.slice(0,3) + '-' + d.slice(3);
+      if (d.length === 10) return d.slice(0,3) + '-' + d.slice(3,6) + '-' + d.slice(6);
+      return d.slice(0,3) + '-' + d.slice(3,7) + '-' + d.slice(7);
+    };
+    phoneInput && phoneInput.addEventListener('input', (e) => {
+      e.target.value = formatPhone(e.target.value);
+      e.target.classList.remove('consult-field-error');
+    });
+    nameInput && nameInput.addEventListener('input', (e) => e.target.classList.remove('consult-field-error'));
+
+    // ===== STEP2 제출 → API 호출 → STEP3 =====
+    const submit = async () => {
+      if (!selectedTreatment) { goToStep(1); return; }
+
+      const name = (nameInput && nameInput.value || '').trim();
+      const phone = (phoneInput && phoneInput.value || '').trim();
+      const phoneDigits = phone.replace(/[^0-9]/g, '');
+
+      // 클라이언트 검증
+      let hasError = false;
+      if (!name || name.length < 2) {
+        nameInput && nameInput.classList.add('consult-field-error');
+        hasError = true;
+      }
+      if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+        phoneInput && phoneInput.classList.add('consult-field-error');
+        hasError = true;
+      }
+      if (!privacyInput || !privacyInput.checked) {
+        window.toast && window.toast('개인정보 수집·이용 동의가 필요합니다', 'error');
+        hasError = true;
+      }
+      if (hasError) {
+        if (!name || name.length < 2) {
+          window.toast && window.toast('이름을 입력해주세요', 'error');
+          nameInput && nameInput.focus();
+        } else if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+          window.toast && window.toast('연락처를 정확히 입력해주세요', 'error');
+          phoneInput && phoneInput.focus();
+        }
+        return;
+      }
+
+      // 진료 등급(tier) 판정 — 시그니처 3개
+      const signatures = ['수면임플란트', '인비절라인 (교정)', '비니크 라미네이트'];
+      const tier = signatures.includes(selectedTreatment) ? 'signature'
+                 : selectedTreatment.startsWith('기타') ? 'general'
+                 : 'special';
+
+      // 로딩 상태
+      submitBtn.disabled = true;
+      submitLabel && submitLabel.classList.add('hidden');
+      submitSpinner && submitSpinner.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/consultations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            treatment: selectedTreatment,
+            treatment_tier: tier,
+            name,
+            phone,
+            preferred_date: (dateInput && dateInput.value) || null,
+            preferred_time: (timeInput && timeInput.value) || null,
+            message: (messageInput && messageInput.value) || null,
+            privacy_agreed: !!(privacyInput && privacyInput.checked),
+            marketing_agreed: !!(marketingInput && marketingInput.checked),
+            source_channel: 'web_modal',
+            source_page: location.pathname + location.search,
+          })
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok || !data.ok) {
+          const msg = data.message || '신청 처리에 실패했습니다. 잠시 후 다시 시도해주세요.';
+          window.toast && window.toast(msg, 'error');
+          // 필드 에러 매핑
+          if (data.error === 'phone_invalid') phoneInput && phoneInput.classList.add('consult-field-error');
+          if (data.error === 'name_required') nameInput && nameInput.classList.add('consult-field-error');
+          return;
+        }
+
+        // 성공
+        if (receiptId) receiptId.textContent = '#' + String(data.id).padStart(6, '0');
+        goToStep(3);
+
+        // 데이터 레이어 푸시 (분석용)
+        try {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event: 'consultation_submit',
+            consultation_id: data.id,
+            treatment: selectedTreatment,
+            treatment_tier: tier
+          });
+        } catch (_) {}
+
+      } catch (err) {
+        console.error('[consult] submit failed', err);
+        window.toast && window.toast('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitLabel && submitLabel.classList.remove('hidden');
+        submitSpinner && submitSpinner.classList.add('hidden');
+      }
+    };
+    submitBtn && submitBtn.addEventListener('click', submit);
+
+    // ===== STEP3 닫기 =====
+    doneBtn && doneBtn.addEventListener('click', () => {
+      closeModal();
+      // 다음 번 열림을 위해 폼 리셋
       setTimeout(() => {
-        window.open('https://naver.me/GhSIroMf', '_blank', 'noopener');
-        closeModal();
-      }, 800);
+        const radios = modal.querySelectorAll('input[name="consult-treatment"]');
+        radios.forEach(r => r.checked = false);
+        if (nameInput) nameInput.value = '';
+        if (phoneInput) phoneInput.value = '';
+        if (dateInput) dateInput.value = '';
+        if (timeInput) timeInput.value = '';
+        if (messageInput) messageInput.value = '';
+        if (privacyInput) privacyInput.checked = false;
+        if (marketingInput) marketingInput.checked = false;
+        selectedTreatment = null;
+      }, 300);
     });
   });
 })();

@@ -476,6 +476,26 @@ export const Navbar = () => (
           box-shadow: 0 12px 30px rgba(239,68,68,0.75), 0 0 0 12px rgba(239,68,68,0);
         }
       }
+      /* === 상담 모달 STEP 인디케이터 === */
+      .consult-step-dot {
+        background: #f5ede1;
+        color: #a08d75;
+        transition: all .3s ease;
+      }
+      .consult-step-dot.consult-step-active {
+        background: #2c1f14;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(44,31,20,0.25);
+      }
+      .consult-step-dot.consult-step-done {
+        background: #c9a45e;
+        color: #fff;
+      }
+      /* 입력 필드 invalid 상태 */
+      .consult-field-error {
+        border-color: #e11d48 !important;
+        box-shadow: 0 0 0 3px rgba(225,29,72,0.15) !important;
+      }
     `}}/>
 
     {/* ========== PPT 슬라이드 14 — 편리한 예약·상담 모달 (참고사진 매칭)
@@ -584,14 +604,23 @@ export const Navbar = () => (
             </div>
           </div>
 
-          {/* 우측 패널 — 온라인 상담예약 (대구365치과 실제 진료 라인업) */}
-          <div class="bg-ivory rounded-2xl border border-brown-200 p-6 sm:p-7">
-            <div class="mb-5">
-              <div class="display text-lg font-black text-brown-950 tracking-tight">온라인 상담 예약</div>
-              <p class="text-[12px] text-brown-600 mt-1">양식 작성 후 담당자가 확인하여 연락드립니다.</p>
+          {/* 우측 패널 — 온라인 상담예약 (2-Step: 진료선택 → 본인정보 입력 → DB 저장) */}
+          <div class="bg-ivory rounded-2xl border border-brown-200 p-6 sm:p-7" id="consultPanel">
+            <div class="mb-5 flex items-start justify-between gap-3">
+              <div>
+                <div class="display text-lg font-black text-brown-950 tracking-tight">온라인 상담 예약</div>
+                <p class="text-[12px] text-brown-600 mt-1" id="consultPanelSubtitle">양식 작성 후 담당자가 확인하여 연락드립니다.</p>
+              </div>
+              {/* 진행 인디케이터 */}
+              <div class="flex items-center gap-1.5 shrink-0 pt-1" id="consultStepIndicator">
+                <span class="consult-step-dot consult-step-active w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black" data-step="1">1</span>
+                <span class="w-3 h-0.5 bg-brown-200" id="consultStepLine"></span>
+                <span class="consult-step-dot w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black bg-brown-100 text-brown-400" data-step="2">2</span>
+              </div>
             </div>
 
-            <div class="space-y-5">
+            {/* ===== STEP 1: 진료 선택 ===== */}
+            <div class="space-y-5" id="consultStep1">
               {/* ★ 3대 핵심 진료 — 사이트 메가메뉴와 동일 라인업 (시그니처 강조) */}
               <div>
                 <div class="flex items-center gap-2 mb-3">
@@ -645,12 +674,165 @@ export const Navbar = () => (
 
               <button
                 type="button"
-                id="consultSubmit"
+                id="consultNextBtn"
                 class="w-full py-4 rounded-full font-black text-sm tracking-wide shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all"
                 style="background:linear-gradient(135deg, #5d4630 0%, #3f2f20 100%);color:var(--ivory);"
               >
-                다음 단계 <i class="fas fa-arrow-right ml-1.5"></i>
+                다음 단계 — 본인 정보 입력 <i class="fas fa-arrow-right ml-1.5"></i>
               </button>
+            </div>
+
+            {/* ===== STEP 2: 본인 정보 입력 — DB 저장용 ===== */}
+            <div class="space-y-4 hidden" id="consultStep2">
+              {/* 선택한 진료 표시 */}
+              <div class="flex items-center gap-2.5 p-3 rounded-xl bg-gold/10 border border-gold/40">
+                <i class="fas fa-check-circle text-gold text-base"></i>
+                <div class="flex-1 min-w-0">
+                  <div class="text-[10px] text-brown-600 tracking-[0.15em] font-bold">선택한 진료</div>
+                  <div class="text-[13px] font-black text-brown-950 truncate" id="consultSelectedLabel">-</div>
+                </div>
+                <button type="button" id="consultBackBtn" class="text-[11px] text-brown-600 hover:text-brown-900 underline shrink-0">변경</button>
+              </div>
+
+              {/* 이름 */}
+              <div>
+                <label class="block text-[12px] font-bold text-brown-900 mb-1.5">
+                  이름 <span class="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="consultName"
+                  required
+                  maxLength={30}
+                  autoComplete="name"
+                  placeholder="홍길동"
+                  class="w-full px-4 py-3 rounded-xl border border-brown-200 bg-cream text-sm text-brown-950 focus:outline-none focus:border-brown-700 focus:ring-2 focus:ring-brown-700/20 transition"
+                />
+              </div>
+
+              {/* 연락처 */}
+              <div>
+                <label class="block text-[12px] font-bold text-brown-900 mb-1.5">
+                  연락처 <span class="text-rose-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="consultPhone"
+                  required
+                  inputMode="numeric"
+                  autoComplete="tel"
+                  placeholder="010-0000-0000"
+                  class="w-full px-4 py-3 rounded-xl border border-brown-200 bg-cream text-sm text-brown-950 focus:outline-none focus:border-brown-700 focus:ring-2 focus:ring-brown-700/20 transition tracking-wider"
+                />
+                <p class="mt-1 text-[10px] text-brown-500">담당자가 이 번호로 직접 연락드립니다.</p>
+              </div>
+
+              {/* 희망 일정 — 2-col */}
+              <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-[12px] font-bold text-brown-900 mb-1.5">희망 일자 <span class="text-brown-400 font-normal">(선택)</span></label>
+                  <input
+                    type="date"
+                    id="consultDate"
+                    class="w-full px-3 py-3 rounded-xl border border-brown-200 bg-cream text-sm text-brown-950 focus:outline-none focus:border-brown-700 transition"
+                  />
+                </div>
+                <div>
+                  <label class="block text-[12px] font-bold text-brown-900 mb-1.5">희망 시간대 <span class="text-brown-400 font-normal">(선택)</span></label>
+                  <select
+                    id="consultTime"
+                    class="w-full px-3 py-3 rounded-xl border border-brown-200 bg-cream text-sm text-brown-950 focus:outline-none focus:border-brown-700 transition"
+                  >
+                    <option value="">선택</option>
+                    <option value="morning">오전 (09:30-13:00)</option>
+                    <option value="afternoon">오후 (14:00-18:30)</option>
+                    <option value="evening">야간 (월·목 18:30-21:00)</option>
+                    <option value="weekend">주말 (토·일)</option>
+                    <option value="any">아무때나</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* 메시지 */}
+              <div>
+                <label class="block text-[12px] font-bold text-brown-900 mb-1.5">
+                  추가 메시지 <span class="text-brown-400 font-normal">(선택)</span>
+                </label>
+                <textarea
+                  id="consultMessage"
+                  rows={3}
+                  maxLength={1000}
+                  placeholder="증상이나 궁금하신 점을 자유롭게 적어주세요"
+                  class="w-full px-4 py-3 rounded-xl border border-brown-200 bg-cream text-sm text-brown-950 focus:outline-none focus:border-brown-700 focus:ring-2 focus:ring-brown-700/20 transition resize-none"
+                ></textarea>
+              </div>
+
+              {/* 개인정보 동의 */}
+              <div class="space-y-2 pt-1">
+                <label class="flex items-start gap-2.5 cursor-pointer p-2.5 rounded-lg hover:bg-brown-50 transition">
+                  <input type="checkbox" id="consultPrivacy" class="mt-0.5 w-4 h-4 accent-brown-800 cursor-pointer shrink-0" />
+                  <span class="text-[12px] text-brown-800 leading-relaxed">
+                    <strong class="text-brown-950">(필수)</strong> 상담 신청을 위한 <a href="/privacy" target="_blank" class="underline text-brown-900 font-bold">개인정보 수집·이용</a>에 동의합니다.
+                    <br /><span class="text-[10px] text-brown-500">수집 항목: 이름, 연락처 · 보유 기간: 상담 완료 후 1년</span>
+                  </span>
+                </label>
+                <label class="flex items-start gap-2.5 cursor-pointer p-2.5 rounded-lg hover:bg-brown-50 transition">
+                  <input type="checkbox" id="consultMarketing" class="mt-0.5 w-4 h-4 accent-brown-800 cursor-pointer shrink-0" />
+                  <span class="text-[12px] text-brown-700 leading-relaxed">
+                    <strong class="text-brown-800">(선택)</strong> 진료 정보·이벤트 안내 수신에 동의합니다.
+                  </span>
+                </label>
+              </div>
+
+              {/* 제출 버튼 */}
+              <div class="flex gap-2 pt-1">
+                <button
+                  type="button"
+                  id="consultPrevBtn"
+                  class="px-5 py-3.5 rounded-full font-bold text-[13px] border-2 border-brown-300 text-brown-800 hover:bg-brown-50 transition"
+                >
+                  <i class="fas fa-arrow-left mr-1.5"></i> 이전
+                </button>
+                <button
+                  type="button"
+                  id="consultSubmit"
+                  class="flex-1 py-3.5 rounded-full font-black text-sm tracking-wide shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all relative overflow-hidden"
+                  style="background:linear-gradient(135deg, #5d4630 0%, #3f2f20 100%);color:var(--ivory);"
+                >
+                  <span id="consultSubmitLabel"><i class="fas fa-paper-plane mr-1.5"></i> 상담 신청하기</span>
+                  <span class="hidden" id="consultSubmitSpinner">
+                    <i class="fas fa-spinner fa-spin mr-1.5"></i> 전송 중...
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* ===== STEP 3: 완료 화면 ===== */}
+            <div class="hidden" id="consultStep3">
+              <div class="text-center py-6">
+                <div class="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
+                  <i class="fas fa-check text-emerald-600 text-2xl"></i>
+                </div>
+                <div class="display text-xl font-black text-brown-950 mb-2">상담 신청 완료!</div>
+                <p class="text-[13px] text-brown-700 leading-relaxed">
+                  소중한 상담 신청을 접수했습니다.<br/>
+                  담당자가 <strong class="text-brown-950">영업시간 내 확인 후 직접 연락</strong>드립니다.
+                </p>
+                <div class="mt-5 p-4 rounded-xl bg-brown-50 border border-brown-100 text-left">
+                  <div class="text-[11px] text-brown-500 mb-1 tracking-[0.15em] font-bold">접수번호</div>
+                  <div class="display text-lg font-black text-brown-950" id="consultReceiptId">#-</div>
+                  <div class="text-[11px] text-brown-600 mt-2">
+                    더 빠른 진행을 원하시면 <strong>053-357-0365</strong> 로 전화 주세요.
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  id="consultDoneBtn"
+                  class="mt-5 px-8 py-3 rounded-full font-bold text-[13px] bg-brown-900 text-ivory hover:bg-brown-800 transition"
+                >
+                  닫기
+                </button>
+              </div>
             </div>
           </div>
         </div>
