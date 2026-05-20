@@ -603,7 +603,7 @@ export const Navbar = () => (
                 </div>
                 <div class="grid grid-cols-3 gap-2.5">
                   {[
-                    { v: '수면임플란트',     icon: 'fa-tooth',        sub: '평생 보증 · BDX·BA' },
+                    { v: '수면임플란트',     icon: 'fa-tooth',        sub: '메가젠 BD · 오스템 BA' },
                     { v: '인비절라인 (교정)', icon: 'fa-grin',         sub: '인비절라인 공인' },
                     { v: '비니크 라미네이트', icon: 'fa-star',         sub: 'VINIQUE · 원내 기공' },
                   ].map(t => (
