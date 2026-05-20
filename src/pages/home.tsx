@@ -89,8 +89,8 @@ export const HomePage = () => (
           </div>
         </div>
 
-        {/* Headline block */}
-        <div class="max-w-5xl hero-headline-block">
+        {/* Headline block — SINCE 2025 라벨과 충분한 간격 (mt-16 lg:mt-24) */}
+        <div class="max-w-5xl hero-headline-block mt-16 lg:mt-24">
 
           {/* PPT PC3 슬라이드 3 — 글씨 크기 축소 (8.4rem → 6.4rem), '괜찮습' 하단 잘림 방지 padding 강화 */}
           <h1 class="reveal-lines hero-h1 text-ivory font-black leading-[0.92] tracking-[-0.045em]" style="font-size:clamp(2rem, 6.4vw, 6.4rem); padding-bottom:0.22em;">
