@@ -326,6 +326,69 @@ h1, .hero-headline, .display-hero {
   transform: translateX(3px);
 }
 
+/* Mega Dropdown — 3-column horizontal layout (진료안내) */
+.mega-dropdown {
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  opacity: 0; visibility: hidden;
+  width: max-content;
+  max-width: 92vw;
+  background: var(--ivory);
+  border: 1px solid rgba(107, 76, 42, 0.1);
+  border-radius: 18px;
+  padding: 20px 22px;
+  box-shadow: var(--shadow-lg);
+  transition: all .4s var(--ease-silk);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 8px 24px;
+}
+.has-dropdown:hover .mega-dropdown {
+  opacity: 1; visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+.mega-dropdown .mega-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+.mega-dropdown .mega-col-title {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 6px 12px 10px;
+  border-bottom: 1px solid rgba(107, 76, 42, 0.12);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.mega-dropdown .mega-col-title.is-core { color: var(--gold, #b08a4a); }
+.mega-dropdown .mega-col-title.is-sub { color: var(--brown-500, #8b6f47); }
+.mega-dropdown a {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: all .2s;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.mega-dropdown a.is-featured {
+  font-weight: 600;
+  color: var(--brown-900);
+}
+.mega-dropdown a:hover {
+  background: var(--brown-50);
+  color: var(--brown-900);
+  transform: translateX(3px);
+}
+.mega-dropdown .mega-col-divider {
+  height: 1px;
+  background: rgba(107, 76, 42, 0.12);
+  margin: 8px 0;
+}
+
 /* ---------- BUTTONS ---------- */
 .btn-primary {
   position: relative;

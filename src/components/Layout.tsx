@@ -21,36 +21,42 @@ export const Navbar = () => (
             <a href="/mission" class="nav-link">병원미션</a>
             {/* PPT PC3 슬라이드 1 — 의료진 호버 드롭다운 제거, 단일 링크로 변경 */}
             <a href="/doctors" class="nav-link py-8">의료진</a>
-            {/* PPT PC3 슬라이드 4 — 진료안내를 상단 sub-bar로 노출 (드롭다운은 보조) */}
+            {/* PPT PC3 슬라이드 4 — 진료안내를 상단 sub-bar로 노출 (드롭다운은 3열 메가메뉴) */}
             <div class="has-dropdown relative py-8">
               <a href="/treatments" class="nav-link">진료안내</a>
-              <div class="dropdown" style="min-width:240px">
-                <div class="text-[10px] tracking-[0.2em] text-gold px-3 py-1 uppercase">핵심 진료</div>
-                <a href="/treatments/implant" class="font-semibold">✦ 수면임플란트</a>
-                <a href="/treatments/ortho" class="font-semibold">✦ 인비절라인 (교정)</a>
-                <a href="/treatments/lamineer" class="font-semibold">✦ 비니크 프리미엄 라미네이트</a>
-                <div class="h-px bg-brown-200 my-2"></div>
-                <div class="text-[10px] tracking-[0.2em] text-brown-500 px-3 py-1 uppercase">특화 진료</div>
-                <a href="/treatments/sleep-therapy">수면치료 시스템</a>
-                <a href="/treatments/painless-anesthesia">4단계 무통마취</a>
-                <a href="/treatments/airflow-gbt">에어플로우 (GBT)</a>
-                <a href="/treatments/pediatric-ortho">소아 교정장치</a>
-                <div class="h-px bg-brown-200 my-2"></div>
-                <div class="text-[10px] tracking-[0.2em] text-brown-500 px-3 py-1 uppercase">일반 진료</div>
-                <a href="/treatments/cavity-endo-crown">충치·신경치료·크라운</a>
-                <a href="/treatments/perio">치주치료</a>
-                <a href="/treatments/pediatric">소아치과</a>
-                <a href="/treatments/whitening">전문가 미백</a>
-                <a href="/treatments/icon-resin">아이콘 레진 (백반)</a>
-                <a href="/treatments/qray">Q-ray 정밀진단</a>
-                <a href="/treatments/in-house-lab">원내 디지털 기공실</a>
-                <div class="h-px bg-brown-200 my-2"></div>
-                <div class="text-[10px] tracking-[0.2em] text-brown-500 px-3 py-1 uppercase">더 보기</div>
-                <a href="/treatments/prosthetic">보철</a>
-                <a href="/treatments/prevention">예방치과</a>
-                <a href="/treatments/aesthetic">심미치료</a>
-                <a href="/treatments/conservative">보존치료</a>
-                <a href="/treatments">전체 진료</a>
+              <div class="mega-dropdown">
+                {/* Column 1 — 핵심 진료 */}
+                <div class="mega-col">
+                  <div class="mega-col-title is-core">핵심 진료</div>
+                  <a href="/treatments/implant" class="is-featured">✦ 수면임플란트</a>
+                  <a href="/treatments/ortho" class="is-featured">✦ 인비절라인 (교정)</a>
+                  <a href="/treatments/lamineer" class="is-featured">✦ 비니크 프리미엄 라미네이트</a>
+                </div>
+                {/* Column 2 — 특화 진료 */}
+                <div class="mega-col">
+                  <div class="mega-col-title is-sub">특화 진료</div>
+                  <a href="/treatments/sleep-therapy">수면치료 시스템</a>
+                  <a href="/treatments/painless-anesthesia">4단계 무통마취</a>
+                  <a href="/treatments/airflow-gbt">에어플로우 (GBT)</a>
+                  <a href="/treatments/pediatric-ortho">소아 교정장치</a>
+                </div>
+                {/* Column 3 — 일반 진료 (+ 더 보기 통합) */}
+                <div class="mega-col">
+                  <div class="mega-col-title is-sub">일반 진료</div>
+                  <a href="/treatments/cavity-endo-crown">충치·신경치료·크라운</a>
+                  <a href="/treatments/perio">치주치료</a>
+                  <a href="/treatments/pediatric">소아치과</a>
+                  <a href="/treatments/whitening">전문가 미백</a>
+                  <a href="/treatments/icon-resin">아이콘 레진 (백반)</a>
+                  <a href="/treatments/qray">Q-ray 정밀진단</a>
+                  <a href="/treatments/in-house-lab">원내 디지털 기공실</a>
+                  <a href="/treatments/prosthetic">보철</a>
+                  <a href="/treatments/prevention">예방치과</a>
+                  <a href="/treatments/aesthetic">심미치료</a>
+                  <a href="/treatments/conservative">보존치료</a>
+                  <div class="mega-col-divider"></div>
+                  <a href="/treatments" class="is-featured">전체 진료 보기 →</a>
+                </div>
               </div>
             </div>
             <div class="has-dropdown relative py-8">
