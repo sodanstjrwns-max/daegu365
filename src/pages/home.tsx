@@ -516,7 +516,7 @@ export const HomePage = () => (
             </p>
             {/* PPT 모바일 슬라이드 6 — 김성주 카드 하단 노란 tag 영역 모바일에서 숨김 (PC에서만 노출) */}
             <div class="hidden md:flex flex-wrap gap-3 mb-8 founder-tags">
-              <span class="tag tag-gold">서울대 치의학과</span>
+              <span class="tag tag-gold">경북대치과대학 외래교수</span>
               <span class="tag tag-gold">통합치의학과 전문의</span>
               <span class="tag tag-gold">수면임플란트</span>
               <span class="tag tag-gold">보철·보존 진료</span>

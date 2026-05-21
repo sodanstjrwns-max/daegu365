@@ -528,7 +528,7 @@ export const PainlessAnesthesiaTreatmentPage = ({
         name="김성주"
         position="대표원장 · 통합치의학과 전문의"
         quote={'주사의 공포는 의사의 의지로 줄일 수 있습니다.\n가글에서 본 마취까지 4단계로 쪼개면, 환자는 통증을 거의 느끼지 못합니다.'}
-        credentials={['서울대 치의학과', '통합치의학과 전문의', '4단계 무통마취 프로토콜 설계']}
+        credentials={['경북대치과대학 외래교수', '통합치의학과 전문의', '4단계 무통마취 프로토콜 설계']}
         treatmentLabel="4단계 무통마취"
       />
 

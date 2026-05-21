@@ -1014,7 +1014,7 @@ export const ComparisonTable = ({ title, headers, rows, caption }: {
  *    name="김성주"
  *    position="대표원장 · 통합치의학과 전문의"
  *    quote="환자분의 두려움에 공감하고, 꼭 필요한 정직한 치료만 권합니다."
- *    credentials={['서울대 치의학과', '통합치의학과 전문의']}
+ *    credentials={['경북대치과대학 외래교수', '통합치의학과 전문의']}
  *    treatmentLabel="수면임플란트"
  *  />
  */

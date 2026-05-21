@@ -818,7 +818,7 @@ export const ImplantTreatmentPage = ({
         name="김성주"
         position="대표원장 · 통합치의학과 전문의"
         quote={'환자를 웃게 만드는 유쾌함,\n그리고 그 웃음을 지켜내는 진중한 실력으로 모십니다.'}
-        credentials={['서울대 치의학과', '통합치의학과 전문의', '수면임플란트 평생 보증']}
+        credentials={['경북대치과대학 외래교수', '통합치의학과 전문의', '수면임플란트 평생 보증']}
         treatmentLabel="수면임플란트"
       />
 

@@ -272,7 +272,7 @@ export const ProstheticTreatmentPage = ({
         name="김성주"
         position="대표원장 · 통합치의학과 전문의"
         quote={'보철은 단순히 씌우는 일이 아닙니다.\n환자의 평생 저작 습관을 함께 설계해야 비로소 오래갑니다.'}
-        credentials={['서울대 치의학과', '통합치의학과 전문의', '원내 디지털 기공실 운영']}
+        credentials={['경북대치과대학 외래교수', '통합치의학과 전문의', '원내 디지털 기공실 운영']}
         treatmentLabel="보철"
       />
 

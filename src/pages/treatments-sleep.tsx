@@ -612,7 +612,7 @@ export const SleepTherapyTreatmentPage = ({
         name="김성주"
         position="대표원장 · 통합치의학과 전문의"
         quote={'치과공포증을 가졌던 의사로서, 두려움 없는 진료를 직접 설계했습니다.\n수면치료는 단순한 마취가 아니라, 환자의 기억을 바꾸는 시스템입니다.'}
-        credentials={['서울대 치의학과', '통합치의학과 전문의', '의식하 진정 시스템 설계']}
+        credentials={['경북대치과대학 외래교수', '통합치의학과 전문의', '의식하 진정 시스템 설계']}
         treatmentLabel="수면치료"
       />
 
