@@ -1,7 +1,8 @@
 import { Hono } from 'hono'
 import {
   renderer, SITE,
-  medicalProcedureSchema, physicianSchema, videoObjectSchema, articleSchema, caseStudySchema
+  medicalProcedureSchema, physicianSchema, videoObjectSchema, articleSchema, caseStudySchema,
+  dentistSchema, breadcrumbSchema
 } from './renderer'
 import type { Bindings } from './lib/types'
 import {
@@ -1336,24 +1337,141 @@ app.get('/play/rush', (c) => c.render(<PlayRushPage />, {
   ]
 }))
 
+// --- Region SEO hub page (/regions) ---
+app.get('/regions', async (c) => {
+  const [regions, treatments] = await Promise.all([
+    c.env.DB.prepare('SELECT slug, region_name, treatment_slug, h1, meta_description FROM region_seo ORDER BY region_name, treatment_slug').all(),
+    c.env.DB.prepare('SELECT slug, name FROM treatments').all(),
+  ])
+  const tNameBySlug: Record<string, string> = {}
+  ;(treatments.results as any[]).forEach((t: any) => { tNameBySlug[t.slug] = t.name })
+  // group by region
+  const byRegion: Record<string, any[]> = {}
+  ;(regions.results as any[]).forEach((r: any) => {
+    if (!byRegion[r.region_name]) byRegion[r.region_name] = []
+    byRegion[r.region_name].push(r)
+  })
+  const breadcrumb = [
+    { name: '홈', url: '/' },
+    { name: '지역별 진료', url: '/regions' }
+  ]
+  return c.render(
+    <>
+      <Navbar />
+      <section class="pt-20 pb-12 bg-cream">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+          <div class="section-label mb-6">REGIONAL DENTISTRY</div>
+          <h1 class="display text-4xl md:text-6xl font-light mb-6">대구 지역별 치과 진료 안내</h1>
+          <p class="text-brown-700 max-w-3xl mx-auto text-lg leading-relaxed">
+            대구 북구 침산동에 위치한 대구365치과는 대구 전역에서 환자분이 방문하시는 종합 치과입니다.
+            북구·수성구·중구·동구·서구·남구·달서구·달성군을 비롯한 대구 8개 자치구에서 가까운 진료 안내를 확인하실 수 있습니다.
+          </p>
+        </div>
+      </section>
+      <section class="py-16 max-w-6xl mx-auto px-6">
+        {Object.entries(byRegion).map(([region, items]) => (
+          <div class="mb-12">
+            <h2 class="display text-3xl font-medium mb-6 pb-3 border-b border-brown-200">{region}</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {(items as any[]).map((r: any) => (
+                <a href={`/region/${r.slug}`} class="lux-card hover:shadow-lg transition">
+                  <div class="text-xs text-brown-500 mb-2">{r.treatment_slug ? tNameBySlug[r.treatment_slug] || r.treatment_slug : '종합진료'}</div>
+                  <div class="display text-lg font-medium mb-1">{r.h1}</div>
+                  <div class="text-xs text-brown-600 line-clamp-2">{r.meta_description}</div>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+      <Footer />
+    </>,
+    {
+      title: '대구 지역별 치과 진료 안내 · 대구365치과',
+      description: '대구 북구·수성구·중구·동구·서구·남구·달서구·달성군 등 대구 전 지역에서 가까운 대구365치과 진료 안내. 임플란트·교정·라미네이트·미백 등 진료별 지역 정보.',
+      canonical: 'https://daegu365dc.kr/regions',
+      breadcrumb,
+      jsonLd: [dentistSchema(), breadcrumbSchema(breadcrumb)]
+    }
+  )
+})
+
 // --- Region SEO pages ---
 app.get('/region/:slug', async (c) => {
   const slug = c.req.param('slug')
   const r = await c.env.DB.prepare('SELECT * FROM region_seo WHERE slug=?').bind(slug).first<any>()
   if (!r) return c.notFound()
   await c.env.DB.prepare('UPDATE region_seo SET view_count=view_count+1 WHERE id=?').bind(r.id).run()
-  const treatments = await c.env.DB.prepare('SELECT * FROM treatments ORDER BY is_core DESC').all()
-  const doctors = await c.env.DB.prepare('SELECT * FROM doctors WHERE is_representative=1 OR display_order<=3').all()
+  const [treatments, doctors, mainTreatment, relatedRegions, relatedDictRows] = await Promise.all([
+    c.env.DB.prepare('SELECT * FROM treatments ORDER BY is_core DESC, display_order').all(),
+    c.env.DB.prepare('SELECT * FROM doctors WHERE is_representative=1 OR display_order<=3').all(),
+    r.treatment_slug
+      ? c.env.DB.prepare('SELECT * FROM treatments WHERE slug=?').bind(r.treatment_slug).first<any>()
+      : Promise.resolve(null),
+    c.env.DB.prepare('SELECT slug, region_name, treatment_slug, h1 FROM region_seo WHERE slug != ? ORDER BY (treatment_slug = ?) DESC, RANDOM() LIMIT 8')
+      .bind(slug, r.treatment_slug || '').all(),
+    r.treatment_slug
+      ? c.env.DB.prepare(`SELECT slug, term, short_desc FROM dictionary WHERE category=? OR related_treatments LIKE ? ORDER BY view_count DESC LIMIT 6`)
+          .bind(r.treatment_slug, `%${r.treatment_slug}%`).all()
+      : Promise.resolve({ results: [] }),
+  ])
+  const relatedDict = (relatedDictRows as any).results || []
+  const breadcrumb = [
+    { name: '홈', url: '/' },
+    { name: '지역별 진료', url: '/regions' },
+    ...(r.region_name ? [{ name: r.region_name, url: `/regions/${encodeURIComponent(r.region_name)}` }] : []),
+    { name: r.h1 || r.title, url: `/region/${slug}` }
+  ]
+  // Schema.org JSON-LD package
+  const procedureSchema = mainTreatment ? {
+    "@context": "https://schema.org",
+    "@type": "MedicalProcedure",
+    "@id": `${SITE.url}/region/${slug}#procedure`,
+    "name": `${r.region_name} ${mainTreatment.name}`,
+    "description": r.meta_description,
+    "url": `${SITE.url}/region/${slug}`,
+    "performer": { "@id": `${SITE.url}/#dentist` },
+    "availableService": { "@id": `${SITE.url}/#dentist` },
+    "bodyLocation": "치아 및 구강",
+  } : null
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "@id": `${SITE.url}/region/${slug}#webpage`,
+    "url": `${SITE.url}/region/${slug}`,
+    "name": r.title,
+    "description": r.meta_description,
+    "inLanguage": "ko-KR",
+    "isPartOf": { "@id": `${SITE.url}/#website` },
+    "about": { "@id": `${SITE.url}/#dentist` },
+    "primaryImageOfPage": `${SITE.url}/api/og.png?type=default`,
+    "specialty": "Dentistry",
+    "audience": {
+      "@type": "MedicalAudience",
+      "audienceType": "Patient",
+      "geographicArea": {
+        "@type": "AdministrativeArea",
+        "name": r.region_name
+      }
+    }
+  }
+  const jsonLd: any[] = [dentistSchema(), webPageSchema, breadcrumbSchema(breadcrumb)]
+  if (procedureSchema) jsonLd.push(procedureSchema)
   return c.render(
-    <RegionSEOInline r={r} treatments={treatments.results as any} doctors={doctors.results as any} />,
+    <RegionSEOInline
+      r={r}
+      treatments={treatments.results as any}
+      doctors={doctors.results as any}
+      mainTreatment={mainTreatment}
+      relatedRegions={(relatedRegions as any).results || []}
+      relatedDict={relatedDict}
+    />,
     {
       title: r.title, description: r.meta_description,
       canonical: `https://daegu365dc.kr/region/${slug}`,
-      breadcrumb: [
-        { name: '홈', url: '/' },
-        { name: '지역별 진료', url: '/' },
-        { name: r.h1 || r.title, url: `/region/${slug}` }
-      ]
+      breadcrumb,
+      jsonLd,
+      schemaType: 'MedicalWebPage'
     }
   )
 })
@@ -2503,6 +2621,7 @@ app.get('/sitemap-main.xml', async (c) => {
   addUrl('/directions', '0.7', 'yearly')
   addUrl('/hours', '0.6', 'yearly')
   addUrl('/fees', '0.7', 'monthly')
+  addUrl('/regions', '0.9', 'weekly')
 
   ;(doctors.results as any[]).forEach((d: any) =>
     addUrl(`/doctors/${d.slug}`, '0.85', 'monthly', sitemapIso(d.created_at),
@@ -2515,7 +2634,7 @@ app.get('/sitemap-main.xml', async (c) => {
     addUrl(`/notices/${n.id}`, '0.6', 'monthly', sitemapIso(n.updated_at || n.created_at))
   )
   ;(regions.results as any[]).forEach((r: any) =>
-    addUrl(`/region/${r.slug}`, '0.7', 'monthly', sitemapIso(r.created_at))
+    addUrl(`/region/${r.slug}`, '0.85', 'weekly', sitemapIso(r.created_at))
   )
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -2614,29 +2733,155 @@ ${urls.join('\n')}
 })
 
 // ============ Region SEO inline component ============
-function RegionSEOInline({ r, treatments, doctors }: any) {
+function RegionSEOInline({ r, treatments, doctors, mainTreatment, relatedRegions, relatedDict }: any) {
   return (
     <>
       <Navbar />
       <section class="pt-20 pb-12 bg-cream">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-          <div class="section-label mb-6">REGIONAL</div>
-          <h1 class="display text-5xl md:text-7xl font-light mb-6 fade-in">{r.h1}</h1>
-          <p class="text-brown-700 max-w-2xl mx-auto fade-in">{r.meta_description}</p>
+        <div class="max-w-5xl mx-auto px-6">
+          <nav class="text-xs text-brown-500 mb-6">
+            <a href="/" class="hover:text-brown-900">홈</a>
+            <span class="mx-2">›</span>
+            <a href="/regions" class="hover:text-brown-900">지역별 진료</a>
+            <span class="mx-2">›</span>
+            <span class="text-brown-700">{r.region_name}</span>
+            {mainTreatment && (<>
+              <span class="mx-2">›</span>
+              <span class="text-brown-900">{mainTreatment.name}</span>
+            </>)}
+          </nav>
+          <div class="section-label mb-6">REGIONAL · {r.region_name}</div>
+          <h1 class="display text-4xl md:text-6xl font-light mb-6 fade-in">{r.h1}</h1>
+          <p class="text-brown-700 max-w-3xl text-lg leading-relaxed fade-in">{r.meta_description}</p>
+          <div class="mt-8 flex flex-wrap gap-3 text-sm">
+            <a href="tel:053-357-0365" class="px-5 py-2.5 rounded-full bg-brown-900 text-ivory hover:bg-brown-800 transition">
+              📞 053-357-0365 전화상담
+            </a>
+            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-full bg-gold text-brown-900 hover:bg-gold-dark transition">
+              네이버 예약
+            </a>
+            <a href="/directions" class="px-5 py-2.5 rounded-full border border-brown-300 text-brown-700 hover:bg-brown-100 transition">
+              오시는 길
+            </a>
+          </div>
         </div>
       </section>
+
+      {/* Main content */}
       <section class="py-16 max-w-4xl mx-auto px-6 prose-dental fade-in" dangerouslySetInnerHTML={{__html: r.content}}></section>
 
+      {/* Main treatment CTA — if linked to a treatment */}
+      {mainTreatment && (
+        <section class="py-12 bg-brown-50">
+          <div class="max-w-4xl mx-auto px-6">
+            <div class="lux-card flex flex-col md:flex-row gap-6 items-start md:items-center">
+              <div class="flex-1">
+                <div class="text-xs text-brown-500 mb-2">{r.region_name} 환자분께 추천드리는 진료</div>
+                <h2 class="display text-2xl md:text-3xl font-medium mb-3">{mainTreatment.name}</h2>
+                <p class="text-brown-700">{mainTreatment.short_desc}</p>
+              </div>
+              <a href={`/treatments/${mainTreatment.slug}`} class="px-6 py-3 rounded-full bg-brown-900 text-ivory hover:bg-brown-800 transition whitespace-nowrap">
+                자세히 보기 →
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Clinic info card */}
+      <section class="py-16 max-w-5xl mx-auto px-6">
+        <h2 class="display text-3xl font-light mb-8">{r.region_name}에서 대구365치과까지</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="lux-card">
+            <h3 class="display text-xl font-medium mb-4">병원 정보</h3>
+            <dl class="space-y-3 text-sm">
+              <div class="flex"><dt class="w-20 text-brown-500">주소</dt><dd class="flex-1 text-brown-800">{SITE.address}</dd></div>
+              <div class="flex"><dt class="w-20 text-brown-500">전화</dt><dd class="flex-1 text-brown-800"><a href={`tel:${SITE.phone}`} class="hover:text-gold">{SITE.phone}</a></dd></div>
+              <div class="flex"><dt class="w-20 text-brown-500">평일</dt><dd class="flex-1 text-brown-800">월·목 09:30–21:00 · 화·수·금 09:30–18:30</dd></div>
+              <div class="flex"><dt class="w-20 text-brown-500">주말</dt><dd class="flex-1 text-brown-800">토·일 09:30–17:00</dd></div>
+              <div class="flex"><dt class="w-20 text-brown-500">주차</dt><dd class="flex-1 text-brown-800">건물 주차장 이용 가능</dd></div>
+            </dl>
+          </div>
+          <div class="lux-card">
+            <h3 class="display text-xl font-medium mb-4">{r.region_name}에서 오시는 길</h3>
+            <p class="text-brown-700 text-sm leading-relaxed">
+              대구365치과는 <strong>대구 북구 침산동 엠브로스퀘어 7층</strong>에 위치한 400평 규모의 종합 치과입니다.
+              {r.region_name === '침산동' && ' 침산동 거주 환자분은 도보 또는 자전거로 5~10분 내 방문 가능합니다.'}
+              {r.region_name === '북구' && ' 북구 내에서는 자가용·버스로 10~20분, 도시철도 이용 시 대구역에서 환승하여 접근 가능합니다.'}
+              {r.region_name === '수성구' && ' 수성구에서 자가용으로 20~30분, 신천대로·동대구로를 이용하면 편리하게 방문하실 수 있습니다.'}
+              {r.region_name === '범어동' && ' 범어동에서 자가용 20~25분, 동대구로를 통해 빠르게 접근 가능합니다.'}
+              {r.region_name === '중구' && ' 중구에서 자가용·버스로 10~15분, 도시철도 1호선 대구역 방면으로 쉽게 오실 수 있습니다.'}
+              {r.region_name === '동구' && ' 동구에서 자가용으로 15~25분, 동북로·신천대로를 이용하시면 편리합니다.'}
+              {r.region_name === '서구' && ' 서구에서 자가용으로 10~20분, 침산교를 건너 바로 도달 가능합니다.'}
+              {r.region_name === '남구' && ' 남구에서 자가용으로 20~30분, 신천대로를 따라 북상하시면 됩니다.'}
+              {r.region_name === '달서구' && ' 달서구에서 자가용으로 25~35분, 와룡로·서대구IC를 거쳐 오시면 편리합니다.'}
+              {r.region_name === '달성군' && ' 달성군에서 자가용으로 30~40분, 중부내륙고속도로·서대구IC를 통해 접근 가능합니다.'}
+              {r.region_name === '대구' && ' 대구 전역에서 자가용 30분 내 접근이 가능한 위치입니다.'}
+              {r.region_name === '산격동' && ' 산격동에서 도보·자가용으로 5~10분 내 도착 가능한 가까운 거리입니다.'}
+            </p>
+            <a href="/directions" class="inline-block mt-4 text-sm text-gold hover:text-gold-dark">오시는 길 자세히 →</a>
+          </div>
+        </div>
+      </section>
+
+      {/* Core treatments showcase */}
       <section class="py-16 bg-cream">
         <div class="max-w-7xl mx-auto px-6">
-          <h2 class="display text-3xl font-light mb-8">주요 진료</h2>
+          <h2 class="display text-3xl font-light mb-8">{r.region_name} 환자분이 자주 찾는 진료</h2>
           <div class="grid md:grid-cols-3 gap-4">
-            {treatments.filter((t: any) => t.is_core).map((t: any) => (
-              <a href={`/treatments/${t.slug}`} class="lux-card">
-                <div class="display text-2xl font-medium mb-2">{t.name}</div>
+            {treatments.filter((t: any) => t.is_core).slice(0, 6).map((t: any) => (
+              <a href={`/treatments/${t.slug}`} class="lux-card hover:shadow-lg transition">
+                <div class="display text-xl font-medium mb-2">{t.name}</div>
                 <p class="text-brown-700 text-sm">{t.short_desc}</p>
+                <div class="mt-3 text-xs text-gold">자세히 보기 →</div>
               </a>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Related dictionary terms — internal linking gold */}
+      {relatedDict && relatedDict.length > 0 && (
+        <section class="py-16 max-w-5xl mx-auto px-6">
+          <h2 class="display text-3xl font-light mb-8">관련 치과 용어</h2>
+          <div class="grid md:grid-cols-2 gap-3">
+            {relatedDict.map((d: any) => (
+              <a href={`/dictionary/${d.slug}`} class="p-5 rounded-xl bg-cream hover:bg-brown-100 transition">
+                <div class="display text-lg font-medium mb-1">{d.term}</div>
+                <div class="text-xs text-brown-600 line-clamp-2">{d.short_desc}</div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Related regional pages — hub-and-spoke */}
+      {relatedRegions && relatedRegions.length > 0 && (
+        <section class="py-16 bg-brown-50">
+          <div class="max-w-5xl mx-auto px-6">
+            <h2 class="display text-3xl font-light mb-8">관련 지역별 진료 안내</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+              {relatedRegions.map((rr: any) => (
+                <a href={`/region/${rr.slug}`} class="p-4 rounded-xl bg-ivory border border-brown-200 hover:border-gold hover:shadow-md transition">
+                  <div class="text-xs text-brown-500 mb-1">{rr.region_name}</div>
+                  <div class="display font-medium text-sm">{rr.h1}</div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Final CTA */}
+      <section class="py-20 bg-brown-900 text-ivory text-center">
+        <div class="max-w-3xl mx-auto px-6">
+          <h2 class="display text-3xl md:text-4xl font-light mb-4">
+            {r.region_name}에서 가까운 대구365치과
+          </h2>
+          <p class="text-brown-200 mb-8">평일 야간진료 (월·목 21시까지) · 주말 진료 · 무료 주차</p>
+          <div class="flex flex-wrap justify-center gap-3">
+            <a href={`tel:${SITE.phone}`} class="px-6 py-3 rounded-full bg-gold text-brown-900 hover:bg-gold-dark transition">📞 {SITE.phone}</a>
+            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="px-6 py-3 rounded-full border border-ivory text-ivory hover:bg-ivory hover:text-brown-900 transition">네이버 예약</a>
           </div>
         </div>
       </section>
