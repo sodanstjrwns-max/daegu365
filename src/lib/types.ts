@@ -97,6 +97,13 @@ export type DictEntry = {
   category: string
   short_desc: string
   full_desc: string
+  long_desc?: string | null
+  key_points?: string | null
+  usage_context?: string | null
+  cautions?: string | null
+  faq_json?: string | null
+  ai_generated_at?: string | null
+  ai_model?: string | null
   related_treatments: string
   view_count: number
 }

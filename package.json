@@ -13,6 +13,8 @@
   "dependencies": {
     "@resvg/resvg-wasm": "^2.6.2",
     "hono": "^4.12.12",
+    "js-yaml": "^4.1.1",
+    "openai": "^6.39.0",
     "satori": "^0.26.0"
   },
   "devDependencies": {

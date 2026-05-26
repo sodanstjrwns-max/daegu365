@@ -192,8 +192,11 @@ export const DictionaryDetailPage = ({
         {entry.short_desc}
       </p>
 
-      <div class="prose-dental text-brown-700">
-        <p>{entry.full_desc}</p>
+      <div class="prose-dental text-brown-700 space-y-5 leading-loose">
+        <p class="text-lg">{entry.full_desc}</p>
+        {entry.long_desc && entry.long_desc.split(/\n\n+/).map(para => (
+          <p>{para}</p>
+        ))}
       </div>
 
       {relatedTreatments.length > 0 && (
