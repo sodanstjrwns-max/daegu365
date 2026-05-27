@@ -2341,7 +2341,7 @@ app.get('/admin/seo', async (c) => {
     ba: baCount?.n || 0,
     doctors: doctorCount?.n || 0,
     treatments: treatmentCount?.n || 0,
-    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-blog.xml', 'sitemap-cases.xml', 'sitemap-content.xml']
+    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-regions.xml', 'sitemap-blog.xml', 'sitemap-cases.xml', 'sitemap-content.xml']
   }
   return c.render(<AdminSeoGuidePage stats={stats} />, { title: 'Admin · SEO 가이드', robots: 'noindex,nofollow' })
 })
@@ -2497,6 +2497,11 @@ app.get('/robots.txt', (c) => {
     'Allow: /',
     '',
     `Sitemap: ${SITE.url}/sitemap.xml`,
+    `Sitemap: ${SITE.url}/sitemap-main.xml`,
+    `Sitemap: ${SITE.url}/sitemap-regions.xml`,
+    `Sitemap: ${SITE.url}/sitemap-blog.xml`,
+    `Sitemap: ${SITE.url}/sitemap-cases.xml`,
+    `Sitemap: ${SITE.url}/sitemap-content.xml`,
     `Host: ${SITE.url.replace(/^https?:\/\//, '')}`,
     ''
   ].join('\n')
@@ -2581,28 +2586,79 @@ const xmlEscape = (s: any): string => {
 }
 
 // ============ Sitemap Index ============
+// sitemap-regions 분리 (지역 SEO 색인 가속) + lastmod 최신값 사용
 app.get('/sitemap.xml', async (c) => {
   const base = SITE.url
   const today = new Date().toISOString().substring(0, 10)
+
+  // 각 sub-sitemap 의 가장 최근 lastmod 를 추적 (테이블별 안전 fallback)
+  let lastmodMain = today, lastmodBlog = today, lastmodCases = today
+  let lastmodContent = today, lastmodRegions = today
+  const safeMax = async (sql: string, fb: string) => {
+    try {
+      const r = await c.env.DB.prepare(sql).first<any>()
+      return r?.m ? sitemapIso(r.m) : today
+    } catch {
+      try {
+        const r = await c.env.DB.prepare(fb).first<any>()
+        return r?.m ? sitemapIso(r.m) : today
+      } catch { return today }
+    }
+  }
+  try {
+    const [tMain1, tMain2, tBlog, tCases, tDict, tReg] = await Promise.all([
+      safeMax('SELECT MAX(updated_at) as m FROM doctors', 'SELECT MAX(created_at) as m FROM doctors'),
+      safeMax('SELECT MAX(updated_at) as m FROM treatments', 'SELECT MAX(created_at) as m FROM treatments'),
+      safeMax('SELECT MAX(updated_at) as m FROM blog_posts WHERE is_published=1', 'SELECT MAX(created_at) as m FROM blog_posts WHERE is_published=1'),
+      safeMax('SELECT MAX(updated_at) as m FROM before_afters WHERE is_published=1', 'SELECT MAX(created_at) as m FROM before_afters WHERE is_published=1'),
+      safeMax('SELECT MAX(updated_at) as m FROM dictionary', 'SELECT MAX(created_at) as m FROM dictionary'),
+      safeMax('SELECT MAX(updated_at) as m FROM region_seo', 'SELECT MAX(created_at) as m FROM region_seo'),
+    ])
+    lastmodMain = [tMain1, tMain2].sort().reverse()[0] || today
+    lastmodBlog = tBlog
+    lastmodCases = tCases
+    lastmodContent = tDict
+    lastmodRegions = tReg
+  } catch (e) {
+    // ignore
+  }
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap><loc>${base}/sitemap-main.xml</loc><lastmod>${today}</lastmod></sitemap>
-  <sitemap><loc>${base}/sitemap-blog.xml</loc><lastmod>${today}</lastmod></sitemap>
-  <sitemap><loc>${base}/sitemap-cases.xml</loc><lastmod>${today}</lastmod></sitemap>
-  <sitemap><loc>${base}/sitemap-content.xml</loc><lastmod>${today}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-main.xml</loc><lastmod>${lastmodMain}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-regions.xml</loc><lastmod>${lastmodRegions}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-blog.xml</loc><lastmod>${lastmodBlog}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-cases.xml</loc><lastmod>${lastmodCases}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-content.xml</loc><lastmod>${lastmodContent}</lastmod></sitemap>
 </sitemapindex>`
-  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+  return c.text(xml, 200, {
+    'Content-Type': 'application/xml; charset=utf-8',
+    'Cache-Control': 'public, max-age=3600'
+  })
 })
 
-// ============ Sitemap: Main (static + doctors + treatments + notices + regions) ============
+// ============ Sitemap: Main (static + doctors + treatments + notices) ============
+// 핵심 진료(is_core=1)는 priority 0.95, 일반 진료는 0.85, 변경 빈도 가속
 app.get('/sitemap-main.xml', async (c) => {
   const base = SITE.url
   const today = new Date().toISOString().substring(0, 10)
-  const [doctors, treatments, notices, regions] = await Promise.all([
-    c.env.DB.prepare('SELECT slug, name, photo_url, created_at FROM doctors').all(),
-    c.env.DB.prepare('SELECT slug, created_at FROM treatments').all(),
-    c.env.DB.prepare('SELECT id, updated_at, created_at FROM notices WHERE is_published=1').all(),
-    c.env.DB.prepare('SELECT slug, created_at FROM region_seo').all(),
+  // updated_at 컬럼 존재 여부에 따라 fallback (doctors/treatments 는 created_at 만 있음)
+  const safeSelect = async (sql: string, fallback: string) => {
+    try { return await c.env.DB.prepare(sql).all() } catch { return await c.env.DB.prepare(fallback).all() }
+  }
+  const [doctors, treatments, notices] = await Promise.all([
+    safeSelect(
+      'SELECT slug, name, photo_url, COALESCE(updated_at, created_at) as lastmod FROM doctors',
+      'SELECT slug, name, photo_url, created_at as lastmod FROM doctors'
+    ),
+    safeSelect(
+      'SELECT slug, name, COALESCE(is_core, 0) as is_core, COALESCE(updated_at, created_at) as lastmod FROM treatments',
+      'SELECT slug, name, COALESCE(is_core, 0) as is_core, created_at as lastmod FROM treatments'
+    ),
+    safeSelect(
+      'SELECT id, COALESCE(updated_at, created_at) as lastmod FROM notices WHERE is_published=1',
+      'SELECT id, created_at as lastmod FROM notices WHERE is_published=1'
+    ),
   ])
 
   const urls: string[] = []
@@ -2611,37 +2667,80 @@ app.get('/sitemap-main.xml', async (c) => {
     urls.push(`  <url><loc>${base}${loc}</loc><lastmod>${lastmod}</lastmod><priority>${pri}</priority><changefreq>${chf}</changefreq>${img}</url>`)
   }
 
-  addUrl('/', '1.0', 'daily')
-  addUrl('/mission', '0.9', 'monthly')
-  addUrl('/doctors', '0.9', 'monthly')
-  addUrl('/treatments', '0.9', 'monthly')
-  addUrl('/before-after', '0.9', 'weekly')
-  addUrl('/blog', '0.9', 'weekly')
-  addUrl('/notices', '0.7', 'weekly')
-  addUrl('/directions', '0.7', 'yearly')
-  addUrl('/hours', '0.6', 'yearly')
-  addUrl('/fees', '0.7', 'monthly')
-  addUrl('/regions', '0.9', 'weekly')
+  // 정적 진입 페이지
+  addUrl('/',             '1.0',  'daily')
+  addUrl('/mission',      '0.9',  'monthly')
+  addUrl('/doctors',      '0.9',  'monthly')
+  addUrl('/treatments',   '0.95', 'weekly')
+  addUrl('/before-after', '0.9',  'weekly')
+  addUrl('/blog',         '0.9',  'weekly')
+  addUrl('/notices',      '0.7',  'weekly')
+  addUrl('/directions',   '0.7',  'yearly')
+  addUrl('/hours',        '0.6',  'yearly')
+  addUrl('/fees',         '0.85', 'monthly')
+  addUrl('/dictionary',   '0.85', 'weekly')
+  addUrl('/faq',          '0.85', 'monthly')
+  addUrl('/regions',      '0.95', 'weekly')
 
+  // 의료진
   ;(doctors.results as any[]).forEach((d: any) =>
-    addUrl(`/doctors/${d.slug}`, '0.85', 'monthly', sitemapIso(d.created_at),
+    addUrl(`/doctors/${d.slug}`, '0.85', 'monthly', sitemapIso(d.lastmod),
       d.photo_url ? { url: d.photo_url, title: `${d.name} 원장`, caption: `대구365치과 ${d.name} 원장` } : undefined)
   )
-  ;(treatments.results as any[]).forEach((t: any) =>
-    addUrl(`/treatments/${t.slug}`, '0.9', 'monthly', sitemapIso(t.created_at))
-  )
+  // 진료(핵심진료는 priority/changefreq 가속)
+  ;(treatments.results as any[]).forEach((t: any) => {
+    const pri = t.is_core ? '0.95' : '0.85'
+    const chf = t.is_core ? 'weekly' : 'monthly'
+    addUrl(`/treatments/${t.slug}`, pri, chf, sitemapIso(t.lastmod))
+  })
+  // 공지
   ;(notices.results as any[]).forEach((n: any) =>
-    addUrl(`/notices/${n.id}`, '0.6', 'monthly', sitemapIso(n.updated_at || n.created_at))
-  )
-  ;(regions.results as any[]).forEach((r: any) =>
-    addUrl(`/region/${r.slug}`, '0.85', 'weekly', sitemapIso(r.created_at))
+    addUrl(`/notices/${n.id}`, '0.6', 'monthly', sitemapIso(n.lastmod))
   )
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls.join('\n')}
 </urlset>`
-  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+  return c.text(xml, 200, {
+    'Content-Type': 'application/xml; charset=utf-8',
+    'Cache-Control': 'public, max-age=3600'
+  })
+})
+
+// ============ Sitemap: Regions (지역×진료 랜딩페이지 전용 — 색인 가속) ============
+// 별도 분리하여 Google 이 region 전체를 한 번에 인식하도록
+app.get('/sitemap-regions.xml', async (c) => {
+  const base = SITE.url
+  const today = new Date().toISOString().substring(0, 10)
+
+  let regions: any
+  try {
+    regions = await c.env.DB.prepare(
+      'SELECT slug, region_name, treatment_slug, title, COALESCE(updated_at, created_at) as lastmod FROM region_seo ORDER BY region_name, treatment_slug'
+    ).all()
+  } catch {
+    regions = await c.env.DB.prepare(
+      'SELECT slug, region_name, treatment_slug, title, created_at as lastmod FROM region_seo ORDER BY region_name, treatment_slug'
+    ).all()
+  }
+
+  const urls: string[] = []
+  // 허브 페이지
+  urls.push(`  <url><loc>${base}/regions</loc><lastmod>${today}</lastmod><priority>0.95</priority><changefreq>weekly</changefreq></url>`)
+
+  ;(regions.results as any[]).forEach((r: any) => {
+    urls.push(`  <url><loc>${base}/region/${r.slug}</loc><lastmod>${sitemapIso(r.lastmod)}</lastmod><priority>0.9</priority><changefreq>weekly</changefreq></url>`)
+  })
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join('\n')}
+</urlset>`
+  return c.text(xml, 200, {
+    'Content-Type': 'application/xml; charset=utf-8',
+    'Cache-Control': 'public, max-age=3600'
+  })
 })
 
 // ============ Sitemap: Blog ============
@@ -2651,11 +2750,11 @@ app.get('/sitemap-blog.xml', async (c) => {
   let blogs: any
   try {
     blogs = await c.env.DB.prepare(
-      'SELECT slug, title, og_image, thumbnail_url, updated_at, created_at FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0'
+      'SELECT slug, title, og_image, thumbnail_url, COALESCE(updated_at, created_at) as lastmod FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0 ORDER BY COALESCE(updated_at, created_at) DESC'
     ).all()
   } catch {
     blogs = await c.env.DB.prepare(
-      'SELECT slug, title, thumbnail_url, updated_at, created_at FROM blog_posts WHERE is_published=1'
+      'SELECT slug, title, thumbnail_url, created_at as lastmod FROM blog_posts WHERE is_published=1'
     ).all()
   }
 
@@ -2665,14 +2764,17 @@ app.get('/sitemap-blog.xml', async (c) => {
     const img = imgUrl
       ? `\n    <image:image><image:loc>${xmlEscape(imgUrl)}</image:loc><image:title>${xmlEscape(b.title)}</image:title><image:caption>${xmlEscape(b.title)} - 대구365치과 컬럼</image:caption></image:image>`
       : ''
-    urls.push(`  <url><loc>${base}/blog/${b.slug}</loc><lastmod>${sitemapIso(b.updated_at || b.created_at)}</lastmod><priority>0.85</priority><changefreq>weekly</changefreq>${img}</url>`)
+    urls.push(`  <url><loc>${base}/blog/${b.slug}</loc><lastmod>${sitemapIso(b.lastmod)}</lastmod><priority>0.85</priority><changefreq>weekly</changefreq>${img}</url>`)
   })
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls.join('\n')}
 </urlset>`
-  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+  return c.text(xml, 200, {
+    'Content-Type': 'application/xml; charset=utf-8',
+    'Cache-Control': 'public, max-age=3600'
+  })
 })
 
 // ============ Sitemap: Before & After Cases ============
@@ -2681,11 +2783,11 @@ app.get('/sitemap-cases.xml', async (c) => {
   let ba: any
   try {
     ba = await c.env.DB.prepare(
-      'SELECT id, title, og_image, intra_before_url, intra_after_url, pano_before_url, pano_after_url, before_alt, after_alt, treatment_slug, updated_at, created_at FROM before_afters WHERE is_published=1 AND COALESCE(noindex,0)=0'
+      'SELECT id, title, og_image, intra_before_url, intra_after_url, pano_before_url, pano_after_url, before_alt, after_alt, treatment_slug, COALESCE(updated_at, created_at) as lastmod FROM before_afters WHERE is_published=1 AND COALESCE(noindex,0)=0 ORDER BY COALESCE(updated_at, created_at) DESC'
     ).all()
   } catch {
     ba = await c.env.DB.prepare(
-      'SELECT id, title, intra_before_url, intra_after_url, pano_before_url, pano_after_url, treatment_slug, created_at FROM before_afters WHERE is_published=1'
+      'SELECT id, title, intra_before_url, intra_after_url, pano_before_url, pano_after_url, treatment_slug, created_at as lastmod FROM before_afters WHERE is_published=1'
     ).all()
   }
 
@@ -2702,34 +2804,45 @@ app.get('/sitemap-cases.xml', async (c) => {
     if (beforeUrl) push(beforeUrl, b.before_alt || `${b.title || '치료 전'} 비포`, b.before_alt || `${b.title || ''} 치료 전 사진`)
     if (afterUrl) push(afterUrl, b.after_alt || `${b.title || '치료 후'} 애프터`, b.after_alt || `${b.title || ''} 치료 후 사진`)
     const imgXml = images.length ? '\n' + images.join('\n') : ''
-    urls.push(`  <url><loc>${base}/before-after/${b.id}</loc><lastmod>${sitemapIso(b.updated_at || b.created_at)}</lastmod><priority>0.85</priority><changefreq>monthly</changefreq>${imgXml}</url>`)
+    urls.push(`  <url><loc>${base}/before-after/${b.id}</loc><lastmod>${sitemapIso(b.lastmod)}</lastmod><priority>0.85</priority><changefreq>monthly</changefreq>${imgXml}</url>`)
   })
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls.join('\n')}
 </urlset>`
-  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+  return c.text(xml, 200, {
+    'Content-Type': 'application/xml; charset=utf-8',
+    'Cache-Control': 'public, max-age=3600'
+  })
 })
 
-// ============ Sitemap: Content (Dictionary + FAQ) ============
+// ============ Sitemap: Content (Dictionary 500개) ============
+// FAQ 는 단일 페이지(/faq)이므로 sitemap-main 에 포함됨
 app.get('/sitemap-content.xml', async (c) => {
   const base = SITE.url
-  const today = new Date().toISOString().substring(0, 10)
-  const dict = await c.env.DB.prepare('SELECT slug, created_at FROM dictionary').all()
+  let dict: any
+  try {
+    dict = await c.env.DB.prepare(
+      'SELECT slug, COALESCE(updated_at, created_at) as lastmod FROM dictionary ORDER BY COALESCE(updated_at, created_at) DESC'
+    ).all()
+  } catch {
+    dict = await c.env.DB.prepare('SELECT slug, created_at as lastmod FROM dictionary').all()
+  }
 
   const urls: string[] = []
-  urls.push(`  <url><loc>${base}/dictionary</loc><lastmod>${today}</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>`)
-  urls.push(`  <url><loc>${base}/faq</loc><lastmod>${today}</lastmod><priority>0.8</priority><changefreq>monthly</changefreq></url>`)
   ;(dict.results as any[]).forEach((d: any) =>
-    urls.push(`  <url><loc>${base}/dictionary/${d.slug}</loc><lastmod>${sitemapIso(d.created_at)}</lastmod><priority>0.6</priority><changefreq>monthly</changefreq></url>`)
+    urls.push(`  <url><loc>${base}/dictionary/${d.slug}</loc><lastmod>${sitemapIso(d.lastmod)}</lastmod><priority>0.65</priority><changefreq>monthly</changefreq></url>`)
   )
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.join('\n')}
 </urlset>`
-  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+  return c.text(xml, 200, {
+    'Content-Type': 'application/xml; charset=utf-8',
+    'Cache-Control': 'public, max-age=3600'
+  })
 })
 
 // ============ Region SEO inline component ============
