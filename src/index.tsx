@@ -2828,6 +2828,14 @@ ${urls.join('\n')}
 // ============ Sitemap: Blog ============
 app.get('/sitemap-blog.xml', async (c) => {
   const base = SITE.url
+  // Sitemap protocol: <image:loc> MUST be absolute URL (https://...)
+  const absUrl = (u: string | null | undefined): string => {
+    if (!u) return ''
+    if (/^https?:\/\//i.test(u)) return u
+    if (u.startsWith('//')) return 'https:' + u
+    if (u.startsWith('/')) return base + u
+    return base + '/' + u
+  }
   // noindex 컬럼 없을 수도 있어 COALESCE 보호
   let blogs: any
   try {
@@ -2842,7 +2850,7 @@ app.get('/sitemap-blog.xml', async (c) => {
 
   const urls: string[] = []
   ;(blogs.results as any[]).forEach((b: any) => {
-    const imgUrl = b.og_image || b.thumbnail_url
+    const imgUrl = absUrl(b.og_image || b.thumbnail_url)
     const img = imgUrl
       ? `\n    <image:image><image:loc>${xmlEscape(imgUrl)}</image:loc><image:title>${xmlEscape(b.title)}</image:title><image:caption>${xmlEscape(b.title)} - 대구365치과 컬럼</image:caption></image:image>`
       : ''
@@ -2862,6 +2870,14 @@ ${urls.join('\n')}
 // ============ Sitemap: Before & After Cases ============
 app.get('/sitemap-cases.xml', async (c) => {
   const base = SITE.url
+  // Sitemap protocol: <image:loc> MUST be absolute URL (https://...)
+  const absUrl = (u: string | null | undefined): string => {
+    if (!u) return ''
+    if (/^https?:\/\//i.test(u)) return u
+    if (u.startsWith('//')) return 'https:' + u
+    if (u.startsWith('/')) return base + u
+    return base + '/' + u
+  }
   let ba: any
   try {
     ba = await c.env.DB.prepare(
@@ -2877,8 +2893,9 @@ app.get('/sitemap-cases.xml', async (c) => {
   ;(ba.results as any[]).forEach((b: any) => {
     const images: string[] = []
     const push = (url: string, title: string, caption: string) => {
-      if (!url) return
-      images.push(`    <image:image><image:loc>${xmlEscape(url)}</image:loc><image:title>${xmlEscape(title)}</image:title><image:caption>${xmlEscape(caption)}</image:caption></image:image>`)
+      const abs = absUrl(url)
+      if (!abs) return
+      images.push(`    <image:image><image:loc>${xmlEscape(abs)}</image:loc><image:title>${xmlEscape(title)}</image:title><image:caption>${xmlEscape(caption)}</image:caption></image:image>`)
     }
     if (b.og_image) push(b.og_image, b.title || '치료 전후 사례', `${b.title || '치료 전후'} - 대구365치과 비포애프터`)
     const beforeUrl = b.intra_before_url || b.pano_before_url
