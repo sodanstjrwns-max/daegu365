@@ -1248,6 +1248,59 @@ app.get('/dictionary/:slug', async (c) => {
   }
   const relatedEntries = await c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? AND id!=? ORDER BY RANDOM() LIMIT 6').bind(entry.category, entry.id).all()
 
+  // FAQ schema: related_treatments에 매핑되는 진료 FAQ 자동 주입 (rich result)
+  // dictionary의 related_treatments → faqs.treatment_slug 매핑
+  const dictFaqMap: Record<string, string> = {
+    'prosthetics': 'prosthetic',
+    'pediatrics': 'pediatric',
+    'orthodontics': 'ortho',
+    'periodontics': 'perio',
+    'cavity': 'cavity-endo-crown',
+    'endodontics': 'cavity-endo-crown',
+    'cosmetic': 'aesthetic',
+    'veneer': 'lamineer',
+  }
+  const mappedSlugs = relSlugs.map(s => dictFaqMap[s] || s)
+  let dictFaqList: any[] = []
+  if (mappedSlugs.length) {
+    const ph = mappedSlugs.map(() => '?').join(',')
+    try {
+      const faqRes = await c.env.DB.prepare(
+        `SELECT question, answer FROM faqs WHERE treatment_slug IN (${ph}) ORDER BY display_order, id LIMIT 6`
+      ).bind(...mappedSlugs).all()
+      dictFaqList = (faqRes.results as any[]) || []
+    } catch { dictFaqList = [] }
+  }
+
+  const dictJsonLd: any[] = [{
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    "@id": `${SITE.url}/dictionary/${slug}#term`,
+    "name": entry.term,
+    ...(entry.term_en && { "alternateName": entry.term_en }),
+    "description": entry.short_desc,
+    "url": `${SITE.url}/dictionary/${slug}`,
+    "inDefinedTermSet": {
+      "@type": "DefinedTermSet",
+      "@id": `${SITE.url}/dictionary#termset`,
+      "name": "대구365치과 치과 백과사전",
+      "url": `${SITE.url}/dictionary`
+    },
+    "inLanguage": "ko-KR"
+  }]
+  if (dictFaqList.length > 0) {
+    dictJsonLd.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "@id": `${SITE.url}/dictionary/${slug}#faq`,
+      "mainEntity": dictFaqList.map((f: any) => ({
+        "@type": "Question",
+        "name": f.question,
+        "acceptedAnswer": { "@type": "Answer", "text": f.answer }
+      }))
+    })
+  }
+
   return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} />, {
     title: `${entry.term} - 치과 용어사전`,
     description: entry.short_desc,
@@ -1257,22 +1310,7 @@ app.get('/dictionary/:slug', async (c) => {
       { name: '치과 백과사전', url: '/dictionary' },
       { name: entry.term, url: `/dictionary/${slug}` }
     ],
-    jsonLd: {
-      "@context": "https://schema.org",
-      "@type": "DefinedTerm",
-      "@id": `${SITE.url}/dictionary/${slug}#term`,
-      "name": entry.term,
-      ...(entry.term_en && { "alternateName": entry.term_en }),
-      "description": entry.short_desc,
-      "url": `${SITE.url}/dictionary/${slug}`,
-      "inDefinedTermSet": {
-        "@type": "DefinedTermSet",
-        "@id": `${SITE.url}/dictionary#termset`,
-        "name": "대구365치과 치과 백과사전",
-        "url": `${SITE.url}/dictionary`
-      },
-      "inLanguage": "ko-KR"
-    }
+    jsonLd: dictJsonLd
   })
 })
 
@@ -1298,7 +1336,7 @@ app.get('/faq', async (c) => {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "@id": `${SITE.url}/faq#faq`,
-      "mainEntity": (faqs.results as any[]).slice(0, 50).map((f: any) => ({
+      "mainEntity": (faqs.results as any[]).slice(0, 100).map((f: any) => ({
         "@type": "Question",
         "name": f.question,
         "acceptedAnswer": { "@type": "Answer", "text": f.answer }
@@ -1484,7 +1522,39 @@ app.get('/region/:slug', async (c) => {
   const r = await c.env.DB.prepare('SELECT * FROM region_seo WHERE slug=?').bind(slug).first<any>()
   if (!r) return c.notFound()
   await c.env.DB.prepare('UPDATE region_seo SET view_count=view_count+1 WHERE id=?').bind(r.id).run()
-  const [treatments, doctors, mainTreatment, relatedRegions, relatedDictRows] = await Promise.all([
+  // FAQ schema 매핑: treatment_slug 변형 → faqs.treatment_slug 실제 값으로 매핑
+  // faqs DB 실제 슬러그: aesthetic, cavity-endo-crown, conservative, general, implant,
+  //   lamineer, ortho, pediatric, pediatric-ortho, perio, prosthetic, whitening,
+  //   airflow-gbt, icon-resin, in-house-lab, painless-anesthesia, qray, sleep-therapy, vinique
+  const faqMap: Record<string, string> = {
+    // 임플란트 계열
+    'implant': 'implant', 'implant-cost': 'implant', 'implant-review': 'implant',
+    'implant-recommend': 'implant', 'implant-event': 'implant',
+    'elderly-implant': 'implant', 'sleep-implant': 'sleep-therapy',
+    // 교정 계열
+    'ortho': 'ortho', 'ortho-cost': 'ortho',
+    'kids-ortho': 'pediatric-ortho', 'childrens-ortho': 'pediatric-ortho',
+    // 라미네이트 계열
+    'lamineer': 'lamineer', 'lamineer-cost': 'lamineer',
+    'veneer-front': 'lamineer', 'lamineer-extra': 'lamineer',
+    'lamineer-new': 'lamineer', 'cosmetic-dental': 'aesthetic',
+    // 충치/신경/일반 치료
+    'cavity': 'cavity-endo-crown', 'cavity-new': 'cavity-endo-crown',
+    'cavity-treatment': 'cavity-endo-crown', 'nerve-treatment': 'cavity-endo-crown',
+    // 미백/예방
+    'whitening': 'whitening', 'whitening-new': 'whitening',
+    'prevention': 'prevention', 'wisdom': 'general', 'wisdom-tooth': 'general',
+    // 보철/잇몸/턱관절
+    'prosthesis': 'prosthetic', 'denture': 'prosthetic',
+    'perio': 'perio', 'gum-graft': 'perio', 'tmj': 'general',
+    // 소아/임산부
+    'kids': 'pediatric', 'kids-dental': 'pediatric', 'childbirth-dental': 'pediatric',
+    // 운영/시스템 키워드 (배치7 신규)
+    'evening': 'general', 'weekend': 'general', 'emergency': 'general',
+  }
+  // 매핑 테이블에 없는 슬러그도 자체 시도 (정확히 일치할 수도 있음)
+  const faqTreatmentSlug = r.treatment_slug ? (faqMap[r.treatment_slug] || r.treatment_slug) : null
+  const [treatments, doctors, mainTreatment, relatedRegions, relatedDictRows, regionFaqs] = await Promise.all([
     c.env.DB.prepare('SELECT * FROM treatments ORDER BY is_core DESC, display_order').all(),
     c.env.DB.prepare('SELECT * FROM doctors WHERE is_representative=1 OR display_order<=3').all(),
     r.treatment_slug
@@ -1496,8 +1566,13 @@ app.get('/region/:slug', async (c) => {
       ? c.env.DB.prepare(`SELECT slug, term, short_desc FROM dictionary WHERE category=? OR related_treatments LIKE ? ORDER BY view_count DESC LIMIT 6`)
           .bind(r.treatment_slug, `%${r.treatment_slug}%`).all()
       : Promise.resolve({ results: [] }),
+    faqTreatmentSlug
+      ? c.env.DB.prepare('SELECT question, answer FROM faqs WHERE treatment_slug=? ORDER BY display_order, id LIMIT 8')
+          .bind(faqTreatmentSlug).all()
+      : Promise.resolve({ results: [] }),
   ])
   const relatedDict = (relatedDictRows as any).results || []
+  const regionFaqList = ((regionFaqs as any).results || []) as any[]
   const breadcrumb = [
     { name: '홈', url: '/' },
     { name: '지역별 진료', url: '/regions' },
@@ -1539,6 +1614,19 @@ app.get('/region/:slug', async (c) => {
   }
   const jsonLd: any[] = [dentistSchema(), webPageSchema, breadcrumbSchema(breadcrumb)]
   if (procedureSchema) jsonLd.push(procedureSchema)
+  // FAQPage schema — 해당 진료의 FAQ 8개 자동 주입 (Google rich result 노출)
+  if (regionFaqList.length > 0) {
+    jsonLd.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "@id": `${SITE.url}/region/${slug}#faq`,
+      "mainEntity": regionFaqList.map((f: any) => ({
+        "@type": "Question",
+        "name": f.question,
+        "acceptedAnswer": { "@type": "Answer", "text": f.answer }
+      }))
+    })
+  }
   return c.render(
     <RegionSEOInline
       r={r}
@@ -1547,6 +1635,7 @@ app.get('/region/:slug', async (c) => {
       mainTreatment={mainTreatment}
       relatedRegions={(relatedRegions as any).results || []}
       relatedDict={relatedDict}
+      regionFaqs={regionFaqList}
     />,
     {
       title: r.title, description: r.meta_description,
@@ -2945,7 +3034,7 @@ ${urls.join('\n')}
 })
 
 // ============ Region SEO inline component ============
-function RegionSEOInline({ r, treatments, doctors, mainTreatment, relatedRegions, relatedDict }: any) {
+function RegionSEOInline({ r, treatments, doctors, mainTreatment, relatedRegions, relatedDict, regionFaqs }: any) {
   return (
     <>
       <Navbar />
@@ -3051,6 +3140,31 @@ function RegionSEOInline({ r, treatments, doctors, mainTreatment, relatedRegions
           </div>
         </div>
       </section>
+
+      {/* FAQ — region/treatment context (rich result eligible) */}
+      {regionFaqs && regionFaqs.length > 0 && (
+        <section class="py-16 max-w-4xl mx-auto px-6">
+          <div class="section-label mb-6">FAQ · 자주 묻는 질문</div>
+          <h2 class="display text-3xl font-light mb-8">
+            {r.region_name} 환자분이 자주 묻는 질문{mainTreatment ? ` — ${mainTreatment.name}` : ''}
+          </h2>
+          <div class="space-y-4">
+            {regionFaqs.map((f: any, i: number) => (
+              <details class="lux-card group" open={i === 0}>
+                <summary class="cursor-pointer list-none flex items-start gap-3">
+                  <span class="text-gold font-medium mt-0.5 flex-shrink-0">Q{i + 1}.</span>
+                  <span class="display text-lg font-medium flex-1">{f.question}</span>
+                  <span class="text-brown-400 group-open:rotate-180 transition flex-shrink-0">▾</span>
+                </summary>
+                <div class="mt-4 pl-9 text-brown-700 leading-relaxed whitespace-pre-line">{f.answer}</div>
+              </details>
+            ))}
+          </div>
+          <div class="mt-8 text-center">
+            <a href="/faq" class="text-sm text-gold hover:text-gold-dark">전체 FAQ 보기 →</a>
+          </div>
+        </section>
+      )}
 
       {/* Related dictionary terms — internal linking gold */}
       {relatedDict && relatedDict.length > 0 && (
