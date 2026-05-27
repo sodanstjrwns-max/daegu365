@@ -318,6 +318,88 @@ const DOCTOR_INTERVIEW_DESC: Record<string, string> = {
   'lee-seoyoung': '대구365치과 이서영 원장의 진료 철학과 전문 분야 인터뷰.',
 }
 
+// ============ SEO: trailing slash + alias redirect 미들웨어 ============
+// GSC 에서 발견된 404 패턴 정리:
+// 1) trailing slash (/dictionary/) → /dictionary 301 redirect
+// 2) 흔한 alias 키워드 (/implant 등) → 정식 경로 301 redirect
+// 3) 누락된 흔한 SEO 경로 (/about, /contact 등) → 적절한 페이지 301 redirect
+const ALIAS_REDIRECTS: Record<string, string> = {
+  // 진료 단축 경로 → /treatments/:slug
+  '/implant': '/treatments/implant',
+  '/implants': '/treatments/implant',
+  '/sleep-implant': '/treatments/implant',
+  '/ortho': '/treatments/ortho',
+  '/orthodontics': '/treatments/ortho',
+  '/invisalign': '/treatments/ortho',
+  '/lamineer': '/treatments/lamineer',
+  '/laminate': '/treatments/lamineer',
+  '/veneer': '/treatments/lamineer',
+  '/whitening': '/treatments/whitening',
+  '/teeth-whitening': '/treatments/whitening',
+  '/cavity': '/treatments/cavity-endo-crown',
+  '/cavity-treatment': '/treatments/cavity-endo-crown',
+  '/perio-treatment': '/treatments/perio',
+  '/perio': '/treatments/perio',
+  '/prosthetics': '/treatments/prosthetic',
+  '/kids': '/treatments/pediatric',
+  '/kids-dental': '/treatments/pediatric',
+  '/pediatric': '/treatments/pediatric',
+  // 자주 검색되는 페이지 → 정식 페이지
+  '/about': '/mission',
+  '/contact': '/directions',
+  '/location': '/directions',
+  '/map': '/directions',
+  '/clinic': '/mission',
+  '/reservation': '/directions',
+  '/booking': '/directions',
+  '/naver-booking': '/directions',
+  '/event': '/notices',
+  '/events': '/notices',
+  '/promotion': '/notices',
+  '/news': '/notices',
+  '/columns': '/blog',
+  '/column': '/blog',
+  '/articles': '/blog',
+  '/dictionary-list': '/dictionary',
+  '/terms': '/dictionary',
+  '/glossary': '/dictionary',
+  // home alias
+  '/index': '/',
+  '/home': '/',
+  '/main': '/',
+}
+
+app.use('*', async (c, next) => {
+  const path = new URL(c.req.url).pathname
+  // 1) trailing slash 제거 (단, 루트는 제외, 그리고 정적 파일은 제외)
+  if (path.length > 1 && path.endsWith('/') && !path.startsWith('/static/') && !path.startsWith('/r2/') && !path.startsWith('/api/')) {
+    const q = new URL(c.req.url).search
+    return c.redirect(path.slice(0, -1) + q, 301)
+  }
+  // 2) alias redirect
+  if (ALIAS_REDIRECTS[path]) {
+    return c.redirect(ALIAS_REDIRECTS[path], 301)
+  }
+  return next()
+})
+
+// ============ SEO: 민감 페이지 X-Robots-Tag noindex ============
+// robots.txt 차단 + noindex 헤더 이중 보호 (GSC "robots.txt에 의해 차단됨" 경고 정리)
+app.use('*', async (c, next) => {
+  await next()
+  const path = new URL(c.req.url).pathname
+  if (
+    path.startsWith('/admin') ||
+    path.startsWith('/login') ||
+    path.startsWith('/signup') ||
+    path.startsWith('/logout') ||
+    path.startsWith('/api/admin') ||
+    path === '/api/consultations'
+  ) {
+    c.res.headers.set('X-Robots-Tag', 'noindex, nofollow')
+  }
+})
+
 // ============ Public pages ============
 app.get('/', (c) => c.render(<HomePage />, {
   title: '대구 북구 치과 · 수면임플란트 · 인비절라인 전문',
@@ -3002,5 +3084,101 @@ function RegionSEOInline({ r, treatments, doctors, mainTreatment, relatedRegions
     </>
   )
 }
+
+// ============ 404 / 500 핸들러 (SEO 친화적) ============
+// GSC "찾을 수 없음(404)" soft-404 회피용 + 사용자 친화 페이지
+// 명시적으로 status 404 반환 (soft 404 회피 핵심)
+app.notFound((c) => {
+  c.status(404)
+  c.res.headers.set('X-Robots-Tag', 'noindex')
+  return c.render(
+    <>
+      <Navbar />
+      <section class="pt-32 pb-20 bg-cream min-h-[60vh] flex items-center">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+          <div class="text-7xl md:text-9xl font-light text-brown-300 mb-6">404</div>
+          <h1 class="display text-3xl md:text-5xl font-light mb-6">
+            페이지를 찾을 수 없습니다
+          </h1>
+          <p class="text-brown-700 text-lg mb-10 leading-relaxed">
+            요청하신 페이지가 존재하지 않거나, 이동했을 수 있습니다.<br />
+            아래 주요 페이지로 이동하시거나 검색을 이용해 주세요.
+          </p>
+          <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3 mb-10 text-sm">
+            <a href="/" class="lux-card hover:bg-brown-50 transition text-left">
+              <div class="display text-lg font-medium mb-1">홈</div>
+              <div class="text-xs text-brown-600">대구365치과 메인</div>
+            </a>
+            <a href="/treatments" class="lux-card hover:bg-brown-50 transition text-left">
+              <div class="display text-lg font-medium mb-1">진료안내</div>
+              <div class="text-xs text-brown-600">수면임플란트 · 인비절라인 · 라미네이트</div>
+            </a>
+            <a href="/regions" class="lux-card hover:bg-brown-50 transition text-left">
+              <div class="display text-lg font-medium mb-1">지역별 진료</div>
+              <div class="text-xs text-brown-600">대구·북구·수성구·범어동</div>
+            </a>
+            <a href="/doctors" class="lux-card hover:bg-brown-50 transition text-left">
+              <div class="display text-lg font-medium mb-1">의료진</div>
+              <div class="text-xs text-brown-600">7명 협진 시스템</div>
+            </a>
+            <a href="/before-after" class="lux-card hover:bg-brown-50 transition text-left">
+              <div class="display text-lg font-medium mb-1">치료 사례</div>
+              <div class="text-xs text-brown-600">Before & After</div>
+            </a>
+            <a href="/directions" class="lux-card hover:bg-brown-50 transition text-left">
+              <div class="display text-lg font-medium mb-1">오시는 길</div>
+              <div class="text-xs text-brown-600">침산동 엠브로스퀘어 7층</div>
+            </a>
+          </div>
+          <div class="flex flex-wrap justify-center gap-3 text-sm">
+            <a href={`tel:${SITE.phone}`} class="px-6 py-3 rounded-full bg-brown-900 text-ivory hover:bg-brown-800 transition">
+              📞 {SITE.phone}
+            </a>
+            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="px-6 py-3 rounded-full bg-gold text-brown-900 hover:bg-gold-dark transition">
+              네이버 예약
+            </a>
+          </div>
+        </div>
+      </section>
+      <Footer />
+    </>,
+    {
+      title: '404 - 페이지를 찾을 수 없습니다',
+      description: '요청하신 페이지를 찾을 수 없습니다. 대구365치과의 진료안내, 지역별 진료, 의료진 정보를 확인해 보세요.',
+      robots: 'noindex, nofollow'
+    }
+  )
+})
+
+app.onError((err, c) => {
+  console.error('App error:', err)
+  c.res.headers.set('X-Robots-Tag', 'noindex, nofollow')
+  return c.render(
+    <>
+      <Navbar />
+      <section class="pt-32 pb-20 bg-cream min-h-[60vh] flex items-center">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+          <div class="text-7xl md:text-9xl font-light text-brown-300 mb-6">500</div>
+          <h1 class="display text-3xl md:text-5xl font-light mb-6">
+            일시적인 오류가 발생했습니다
+          </h1>
+          <p class="text-brown-700 text-lg mb-10">
+            잠시 후 다시 시도해 주세요. 문제가 지속되면 아래 연락처로 문의 부탁드립니다.
+          </p>
+          <div class="flex flex-wrap justify-center gap-3 text-sm">
+            <a href="/" class="px-6 py-3 rounded-full bg-brown-900 text-ivory hover:bg-brown-800 transition">홈으로</a>
+            <a href={`tel:${SITE.phone}`} class="px-6 py-3 rounded-full bg-gold text-brown-900 hover:bg-gold-dark transition">📞 {SITE.phone}</a>
+          </div>
+        </div>
+      </section>
+      <Footer />
+    </>,
+    {
+      title: '500 - 서버 오류',
+      description: '일시적인 오류가 발생했습니다.',
+      robots: 'noindex, nofollow'
+    }
+  )
+})
 
 export default app
