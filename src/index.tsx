@@ -423,6 +423,26 @@ app.get('/mission', (c) => c.render(<MissionPage />, {
 // --- Doctors ---
 app.get('/doctors', async (c) => {
   const r = await c.env.DB.prepare('SELECT * FROM doctors ORDER BY is_representative DESC, display_order, id').all()
+  const doctorRows = (r.results as any[]) || []
+  // 개별 Physician 스키마들 (knowledge graph용)
+  const physicianSchemas = doctorRows.map((d: any) => physicianSchema(d))
+  // ItemList 스키마 — 의료진 명단 carousel
+  const doctorsItemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${SITE.url}/doctors#itemlist`,
+    "name": "대구365치과 의료진",
+    "description": "대구365치과 7인의 의료진 — 보존·치주·소아·교정·보철·심미 분야 전문 협진",
+    "url": `${SITE.url}/doctors`,
+    "numberOfItems": doctorRows.length,
+    "itemListElement": doctorRows.map((d: any, i: number) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "url": `${SITE.url}/doctors/${d.slug}`,
+      "name": `${d.name} ${d.position || ''}`.trim(),
+      "item": { "@id": `${SITE.url}/doctors/${d.slug}#physician` }
+    }))
+  }
   return c.render(<DoctorsListPage doctors={r.results as any} />, {
     title: '의료진 소개',
     description: '대구365치과 7인의 의료진. 보존·치주·소아·교정·보철·심미 각 분야 전문 협진.',
@@ -432,7 +452,8 @@ app.get('/doctors', async (c) => {
     breadcrumb: [
       { name: '홈', url: '/' },
       { name: '의료진', url: '/doctors' }
-    ]
+    ],
+    jsonLd: [doctorsItemListSchema, ...physicianSchemas]
   })
 })
 
@@ -491,6 +512,30 @@ app.get('/doctors/:slug', async (c) => {
 // --- Treatments ---
 app.get('/treatments', async (c) => {
   const r = await c.env.DB.prepare('SELECT * FROM treatments ORDER BY is_core DESC, display_order').all()
+  const treatmentRows = (r.results as any[]) || []
+  // ItemList 스키마 — 전체 진료 과목 명시 (carousel rich result 후보)
+  const treatmentsItemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${SITE.url}/treatments#itemlist`,
+    "name": "대구365치과 전체 진료 과목",
+    "description": "수면임플란트·라미네이트·인비절라인 등 대구365치과 전체 진료",
+    "url": `${SITE.url}/treatments`,
+    "numberOfItems": treatmentRows.length,
+    "itemListElement": treatmentRows.map((t: any, i: number) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "url": `${SITE.url}/treatments/${t.slug}`,
+      "name": t.name,
+      "item": {
+        "@type": "MedicalProcedure",
+        "@id": `${SITE.url}/treatments/${t.slug}#procedure`,
+        "name": t.name,
+        "url": `${SITE.url}/treatments/${t.slug}`,
+        ...(t.short_desc && { "description": t.short_desc })
+      }
+    }))
+  }
   return c.render(<TreatmentsListPage treatments={r.results as any} />, {
     title: '진료 안내',
     description: '대구365치과의 전체 진료 과목. 수면임플란트·라미네이트·인비절라인 3대 핵심 진료.',
@@ -499,7 +544,8 @@ app.get('/treatments', async (c) => {
     breadcrumb: [
       { name: '홈', url: 'https://daegu365dc.kr/' },
       { name: '진료 안내', url: 'https://daegu365dc.kr/treatments' }
-    ]
+    ],
+    jsonLd: treatmentsItemListSchema
   })
 })
 
@@ -951,6 +997,24 @@ app.get('/before-after', async (c) => {
   const doctors = await c.env.DB.prepare('SELECT * FROM doctors ORDER BY display_order').all()
   const treatments = await c.env.DB.prepare('SELECT * FROM treatments ORDER BY is_core DESC, display_order').all()
 
+  const caseRows = (items.results as any[]) || []
+  // ItemList 스키마 — 실제 케이스 명단 (group/doctor 필터 무관하게 현재 결과 노출)
+  const beforeAfterItemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${SITE.url}/before-after#itemlist`,
+    "name": "대구365치과 비포애프터 실제 치료 사례",
+    "description": "수면임플란트·라미네이트·인비절라인 등 대구365치과의 검증된 치료 결과",
+    "url": `${SITE.url}/before-after`,
+    "numberOfItems": caseRows.length,
+    "itemListElement": caseRows.slice(0, 60).map((c2: any, i: number) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "url": `${SITE.url}/before-after/${c2.id}`,
+      "name": c2.title || `${c2.treatment_slug || ''} 케이스`,
+      "item": { "@id": `${SITE.url}/before-after/${c2.id}#case` }
+    }))
+  }
   return c.render(
     <BeforeAfterListPage
       items={items.results as any}
@@ -966,7 +1030,8 @@ app.get('/before-after', async (c) => {
       breadcrumb: [
         { name: '홈', url: '/' },
         { name: '비포애프터', url: '/before-after' }
-      ]
+      ],
+      jsonLd: beforeAfterItemListSchema
     }
   )
 })
@@ -1212,6 +1277,40 @@ app.get('/dictionary', async (c) => {
   if (category) { where.push('category=?'); binds.push(category) }
   const sql = 'SELECT * FROM dictionary' + (where.length ? ' WHERE ' + where.join(' AND ') : '') + ' ORDER BY term LIMIT 1000'
   const r = await c.env.DB.prepare(sql).bind(...binds).all()
+  const dictRows = (r.results as any[]) || []
+  // DefinedTermSet (기존 유지) + ItemList (신규 carousel rich result)
+  const definedTermSetSchema = {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "@id": `${SITE.url}/dictionary#termset`,
+    "name": "대구365치과 치과 백과사전",
+    "description": "치과 용어 500여 개를 담은 대구365치과 백과사전",
+    "url": `${SITE.url}/dictionary`,
+    "inLanguage": "ko-KR",
+    "publisher": { "@id": `${SITE.url}/#dentist` },
+    "hasDefinedTerm": dictRows.slice(0, 100).map((d: any) => ({
+      "@type": "DefinedTerm",
+      "@id": `${SITE.url}/dictionary/${d.slug}#term`,
+      "name": d.term,
+      ...(d.term_en && { "alternateName": d.term_en }),
+      "url": `${SITE.url}/dictionary/${d.slug}`
+    }))
+  }
+  const dictItemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${SITE.url}/dictionary#itemlist`,
+    "name": "대구365치과 백과사전 — 용어 목록",
+    "url": `${SITE.url}/dictionary`,
+    "numberOfItems": dictRows.length,
+    "itemListElement": dictRows.slice(0, 100).map((d: any, i: number) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "url": `${SITE.url}/dictionary/${d.slug}`,
+      "name": d.term,
+      "item": { "@id": `${SITE.url}/dictionary/${d.slug}#term` }
+    }))
+  }
   return c.render(<DictionaryListPage items={r.results as any} selectedCategory={category} query={q} />, {
     title: '치과 백과사전 · 500+ 용어',
     description: '치과 용어 500여 개를 담은 대구365치과 백과사전. 임플란트·교정·라미네이트 등 전문 용어 해설.',
@@ -1220,16 +1319,7 @@ app.get('/dictionary', async (c) => {
       { name: '홈', url: '/' },
       { name: '치과 백과사전', url: '/dictionary' }
     ],
-    jsonLd: {
-      "@context": "https://schema.org",
-      "@type": "DefinedTermSet",
-      "@id": `${SITE.url}/dictionary#termset`,
-      "name": "대구365치과 치과 백과사전",
-      "description": "치과 용어 500여 개를 담은 대구365치과 백과사전",
-      "url": `${SITE.url}/dictionary`,
-      "inLanguage": "ko-KR",
-      "publisher": { "@id": `${SITE.url}/#dentist` }
-    }
+    jsonLd: [definedTermSetSchema, dictItemListSchema]
   })
 })
 
@@ -1346,15 +1436,66 @@ app.get('/faq', async (c) => {
 })
 
 // --- Visitor info ---
-app.get('/directions', (c) => c.render(<DirectionsPage />, {
-  title: '오시는 길 · 내원 안내',
-  description: '대구365치과 위치·주차·대중교통 안내. 대구광역시 북구 침산로 148 엠브로스퀘어 7층. 053-357-0365.',
-  canonical: 'https://daegu365dc.kr/directions',
-  breadcrumb: [
-    { name: '홈', url: '/' },
-    { name: '오시는 길', url: '/directions' }
-  ]
-}))
+app.get('/directions', (c) => {
+  // Place + geo + openingHours 풀세팅 — 구글 지도 rich result + 음성검색 대응
+  const placeSchema = {
+    "@context": "https://schema.org",
+    "@type": "Place",
+    "@id": `${SITE.url}/directions#place`,
+    "name": SITE.name,
+    "url": `${SITE.url}/directions`,
+    "telephone": SITE.phone,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": SITE.streetAddress,
+      "addressLocality": SITE.addressLocality,
+      "addressRegion": SITE.addressRegion,
+      "postalCode": SITE.postalCode,
+      "addressCountry": "KR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": SITE.lat,
+      "longitude": SITE.lng
+    },
+    "hasMap": "https://map.kakao.com/?urlX=473870&urlY=1119810&urlLevel=3",
+    "publicAccess": true,
+    "smokingAllowed": false,
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Thursday"], "opens": "09:30", "closes": "21:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Friday"], "opens": "09:30", "closes": "18:30" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday","Sunday"], "opens": "09:30", "closes": "17:00" }
+    ],
+    "containedInPlace": {
+      "@type": "Place",
+      "name": "엠브로스퀘어",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "대구광역시 북구 침산동",
+        "addressRegion": "대구광역시"
+      }
+    }
+  }
+  // TravelAction — 음성 검색 "어떻게 가요?" 대응
+  const travelActionSchema = {
+    "@context": "https://schema.org",
+    "@type": "TravelAction",
+    "name": "대구365치과 오시는 길",
+    "fromLocation": { "@type": "Place", "name": "대구 시내" },
+    "toLocation": { "@id": `${SITE.url}/directions#place` },
+    "description": "지하철: 대구도시철도 3호선 침산역 1번 출구 도보 3분. 버스 다수 경유. 주차장 완비."
+  }
+  return c.render(<DirectionsPage />, {
+    title: '오시는 길 · 내원 안내',
+    description: '대구365치과 위치·주차·대중교통 안내. 대구광역시 북구 침산로 148 엠브로스퀘어 7층. 053-357-0365.',
+    canonical: 'https://daegu365dc.kr/directions',
+    breadcrumb: [
+      { name: '홈', url: '/' },
+      { name: '오시는 길', url: '/directions' }
+    ],
+    jsonLd: [placeSchema, travelActionSchema]
+  })
+})
 app.get('/hours', (c) => c.render(<HoursPage />, {
   title: '진료시간',
   description: '대구365치과 진료시간. 월·목 09:30~21:00 야간진료, 주말도 진료. 365일 연중 환자 곁에.',
@@ -1475,6 +1616,23 @@ app.get('/regions', async (c) => {
     { name: '홈', url: '/' },
     { name: '지역별 진료', url: '/regions' }
   ]
+  // ItemList 스키마 — 지역별 진료 페이지 전체 목록을 구글에 명시 (siteLinks/rich result용)
+  const regionRows = (regions.results as any[]) || []
+  const regionsItemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${SITE.url}/regions#itemlist`,
+    "name": "대구 지역별 치과 진료 안내",
+    "description": "대구 8개 자치구 × 진료별 랜딩 페이지 목록",
+    "url": `${SITE.url}/regions`,
+    "numberOfItems": regionRows.length,
+    "itemListElement": regionRows.slice(0, 100).map((r: any, i: number) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "url": `${SITE.url}/region/${r.slug}`,
+      "name": r.h1 || r.title || `${r.region_name} ${r.treatment_slug || '진료'}`
+    }))
+  }
   return c.render(
     <>
       <Navbar />
@@ -1511,7 +1669,8 @@ app.get('/regions', async (c) => {
       description: '대구 북구·수성구·중구·동구·서구·남구·달서구·달성군 등 대구 전 지역에서 가까운 대구365치과 진료 안내. 임플란트·교정·라미네이트·미백 등 진료별 지역 정보.',
       canonical: 'https://daegu365dc.kr/regions',
       breadcrumb,
-      jsonLd: [dentistSchema(), breadcrumbSchema(breadcrumb)]
+      // Dentist/Breadcrumb는 renderer.tsx에서 전역 자동 주입 → ItemList만 추가
+      jsonLd: regionsItemListSchema
     }
   )
 })
@@ -1612,7 +1771,8 @@ app.get('/region/:slug', async (c) => {
       }
     }
   }
-  const jsonLd: any[] = [dentistSchema(), webPageSchema, breadcrumbSchema(breadcrumb)]
+  // Dentist/Breadcrumb는 renderer.tsx에서 전역 자동 주입 → 페이지 고유 스키마만 추가
+  const jsonLd: any[] = [webPageSchema]
   if (procedureSchema) jsonLd.push(procedureSchema)
   // FAQPage schema — 해당 진료의 FAQ 8개 자동 주입 (Google rich result 노출)
   if (regionFaqList.length > 0) {
