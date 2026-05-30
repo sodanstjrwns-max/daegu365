@@ -141,11 +141,17 @@ webapp/
 
 ## 🚀 실행 방법
 
+> ⚠️ **저메모리 샌드박스 빌드 주의**: 샌드박스 RAM 이 ~1GB 라 `npm run build`(Vite SSR)가
+> 16만 줄 단일 파일에서 **OOM(Killed)** 으로 죽는다. 이 경우 `node scripts/esbuild-worker.mjs`
+> 로 esbuild 직접 번들링하면 약 0.4초에 동일한 `dist/_worker.js` 생성 가능.
+> **프로덕션 배포는 `git push origin main` → GitHub Actions(`.github/workflows/deploy.yml`)** 가
+> 충분한 메모리 러너에서 Vite 빌드 후 Cloudflare Pages 로 자동 배포하므로 가장 안정적.
+
 ```bash
 # 개발 (PM2 + wrangler pages dev)
 cd /home/user/webapp
 npm install            # 필요 시
-npm run build          # dist/ 생성 (필수 1회)
+npm run build          # dist/ 생성 (저메모리 시: node scripts/esbuild-worker.mjs)
 pm2 start ecosystem.config.cjs
 
 # 로그
