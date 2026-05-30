@@ -228,7 +228,23 @@ settings(key, value)  # admin_password, hospital_phone 등
 
 ---
 
+## 🔧 SEO 유지보수 로그
+
+### 2026-05-30 — GSC 색인 이슈 정리
+GSC 리포트(404 4건, robots 차단 3건, 크롤링됨-색인안됨 514건) 대응:
+- **robots.txt 개선**:
+  - `/login`, `/signup` 의 `Disallow` **제거** → 크롤은 허용하되 `X-Robots-Tag: noindex` 헤더로 색인만 차단
+    (robots.txt 로 막으면 구글이 noindex 를 못 읽어 "robots.txt 차단됨" 경고가 계속 남는 문제 해결)
+  - `/admin`, `/api/admin/`, `/logout` 만 완전 차단 유지
+  - `/cdn-cgi/` 차단 추가 → `/cdn-cgi/l/email-protection` 404 정리
+  - `/*?*sort=`, `/*?*page=` 차단 → 파라미터 중복 URL 색인 방지
+  - robots.txt 응답에 `Cache-Control: public, max-age=600` 추가(반영 지연 최소화)
+- **404 진단**: `/contact`→`/directions` 301 리다이렉트는 이미 구현돼 있었음(옛 크롤 잔상). `/blog/tesy`, `/blog/implant-sleep` 은 삭제된 슬러그(정상 404)
+- **백과사전 thin content 점검**: 상세 페이지 본문 약 20,000자 → thin content 아님(수정 불필요)
+- **514 색인보류 결론**: 콘텐츠/기술 문제 아님. 신생 도메인의 크롤 예산·신뢰도 축적 이슈 → 시간 + GSC 색인요청 + 외부 링크로 해소되는 중(픽스쳐/절치/치아번호표기법 등 비브랜드 키워드 노출 시작 확인)
+
 ## 🎨 배포 상태
 - **플랫폼**: Cloudflare Pages (Edge)
-- **상태**: ✅ 로컬 샌드박스에서 완전 동작 (프로덕션 배포 대기)
-- **최종 업데이트**: 2026-04-20
+- **운영 도메인**: https://daegu365dc.kr (canonical 통일)
+- **상태**: ✅ 프로덕션 라이브 (daegu365dc.pages.dev → daegu365dc.kr)
+- **최종 업데이트**: 2026-05-30

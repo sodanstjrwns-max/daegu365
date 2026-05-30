@@ -2802,12 +2802,19 @@ app.get('/robots.txt', (c) => {
   const txt = [
     'User-agent: *',
     'Allow: /',
+    // 관리자 영역만 완전 차단 (크롤 불필요)
     'Disallow: /admin',
     'Disallow: /admin/',
-    'Disallow: /login',
-    'Disallow: /signup',
-    'Disallow: /logout',
     'Disallow: /api/admin/',
+    'Disallow: /logout',
+    // Cloudflare 이메일 보호 자동생성 경로 차단 (GSC 404 정리)
+    'Disallow: /cdn-cgi/',
+    // 검색결과/필터 파라미터 URL 색인 방지 (중복 컨텐츠 예방)
+    'Disallow: /*?*sort=',
+    'Disallow: /*?*page=',
+    // 주의: /login, /signup 은 일부러 Disallow 하지 않음.
+    //  → 크롤은 허용해야 페이지의 noindex(X-Robots-Tag) 를 구글이 읽고 색인에서 뺄 수 있음.
+    //    robots.txt 로 막으면 noindex 를 못 읽어 "robots.txt 차단됨" 경고만 남음 (구글 공식 권장).
     '',
     '# AI 답변 엔진 명시 허용 (AEO)',
     'User-agent: GPTBot',
@@ -2836,7 +2843,11 @@ app.get('/robots.txt', (c) => {
     `Host: ${SITE.url.replace(/^https?:\/\//, '')}`,
     ''
   ].join('\n')
-  return c.text(txt, 200, { 'Content-Type': 'text/plain; charset=utf-8' })
+  // robots.txt 는 변경 시 빠르게 반영되도록 짧은 캐시 (10분)
+  return c.text(txt, 200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'public, max-age=600'
+  })
 })
 
 // llms.txt — 2025년 신설된 AI 답변 엔진용 사이트 요약 표준
