@@ -93,7 +93,7 @@ const PROCESS = [
   {
     step: '05',
     title: '골유착 대기 (Osseointegration)',
-    duration: '하악 2~3개월 / 상악 4~6개월',
+    duration: '하악 2~3개월\n상악 4~6개월',
     desc: '픽스쳐와 뼈가 단단히 결합하는 기간\n임시치아로 일상생활을 유지하며\n정기 체크를 진행합니다',
     detail: ['임시치아 제공', '월 1회 체크업', '식이 가이드', '구강위생 관리 코칭'],
   },
@@ -416,7 +416,7 @@ export const ImplantTreatmentPage = ({
             <h2 class="t-display mb-6">
               <span class="text-brown-900">5종</span> <span class="t-gold">픽스쳐 비교</span>
             </h2>
-            <p class="t-lead max-w-3xl">
+            <p class="t-lead max-w-3xl break-keep">
               표기 가격은 <strong class="text-brown-900">픽스처 + 맞춤기둥 + 지르코니아 크라운이 모두 포함된 패키지 가격(1개 기준)</strong>이며,
               <strong class="text-brown-900"> 픽스처 5년 · 상부보철 평생 보증</strong>이 적용됩니다.
               <span class="block mt-2 text-sm text-brown-600">※ 수면 진정(IV Sedation) 선택 시 <strong class="text-brown-900">+20~50만원</strong>이 추가됩니다.</span>
@@ -448,7 +448,7 @@ export const ImplantTreatmentPage = ({
             <div class="bg-brown-950 text-ivory rounded-2xl p-7 flex flex-col justify-between">
               <div>
                 <div class="text-[10px] tracking-[0.3em] text-gold mb-3 font-bold">ADDITIONAL</div>
-                <h3 class="display text-2xl font-black tracking-tight mb-5">추가 항목</h3>
+                <h3 class="display text-2xl font-black tracking-tight mb-5 text-gold">추가 항목</h3>
                 <ul class="space-y-3 text-sm text-ivory/85">
                   <li class="flex justify-between border-b border-ivory/15 pb-2">
                     <span>임플란트 연결치 (폰틱)</span><span class="font-bold text-gold">50만원</span>
@@ -526,7 +526,7 @@ export const ImplantTreatmentPage = ({
               <div class="grid md:grid-cols-12 gap-6 p-6 lg:p-8 rounded-2xl bg-cream border border-brown-200/40 hover:border-gold/60 transition-all duration-500 fade-in">
                 <div class="md:col-span-2">
                   <div class="display text-5xl lg:text-6xl font-black text-gold tracking-tight leading-none">{p.step}</div>
-                  <div class="text-xs text-brown-500 mt-2 tracking-wider font-semibold">{p.duration}</div>
+                  <div class="text-xs text-brown-500 mt-2 tracking-wide font-semibold break-keep leading-snug whitespace-pre-line">{p.duration}</div>
                 </div>
                 <div class="md:col-span-5">
                   <h3 class="display text-2xl font-black tracking-tight mb-3 text-brown-900">{p.title}</h3>
@@ -559,8 +559,9 @@ export const ImplantTreatmentPage = ({
             <h2 class="t-display mb-6" style="color:var(--ivory);">
               <span style="color:var(--ivory);">부작용</span>은 <span class="t-gold">예방</span>이 먼저입니다
             </h2>
-            <p class="t-lead max-w-3xl" style="color:rgba(253,251,247,0.75);">
-              모든 수술에는 위험이 있습니다. 그러나 위험을 정확히 알고, 시스템으로 예방하는 곳이 좋은 병원입니다.
+            <p class="t-lead max-w-3xl break-keep" style="color:rgba(253,251,247,0.75);">
+              모든 수술에는 위험이 있습니다.<br class="hidden sm:block"/>
+              그러나 위험을 정확히 알고, 시스템으로 예방하는 곳이 좋은 병원입니다.
             </p>
           </div>
 

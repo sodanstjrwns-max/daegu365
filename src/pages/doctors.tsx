@@ -55,7 +55,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
         <h1 class="display font-black tracking-tight leading-[0.92] text-ivory mb-10"
             style="font-size: clamp(3.5rem, 9vw, 8rem);">
           <span class="block">7인의</span>
-          <span class="block italic text-gold mt-2">전문 의료진</span>
+          <span class="block text-gold mt-2">전문 의료진</span>
         </h1>
 
         {/* 4개 칩 — 7인 협진 / 365일 진료 / 평일 야간 21시 / 대구침산동 */}
@@ -112,7 +112,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           <div class="text-xs tracking-[0.5em] text-gold mb-6">WEEKLY SCHEDULE</div>
           {/* 7인 글자 잘림 방지 — whitespace-nowrap + 폭 여유 */}
           <h2 class="display text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-ivory mb-6 leading-[1.15]" style="padding:0.1em 0.05em;">
-            <span class="inline-block" style="white-space:nowrap;">원장님 <span class="t-gold italic" style="padding:0 0.08em;">7인</span></span>{' '}
+            <span class="inline-block" style="white-space:nowrap;">원장님 <span class="t-gold" style="padding:0 0.08em;">7인</span></span>{' '}
             <span class="inline-block">요일별 진료 스케줄</span>
           </h2>
           <p class="text-brown-200 max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
@@ -394,10 +394,10 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
         <div class="text-center mb-16 fade-in">
           <div class="section-label mb-6">TEAM PORTRAIT</div>
           <h2 class="t-display">
-            함께, <em class="italic text-brown-700">협진</em>으로 완성합니다
+            함께, <em class="text-brown-700 not-italic">협진</em>으로 완성합니다
           </h2>
           <p class="mt-6 text-brown-700 max-w-2xl mx-auto leading-relaxed">
-            7인의 전문의가 한 자리에서 케이스를 검토하고 진단합니다.
+            7인의 전문의가 한 자리에서 케이스를 검토하고 진단합니다.<br/>
             한 환자의 모든 진료를 같은 기준으로, 그것이 협진의 약속입니다.
           </p>
         </div>
@@ -848,7 +848,7 @@ export const DoctorDetailPage = ({
                   </h3>
                 </div>
                 <div
-                  class="relative rounded-[20px] overflow-hidden shadow-xl bg-black mx-auto"
+                  class="interview-video-wrap relative rounded-[20px] overflow-hidden shadow-xl bg-black mx-auto"
                   style="border: 1px solid rgba(201, 168, 118, 0.4); aspect-ratio: 9 / 16; width: 100%; max-width: 380px;"
                 >
                   <video
@@ -856,16 +856,39 @@ export const DoctorDetailPage = ({
                     preload="metadata"
                     playsinline
                     poster={getDoctorPhoto(doctor.slug)}
-                    class="w-full h-full object-contain bg-black"
+                    class="interview-video w-full h-full object-contain bg-black"
                   >
                     <source src={videoUrl} type="video/mp4" />
                     브라우저가 비디오 태그를 지원하지 않습니다.
                   </video>
+                  {/* 가운데 재생 버튼 오버레이 — 클릭 시 재생되고 사라짐 (PPT slide 15) */}
+                  <button
+                    type="button"
+                    class="video-play-overlay absolute inset-0 flex items-center justify-center bg-black/25 transition-opacity duration-300 cursor-pointer"
+                    aria-label="인터뷰 영상 재생"
+                  >
+                    <span class="flex items-center justify-center w-[72px] h-[72px] rounded-full bg-gold/90 shadow-2xl ring-4 ring-white/30 transition-transform duration-200 hover:scale-110">
+                      <i class="fas fa-play text-brown-950 text-2xl ml-1"></i>
+                    </span>
+                  </button>
                 </div>
                 <p class="text-center text-brown-500 text-xs mt-3 tracking-wider">
                   <i class="fas fa-circle-play text-gold mr-2"></i>
                   재생 버튼을 눌러 인터뷰 영상을 시청하실 수 있습니다
                 </p>
+                <script dangerouslySetInnerHTML={{ __html: `
+                  (function(){
+                    document.querySelectorAll('.interview-video-wrap').forEach(function(wrap){
+                      var v = wrap.querySelector('.interview-video');
+                      var btn = wrap.querySelector('.video-play-overlay');
+                      if(!v || !btn) return;
+                      btn.addEventListener('click', function(){ v.play(); });
+                      v.addEventListener('play', function(){ btn.style.opacity='0'; btn.style.pointerEvents='none'; });
+                      v.addEventListener('pause', function(){ if(!v.ended){ btn.style.opacity='1'; btn.style.pointerEvents='auto'; } });
+                      v.addEventListener('ended', function(){ btn.style.opacity='1'; btn.style.pointerEvents='auto'; });
+                    });
+                  })();
+                `}} />
               </div>
             )}
 

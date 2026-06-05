@@ -293,6 +293,12 @@ export const LamineerTreatmentPage = ({
     ? faqs
     : DEFAULT_FAQS.map((f, i) => ({ id: i, treatment_slug: 'lamineer', question: f.q, answer: f.a, display_order: i } as FAQ))
 
+  // PPT 슬라이드 34 — 라미네이트(VINIQUE) 담당 의료진은 최혜정 원장(센터장)을 먼저, 정재헌 원장을 다음으로
+  const orderedDoctors = [...doctors].sort((a: any, b: any) => {
+    const rank = (s: string) => (s === 'choi-hyejung' ? 0 : s === 'jung-jaeheon' ? 1 : 2)
+    return rank(a.slug) - rank(b.slug)
+  })
+
   return (
     <>
       <Navbar />
@@ -823,7 +829,7 @@ export const LamineerTreatmentPage = ({
       </section>
 
       {/* 8. DOCTORS */}
-      {doctors.length > 0 && (
+      {orderedDoctors.length > 0 && (
         <section class="py-24 lg:py-32 bg-ivory">
           <div class="max-w-[1200px] mx-auto px-6 lg:px-12">
             <div class="mb-16 fade-in">
@@ -831,7 +837,7 @@ export const LamineerTreatmentPage = ({
               <h2 class="t-display">담당 <span class="t-gold">의료진</span></h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 fade-in-stagger">
-              {doctors.map((d: any) => (
+              {orderedDoctors.map((d: any) => (
                 <a href={`/doctors/${d.slug}`} class="group">
                   <div class="aspect-[3/4] rounded-2xl mb-4 overflow-hidden bg-brown-100 group-hover:shadow-lux transition">
                     <img

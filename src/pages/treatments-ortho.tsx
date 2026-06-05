@@ -404,7 +404,7 @@ export const OrthoTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">WHY DAEGU365 · 03</div>
             <h2 class="t-display">
-              <em class="italic text-brown-700">인비절라인</em>을<br/>
+              <em class="not-italic text-brown-700">인비절라인</em>을<br/>
               <span class="t-gold">제대로 하는 곳</span>
             </h2>
           </div>
@@ -417,7 +417,7 @@ export const OrthoTreatmentPage = ({
                   <i class={`fas ${f.icon}`}></i>
                 </div>
                 <h3 class="display text-xl lg:text-2xl font-black tracking-tight mb-3 text-brown-900">{f.title}</h3>
-                <p class="text-brown-700 text-sm leading-relaxed mb-5">{f.desc}</p>
+                <p class="text-brown-700 text-sm leading-relaxed mb-5 break-keep">{f.desc}</p>
                 <div class="text-xs tracking-wider font-bold text-gold border-t border-brown-200 pt-4">{f.meta}</div>
               </div>
             ))}
@@ -433,7 +433,7 @@ export const OrthoTreatmentPage = ({
             <h2 class="t-display mb-6">
               <span class="text-brown-900">6종</span> <span class="t-gold">교정 패키지</span>
             </h2>
-            <p class="t-lead max-w-3xl">
+            <p class="t-lead max-w-3xl break-keep">
               부정교합 정도와 라이프스타일에 맞는 패키지를 선택할 수 있어요.
               진단 후 ClinCheck 시뮬레이션으로 가장 적합한 옵션을 안내드립니다.
             </p>
@@ -448,7 +448,7 @@ export const OrthoTreatmentPage = ({
                 <div class="text-[10px] tracking-[0.3em] text-brown-500 mb-3 font-bold">{p.range}</div>
                 <h3 class="display text-2xl font-black tracking-tight mb-3 text-brown-900">{p.name}</h3>
                 <div class="display text-3xl font-black text-brown-900 mb-5">{p.price}</div>
-                <p class="text-sm text-brown-700 leading-relaxed mb-5">{p.desc}</p>
+                <p class="text-sm text-brown-700 leading-relaxed mb-5 break-keep">{p.desc}</p>
                 <ul class="space-y-2 border-t border-brown-200 pt-5">
                   {p.points.map((pt: string) => (
                     <li class="flex gap-2 items-start text-xs text-brown-700">
@@ -466,7 +466,7 @@ export const OrthoTreatmentPage = ({
             <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
               <div>
                 <div class="text-[10px] tracking-[0.3em] text-gold mb-2 font-bold">ADD-ONS · 부속 항목</div>
-                <h3 class="display text-2xl font-black tracking-tight">교정 추가 항목</h3>
+                <h3 class="display text-2xl font-black tracking-tight text-gold">교정 추가 항목</h3>
               </div>
               <a href="/fees" class="text-xs tracking-wider text-gold inline-flex items-center gap-2 font-bold">
                 전체 비용 안내 <i class="fas fa-arrow-right text-[10px]"></i>
@@ -732,8 +732,8 @@ export const OrthoTreatmentPage = ({
         <div class="blob" style="width:600px;height:600px;background:#c9a876;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.18;"></div>
         <div class="relative max-w-3xl mx-auto px-6 text-center">
           <div class="section-label mb-6 fade-in" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.5);">교정 상담 · ClinCheck 시뮬레이션</div>
-          <h2 class="mb-8 fade-in font-black tracking-tight leading-[1]" style="font-size:clamp(2.5rem, 6vw, 5rem);color:var(--ivory); text-shadow: 0 4px 24px rgba(0,0,0,0.6);">
-            결과를 <span class="t-gold italic">먼저 본 다음</span><br/>시작하세요
+          <h2 class="mb-8 fade-in font-black tracking-tight leading-[1.12] pb-1" style="font-size:clamp(2.5rem, 6vw, 5rem);color:var(--ivory); text-shadow: 0 4px 24px rgba(0,0,0,0.6);">
+            결과를 <span class="t-gold not-italic">먼저 본 다음</span><br/>시작하세요
           </h2>
           <p class="t-lead mb-10 fade-in" style="color:rgba(253,251,247,0.85); text-shadow: 0 1px 3px rgba(0,0,0,0.6);">
             ClinCheck로 시작-끝 모습을 미리 확인하고 결정하세요. 첫 상담 무료.
