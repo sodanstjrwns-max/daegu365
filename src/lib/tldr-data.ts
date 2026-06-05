@@ -100,13 +100,13 @@ export const TLDR_DATA: Record<string, TldrEntry> = {
     cta: { text: '소아 교정 골든타임 상담', href: '/contact' },
   },
   'pediatric': {
-    summary: '소아치과는 치과공포증 의사가 설계한 어린이 진료 시스템입니다. TSD(Tell-Show-Do)·웃음가스·수면치료까지 협조도 3단계 맞춤 + 4단계 무통마취 기본. 아이의 첫 치과, 평생을 결정합니다.',
+    summary: '소아치과는 치과공포증 의사가 설계한 어린이 진료 시스템입니다. TSD(Tell-Show-Do)·웃음가스까지 협조도 3단계 맞춤 + 4단계 무통마취 기본. 아이의 첫 치과, 평생을 결정합니다.',
     bullets: [
       { label: '가격', value: '진료 항목별 별도 적용' },
       { label: '대상 연령', value: '만 0~12세' },
       { label: '협조도 1단계', value: 'TSD 행동 유도' },
       { label: '협조도 2단계', value: '웃음가스 (N2O)' },
-      { label: '협조도 3단계', value: '수면치료 시스템' },
+      { label: '협조도 3단계', value: '분할 단계 진료' },
       { label: '예방', value: '불소 도포·실런트 6개월 권장' },
     ],
     cta: { text: '아이 첫 치과 친숙화 투어', href: '/contact' },

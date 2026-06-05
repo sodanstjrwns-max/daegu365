@@ -172,12 +172,12 @@ const PROCEDURE_META: Record<string, {
   },
   'pediatric': {
     name: '소아치과',
-    description: '치과공포증 의사가 설계한 어린이 진료. TSD(Tell-Show-Do)·웃음가스·수면치료까지 협조도 3단계 맞춤 시스템 + 4단계 무통마취 기본 적용. 아이의 첫 치과, 평생을 결정합니다.',
+    description: '치과공포증 의사가 설계한 어린이 진료. TSD(Tell-Show-Do)·웃음가스까지 협조도 3단계 맞춤 시스템 + 4단계 무통마취 기본 적용. 아이의 첫 치과, 평생을 결정합니다.',
     bodyLocation: '소아 구강',
     procedureType: 'TherapeuticProcedure',
     preparation: '진료 전 친숙화(클리닉 투어), 부모 사전 동의',
     followup: '3개월 정기 검진, 불소 도포 6개월 권장',
-    howPerformed: '협조도 평가 → TSD 행동 유도 → 필요 시 웃음가스(N2O) → 협조 어려울 때 수면치료 → 불소 도포·실런트 마무리',
+    howPerformed: '협조도 평가 → TSD 행동 유도 → 필요 시 웃음가스(N2O) → 협조 어려울 때 분할 단계 진료 → 불소 도포·실런트 마무리',
     indication: ['만 0~12세 모든 어린이', '치과공포증·울음·발버둥', '특수 아동(자폐·장애)', '구강 습관 교정', '예방 관리'],
     cost: '진료 항목별 별도 적용'
   },
@@ -747,7 +747,7 @@ app.get('/treatments/:slug', async (c) => {
         dictTerms={dictTerms.results as any}
       />, {
         title: `소아치과 — 아이의 첫 치과, 평생을 결정하는 한 번의 경험 | 대구365치과`,
-        description: `치과공포증 의사가 설계한 어린이 진료. TSD·웃음가스·수면치료까지 협조도 3단계 맞춤 시스템 + 4단계 무통마취 기본 적용. 대구365치과.`,
+        description: `치과공포증 의사가 설계한 어린이 진료. TSD·웃음가스까지 협조도 3단계 맞춤 시스템 + 4단계 무통마취 기본 적용. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/pediatric`,
         ogImage: ogUrl.treatment('소아치과', '아이의 첫 치과, 평생을 결정하는 한 번', '소아'),
         breadcrumb: treatmentBC,
