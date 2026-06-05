@@ -108,10 +108,12 @@ h1, .hero-headline, .display-hero {
   overflow-wrap: break-word;
 }
 
-/* Pretendard는 이탤릭이 어색 → italic 전체 해제 (아이콘 폰트 제외) */
+/* Pretendard는 이탤릭이 어색 → italic 전체 해제 (아이콘 폰트 제외)
+   ⭐ 모바일·PC 모든 글자 기울임 완전 제거: 인라인 style / 후속 규칙도 못 이기도록 !important */
 .display.italic, em.display, .serif.italic, .italic.display,
-.italic, em, i:not([class*="fa-"]):not([class*="fab"]) {
-  font-style: normal;
+.italic, em, i:not([class*="fa-"]):not([class*="fab"]),
+[style*="italic"]:not([class*="fa-"]):not([class*="fab"]) {
+  font-style: normal !important;
 }
 
 /* Editorial display sizes
@@ -174,10 +176,10 @@ h1, .hero-headline, .display-hero {
 .contact-headline .italic,
 .contact-headline em,
 .contact-headline .accent {
-  font-style: italic;
+  /* 기울임 제거 — 강조는 골드 컬러로만 표현 (Pretendard 이탤릭 어색함 해소) */
+  font-style: normal !important;
   color: #c9a876;
-  padding-right: 0.16em;
-  margin-right: -0.02em;
+  padding-right: 0.04em;
   display: inline-block;
 }
 .contact-lead {
