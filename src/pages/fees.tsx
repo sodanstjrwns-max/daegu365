@@ -119,7 +119,8 @@ export const FeesPage = ({ groups }: { groups: FeeGroup[] }) => {
             <div class="flex-1">
               <div class="display text-lg font-black tracking-tight mb-2 text-brown-900">비용 안내 이용 안내</div>
               <ul class="text-sm text-brown-700 leading-relaxed space-y-1.5">
-                <li>· 본 비용표는 <strong class="text-brown-900">2026년 기준 비급여 항목</strong>이며, 보험 적용 항목은 별도 안내됩니다.</li>
+                <li>· 본 비급여 의료수가표는 <strong class="text-brown-900">시행일자 2026년 5월 25일</strong> 기준이며, 모든 금액은 <strong class="text-brown-900">부가세 10% 별도</strong>입니다.</li>
+                <li>· 본 수가표는 <strong class="text-brown-900">의료법 제45조</strong>에 의거하여 고지하며, 고지 항목 변경 및 재료대에 따라 변동될 수 있습니다.</li>
                 <li>· 실제 비용은 <strong class="text-brown-900">진단 결과 · 난이도 · 사용 재료</strong>에 따라 달라질 수 있습니다.</li>
                 <li>· 정확한 비용은 <strong class="text-brown-900">상담 시 사전에 투명하게 안내</strong>해드립니다.</li>
                 <li>· 임플란트는 <strong class="text-brown-900">픽스쳐 5년, 상부보철 평생 보증</strong>이 적용됩니다.</li>
