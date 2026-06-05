@@ -641,8 +641,8 @@ export const LamineerTreatmentPage = ({
               <span class="text-brown-900">실제</span> <span class="t-gold">비포애프터</span><br/>
               <span class="text-brown-900">시네마틱</span>
             </h2>
-            <p class="t-lead">
-              대구365치과 사이니지에서 상영 중인 <strong class="text-brown-900">VINIQUE 비포애프터 마스터 영상</strong>.
+            <p class="t-lead break-keep">
+              대구365치과 사이니지에서 상영 중인 <strong class="text-brown-900">VINIQUE 비포애프터 마스터 영상</strong>.<br/>
               실제 환자분의 미소 변화를 4K 세로형으로 담았습니다.
             </p>
           </div>
@@ -890,9 +890,9 @@ export const LamineerTreatmentPage = ({
                     </div>
                     <div class="p-6">
                       <div class="flex gap-2 mb-3 flex-wrap">
-                        <span class="tag tag-brown">{ba.age_group}</span>
-                        <span class="tag tag-brown">{ba.treatment_period}</span>
-                        {ba.region_dong && <span class="tag tag-brown">{ba.region_dong}</span>}
+                        {ba.age_group && String(ba.age_group).trim() && <span class="tag tag-brown">{ba.age_group}</span>}
+                        {ba.treatment_period && String(ba.treatment_period).trim() && <span class="tag tag-brown">{ba.treatment_period}</span>}
+                        {ba.region_dong && String(ba.region_dong).trim() && <span class="tag tag-brown">{ba.region_dong}</span>}
                       </div>
                       <div class="display text-lg font-bold tracking-tight mb-2 text-brown-900">{ba.title}</div>
                       {ba.description && <p class="text-sm text-brown-600 line-clamp-2 leading-relaxed">{ba.description}</p>}

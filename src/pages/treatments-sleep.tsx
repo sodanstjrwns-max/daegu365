@@ -62,7 +62,7 @@ const INDICATIONS = [
   {
     title: '발달장애·특수 케어',
     desc: '진료실 내 의사소통이 어려워 일반적 진료가 곤란한 경우.',
-    icon: 'fa-hands-holding-heart',
+    icon: 'fa-hand-holding-heart',
   },
 ]
 
@@ -128,13 +128,13 @@ const WHY_US = [
     icon: 'fa-heart-pulse',
     emoji: '💓',
     title: '4지표 실시간\n모니터링',
-    desc: '심전도·혈압·산소포화도·호흡수를\n시술 전 과정 동안 동시에 추적.\n모든 변화는 진료팀과 별도의 모니터팀이 함께 봅니다.',
+    desc: '심전도·혈압·산소포화도·호흡수를 시술 전 과정 동안 동시에 추적.\n모든 변화는 진료팀과 별도의 모니터팀이 함께 봅니다.',
   },
   {
     icon: 'fa-clock-rotate-left',
     emoji: '⏱️',
     title: '한 번 누우면\n끝나는 통합 진료',
-    desc: '여러 진료를 단발 방문에 끝내고 싶은 분께 최적.\n임플란트·신경치료·발치까지\n한 번의 진정으로 완료 가능합니다.',
+    desc: '여러 진료를 한번의 방문에 끝내고 싶은 분께 최적.\n임플란트·신경치료·발치까지\n한 번의 진정으로 완료 가능합니다.',
   },
 ]
 
@@ -336,10 +336,11 @@ export const SleepTherapyTreatmentPage = ({
             <div class="section-label mb-6">SAFETY · 04</div>
             <h2 class="t-display mb-6">
               4중 안전 시스템,<br/>
-              <span class="t-gold italic">단 하나의 변수도<br/>놓치지 않습니다.</span>
+              <span class="t-gold not-italic">단 하나의 변수도<br/>놓치지 않습니다.</span>
             </h2>
-            <p class="t-lead max-w-2xl mx-auto text-brown-700">
-              진정 시술의 핵심은 약물이 아니라 모니터링입니다. 모든 변화를 동시에 추적하는 4중 시스템.
+            <p class="t-lead max-w-2xl mx-auto text-brown-700 break-keep">
+              진정 시술의 핵심은 약물이 아니라 모니터링입니다.<br/>
+              모든 변화를 동시에 추적하는 4중 시스템.
             </p>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
@@ -427,10 +428,11 @@ export const SleepTherapyTreatmentPage = ({
             <div class="section-label text-gold mb-6">PRE-CHECK · 07</div>
             <h2 class="t-display" style="color:#fdfbf7; text-shadow:0 2px 12px rgba(0,0,0,0.4);">
               사전 확인이<br/>
-              <span class="italic" style="color:#c9a876;">반드시 필요한 경우.</span>
+              <span class="not-italic" style="color:#c9a876;">반드시 필요한 경우.</span>
             </h2>
-            <p class="t-lead max-w-2xl mx-auto mt-4" style="color:#fdfbf7; opacity:0.8;">
-              아래 해당 사항이 있으시면 시술 전 상담에서 반드시 알려주세요. 진정 적합성을 사전에 평가합니다.
+            <p class="t-lead max-w-2xl mx-auto mt-4 break-keep" style="color:#fdfbf7; opacity:0.8;">
+              아래 해당 사항이 있으시면 시술 전 상담에서 반드시 알려주세요.<br/>
+              진정 적합성을 사전에 평가합니다.
             </p>
           </div>
           <div class="grid md:grid-cols-2 gap-5">

@@ -199,10 +199,11 @@ export const PerioTreatmentPage = ({
           <div class="section-label text-gold mb-6">COMBINED · 06</div>
           <h2 class="t-display mb-6" style="color:#fdfbf7; text-shadow:0 2px 12px rgba(0,0,0,0.4);">
             치주치료의 시작은,<br/>
-            <span class="italic" style="color:#c9a876;">에어플로우입니다.</span>
+            <span class="not-italic" style="color:#c9a876;">에어플로우입니다.</span>
           </h2>
-          <p class="t-lead max-w-2xl mx-auto mb-10" style="color:#fdfbf7; opacity:0.9;">
-            바이오필름을 먼저 제거해야 치주 처치 효과가 극대화됩니다. 대구365치과는 GBT 8단계 프로토콜과 치주치료를 통합 운영합니다.
+          <p class="t-lead max-w-2xl mx-auto mb-10 break-keep" style="color:#fdfbf7; opacity:0.9;">
+            바이오필름을 먼저 제거해야 치주 처치 효과가 극대화됩니다.<br/>
+            대구365치과는 GBT 8단계 프로토콜과 치주치료를 통합 운영합니다.
           </p>
           <a href="/treatments/airflow-gbt" class="btn-outline-ivory">에어플로우(GBT) 자세히 보기 <i class="fas fa-arrow-right ml-2"></i></a>
         </div>

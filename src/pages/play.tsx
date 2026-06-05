@@ -28,8 +28,8 @@ export const PlayHubPage = () => (
             <span class="text-xs tracking-[0.4em] text-gold font-bold">PLAY · 365 GAMEZONE</span>
           </div>
           <h1 class="display text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-6">
-            <span class="block">치과가 이렇게</span>
-            <span class="block italic" style="background:linear-gradient(135deg,#c9a876,#ec4899,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">재밌을 수 있다고?</span>
+            <span class="block" style="color:#c9a876;">치과가 이렇게</span>
+            <span class="block not-italic" style="background:linear-gradient(135deg,#c9a876,#ec4899,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">재밌을 수 있다고?</span>
           </h1>
           <p class="text-lg md:text-xl text-ivory/70 max-w-2xl mx-auto leading-relaxed">
             게임하고, 점수 자랑하고, 예약까지 🦷<br/>

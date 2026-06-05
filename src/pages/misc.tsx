@@ -24,7 +24,7 @@ export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
                 </div>
                 <div class="p-10 flex flex-col justify-center">
                   <div class="text-xs tracking-widest text-gold mb-4">★ MAIN</div>
-                  <h2 class="display text-3xl font-black tracking-tight mb-4">{main.title}</h2>
+                  <h2 class="display text-3xl font-black tracking-tight mb-4 text-ivory">{main.title}</h2>
                   <div class="text-brown-300 text-sm" dangerouslySetInnerHTML={{__html: main.content.replace(/<[^>]+>/g,'').substring(0,120)+'...'}}></div>
                   <div class="mt-6 text-xs text-brown-400">{main.created_at?.split('T')[0]} · 조회 {main.view_count}</div>
                 </div>
@@ -32,7 +32,7 @@ export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
             ) : (
               <div class="p-10">
                 <div class="text-xs tracking-widest text-gold mb-4">★ MAIN</div>
-                <h2 class="display text-3xl font-black tracking-tight mb-4">{main.title}</h2>
+                <h2 class="display text-3xl font-black tracking-tight mb-4 text-ivory">{main.title}</h2>
                 <div class="text-brown-300 text-sm" dangerouslySetInnerHTML={{__html: main.content.replace(/<[^>]+>/g,'').substring(0,120)+'...'}}></div>
                 <div class="mt-6 text-xs text-brown-400">{main.created_at?.split('T')[0]} · 조회 {main.view_count}</div>
               </div>

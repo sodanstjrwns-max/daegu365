@@ -395,10 +395,11 @@ export const PainlessAnesthesiaTreatmentPage = ({
             <div class="section-label mb-6">APPLICABLE · 07</div>
             <h2 class="t-display">
               어떤 진료에<br/>
-              <span class="t-gold italic">적용되나요?</span>
+              <span class="t-gold not-italic">적용되나요?</span>
             </h2>
-            <p class="t-lead max-w-2xl mx-auto mt-4 text-brown-700">
-              마취가 필요한 모든 진료에 기본 적용됩니다. 특정 진료의 옵션이 아닌, 병원 표준입니다.
+            <p class="t-lead max-w-2xl mx-auto mt-4 text-brown-700 break-keep">
+              마취가 필요한 모든 진료에 기본 적용됩니다.<br/>
+              특정 진료의 옵션이 아닌, 병원 표준입니다.
             </p>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -419,10 +420,11 @@ export const PainlessAnesthesiaTreatmentPage = ({
           <div class="section-label text-gold mb-6">COMBINED · 08</div>
           <h2 class="t-display mb-6" style="color:#fdfbf7; text-shadow:0 2px 12px rgba(0,0,0,0.4);">
             두려움이 더 큰 분이라면,<br/>
-            <span class="italic" style="color:#c9a876;">수면치료와 결합하세요.</span>
+            <span class="not-italic" style="color:#c9a876;">수면치료와 결합하세요.</span>
           </h2>
-          <p class="t-lead opacity-90 max-w-2xl mx-auto mb-10">
-            4단계 무통마취만으로도 충분하지만, 치과 자체가 두려운 분께는 의식하 진정과 결합한 “이중 안심” 시스템을 권합니다.
+          <p class="t-lead opacity-90 max-w-2xl mx-auto mb-10 break-keep">
+            4단계 무통마취만으로도 충분하지만, 치과 자체가 두려운 분께는<br/>
+            의식하 진정과 결합한 “이중 안심” 시스템을 권합니다.
           </p>
           <div class="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto mb-10">
             <div class="bg-ivory/5 backdrop-blur p-6 rounded-xl border border-ivory/10 text-left">
