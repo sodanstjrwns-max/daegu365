@@ -64,12 +64,12 @@ export const TLDR_DATA: Record<string, TldrEntry> = {
     cta: { text: '수면치료 사전 상담', href: '/contact' },
   },
   'painless-anesthesia': {
-    summary: '4단계 무통마취는 가글 → 도포 → 컴퓨터 제어 무통마취기(The Wand) → 본마취로 이어지는 모든 진료 기본 적용 프로토콜입니다. 추가 비용 없습니다. 바늘이 들어가는 그 순간을 없앱니다.',
+    summary: '4단계 무통마취는 가글 → 도포 → 컴퓨터 제어 무통마취기(iject BTS) → 본마취로 이어지는 모든 진료 기본 적용 프로토콜입니다. 추가 비용 없습니다. 바늘이 들어가는 그 순간을 없앱니다.',
     bullets: [
       { label: '가격', value: '추가 비용 없음 (모든 진료 기본)' },
       { label: '1단계', value: '가글마취 (점막 1차 둔감화)' },
       { label: '2단계', value: '도포마취 (주사 부위 표면)' },
-      { label: '3단계', value: 'The Wand 컴퓨터 제어 (0.005mL/sec)' },
+      { label: '3단계', value: 'iject BTS 컴퓨터 제어 (0.005mL/sec)' },
       { label: '4단계', value: '본마취' },
       { label: '추천 대상', value: '주사 통증 민감 / 치과공포증 / 소아' },
     ],

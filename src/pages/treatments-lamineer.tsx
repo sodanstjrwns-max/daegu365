@@ -41,7 +41,7 @@ const VINIQUE_TIERS = [
     headline: '형태와 색상을 동시에 완벽하게',
     material: 'Glass Ceramic (Lithium Disilicate)',
     materialKr: '글라스 세라믹 리튬 디실리케이트',
-    block: 'Rosetta SP / IPS e.max® Press (LS₂ 잉곳)',
+    block: 'Rosetta SP / IPS e.max® Press (LS₂ ingot)',
     strength: 510,
     warranty: '5년',
     image: '/r2/images/treatments/vinique/rosetta-emax-ingots.jpg',
@@ -102,7 +102,7 @@ const DLAB_GALLERY = [
   {
     img: '/r2/images/treatments/vinique/veneer-macro-brush.jpg',
     title: '완성 베니어',
-    caption: '0.3~0.7mm 박막 — 자연치 광택 그대로의 라미네이트 1매.',
+    caption: '0.3~0.7mm 박막 — 자연치 광택 그대로의 라미네이트.',
   },
 ]
 
@@ -986,7 +986,7 @@ export const LamineerTreatmentPage = ({
         slug="choi-hyejung"
         name="최혜정"
         position="비니크(라미네이트) 센터장 · 보존과 전문의"
-        quote={'결과를\n본래의 치아처럼.'}
+        quote={'결과를 본래의 치아처럼.'}
         credentials={['비니크(라미네이트) 센터장', '보존과 전문의', 'VINIQUE 디자인 워크플로우']}
         treatmentLabel="비니크 프리미엄 라미네이트"
       />

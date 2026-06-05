@@ -225,7 +225,7 @@ export const PediatricOrthoTreatmentPage = ({
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             7~10세,<br/>
             얼굴이 만들어지는<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">단 한 번의 시기.</span>
+            <span style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">단 한 번의 시기.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             골격성 부정교합을 비수술로 잡을 수 있는 골든타임.<br/>
@@ -264,7 +264,7 @@ export const PediatricOrthoTreatmentPage = ({
               <div class="section-label mb-6">WHAT IS · 02</div>
               <h2 class="whatis-headline">
                 소아 교정은<br/>
-                <span class="t-gold italic">치아가 아니라<br/>“턱”입니다.</span>
+                <span class="t-gold">치아가 아니라<br/>“턱”입니다.</span>
               </h2>
             </div>
             <div class="lg:col-span-7 space-y-6 t-body text-lg">
@@ -570,13 +570,13 @@ export const PediatricOrthoTreatmentPage = ({
         </div>
       </section>
 
-      {/* PPT PC2 슬라이드 24 — 소아 교정장치 담당 이서영 원장 프로필 박스 (원장님 PPT 지시) */}
+      {/* PPT 4차 슬라이드 54 — 소아 교정장치 담당 김진덕 원장 프로필 박스 (이서영 → 김진덕) */}
       <DoctorProfileBlock
-        slug="lee-seoyoung"
-        name="이서영"
-        position="치주과 전문의"
-        quote={'성장기 아이의 잇몸과 치아 토대를 함께 살펴야, 교정이 안정적으로 자리잡습니다.\n늦지 않게, 그러나 서두르지 않게 — 아이의 성장 속도에 맞춰 단계적으로 접근합니다.'}
-        credentials={['치주과 전문의', '소아 성장기 잇몸 케어', '교정 협진']}
+        slug="kim-jinduk"
+        name="김진덕"
+        position="교정과 원장"
+        quote={'성장기 아이의 턱과 치아 토대를 함께 살펴야, 교정이 안정적으로 자리잡습니다.\n늦지 않게, 그러나 서두르지 않게 — 아이의 성장 속도에 맞춰 단계적으로 접근합니다.'}
+        credentials={['교정 진료', '소아 성장기 교정', '디지털 교정 진단']}
         treatmentLabel="소아 교정장치"
       />
 

@@ -79,19 +79,19 @@ export const COMPARISON_DATA: Record<string, ComparisonEntry> = {
     caption: '대구365치과는 IV Sedation + 웃음가스 모두 가능. 4지표(심박·산소·혈압·호흡) 실시간 모니터링.',
   },
 
-  // 마취 비교 (일반 주사기 vs The Wand 4단계)
+  // 마취 비교 (일반 주사기 vs iject BTS 4단계)
   'painless-anesthesia': {
     title: '마취 방식 비교',
-    headers: ['항목', '일반 주사기 마취', '4단계 무통마취 + The Wand'],
+    headers: ['항목', '일반 주사기 마취', '4단계 무통마취 + iject BTS'],
     rows: [
       ['주입 속도', '손으로 누름 (변동 큼)', '0.005mL/sec 컴퓨터 제어'],
       ['통증 원인 (압력)', '발생 (조직 압력 ↑)', '거의 0 (초저속 일정 주입)'],
-      ['사전 단계', '바로 주사', '가글 → 도포 → The Wand → 본마취'],
+      ['사전 단계', '바로 주사', '가글 → 도포 → iject BTS → 본마취'],
       ['소아 적용', '울음·트라우마 빈번', '주사 트라우마 거의 없음'],
       ['추가 비용', '없음', '없음 (모든 진료 기본 포함)'],
       ['적용 진료', '제한 없음', '제한 없음'],
     ],
-    caption: 'The Wand는 미국 Milestone Scientific 컴퓨터 제어 무통마취기. 모든 마취 진료 기본 적용.',
+    caption: 'iject BTS는 컴퓨터 제어 무통마취기. 모든 마취 진료 기본 적용.',
   },
 
   // 케어 비교 (GBT vs 일반 스케일링)

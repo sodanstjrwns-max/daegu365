@@ -12,7 +12,7 @@ const PERIO_STAGES = [
   { stage: '건강', name: '건강한 잇몸', desc: '분홍색·탄력. 출혈 없음. 정기 스케일링으로 유지.', treat: '예방 관리', color: 'safe' },
   { stage: '치은염', name: '치은염', desc: '잇몸 붓기·출혈. 뼈 손상 없음. 가역적 단계.', treat: '스케일링', color: 'safe' },
   { stage: '초기', name: '초기 치주염', desc: '뼈 손상 시작. 잇몸 주머니 4mm. 시린 증상.', treat: '잇몸치료(SRP)', color: 'warning', highlight: true },
-  { stage: '중기', name: '중등도 치주염', desc: '뼈 1/3 소실. 주머니 5~6mm. 흔들림 시작.', treat: 'SRP + 외과', color: 'danger' },
+  { stage: '중기', name: '중등도 치주염', desc: '뼈 1/3 소실. 주머니 5~6mm. 흔들림 시작.', treat: 'SRP + 치주수술', color: 'danger' },
   { stage: '말기', name: '진행성 치주염', desc: '뼈 1/2 이상 소실. 발치 위험. 임플란트 고려.', treat: '치주수술/발치', color: 'critical' },
 ]
 
@@ -29,14 +29,14 @@ const PROCESS = [
 const WHY_US = [
   { emoji: '💨', title: '에어플로우(GBT) 연계', desc: '치주치료 전 GBT 8단계로 바이오필름 완벽 제거. 치료 효과 극대화.' },
   { emoji: '📐', title: '치주낭 정밀 측정', desc: '6포인트 차팅으로 치아 하나하나 정밀 평가. 시각화된 진단서 제공.' },
-  { emoji: '🔬', title: '확대경·마이크로스코프', desc: '잇몸선 아래 치석을 6배 확대 시야로 정확히 제거.' },
+  { emoji: '🦷', title: '치근면 정밀 활택', desc: '잇몸선 아래 치석과 거친 치근면을 매끄럽게 다듬어 재부착을 유도합니다.' },
   { emoji: '💉', title: '4단계 무통마취', desc: 'SRP·치주수술 모두 무통마취 기본 적용. 추가 비용 없음.' },
   { emoji: '🦴', title: '뼈이식·재생술', desc: '소실된 치조골을 재생. 발치 직전 단계도 살릴 수 있는 골재생술 시행.' },
   { emoji: '🔄', title: '평생 유지 관리', desc: '치료보다 중요한 것은 재발 차단. 3·6개월 리콜 시스템 운영.' },
 ]
 
 const HOME_CARE = [
-  { icon: 'fa-toothbrush', title: '바스법 칫솔질', desc: '잇몸선 45도, 작은 진동. 하루 3회 · 2분 이상.' },
+  { icon: 'fa-toothbrush', title: '🪥 변형바스법 칫솔질', desc: '잇몸선 45도, 작은 진동 후 쓸어내림. 하루 3회 · 2분 이상.' },
   { icon: 'fa-grip-lines', title: '치간칫솔·치실', desc: '치아 사이 70% 영역은 칫솔로 안 닿습니다. 매일 1회 필수.' },
   { icon: 'fa-prescription-bottle', title: '치주 가글', desc: '클로르헥시딘·CPC 함유. 단기간(2주) 보조 사용.' },
   { icon: 'fa-ban-smoking', title: '금연·금주', desc: '흡연은 치주염 진행 속도를 3배 가속화합니다.' },
@@ -69,10 +69,10 @@ export const PerioTreatmentPage = ({
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             치아를 잃는 1순위,<br/>
             충치가 아닌<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">잇몸병입니다.</span>
+            <span style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">잇몸병입니다.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
-            건강 → 치은염 → 치주염 4단계 정밀 진단.<br/>
+            건강 → 치은염 → 치주염 5단계 정밀 진단.<br/>
             에어플로우(GBT) 연계, 비외과·외과 통합 시스템.
           </p>
           <div class="flex flex-wrap gap-4 mb-16">

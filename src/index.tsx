@@ -139,12 +139,12 @@ const PROCEDURE_META: Record<string, {
   },
   'painless-anesthesia': {
     name: '4단계 무통마취',
-    description: '가글마취 → 도포마취 → 컴퓨터 제어 무통마취기(The Wand) → 본마취. 모든 진료에 기본 적용되는 추가 비용 없는 4단계 프로토콜. 바늘이 들어가는 그 순간을 없앱니다.',
+    description: '가글마취 → 도포마취 → 컴퓨터 제어 무통마취기(iject BTS) → 본마취. 모든 진료에 기본 적용되는 추가 비용 없는 4단계 프로토콜. 바늘이 들어가는 그 순간을 없앱니다.',
     bodyLocation: '구강',
     procedureType: 'TherapeuticProcedure',
     preparation: '특별한 준비 불필요',
     followup: '시술 후 마취 풀림 1~2시간 내 식사 가능',
-    howPerformed: '1단계 가글마취(점막 1차 둔감화) → 2단계 도포마취(주사 부위 표면 마취) → 3단계 The Wand 컴퓨터 제어(0.005mL/sec 초저속 주입) → 4단계 본마취',
+    howPerformed: '1단계 가글마취(점막 1차 둔감화) → 2단계 도포마취(주사 부위 표면 마취) → 3단계 iject BTS 컴퓨터 제어(0.005mL/sec 초저속 주입) → 4단계 본마취',
     indication: ['주사 통증에 민감한 모든 환자', '치과공포증 환자', '소아 환자', '바늘 자체에 거부감이 있는 분'],
     cost: '추가 비용 없음 (모든 진료 기본 포함)'
   },
@@ -2893,7 +2893,7 @@ app.get('/llms.txt', async (c) => {
   lines.push(`- [오시는 길](${base}/directions)`)
   lines.push('')
   lines.push('## 차별점')
-  lines.push('- 4단계 무통마취: 모든 진료 기본 적용 (가글마취 → 도포마취 → The Wand 컴퓨터 제어 → 본마취)')
+  lines.push('- 4단계 무통마취: 모든 진료 기본 적용 (가글마취 → 도포마취 → iject BTS 컴퓨터 제어 → 본마취)')
   lines.push('- 의식하 진정(IV Sedation) 수면치료 시스템')
   lines.push('- iTero 5D 디지털 스캔 + 원내 D.LAB 디지털 기공실')
   lines.push('- Q-ray 형광 충치 진단 (방사선 0)')
