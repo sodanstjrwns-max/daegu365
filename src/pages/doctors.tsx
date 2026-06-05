@@ -271,7 +271,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
         </div>
 
         <div class="mt-12 text-center text-[11px] text-brown-300/80 tracking-wide max-w-2xl mx-auto fade-in">
-          ※ 점심시간 13:00 ~ 14:00 · 진료 일정은 사정에 따라 변동될 수 있으니 예약 시 재확인 부탁드립니다.
+          ※ 점심시간 12:30 ~ 14:00 · 진료 일정은 사정에 따라 변동될 수 있으니 예약 시 재확인 부탁드립니다.
         </div>
       </div>
 

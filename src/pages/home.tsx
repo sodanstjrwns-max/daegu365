@@ -85,8 +85,8 @@ export const HomePage = () => (
           <div class="mt-10 grid md:grid-cols-2 gap-8 items-end max-w-4xl">
             <p class="t-lead text-ivory/85 fade-in hero-lead" style="color:rgba(253,251,247,0.85);">
               {/* PPT 모바일 슬라이드 1·6 / PC1 슬라이드 3 — 슬래시 단위 줄바꿈 + 마침표 제거, 한 줄 유지 */}
-              <span class="hero-lead-line-1" style="font-size:clamp(0.92rem, 1.45vw, 1.18rem); white-space:nowrap;">치과공포증을 가졌던 의사가 만드는<br/><strong class="text-gold font-semibold">두려움 없는 치과</strong></span>
-              <span class="block hero-lead-line-2 mt-2" style="font-size:clamp(0.82rem, 1.25vw, 1.05rem); white-space:nowrap;">수면임플란트 · 인비절라인 · VINIQUE 라미네이트 전문</span>
+              <span class="hero-lead-line-1" style="font-size:clamp(1.15rem, 1.95vw, 1.55rem); white-space:nowrap;">치과공포증을 가졌던 의사가 만드는<br/><strong class="text-gold font-semibold">두려움 없는 치과</strong></span>
+              <span class="block hero-lead-line-2 mt-2.5" style="font-size:clamp(1rem, 1.6vw, 1.32rem); white-space:nowrap;">수면임플란트 · 인비절라인 · VINIQUE 라미네이트 전문</span>
             </p>
 
             <div class="flex flex-wrap gap-3 fade-in">
@@ -129,37 +129,7 @@ export const HomePage = () => (
       </div>
     </section>
 
-    {/* ================================================== */}
-    {/* 2. GIANT MARQUEE                                    */}
-    {/* ================================================== */}
-    <section class="marquee-giant bg-ivory">
-      <div class="marquee-giant-inner">
-        <span>수면임플란트</span>
-        <span class="gold">✦</span>
-        <span class="outline">VINIQUE</span>
-        <span class="gold">✦</span>
-        <span>인비절라인</span>
-        <span class="gold">✦</span>
-        <span class="outline">DAEGU365</span>
-        <span class="gold">✦</span>
-        <span>평생보증</span>
-        <span class="gold">✦</span>
-        <span class="outline">SINCE 2025</span>
-        <span class="gold">✦</span>
-        <span>수면임플란트</span>
-        <span class="gold">✦</span>
-        <span class="outline">VINIQUE</span>
-        <span class="gold">✦</span>
-        <span>인비절라인</span>
-        <span class="gold">✦</span>
-        <span class="outline">DAEGU365</span>
-        <span class="gold">✦</span>
-        <span>평생보증</span>
-        <span class="gold">✦</span>
-        <span class="outline">SINCE 2025</span>
-        <span class="gold">✦</span>
-      </div>
-    </section>
+    {/* PPT PC4 슬라이드 3 — 옆으로 흐르는 GIANT MARQUEE 삭제 */}
 
     {/* ================================================== */}
     {/* 3. MANIFESTO + EDITORIAL GRID                       */}
@@ -199,9 +169,7 @@ export const HomePage = () => (
               </div>
               <div class="text-xs text-brown-300 mt-4 font-medium">— 대구365치과 원칙</div>
             </div>
-            <div class="eg-4 img-frame img-reveal rounded-[20px]">
-              <img src="/static/images/detail-crown.jpg" alt="디테일" loading="lazy" />
-            </div>
+            {/* PPT PC4 슬라이드 4 — 하단 사진(eg-4) 삭제 후 좌측 글·우측 사진 수평 정렬 */}
             <div class="eg-5 img-frame img-reveal rounded-[20px]">
               <img src="/r2/images/clinic/care-luxury-room.jpg?v=1" alt="대구365치과 럭셔리 진료실 — 호텔 라운지 무드의 단독 진료 공간" loading="lazy" class="w-full h-full object-cover" />
             </div>
@@ -224,7 +192,8 @@ export const HomePage = () => (
             </h2>
           </div>
           {/* PPT 모바일 슬라이드 4 — 옆으로 넘겨보세요 안내(중복 제거) */}
-          <div class="flex items-center gap-3 text-brown-600 text-sm">
+          {/* PPT PC4 슬라이드 5 — 데스크탑은 3카드 한눈에, 모바일만 스와이프 안내 */}
+          <div class="flex lg:hidden items-center gap-3 text-brown-600 text-sm">
             <span class="font-semibold tracking-wider inline-flex items-center gap-2">
               <i class="fas fa-hand-pointer"></i>
               옆으로 넘겨보세요 →
@@ -753,7 +722,7 @@ export const HomePage = () => (
               {[
                 { icon: 'fa-car', label: '무료 주차' },
                 { icon: 'fa-wifi', label: '무료 Wi-Fi' },
-                { icon: 'fa-subway', label: '침산역 근처' },
+                { icon: 'fa-calendar-days', label: '365일 연중무휴' },
                 { icon: 'fa-calendar-check', label: '주말·야간' },
               ].map((i: any) => (
                 <div class="flex items-center gap-3">
@@ -926,7 +895,7 @@ export const HomePage = () => (
             },
             {
               q: '주차는 가능한가요?',
-              a: '엠브로스퀘어 7층에 위치하고 있으며, 건물 내 무료 주차가 가능합니다. 대중교통으로 오실 경우 지하철 3호선 침산역이 가장 가깝습니다.'
+              a: '엠브로스퀘어 7층에 위치하고 있으며, 건물 내 무료 주차가 가능합니다. 대중교통으로 오실 경우 버스 정류장 엠브로스퀘어가 건물 바로 앞에 있습니다.'
             },
           ].map((item: any, idx: number) => (
             <div class="accordion-item" data-accordion-item data-open={idx === 0 ? 'true' : 'false'}>
@@ -1049,7 +1018,7 @@ export const HomePage = () => (
               <i class="fas fa-utensils text-gold"></i>
               <div>
                 <div class="font-bold text-brown-900">점심시간</div>
-                <div class="text-brown-600 mt-0.5">13:00 – 14:00 (평일)</div>
+                <div class="text-brown-600 mt-0.5">12:30 – 14:00 (평일)</div>
               </div>
             </div>
             <div class="bg-ivory p-5 flex items-center gap-3">

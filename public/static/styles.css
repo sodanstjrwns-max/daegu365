@@ -1492,6 +1492,33 @@ h1, .hero-headline, .display-hero {
   scroll-snap-align: start;
 }
 
+/* PPT PC4 슬라이드 5 — 데스크탑에서 3개 카드 가로 스크롤 없이 한 화면에 모두 보이게
+   (세번째 카드 짤림 방지 · 카드 크기 축소) */
+@media (min-width: 1024px) {
+  .h-scroll-section {
+    overflow-x: visible;
+    overflow-y: visible;
+    scroll-snap-type: none;
+    cursor: default;
+  }
+  .h-scroll-track {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px 6vw;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  .h-scroll-intro { display: none; }        /* 인트로 카드는 상단 섹션 헤더로 대체 */
+  .h-scroll-card {
+    width: 100%;
+    height: clamp(440px, 46vw, 560px);
+  }
+  .h-scroll-card-content { padding: 28px; }
+  .h-scroll-card-content h3 { font-size: 1.75rem; }
+  .h-scroll-track > .flex-shrink-0 { display: none; }   /* 끝 스페이서 제거 */
+}
+
 /* ---------- OVERSIZED NUMBER STAT ---------- */
 .mega-stat {
   position: relative;
@@ -1500,7 +1527,8 @@ h1, .hero-headline, .display-hero {
 }
 .mega-stat:last-child { border-bottom: 1px solid rgba(107, 76, 42, 0.15); }
 .mega-stat-num {
-  font-size: clamp(5rem, 14vw, 13rem);
+  /* PPT PC4 슬라이드 6 — 너무 큰 숫자 글씨 축소 */
+  font-size: clamp(3.6rem, 9.5vw, 9rem);
   font-weight: 900;
   letter-spacing: -0.055em;
   line-height: 0.9;
@@ -1857,18 +1885,19 @@ h1, .hero-headline, .display-hero {
   grid-auto-rows: minmax(60px, auto);
   gap: 16px;
 }
+/* PPT PC4 슬라이드 4 — 사진 1장(eg-4) 삭제 후 좌(글)·우(사진) 수평 정렬 2열 그리드 */
 .eg-1 { grid-column: span 7; grid-row: span 5; }
-.eg-2 { grid-column: span 5; grid-row: span 3; }
-.eg-3 { grid-column: span 5; grid-row: span 2; }
-.eg-4 { grid-column: span 4; grid-row: span 4; }
-.eg-5 { grid-column: span 8; grid-row: span 4; }
+.eg-2 { grid-column: span 5; grid-row: span 2; }
+.eg-3 { grid-column: span 5; grid-row: span 1; }
+.eg-5 { grid-column: span 5; grid-row: span 2; }
 @media (max-width: 768px) {
   .editorial-grid { grid-template-columns: 1fr; }
-  .eg-1, .eg-2, .eg-3, .eg-4, .eg-5 {
+  .eg-1, .eg-2, .eg-3, .eg-5 {
     grid-column: span 1 !important;
     grid-row: auto !important;
     aspect-ratio: 4/3;
   }
+  .eg-3 { aspect-ratio: auto; }
 }
 
 /* ---------- STICKY SIDE HEADLINE ---------- */
@@ -2475,4 +2504,38 @@ h1, .hero-headline, .display-hero {
     letter-spacing: -0.02em;
     line-height: 1.2;
   }
+}
+
+/* ===========================================================
+   PPT PC4 슬라이드 2 — 우측 플로팅 퀵메뉴 바
+   =========================================================== */
+#quick-menu .quick-item {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: #fff;
+  color: #4a3520;
+  border: 1px solid #e7ddd0;
+  box-shadow: 0 6px 18px rgba(74, 53, 32, 0.12);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+  cursor: pointer;
+}
+#quick-menu .quick-item i { font-size: 17px; line-height: 1; }
+#quick-menu .quick-item .quick-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+#quick-menu .quick-item:hover {
+  transform: translateX(-3px) translateY(-1px);
+  box-shadow: 0 10px 26px rgba(74, 53, 32, 0.22);
+  background: var(--qm, #4a3520);
+  color: var(--qm-fg, #fff);
+  border-color: transparent;
 }

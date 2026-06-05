@@ -1483,7 +1483,7 @@ app.get('/directions', (c) => {
     "name": "대구365치과 오시는 길",
     "fromLocation": { "@type": "Place", "name": "대구 시내" },
     "toLocation": { "@id": `${SITE.url}/directions#place` },
-    "description": "지하철: 대구도시철도 3호선 침산역 1번 출구 도보 3분. 버스 다수 경유. 주차장 완비."
+    "description": "버스 정류장 엠브로스퀘어 바로 앞. 버스 다수 경유. 건물 내 무료 주차장 완비."
   }
   return c.render(<DirectionsPage />, {
     title: '오시는 길 · 내원 안내',

@@ -157,7 +157,7 @@ export const Navbar = () => (
 
     </nav>
 
-    {/* LIVE 진료 상태 자동 갱신 — 영업시간 (월·목 09:30~21:00, 화·수·금 09:30~18:30, 토·일 09:30~17:00, 점심 13:00~14:00) */}
+    {/* LIVE 진료 상태 자동 갱신 — 영업시간 (월·목 09:30~21:00, 화·수·금 09:30~18:30, 토·일 09:30~17:00, 점심 12:30~14:00) */}
     <script dangerouslySetInnerHTML={{ __html: `
 (function(){
   function getStatus(){
@@ -174,7 +174,7 @@ export const Navbar = () => (
       5: { open: 9*60+30, close: 18*60+30 },     // 금
       6: { open: 9*60+30, close: 17*60 }         // 토
     };
-    var LUNCH_OPEN = 13*60;
+    var LUNCH_OPEN = 12*60+30;
     var LUNCH_CLOSE = 14*60;
     var s = SCHEDULE[day];
     if (!s) return { state:'closed', label:'CLOSED', text:'휴진' };
@@ -576,7 +576,7 @@ export const Navbar = () => (
                 </li>
                 <li class="flex items-center justify-between pt-2 mt-2 border-t border-brown-100">
                   <span class="text-brown-500 text-[12px]">점심시간 (평일)</span>
-                  <span class="font-bold text-brown-700 text-[12px]">13:00 ~ 14:00</span>
+                  <span class="font-bold text-brown-700 text-[12px]">12:30 ~ 14:00</span>
                 </li>
               </ul>
             </div>
@@ -744,7 +744,7 @@ export const Navbar = () => (
                     class="w-full px-3 py-3 rounded-xl border border-brown-200 bg-cream text-sm text-brown-950 focus:outline-none focus:border-brown-700 transition"
                   >
                     <option value="">선택</option>
-                    <option value="morning">오전 (09:30-13:00)</option>
+                    <option value="morning">오전 (09:30-12:30)</option>
                     <option value="afternoon">오후 (14:00-18:30)</option>
                     <option value="evening">야간 (월·목 18:30-21:00)</option>
                     <option value="weekend">주말 (토·일)</option>
@@ -1110,6 +1110,34 @@ export const DoctorProfileBlock = ({ slug, name, position, quote, credentials, t
 }
 
 export const Footer = () => (
+  <>
+  {/* PPT PC4 슬라이드 2 — 우측 플로팅 퀵메뉴 바 복원 (전화·네이버예약·카카오·블로그·인스타·맨위로) */}
+  <aside id="quick-menu" class="hidden md:flex flex-col fixed right-5 top-1/2 -translate-y-1/2 z-40 gap-2" aria-label="빠른 메뉴">
+    <a href="tel:053-357-0365" class="quick-item group" aria-label="전화 상담">
+      <i class="fas fa-phone"></i>
+      <span class="quick-label">전화</span>
+    </a>
+    <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="quick-item group" style="--qm:#03C75A;" aria-label="네이버 예약">
+      <span class="font-black text-[15px]">N</span>
+      <span class="quick-label">예약</span>
+    </a>
+    <a href="http://pf.kakao.com/_PGaxmn" target="_blank" rel="noopener" class="quick-item group" style="--qm:#FEE500;--qm-fg:#191919;" aria-label="카카오톡 상담">
+      <i class="fas fa-comment"></i>
+      <span class="quick-label">카톡</span>
+    </a>
+    <a href="https://blog.naver.com/nowhere2721" target="_blank" rel="noopener" class="quick-item group" style="--qm:#03C75A;" aria-label="네이버 블로그">
+      <span class="font-black text-[12px]">blog</span>
+      <span class="quick-label">블로그</span>
+    </a>
+    <a href="https://www.instagram.com/daegu365dc_?igsh=MThuemZncThqOTF3ZA==" target="_blank" rel="noopener" class="quick-item group" style="--qm:#d62976;" aria-label="인스타그램">
+      <i class="fab fa-instagram"></i>
+      <span class="quick-label">인스타</span>
+    </a>
+    <button type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="quick-item group" aria-label="맨 위로">
+      <i class="fas fa-chevron-up"></i>
+      <span class="quick-label">TOP</span>
+    </button>
+  </aside>
   <footer class="footer pt-24 pb-10 mt-0 relative">
     {/* Big brand headline */}
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12 mb-20 relative">
@@ -1209,4 +1237,5 @@ export const Footer = () => (
       </div>
     </div>
   </footer>
+  </>
 )
