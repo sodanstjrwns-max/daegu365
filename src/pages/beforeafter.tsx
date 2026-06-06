@@ -44,10 +44,10 @@ export const BeforeAfterListPage = ({
       <div class="max-w-7xl mx-auto px-6 text-center">
         <div class="section-label mb-6">BEFORE & AFTER</div>
         <h1 class="t-display mb-6 fade-in">
-          실제 <em class="italic text-brown-700">치료 사례</em>
+          실제 <em class="not-italic text-brown-700">치료 사례</em>
         </h1>
         <p class="text-brown-700 max-w-2xl mx-auto fade-in">
-          환자분의 동의를 받은 실제 사례입니다. <em class="italic text-brown-600">애프터 사진은 로그인 후 확인 가능</em>합니다.
+          환자분의 동의를 받은 실제 사례입니다. <em class="not-italic text-brown-600">애프터 사진은 로그인 후 확인 가능</em>합니다.
         </p>
       </div>
     </section>
