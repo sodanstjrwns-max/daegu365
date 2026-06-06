@@ -224,7 +224,7 @@ export const SleepTherapyTreatmentPage = ({
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             치과의 기억을<br/>
             바꿔드립니다,<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">꿈결처럼.</span>
+            <span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">꿈결처럼.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             의식하 진정(IV Sedation)으로 진료 시간을 통째로 잊으시는 경험.<br/>
@@ -312,7 +312,7 @@ export const SleepTherapyTreatmentPage = ({
             <div class="section-label mb-6">WHY DAEGU365 · 03</div>
             <h2 class="t-display">
               두려움을 가장<br/>
-              <span class="t-gold italic">잘 아는 의사가 만든 시스템.</span>
+              <span class="t-gold not-italic">잘 아는 의사가 만든 시스템.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
@@ -369,7 +369,7 @@ export const SleepTherapyTreatmentPage = ({
             <div class="section-label mb-6">INDICATIONS · 05</div>
             <h2 class="t-display">
               이런 분들께<br/>
-              <span class="t-gold italic">특히 권합니다.</span>
+              <span class="t-gold not-italic">특히 권합니다.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -391,7 +391,7 @@ export const SleepTherapyTreatmentPage = ({
             <div class="section-label mb-6">PROCESS · 06</div>
             <h2 class="t-display">
               사전 상담부터 익일 케어까지,<br/>
-              <span class="t-gold italic">6단계 안전 동선.</span>
+              <span class="t-gold not-italic">6단계 안전 동선.</span>
             </h2>
           </div>
           <div class="space-y-6">
@@ -458,7 +458,7 @@ export const SleepTherapyTreatmentPage = ({
             <div class="section-label mb-6">CARE GUIDE · 08</div>
             <h2 class="t-display">
               시술 전후<br/>
-              <span class="t-gold italic">반드시 지켜주세요.</span>
+              <span class="t-gold not-italic">반드시 지켜주세요.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 gap-8">
@@ -496,7 +496,7 @@ export const SleepTherapyTreatmentPage = ({
               <div class="section-label mb-6">DOCTORS · 09</div>
               <h2 class="t-display">
                 수면치료를<br/>
-                <span class="t-gold italic">담당하는 의료진.</span>
+                <span class="t-gold not-italic">담당하는 의료진.</span>
               </h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -599,7 +599,7 @@ export const SleepTherapyTreatmentPage = ({
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 13</div>
           <h2 class="contact-headline">치과의 기억은<br/>
-            <span class="italic">바꿀 수 있습니다.</span></h2>
+            <span class="not-italic">바꿀 수 있습니다.</span></h2>
           <p class="contact-lead">상담은 무료입니다. 두려움부터, 천천히 풀어드릴게요.</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>

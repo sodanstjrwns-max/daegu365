@@ -262,7 +262,7 @@ export const ImplantTreatmentPage = ({
             <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
               <span class="block" style="color:#fdfbf7;">치과가</span>
               <span class="block" style="color:#fdfbf7;">두려워도,</span>
-              <span class="block italic" style="color:var(--gold); text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.6);">잠든 사이</span>
+              <span class="block not-italic" style="color:var(--gold); text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.6);">잠든 사이</span>
               <span class="block" style="color:#fdfbf7;">끝납니다.</span>
             </h1>
             <p class="t-lead mb-10 max-w-2xl" style="color:rgba(253,251,247,0.92); text-shadow: 0 1px 3px rgba(0,0,0,0.6);">
@@ -385,7 +385,7 @@ export const ImplantTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">WHY DAEGU365 · 03</div>
             <h2 class="t-display">
-              <em class="italic text-brown-700">대구365치과</em>에서<br/>
+              <em class="not-italic text-brown-700">대구365치과</em>에서<br/>
               하면 무엇이 <span class="t-gold">다른가</span>
             </h2>
           </div>
@@ -794,7 +794,7 @@ export const ImplantTreatmentPage = ({
             상담 예약
           </div>
           <h2 class="mb-8 fade-in font-black tracking-tight leading-[1]" style="font-size:clamp(2.5rem, 6vw, 5rem);color:var(--ivory);">
-            <span class="t-gold italic">잠든 사이</span>,<br/>
+            <span class="t-gold not-italic">잠든 사이</span>,<br/>
             평생 가는 임플란트
           </h2>
           <p class="t-lead mb-10 fade-in" style="color:rgba(253,251,247,0.8);">

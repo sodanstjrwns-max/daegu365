@@ -223,7 +223,7 @@ export const PediatricTreatmentPage = ({
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             아이의 첫 치과,<br/>
             평생을 결정하는<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">한 번의 경험.</span>
+            <span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">한 번의 경험.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             치과공포증을 가졌던 의사가 설계한 어린이 진료.<br/>
@@ -251,7 +251,7 @@ export const PediatricTreatmentPage = ({
               <div class="section-label mb-6">WHAT IS · 02</div>
               <h2 class="whatis-headline">
                 첫 치과는<br/>
-                <span class="t-gold italic">“기억의 설계”입니다.</span>
+                <span class="t-gold not-italic">“기억의 설계”입니다.</span>
               </h2>
             </div>
             <div class="lg:col-span-7 space-y-6 t-body text-lg">
@@ -276,7 +276,7 @@ export const PediatricTreatmentPage = ({
             <div class="section-label mb-6">WHY DAEGU365 · 03</div>
             <h2 class="t-display">
               치과공포증 의사가<br/>
-              <span class="t-gold italic">설계한 어린이 진료.</span>
+              <span class="t-gold not-italic">설계한 어린이 진료.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
@@ -300,7 +300,7 @@ export const PediatricTreatmentPage = ({
             <div class="section-label mb-6">FIRST VISIT · 04</div>
             <h2 class="t-display mb-6">
               첫 방문 5단계 동선,<br/>
-              <span class="t-gold italic">치료보다 기억을.</span>
+              <span class="t-gold not-italic">치료보다 기억을.</span>
             </h2>
             <p class="t-lead max-w-2xl mx-auto text-brown-700">
               치과 의자에 눕히는 것부터가 아닙니다. “편안함의 기억”을 만드는 5단계.
@@ -329,7 +329,7 @@ export const PediatricTreatmentPage = ({
             <div class="section-label mb-6">COOPERATION · 05</div>
             <h2 class="t-display">
               아이마다 다른 협조도,<br/>
-              <span class="t-gold italic">3단계 맞춤 시스템.</span>
+              <span class="t-gold not-italic">3단계 맞춤 시스템.</span>
             </h2>
             <p class="t-lead max-w-2xl mx-auto mt-4 text-brown-700">
               모든 아이를 같은 방식으로 진료할 수 없습니다. 협조도에 맞춰 단계별로.
@@ -364,7 +364,7 @@ export const PediatricTreatmentPage = ({
             <div class="section-label mb-6">TREATMENTS · 06</div>
             <h2 class="t-display mb-6">
               소아치과<br/>
-              <span class="t-gold italic">진료 항목 & 비용.</span>
+              <span class="t-gold not-italic">진료 항목 & 비용.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -391,7 +391,7 @@ export const PediatricTreatmentPage = ({
             <div class="section-label mb-6">PARENT TIPS · 07</div>
             <h2 class="t-display">
               부모님께 드리는<br/>
-              <span class="t-gold italic">5가지 약속.</span>
+              <span class="t-gold not-italic">5가지 약속.</span>
             </h2>
           </div>
           <div class="space-y-4">
@@ -438,7 +438,7 @@ export const PediatricTreatmentPage = ({
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
               <div class="section-label mb-6">DOCTORS · 09</div>
-              <h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2>
+              <h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.slice(0, 6).map((d: any) => (
@@ -485,7 +485,7 @@ export const PediatricTreatmentPage = ({
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 11</div>
           <h2 class="contact-headline">그 두려움,<br/>
-            <span class="italic">다음 세대에는 물려주지 않겠습니다.</span></h2>
+            <span class="not-italic">다음 세대에는 물려주지 않겠습니다.</span></h2>
           <p class="contact-lead">첫 방문은 무료 상담입니다. 치료보다 기억을 먼저.</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>

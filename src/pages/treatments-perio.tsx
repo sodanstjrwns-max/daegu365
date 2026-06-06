@@ -94,7 +94,7 @@ export const PerioTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="whatis-headline">잇몸병은,<br/><span class="t-gold italic">소리 없는 도둑</span>입니다.</h2>
+              <h2 class="whatis-headline">잇몸병은,<br/><span class="t-gold not-italic">소리 없는 도둑</span>입니다.</h2>
             </div>
             <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
@@ -113,7 +113,7 @@ export const PerioTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">STAGES · 02</div>
-            <h2 class="t-display">잇몸병 <span class="t-gold italic">5단계.</span></h2>
+            <h2 class="t-display">잇몸병 <span class="t-gold not-italic">5단계.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
             {PERIO_STAGES.map((s) => (
@@ -133,7 +133,7 @@ export const PerioTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">PROCESS · 03</div>
-            <h2 class="t-display">치주치료 <span class="t-gold italic">6단계.</span></h2>
+            <h2 class="t-display">치주치료 <span class="t-gold not-italic">6단계.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PROCESS.map((p) => (
@@ -152,7 +152,7 @@ export const PerioTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">WHY DAEGU365 · 04</div>
-            <h2 class="t-display">대구365치과의 <span class="t-gold italic">정밀함.</span></h2>
+            <h2 class="t-display">대구365치과의 <span class="t-gold not-italic">정밀함.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {WHY_US.map((w: any) => (
@@ -174,7 +174,7 @@ export const PerioTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">HOME CARE · 05</div>
-            <h2 class="t-display">집에서의 <span class="t-gold italic">관리.</span></h2>
+            <h2 class="t-display">집에서의 <span class="t-gold not-italic">관리.</span></h2>
             <p class="t-lead text-brown-700 mt-6 max-w-2xl mx-auto">
               치료보다 중요한 것은 매일의 습관. 365일 관리가 평생 치아를 만듭니다.
             </p>
@@ -215,7 +215,7 @@ export const PerioTreatmentPage = ({
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
               <div class="section-label mb-6">DOCTORS · 07</div>
-              <h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2>
+              <h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
@@ -280,7 +280,7 @@ export const PerioTreatmentPage = ({
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 10</div>
           <h2 class="contact-headline">잇몸이 보내는 신호,<br/>
-            <span class="italic">놓치지 마세요.</span></h2>
+            <span class="not-italic">놓치지 마세요.</span></h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길</a>

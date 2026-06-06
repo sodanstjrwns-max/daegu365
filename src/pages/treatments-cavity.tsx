@@ -166,7 +166,7 @@ export const CavityTreatmentPage = ({
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             한 번 깎은 치아는,<br/>
             돌아오지<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">않습니다.</span>
+            <span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">않습니다.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             보존 우선 · 정밀 진단 · 무통 처치.<br/>
@@ -192,7 +192,7 @@ export const CavityTreatmentPage = ({
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
               <h2 class="whatis-headline">
-                충치는,<br/><span class="t-gold italic">감염 질환</span>입니다.
+                충치는,<br/><span class="t-gold not-italic">감염 질환</span>입니다.
               </h2>
             </div>
             <div class="lg:col-span-7 space-y-6">
@@ -222,7 +222,7 @@ export const CavityTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">STAGES · 02</div>
-            <h2 class="t-display">충치 5단계, <span class="t-gold italic">정확한 분류.</span></h2>
+            <h2 class="t-display">충치 5단계, <span class="t-gold not-italic">정확한 분류.</span></h2>
             <p class="t-lead text-brown-700 mt-6 max-w-2xl mx-auto">
               단계마다 치료법이 다릅니다. 정확한 진단 없이 시작하지 않습니다.
             </p>
@@ -247,7 +247,7 @@ export const CavityTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">PHILOSOPHY · 03</div>
-            <h2 class="t-display">우리의 <span class="t-gold italic">원칙.</span></h2>
+            <h2 class="t-display">우리의 <span class="t-gold not-italic">원칙.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
             {PHILOSOPHY.map((p) => (
@@ -268,7 +268,7 @@ export const CavityTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">ENDO · 04</div>
-            <h2 class="t-display">신경치료 <span class="t-gold italic">6단계.</span></h2>
+            <h2 class="t-display">신경치료 <span class="t-gold not-italic">6단계.</span></h2>
             <p class="t-lead text-brown-700 mt-6 max-w-2xl mx-auto">
               자연치를 살리는 마지막 기회. 한 번에 정확하게.
             </p>
@@ -290,7 +290,7 @@ export const CavityTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">CROWN · 05</div>
-            <h2 class="t-display">크라운 <span class="t-gold italic">3종.</span></h2>
+            <h2 class="t-display">크라운 <span class="t-gold not-italic">3종.</span></h2>
             <p class="t-lead text-brown-700 mt-6 max-w-2xl mx-auto">
               치아 위치·기능·심미 요구에 따라 최적 재료를 선택합니다.
             </p>
@@ -321,7 +321,7 @@ export const CavityTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">WHY DAEGU365 · 06</div>
-            <h2 class="t-display">대구365치과의 <span class="t-gold italic">정확함.</span></h2>
+            <h2 class="t-display">대구365치과의 <span class="t-gold not-italic">정확함.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {WHY_US.map((w) => (
@@ -340,7 +340,7 @@ export const CavityTreatmentPage = ({
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
               <div class="section-label mb-6">DOCTORS · 07</div>
-              <h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2>
+              <h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
@@ -363,7 +363,7 @@ export const CavityTreatmentPage = ({
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
               <div class="section-label mb-6">CASES · 08</div>
-              <h2 class="t-display">실제 <span class="t-gold italic">케이스.</span></h2>
+              <h2 class="t-display">실제 <span class="t-gold not-italic">케이스.</span></h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {cases.slice(0, 6).map((c) => (
@@ -425,7 +425,7 @@ export const CavityTreatmentPage = ({
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 10</div>
           <h2 class="contact-headline">늦었다고요?<br/>
-            <span class="italic">지금이 가장 빠릅니다.</span></h2>
+            <span class="not-italic">지금이 가장 빠릅니다.</span></h2>
           <p class="contact-lead">정확한 진단 · 보존 우선 · 무통 처치.</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>

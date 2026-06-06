@@ -320,7 +320,7 @@ export const LamineerTreatmentPage = ({
             <div class="text-xs tracking-[0.4em] text-gold mb-8 font-bold">SIGNATURE TREATMENT · 02</div>
             <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
               <span class="block" style="color:#fdfbf7;">당신만의</span>
-              <span class="block italic" style="color:var(--gold); text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.6);">미소를</span>
+              <span class="block not-italic" style="color:var(--gold); text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.6);">미소를</span>
               <span class="block" style="color:#fdfbf7;">설계합니다.</span>
             </h1>
             <p class="t-lead mb-10 max-w-2xl" style="color:rgba(253,251,247,0.92); text-shadow: 0 1px 3px rgba(0,0,0,0.6);">
@@ -594,7 +594,7 @@ export const LamineerTreatmentPage = ({
             <div class="text-[10px] tracking-[0.4em] text-gold mb-6 font-bold">D.LAB STUDIO 365 · 04-2</div>
             <h2 class="display font-black tracking-tight leading-[0.95] mb-8" style="font-size:clamp(2.5rem, 5vw, 5rem); color:#fdfbf7;">
               <span class="block">당일 조정 가능한</span>
-              <span class="block italic" style="color:var(--gold);">원내 디지털</span>
+              <span class="block not-italic" style="color:var(--gold);">원내 디지털</span>
               <span class="block">기공실</span>
             </h2>
             <p class="text-lg leading-relaxed" style="color:rgba(253,251,247,0.85);">
@@ -971,7 +971,7 @@ export const LamineerTreatmentPage = ({
         <div class="relative max-w-3xl mx-auto px-6 text-center">
           <div class="section-label mb-6 fade-in" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.5);">VINIQUE 디자인 상담</div>
           <h2 class="mb-8 fade-in font-black tracking-tight leading-[1]" style="font-size:clamp(2.5rem, 6vw, 5rem);color:var(--ivory); text-shadow: 0 4px 24px rgba(0,0,0,0.6);">
-            <span class="t-gold italic">당신만의 미소</span>를<br/>지금 설계하세요
+            <span class="t-gold not-italic">당신만의 미소</span>를<br/>지금 설계하세요
           </h2>
           <p class="t-lead mb-10 fade-in" style="color:rgba(253,251,247,0.85); text-shadow: 0 1px 3px rgba(0,0,0,0.6);">
             첫 디자인 상담은 무료입니다. 디지털 시뮬레이션으로 결과를 미리 확인하세요.

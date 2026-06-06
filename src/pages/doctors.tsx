@@ -449,7 +449,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           <div class="text-xs tracking-[0.5em] text-gold mb-6 font-bold">FIND YOUR DOCTOR</div>
           <h2 class="display text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-ivory mb-6 leading-tight">
             어떤 원장님께<br/>
-            진료받고 <span class="italic text-gold">싶으신가요?</span>
+            진료받고 <span class="not-italic text-gold">싶으신가요?</span>
           </h2>
           <p class="text-brown-200 max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
             진료 분야별로 담당 전문의를 안내해드립니다.<br class="hidden md:inline"/>
@@ -534,7 +534,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
 
           {/* 메인 타이틀 */}
           <h2 class="display text-2xl md:text-4xl lg:text-[2.5rem] font-black tracking-tight text-ivory mb-4 leading-tight">
-            어떤 원장님께 진료받고 <span class="italic" style="color:#e8c98c;">싶으신가요?</span>
+            어떤 원장님께 진료받고 <span class="not-italic" style="color:#e8c98c;">싶으신가요?</span>
           </h2>
           <p class="text-ivory/75 text-sm md:text-base mb-9 max-w-xl mx-auto">
             예약 시 희망 원장님을 선택하실 수 있습니다.
@@ -831,7 +831,7 @@ export const DoctorDetailPage = ({
               {interview.intro && (
                 <div class="relative max-w-2xl mx-auto mt-8 px-6 py-5 rounded-2xl" style="background:rgba(201,168,118,0.08); border:1px solid rgba(201,168,118,0.25);">
                   <div class="absolute -top-3 left-1/2 -translate-x-1/2 text-4xl text-gold leading-none font-serif" style="font-family: Georgia, serif;">"</div>
-                  <p class="text-brown-800 text-base md:text-lg leading-relaxed italic">
+                  <p class="text-brown-800 text-base md:text-lg leading-relaxed not-italic">
                     {interview.intro}"
                   </p>
                 </div>
@@ -942,7 +942,7 @@ export const DoctorDetailPage = ({
                 <div class="text-center mb-10 fade-in">
                   <div class="text-xs tracking-[0.5em] text-gold mb-4 font-bold">Q &amp; A</div>
                   <h3 class="display text-2xl md:text-3xl font-black tracking-tight text-brown-950">
-                    {doctor.name}<em class="italic text-gold not-italic"> 원장에게 묻습니다</em>
+                    {doctor.name}<em class="not-italic text-gold"> 원장에게 묻습니다</em>
                   </h3>
                 </div>
                 <div class="space-y-6">
@@ -965,7 +965,7 @@ export const DoctorDetailPage = ({
             {interview.signature && (
               <div class="mt-20 text-center fade-in">
                 <div class="inline-block w-12 h-px bg-gold mb-6"></div>
-                <p class="display text-xl md:text-2xl italic text-brown-900 leading-relaxed max-w-2xl mx-auto font-semibold">
+                <p class="display text-xl md:text-2xl not-italic text-brown-900 leading-relaxed max-w-2xl mx-auto font-semibold">
                   "{interview.signature}"
                 </p>
                 <div class="text-[11px] tracking-[0.4em] text-brown-500 mt-6 font-bold">
@@ -984,7 +984,7 @@ export const DoctorDetailPage = ({
             <div>
               <div class="section-label mb-6">CASES</div>
               <h2 class="display text-4xl font-black tracking-tight">
-                {doctor.name} 원장 <em class="italic text-brown-700">치료 사례</em>
+                {doctor.name} 원장 <em class="not-italic text-brown-700">치료 사례</em>
               </h2>
             </div>
             <a href={`/before-after?doctor=${doctor.slug}`} class="link-underline display italic">전체 보기 →</a>

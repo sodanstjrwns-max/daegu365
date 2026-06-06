@@ -194,7 +194,7 @@ export const PainlessAnesthesiaTreatmentPage = ({
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             바늘이 들어가는<br/>
             그 순간을,<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">없애드립니다.</span>
+            <span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">없애드립니다.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             가글 → 도포 → 무통마취기 → 본마취.<br/>
@@ -277,7 +277,7 @@ export const PainlessAnesthesiaTreatmentPage = ({
             <div class="section-label mb-6">WHY DAEGU365 · 03</div>
             <h2 class="t-display">
               “덜 아픈 것”이 아니라<br/>
-              <span class="t-gold italic">“안 아픈 것”을 목표로.</span>
+              <span class="t-gold not-italic">“안 아픈 것”을 목표로.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
@@ -301,7 +301,7 @@ export const PainlessAnesthesiaTreatmentPage = ({
             <div class="section-label mb-6">PROTOCOL · 04</div>
             <h2 class="t-display mb-6">
               4단계 무통마취<br/>
-              <span class="t-gold italic">프로토콜 전 과정.</span>
+              <span class="t-gold not-italic">프로토콜 전 과정.</span>
             </h2>
             <p class="t-lead max-w-2xl mx-auto text-brown-700">
               한 번의 마취가 아닌, 네 번의 분리된 단계. 각 단계마다 다른 자극을 차단합니다.
@@ -337,7 +337,7 @@ export const PainlessAnesthesiaTreatmentPage = ({
             <div class="section-label mb-6">EQUIPMENT · 05</div>
             <h2 class="t-display">
               프로토콜은 결국,<br/>
-              <span class="t-gold italic">장비가 뒷받침합니다.</span>
+              <span class="t-gold not-italic">장비가 뒷받침합니다.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
@@ -366,7 +366,7 @@ export const PainlessAnesthesiaTreatmentPage = ({
             <div class="section-label mb-6">COMPARE · 06</div>
             <h2 class="t-display">
               일반 치과 vs<br/>
-              <span class="t-gold italic">대구365치과.</span>
+              <span class="t-gold not-italic">대구365치과.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
@@ -450,7 +450,7 @@ export const PainlessAnesthesiaTreatmentPage = ({
               <div class="section-label mb-6">DOCTORS · 09</div>
               <h2 class="t-display">
                 무통마취를<br/>
-                <span class="t-gold italic">담당하는 의료진.</span>
+                <span class="t-gold not-italic">담당하는 의료진.</span>
               </h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -515,7 +515,7 @@ export const PainlessAnesthesiaTreatmentPage = ({
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 12</div>
           <h2 class="contact-headline">“언제 놓으셨어요?”<br/>
-            <span class="italic">그 한마디를 위해.</span></h2>
+            <span class="not-italic">그 한마디를 위해.</span></h2>
           <p class="contact-lead">모든 진료에 기본 적용. 추가 비용 없음.</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
