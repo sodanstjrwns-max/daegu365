@@ -252,7 +252,7 @@ export const BeforeAfterDetailPage = ({
             <div class="text-xs tracking-widest text-brown-500 mb-2">담당 원장</div>
             <div class="display text-2xl font-medium mb-2">{doctor.name}</div>
             <div class="text-sm text-brown-600">{doctor.position}</div>
-            <p class="text-sm text-brown-700 mt-3 italic">"{doctor.message}"</p>
+            <p class="text-sm text-brown-700 mt-3 not-italic">"{doctor.message}"</p>
           </a>
         )}
         {treatment && (

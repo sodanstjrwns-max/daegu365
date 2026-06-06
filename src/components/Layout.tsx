@@ -998,7 +998,7 @@ export const ComparisonTable = ({ title, headers, rows, caption }: {
         </tbody>
       </table>
     </div>
-    {caption && <p class="text-xs text-brown-500 mt-3 italic">{caption}</p>}
+    {caption && <p class="text-xs text-brown-500 mt-3 not-italic">{caption}</p>}
   </div>
 )
 
