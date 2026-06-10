@@ -1142,8 +1142,8 @@ export const Footer = () => (
     {/* Big brand headline */}
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12 mb-20 relative">
       <div class="overflow-hidden">
-        <h2 class="display font-black leading-[0.95] text-ivory/95" style="font-size:clamp(2.4rem,9.2vw,8.6rem);letter-spacing:0.005em;white-space:nowrap;padding:0.05em 0.04em;">
-          DAEGU<span class="text-gold mx-[0.08em]">365</span>DENTAL
+        <h2 class="display font-black leading-[0.95] text-ivory/95" style="font-size:clamp(1.9rem,8.4vw,8.6rem);letter-spacing:-0.01em;white-space:nowrap;padding:0.06em 0.06em;max-width:100%;">
+          DAEGU<span class="text-gold mx-[0.06em]">365</span>DENTAL
         </h2>
       </div>
       <div class="gold-divider mt-8" style="width:100%;"></div>
