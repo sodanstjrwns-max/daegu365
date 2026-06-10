@@ -1378,22 +1378,36 @@ app.get('/dictionary/:slug', async (c) => {
     },
     "inLanguage": "ko-KR"
   }]
-  if (dictFaqList.length > 0) {
+  // 용어 자체 FAQ(faq_json)를 우선 사용, 없으면 진료 FAQ를 fallback으로 사용
+  let ownFaqs: { q: string, a: string }[] = []
+  try {
+    const parsed = JSON.parse(entry.faq_json || '[]')
+    if (Array.isArray(parsed)) ownFaqs = parsed.filter((f: any) => f && f.q && f.a)
+  } catch {}
+  const faqForSchema = ownFaqs.length > 0
+    ? ownFaqs.map(f => ({ name: f.q, text: f.a }))
+    : dictFaqList.map((f: any) => ({ name: f.question, text: f.answer }))
+  if (faqForSchema.length > 0) {
     dictJsonLd.push({
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "@id": `${SITE.url}/dictionary/${slug}#faq`,
-      "mainEntity": dictFaqList.map((f: any) => ({
+      "mainEntity": faqForSchema.map((f) => ({
         "@type": "Question",
-        "name": f.question,
-        "acceptedAnswer": { "@type": "Answer", "text": f.answer }
+        "name": f.name,
+        "acceptedAnswer": { "@type": "Answer", "text": f.text }
       }))
     })
   }
 
+  // meta description: full_desc가 더 풍부하면 사용 (검색결과 스니펫 개선)
+  const metaDesc = (entry.full_desc && entry.full_desc.length > entry.short_desc.length)
+    ? entry.full_desc
+    : entry.short_desc
+
   return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} />, {
     title: `${entry.term} - 치과 용어사전`,
-    description: entry.short_desc,
+    description: metaDesc,
     canonical: `https://daegu365dc.kr/dictionary/${slug}`,
     breadcrumb: [
       { name: '홈', url: '/' },

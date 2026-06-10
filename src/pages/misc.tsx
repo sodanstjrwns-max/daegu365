@@ -176,7 +176,22 @@ export const DictionaryListPage = ({ items, selectedCategory, query }: { items: 
 
 export const DictionaryDetailPage = ({
   entry, relatedTreatments, relatedEntries
-}: { entry: DictEntry, relatedTreatments: Treatment[], relatedEntries: DictEntry[] }) => (
+}: { entry: DictEntry, relatedTreatments: Treatment[], relatedEntries: DictEntry[] }) => {
+  // key_points: 줄바꿈 구분 리스트
+  const keyPoints = (entry.key_points || '')
+    .split(/\n+/).map(s => s.replace(/^[-•·\s]+/, '').trim()).filter(Boolean)
+  // cautions: 줄바꿈 구분 리스트
+  const cautions = (entry.cautions || '')
+    .split(/\n+/).map(s => s.replace(/^[-•·\s]+/, '').trim()).filter(Boolean)
+  // faq_json: [{q,a}] 배열
+  let faqs: { q: string, a: string }[] = []
+  try {
+    const parsed = JSON.parse(entry.faq_json || '[]')
+    if (Array.isArray(parsed)) faqs = parsed.filter(f => f && f.q && f.a)
+  } catch {}
+  const usageContext = (entry.usage_context || '').trim()
+
+  return (
   <>
     <Navbar />
     <article class="max-w-3xl mx-auto px-6 py-16">
@@ -198,6 +213,73 @@ export const DictionaryDetailPage = ({
           <p>{para}</p>
         ))}
       </div>
+
+      {keyPoints.length > 0 && (
+        <section class="mt-14 bg-cream rounded-3xl p-8">
+          <h2 class="display text-2xl font-medium mb-6 flex items-center gap-3">
+            <i class="fas fa-circle-check text-gold"></i> 핵심 포인트
+          </h2>
+          <ul class="space-y-3">
+            {keyPoints.map(p => (
+              <li class="flex gap-3 text-brown-700 leading-relaxed">
+                <i class="fas fa-angle-right text-gold mt-1.5 flex-shrink-0"></i>
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {usageContext && (
+        <section class="mt-12">
+          <h2 class="display text-2xl font-medium mb-5 flex items-center gap-3">
+            <i class="fas fa-hospital text-gold"></i> 어떤 경우에 / 대구365치과에서는
+          </h2>
+          <div class="prose-dental text-brown-700 space-y-4 leading-loose">
+            {usageContext.split(/\n\n+/).map(para => (<p>{para}</p>))}
+          </div>
+        </section>
+      )}
+
+      {cautions.length > 0 && (
+        <section class="mt-12 border-l-4 border-amber-400 bg-amber-50 rounded-r-2xl p-7">
+          <h2 class="display text-xl font-medium mb-4 flex items-center gap-3 text-amber-900">
+            <i class="fas fa-triangle-exclamation text-amber-500"></i> 알아두면 좋은 점 · 주의사항
+          </h2>
+          <ul class="space-y-2.5">
+            {cautions.map(p => (
+              <li class="flex gap-3 text-brown-700 leading-relaxed text-[15px]">
+                <i class="fas fa-circle text-amber-400 text-[6px] mt-2.5 flex-shrink-0"></i>
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {faqs.length > 0 && (
+        <section class="mt-14">
+          <h2 class="display text-2xl font-medium mb-6 flex items-center gap-3">
+            <i class="fas fa-comments text-gold"></i> 자주 묻는 질문
+          </h2>
+          <div class="space-y-3">
+            {faqs.map((f, i) => (
+              <details class="group bg-ivory rounded-2xl overflow-hidden border border-brown-200">
+                <summary class="flex items-center justify-between p-5 cursor-pointer list-none hover:bg-brown-50">
+                  <div class="flex gap-4 items-center flex-1">
+                    <span class="text-gold display text-base flex-shrink-0">Q{String(i+1).padStart(2,'0')}</span>
+                    <span class="font-medium">{f.q}</span>
+                  </div>
+                  <i class="fas fa-chevron-down text-brown-400 group-open:rotate-180 transition ml-4"></i>
+                </summary>
+                <div class="px-5 pb-5 pt-2 text-brown-700 leading-relaxed border-t border-brown-100">
+                  {f.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
 
       {relatedTreatments.length > 0 && (
         <section class="mt-16 pt-12 border-t border-brown-200">
@@ -228,7 +310,8 @@ export const DictionaryDetailPage = ({
     </article>
     <Footer />
   </>
-)
+  )
+}
 
 // === Integrated FAQ ===
 export const FAQPage = ({ grouped, treatments }: { grouped: Record<string, FAQ[]>, treatments: Treatment[] }) => (
