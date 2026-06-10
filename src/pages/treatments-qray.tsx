@@ -80,7 +80,7 @@ export const QrayTreatmentPage = ({
           <div class="section-label text-gold mb-6">Q-RAY · 형광 충치 진단</div>
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             보이지 않는 충치를,<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">빛으로 봅니다.</span>
+            <span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">빛으로 봅니다.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             방사선 0의 형광 진단 시스템.<br/>
@@ -117,7 +117,7 @@ export const QrayTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="whatis-headline">Q-ray는,<br/><span class="t-gold italic">빛으로 보는 진단</span>입니다.</h2>
+              <h2 class="whatis-headline">Q-ray는,<br/><span class="t-gold not-italic">빛으로 보는 진단</span>입니다.</h2>
             </div>
             <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
@@ -136,7 +136,7 @@ export const QrayTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">ADVANTAGES · 02</div>
-            <h2 class="t-display">4가지 <span class="t-gold italic">강점.</span></h2>
+            <h2 class="t-display">4가지 <span class="t-gold not-italic">강점.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {ADVANTAGES.map((a) => (
@@ -183,7 +183,7 @@ export const QrayTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">APPLICATIONS · 04</div>
-            <h2 class="t-display">언제 <span class="t-gold italic">활용되는가.</span></h2>
+            <h2 class="t-display">언제 <span class="t-gold not-italic">활용되는가.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {APPLICATIONS.map((a) => (
@@ -201,7 +201,7 @@ export const QrayTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">PROCESS · 05</div>
-            <h2 class="t-display">진단 <span class="t-gold italic">6단계.</span></h2>
+            <h2 class="t-display">진단 <span class="t-gold not-italic">6단계.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PROCESS.map((p) => (
@@ -220,7 +220,7 @@ export const QrayTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">WHY DAEGU365 · 06</div>
-            <h2 class="t-display">대구365치과의 <span class="t-gold italic">진단력.</span></h2>
+            <h2 class="t-display">대구365치과의 <span class="t-gold not-italic">진단력.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {WHY_US.map((w) => (
@@ -239,7 +239,7 @@ export const QrayTreatmentPage = ({
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
               <div class="section-label mb-6">DOCTORS · 07</div>
-              <h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2>
+              <h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
@@ -281,7 +281,7 @@ export const QrayTreatmentPage = ({
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 09</div>
           <h2 class="contact-headline">안 보이던 충치가,<br/>
-            <span class="italic">빨갛게 보입니다.</span></h2>
+            <span class="not-italic">빨갛게 보입니다.</span></h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길</a>

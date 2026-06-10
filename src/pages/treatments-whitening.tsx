@@ -70,7 +70,7 @@ export const WhiteningTreatmentPage = ({
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             깎지 않습니다.<br/>
             톤만<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">밝힙니다.</span>
+            <span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">밝힙니다.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             치아 삭제 없이, 자연치 본연의 밝기를 회복.<br/>
@@ -107,7 +107,7 @@ export const WhiteningTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="whatis-headline">미백은,<br/><span class="t-gold italic">색소 분해</span>입니다.</h2>
+              <h2 class="whatis-headline">미백은,<br/><span class="t-gold not-italic">색소 분해</span>입니다.</h2>
             </div>
             <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
@@ -130,7 +130,7 @@ export const WhiteningTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">PACKAGES · 02</div>
-            <h2 class="t-display">3개의 <span class="t-gold italic">패키지.</span></h2>
+            <h2 class="t-display">3개의 <span class="t-gold not-italic">패키지.</span></h2>
             <p class="t-lead text-brown-700 mt-6 max-w-2xl mx-auto">
               현재 변색 정도와 목표 톤에 맞춰 선택. 부가세 10% 별도.
             </p>
@@ -154,7 +154,7 @@ export const WhiteningTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">COMPARE · 03</div>
-            <h2 class="t-display">셀프 vs <span class="t-gold italic">전문가 미백.</span></h2>
+            <h2 class="t-display">셀프 vs <span class="t-gold not-italic">전문가 미백.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {VS.map((v) => (
@@ -180,7 +180,7 @@ export const WhiteningTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">PROCESS · 04</div>
-            <h2 class="t-display">시술 <span class="t-gold italic">6단계.</span></h2>
+            <h2 class="t-display">시술 <span class="t-gold not-italic">6단계.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PROCESS.map((p) => (
@@ -199,7 +199,7 @@ export const WhiteningTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">CARE · 05</div>
-            <h2 class="t-display">시술 후 <span class="t-gold italic">관리.</span></h2>
+            <h2 class="t-display">시술 후 <span class="t-gold not-italic">관리.</span></h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {CARE.map((c: any) => (
@@ -222,7 +222,7 @@ export const WhiteningTreatmentPage = ({
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
               <div class="section-label mb-6">DOCTORS · 06</div>
-              <h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2>
+              <h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
@@ -287,7 +287,7 @@ export const WhiteningTreatmentPage = ({
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 09</div>
           <h2 class="contact-headline">중요한 날 전,<br/>
-            <span class="italic">한 톤 더.</span></h2>
+            <span class="not-italic">한 톤 더.</span></h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길</a>

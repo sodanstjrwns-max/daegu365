@@ -14,7 +14,7 @@ export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) 
         <div class="max-w-7xl mx-auto px-6 text-center">
           <div class="section-label mb-6">ALL TREATMENTS</div>
           <h1 class="t-display mb-6 fade-in">
-            당신의 모든 치과 고민,<br/><em class="italic text-brown-700">한 곳에서</em>
+            당신의 모든 치과 고민,<br/><em class="not-italic text-brown-700">한 곳에서</em>
           </h1>
         </div>
       </section>
@@ -22,13 +22,13 @@ export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) 
       <section class="py-24 max-w-7xl mx-auto px-6">
         <div class="mb-20 fade-in">
           <div class="section-label mb-6">SIGNATURE</div>
-          <h2 class="section-title mb-12">핵심 진료 <em class="italic text-brown-700">3가지</em></h2>
+          <h2 class="section-title mb-12">핵심 진료 <em class="not-italic text-brown-700">3가지</em></h2>
           <div class="grid md:grid-cols-3 gap-6">
             {core.map(t => (
               <a href={`/treatments/${t.slug}`} class="group lux-card">
                 <div class="text-xs tracking-[0.3em] text-brown-400 mb-6">SIGNATURE</div>
                 <div class="display text-4xl font-black tracking-tight mb-4">{t.name}</div>
-                <p class="display italic text-brown-600 mb-8">{t.tagline}</p>
+                <p class="display not-italic text-brown-600 mb-8">{t.tagline}</p>
                 <p class="text-brown-700 text-sm leading-relaxed">{t.short_desc}</p>
                 <div class="mt-8 text-sm flex items-center gap-2 text-brown-800">
                   자세히 보기 <i class="fas fa-arrow-right text-xs"></i>
@@ -41,7 +41,7 @@ export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) 
         {specialty.length > 0 && (
           <div class="mb-20 fade-in">
             <div class="section-label mb-6">SPECIALTY</div>
-            <h2 class="section-title mb-12">대구365치과 <em class="italic text-brown-700">특화 진료</em></h2>
+            <h2 class="section-title mb-12">대구365치과 <em class="not-italic text-brown-700">특화 진료</em></h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
               {specialty.map(t => (
                 <a href={`/treatments/${t.slug}`} class="group block p-7 rounded-2xl bg-brown-50 border border-brown-200 hover:border-brown-700 hover:shadow-lg transition">
@@ -160,7 +160,7 @@ export const TreatmentDetailPage = ({
             <div class="max-w-7xl mx-auto px-6">
               <div class="section-label mb-6 fade-in">WHY US</div>
               <h2 class="section-title mb-16 fade-in">
-                <em class="italic text-brown-700">대구365치과</em>에서 하면<br/>무엇이 다른가
+                <em class="not-italic text-brown-700">대구365치과</em>에서 하면<br/>무엇이 다른가
               </h2>
               <div class="grid md:grid-cols-3 gap-6">
                 {treatment.slug === 'implant' && [
@@ -277,7 +277,7 @@ export const TreatmentDetailPage = ({
               <div class="section-label mb-6">CASES</div>
               <h2 class="section-title">치료 사례</h2>
             </div>
-            <a href={`/before-after?treatment=${treatment.slug}`} class="link-underline display italic">전체 보기 →</a>
+            <a href={`/before-after?treatment=${treatment.slug}`} class="link-underline display not-italic">전체 보기 →</a>
           </div>
           <div class="grid md:grid-cols-3 gap-6">
             {cases.slice(0, 3).map(ba => (
@@ -341,7 +341,7 @@ export const TreatmentDetailPage = ({
       <section class="py-24 bg-brown-950 text-ivory text-center">
         <div class="max-w-3xl mx-auto px-6">
           <h2 class="display text-4xl md:text-5xl font-black tracking-tight mb-8 fade-in">
-            <em class="italic text-gold">{treatment.name}</em>, 지금 상담하세요
+            <em class="not-italic text-gold">{treatment.name}</em>, 지금 상담하세요
           </h2>
           <div class="flex flex-wrap justify-center gap-4 fade-in">
             <a href="tel:053-357-0365" class="btn-primary magnetic">

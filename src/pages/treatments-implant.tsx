@@ -659,7 +659,7 @@ export const ImplantTreatmentPage = ({
                 <div class="section-label mb-6">CASES · 10</div>
                 <h2 class="t-display">치료 <span class="t-gold">사례</span></h2>
               </div>
-              <a href="/before-after?treatment=implant" class="link-underline display italic">전체 보기 →</a>
+              <a href="/before-after?treatment=implant" class="link-underline display not-italic">전체 보기 →</a>
             </div>
             <div class="grid md:grid-cols-3 gap-6">
               {cases.slice(0, 3).map((ba: any) => {
@@ -718,7 +718,7 @@ export const ImplantTreatmentPage = ({
                 <div class="section-label mb-6">CASES · 10</div>
                 <h2 class="t-display">치료 <span class="t-gold">사례</span></h2>
               </div>
-              <a href="/before-after" class="link-underline display italic">전체 사례 보기 →</a>
+              <a href="/before-after" class="link-underline display not-italic">전체 사례 보기 →</a>
             </div>
             <div class="bg-cream rounded-2xl p-12 text-center border border-brown-200/60">
               <i class="fas fa-images text-4xl text-brown-300 mb-4"></i>

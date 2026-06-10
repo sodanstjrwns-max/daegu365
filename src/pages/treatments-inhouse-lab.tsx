@@ -66,7 +66,7 @@ export const InhouseLabPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12 relative">
           <div class="section-label text-gold mb-6">IN-HOUSE D.LAB · 원내 디지털 기공실</div>
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
-            보철의 정밀함은,<br/><span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">기공실에서 결정됩니다.</span>
+            보철의 정밀함은,<br/><span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">기공실에서 결정됩니다.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             iTero 5D + CAD/CAM + 3D 프린터 + 신터링.<br/>
@@ -111,7 +111,7 @@ export const InhouseLabPage = ({
 
       <section class="py-24 lg:py-32 bg-cream">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">ADVANTAGES · 02</div><h2 class="t-display">4가지 <span class="t-gold italic">강점.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">ADVANTAGES · 02</div><h2 class="t-display">4가지 <span class="t-gold not-italic">강점.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {ADVANTAGES.map((a) => (
               <div class="p-7 rounded-xl bg-ivory border border-brown-200">
@@ -126,7 +126,7 @@ export const InhouseLabPage = ({
 
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">COMPARE · 03</div><h2 class="t-display">외주 vs <span class="t-gold italic">원내.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">COMPARE · 03</div><h2 class="t-display">외주 vs <span class="t-gold not-italic">원내.</span></h2></div>
           <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {VS.map((v) => (
               <div class={`p-8 lg:p-10 rounded-xl ${v.highlight ? 'bg-brown-950 text-ivory border-2 border-gold' : 'bg-cream border border-brown-200'}`}>
@@ -148,7 +148,7 @@ export const InhouseLabPage = ({
 
       <section id="equipment" class="py-24 lg:py-32 bg-cream scroll-mt-24">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">EQUIPMENT · 04</div><h2 class="t-display">D.LAB <span class="t-gold italic">장비.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">EQUIPMENT · 04</div><h2 class="t-display">D.LAB <span class="t-gold not-italic">장비.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {EQUIPMENT.map((e) => (
               <div class="p-7 rounded-xl bg-ivory border border-brown-200">
@@ -163,7 +163,7 @@ export const InhouseLabPage = ({
 
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">SERVICES · 05</div><h2 class="t-display">제작 <span class="t-gold italic">범위.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">SERVICES · 05</div><h2 class="t-display">제작 <span class="t-gold not-italic">범위.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {SERVICES.map((s) => (
               <div class="p-7 rounded-xl bg-cream border border-brown-200">
@@ -178,7 +178,7 @@ export const InhouseLabPage = ({
       {doctors && doctors.length > 0 && (
         <section class="py-24 lg:py-32 bg-cream">
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="text-center mb-16"><div class="section-label mb-6">DOCTORS · 06</div><h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2></div>
+            <div class="text-center mb-16"><div class="section-label mb-6">DOCTORS · 06</div><h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2></div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
                 <a href={`/doctors/${d.id}`} class="block p-7 rounded-xl bg-ivory border border-brown-200 hover:border-gold">
@@ -213,7 +213,7 @@ export const InhouseLabPage = ({
         <div class="absolute inset-0 opacity-15" style="background-image:url('/r2/images/clinic/care-luxury-room.jpg?v=1');background-size:cover;background-position:center;"></div>
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 08</div>
-          <h2 class="contact-headline">한 공간에서,<br/><span class="italic">한 번에.</span></h2>
+          <h2 class="contact-headline">한 공간에서,<br/><span class="not-italic">한 번에.</span></h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길</a>

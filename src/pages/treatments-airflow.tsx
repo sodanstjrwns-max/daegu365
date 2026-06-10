@@ -200,7 +200,7 @@ export const AirflowGBTTreatmentPage = ({
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             긁어내지 않습니다.<br/>
             플라크만<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">씻어냅니다.</span>
+            <span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">씻어냅니다.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             EMS 스위스 정품 장비, GBT 8단계 표준 프로토콜.<br/>
@@ -290,7 +290,7 @@ export const AirflowGBTTreatmentPage = ({
             <div class="section-label mb-6">WHY DAEGU365 · 03</div>
             <h2 class="t-display">
               한 단계도<br/>
-              <span class="t-gold italic">생략하지 않습니다.</span>
+              <span class="t-gold not-italic">생략하지 않습니다.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
@@ -314,7 +314,7 @@ export const AirflowGBTTreatmentPage = ({
             <div class="section-label mb-6">PROTOCOL · 04</div>
             <h2 class="t-display mb-6">
               GBT 8단계,<br/>
-              <span class="t-gold italic">전 과정을 공개합니다.</span>
+              <span class="t-gold not-italic">전 과정을 공개합니다.</span>
             </h2>
             <p class="t-lead max-w-2xl mx-auto text-brown-700">
               EMS Switzerland가 정의한 표준 시퀀스. 한 단계도 빠지지 않습니다.
@@ -343,7 +343,7 @@ export const AirflowGBTTreatmentPage = ({
             <div class="section-label mb-6">COMPARE · 05</div>
             <h2 class="t-display">
               일반 스케일링 vs<br/>
-              <span class="t-gold italic">GBT 에어플로우.</span>
+              <span class="t-gold not-italic">GBT 에어플로우.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
@@ -372,7 +372,7 @@ export const AirflowGBTTreatmentPage = ({
             <div class="section-label mb-6">INDICATIONS · 06</div>
             <h2 class="t-display">
               이런 분들께<br/>
-              <span class="t-gold italic">반드시 권합니다.</span>
+              <span class="t-gold not-italic">반드시 권합니다.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -394,7 +394,7 @@ export const AirflowGBTTreatmentPage = ({
             <div class="section-label mb-6">CARE AFTER · 07</div>
             <h2 class="t-display">
               시술 후<br/>
-              <span class="t-gold italic">관리 가이드.</span>
+              <span class="t-gold not-italic">관리 가이드.</span>
             </h2>
           </div>
           <div class="bg-ivory p-8 lg:p-12 rounded-xl">
@@ -417,7 +417,7 @@ export const AirflowGBTTreatmentPage = ({
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
               <div class="section-label mb-6">DOCTORS · 08</div>
-              <h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2>
+              <h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.slice(0, 6).map((d: any) => (
@@ -481,7 +481,7 @@ export const AirflowGBTTreatmentPage = ({
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 11</div>
           <h2 class="contact-headline">예방이<br/>
-            <span class="italic">치료보다 빠릅니다.</span></h2>
+            <span class="not-italic">치료보다 빠릅니다.</span></h2>
           <p class="contact-lead">구강 위생도 시스템입니다. 정기 GBT로 시작하세요.</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>

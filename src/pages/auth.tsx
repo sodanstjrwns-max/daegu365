@@ -8,7 +8,7 @@ export const SignupPage = ({ error, email, name, phone }: { error?: string, emai
         <div class="text-center mb-10 fade-in">
           <div class="section-label mb-4">JOIN</div>
           <h1 class="display text-5xl font-black tracking-tight">회원가입</h1>
-          <p class="text-brown-700 text-sm mt-4">가입 후 비포애프터의 <em class="italic display">애프터 사진</em>을 확인할 수 있습니다.</p>
+          <p class="text-brown-700 text-sm mt-4">가입 후 비포애프터의 <em class="not-italic display">애프터 사진</em>을 확인할 수 있습니다.</p>
         </div>
 
         <form method="post" action="/signup" class="bg-ivory rounded-3xl p-10 shadow-lux fade-in space-y-6">

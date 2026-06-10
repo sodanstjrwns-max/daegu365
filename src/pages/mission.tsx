@@ -15,9 +15,9 @@ export const MissionPage = () => (
         <div class="text-xs tracking-[0.4em] text-gold mb-12 fade-in">PHILOSOPHY · MISSION · VISION · VALUE</div>
         <h1 class="display text-6xl md:text-8xl lg:text-[9rem] font-black tracking-tight leading-[0.95] mb-12 fade-in text-ivory">
           <span class="block text-ivory">치과가</span>
-          <span class="block italic text-gold">무서웠던</span>
+          <span class="block not-italic text-gold">무서웠던</span>
           <span class="block text-ivory">한 의사의</span>
-          <span class="block italic text-ivory">다짐</span>
+          <span class="block not-italic text-ivory">다짐</span>
         </h1>
         <p class="text-brown-200 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed fade-in">
           치과공포증을 가졌던 사람으로서,<br/>
@@ -41,7 +41,7 @@ export const MissionPage = () => (
         </div>
         <div class="md:col-span-9 fade-in">
           <h2 class="display text-4xl md:text-5xl font-black tracking-tight leading-tight mb-8">
-            저도 치과가<br/><em class="italic text-brown-700">무서웠습니다.</em>
+            저도 치과가<br/><em class="not-italic text-brown-700">무서웠습니다.</em>
           </h2>
           <div class="prose-dental text-brown-700 text-lg leading-relaxed space-y-6">
             <p>
@@ -52,7 +52,7 @@ export const MissionPage = () => (
             <p>
               치과의사가 된 후에도 저는 그 감각을 잊지 않았습니다.
               오히려 그 경험이 지금의 저를 만들었습니다. 지금도 저는 진료실 문 앞에서 긴장하는
-              환자분들의 마음을 <span class="italic display text-brown-600">정확히</span> 읽습니다.
+              환자분들의 마음을 <span class="not-italic display text-brown-600">정확히</span> 읽습니다.
             </p>
           </div>
         </div>
@@ -71,7 +71,7 @@ export const MissionPage = () => (
         </div>
         <div class="md:col-span-9 fade-in">
           <h2 class="display text-4xl md:text-5xl font-black tracking-tight leading-tight mb-8">
-            그래서 저는<br/><em class="italic text-brown-700">다르게 만들기로</em> 했습니다.
+            그래서 저는<br/><em class="not-italic text-brown-700">다르게 만들기로</em> 했습니다.
           </h2>
           <div class="prose-dental text-brown-700 text-lg leading-relaxed space-y-6">
             <p>
@@ -79,7 +79,7 @@ export const MissionPage = () => (
               충분히 이해하고 안심하실 때까지 설명해 드립니다. 환자의 상황에 공감하며,
               <strong>꼭 필요한, 정직한 치료 계획</strong>만을 제시합니다.
             </p>
-            <p class="display italic text-2xl text-brown-900 py-4 border-l-4 border-gold pl-6 my-8">
+            <p class="display not-italic text-2xl text-brown-900 py-4 border-l-4 border-gold pl-6 my-8">
               "의료진보다 인터넷 정보를 더 신뢰하며 무리한 진료를 요구하는 분,
               저수가치과와 비교하며 무리한 할인을 요구하는 분은 정중히 사양합니다.
               대신, 신뢰와 소통을 중시하는 분께는 최선을 다합니다."
@@ -110,7 +110,7 @@ export const MissionPage = () => (
           <h2 class="display text-3xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight leading-[1.15] mb-10 fade-in text-ivory">
             <span class="text-ivory">치과를 두려워하는 환자가</span><br/>
             <span class="text-ivory">불안 없이 병원 문을 열 수 있도록,</span><br/>
-            <em class="italic text-gold">진입의 허들을 낮추고<br/>
+            <em class="not-italic text-gold">진입의 허들을 낮추고<br/>
             치과경험의 혁신</em><span class="text-ivory">을 이룩한다.</span>
           </h2>
           <div class="text-xs tracking-[0.3em] text-brown-300 fade-in">
@@ -151,9 +151,9 @@ export const MissionPage = () => (
             </div>
             <h2 class="display text-3xl md:text-5xl font-black tracking-tight leading-[1.15] text-brown-950 mb-10">
               치과가 두려운 사람들에게<br/>
-              <em class="italic text-brown-700">대구에서 가장 먼저</em><br/>
+              <em class="not-italic text-brown-700">대구에서 가장 먼저</em><br/>
               떠오르는<br/>
-              <em class="italic text-gold">'안심과 신뢰의 상징'</em><br/>
+              <em class="not-italic text-gold">'안심과 신뢰의 상징'</em><br/>
               치과가 되는 것.
             </h2>
             <div class="h-px w-24 bg-gold mb-6"></div>
@@ -232,11 +232,11 @@ export const MissionPage = () => (
               </div>
 
               {/* Title */}
-              <div class="display text-6xl font-black tracking-tight italic text-ivory mb-3 group-hover:text-gold transition-colors duration-500">
+              <div class="display text-6xl font-black tracking-tight not-italic text-ivory mb-3 group-hover:text-gold transition-colors duration-500">
                 {v.title}
               </div>
               <div class="text-xs tracking-[0.4em] text-gold mb-2">{v.en}</div>
-              <div class="text-xs text-brown-400 mb-8 italic">— {v.stage}</div>
+              <div class="text-xs text-brown-400 mb-8 not-italic">— {v.stage}</div>
 
               <div class="h-px w-12 bg-gold mb-6"></div>
 
@@ -257,10 +257,10 @@ export const MissionPage = () => (
           <i class="fas fa-quote-left"></i>
         </div>
         <h2 class="display text-3xl md:text-5xl font-black tracking-tight leading-tight text-brown-950 fade-in">
-          <em class="italic">치과 진입의 허들을 낮추고</em><br/>
-          <em class="italic text-brown-700">경험의 혁신</em>을 이룩한다.
+          <em class="not-italic">치과 진입의 허들을 낮추고</em><br/>
+          <em class="not-italic text-brown-700">경험의 혁신</em>을 이룩한다.
         </h2>
-        <div class="mt-16 display italic text-brown-700 text-xl fade-in">— 김성주 대표원장</div>
+        <div class="mt-16 display not-italic text-brown-700 text-xl fade-in">— 김성주 대표원장</div>
       </div>
     </section>
 
@@ -269,7 +269,7 @@ export const MissionPage = () => (
     {/* ================================================== */}
     <section class="py-32 max-w-4xl mx-auto px-6 text-center">
       <h2 class="section-title mb-8 fade-in">
-        당신의 <em class="italic text-brown-700">두려움</em>,<br/>이제 저희가 함께 합니다
+        당신의 <em class="not-italic text-brown-700">두려움</em>,<br/>이제 저희가 함께 합니다
       </h2>
       <p class="text-brown-700 text-lg mb-12 fade-in">
         상담은 전화 한 통이면 충분합니다. 편하게, 언제든 연락 주세요.

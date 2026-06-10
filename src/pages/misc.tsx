@@ -120,7 +120,7 @@ export const DictionaryListPage = ({ items, selectedCategory, query }: { items: 
       <section class="pt-20 pb-12 bg-cream">
         <div class="max-w-7xl mx-auto px-6 text-center">
           <div class="section-label mb-6">DICTIONARY</div>
-          <h1 class="t-display mb-6 fade-in">치과 <em class="italic text-brown-700">백과사전</em></h1>
+          <h1 class="t-display mb-6 fade-in">치과 <em class="not-italic text-brown-700">백과사전</em></h1>
           <p class="text-brown-700 max-w-2xl mx-auto fade-in">500여 개의 치과 용어를 담았습니다. 검색하거나 카테고리로 찾아보세요.</p>
         </div>
       </section>

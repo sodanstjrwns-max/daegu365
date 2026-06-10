@@ -66,7 +66,7 @@ export const ProstheticTreatmentPage = ({
           <div class="section-label text-gold mb-6">PROSTHETICS · 크라운·브릿지·인레이</div>
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
             잘 만든 보철은,<br/>
-            <span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">평생을 갑니다.</span>
+            <span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">평생을 갑니다.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             원내 디지털 기공실 + iTero 5D 스캔.<br/>
@@ -101,7 +101,7 @@ export const ProstheticTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="whatis-headline">보철은,<br/><span class="t-gold italic">치아의 옷</span>입니다.</h2>
+              <h2 class="whatis-headline">보철은,<br/><span class="t-gold not-italic">치아의 옷</span>입니다.</h2>
             </div>
             <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
@@ -122,7 +122,7 @@ export const ProstheticTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-cream">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">TYPES · 02</div><h2 class="t-display">보철 <span class="t-gold italic">4종.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">TYPES · 02</div><h2 class="t-display">보철 <span class="t-gold not-italic">4종.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {TYPES.map((t) => (
               <div class="p-7 rounded-xl bg-ivory border border-brown-200">
@@ -137,7 +137,7 @@ export const ProstheticTreatmentPage = ({
 
       <section id="materials" class="py-24 lg:py-32 bg-ivory scroll-mt-24">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">MATERIALS · 03</div><h2 class="t-display">재료 <span class="t-gold italic">6종.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">MATERIALS · 03</div><h2 class="t-display">재료 <span class="t-gold not-italic">6종.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {MATERIALS.map((m) => (
               <div class={`p-7 rounded-xl ${m.highlight ? 'bg-brown-950 text-ivory border-2 border-gold' : 'bg-cream border border-brown-200'}`}>
@@ -158,7 +158,7 @@ export const ProstheticTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-cream">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">PROCESS · 04</div><h2 class="t-display">제작 <span class="t-gold italic">6단계.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">PROCESS · 04</div><h2 class="t-display">제작 <span class="t-gold not-italic">6단계.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PROCESS.map((p) => (
               <div class="p-7 rounded-xl bg-ivory border border-brown-200">
@@ -173,7 +173,7 @@ export const ProstheticTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">WHY DAEGU365 · 05</div><h2 class="t-display">대구365치과의 <span class="t-gold italic">정밀함.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">WHY DAEGU365 · 05</div><h2 class="t-display">대구365치과의 <span class="t-gold not-italic">정밀함.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {WHY_US.map((w: any) => (
               <div class="p-7 rounded-xl bg-cream border border-brown-200">
@@ -194,7 +194,7 @@ export const ProstheticTreatmentPage = ({
         <div class="max-w-5xl mx-auto px-6 lg:px-12 text-center">
           <div class="section-label text-gold mb-6">COMBINED · 06</div>
           <h2 class="t-display mb-6" style="color:#fdfbf7; text-shadow:0 2px 12px rgba(0,0,0,0.4);">
-            보철의 정확함은,<br/><span class="italic" style="color:#c9a876;">기공실에서 결정됩니다.</span>
+            보철의 정확함은,<br/><span class="not-italic" style="color:#c9a876;">기공실에서 결정됩니다.</span>
           </h2>
           <p class="t-lead max-w-2xl mx-auto mb-10" style="color:#fdfbf7; opacity:0.9;">원내 디지털 기공실(D.LAB)에서 직접 제작·조정합니다. 외주 불일치 없는 정밀도.</p>
           <a href="/treatments/in-house-lab" class="btn-outline-ivory">디지털 기공실 자세히 <i class="fas fa-arrow-right ml-2"></i></a>
@@ -204,7 +204,7 @@ export const ProstheticTreatmentPage = ({
       {doctors && doctors.length > 0 && (
         <section class="py-24 lg:py-32 bg-ivory">
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="text-center mb-16"><div class="section-label mb-6">DOCTORS · 07</div><h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2></div>
+            <div class="text-center mb-16"><div class="section-label mb-6">DOCTORS · 07</div><h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2></div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
                 <a href={`/doctors/${d.id}`} class="block p-7 rounded-xl bg-cream border border-brown-200 hover:border-gold">
@@ -258,7 +258,7 @@ export const ProstheticTreatmentPage = ({
         <div class="absolute inset-0 opacity-15" style="background-image:url('/r2/images/clinic/care-luxury-room.jpg?v=1');background-size:cover;background-position:center;"></div>
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 10</div>
-          <h2 class="contact-headline">정확한 보철의 시작,<br/><span class="italic">상담입니다.</span></h2>
+          <h2 class="contact-headline">정확한 보철의 시작,<br/><span class="not-italic">상담입니다.</span></h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길</a>

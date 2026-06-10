@@ -55,7 +55,7 @@ export const AestheticTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12 relative">
           <div class="section-label text-gold mb-6">AESTHETIC · 심미치료</div>
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
-            예쁜 치아가 아닌,<br/><span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">예쁜 미소.</span>
+            예쁜 치아가 아닌,<br/><span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">예쁜 미소.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             라미네이트 · 미백 · 아이콘 · 심미보철의 통합 설계.<br/>
@@ -78,7 +78,7 @@ export const AestheticTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="whatis-headline">심미는,<br/><span class="t-gold italic">조화의 기술</span>입니다.</h2>
+              <h2 class="whatis-headline">심미는,<br/><span class="t-gold not-italic">조화의 기술</span>입니다.</h2>
             </div>
             <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
@@ -94,7 +94,7 @@ export const AestheticTreatmentPage = ({
 
       <section id="programs" class="py-24 lg:py-32 bg-cream scroll-mt-24">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">PROGRAMS · 02</div><h2 class="t-display">심미 <span class="t-gold italic">6프로그램.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">PROGRAMS · 02</div><h2 class="t-display">심미 <span class="t-gold not-italic">6프로그램.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PROGRAMS.map((p) => (
               p.link ? (
@@ -118,7 +118,7 @@ export const AestheticTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">PHILOSOPHY · 03</div><h2 class="t-display">우리의 <span class="t-gold italic">원칙.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">PHILOSOPHY · 03</div><h2 class="t-display">우리의 <span class="t-gold not-italic">원칙.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {PHILOSOPHY.map((p) => (
               <div class="p-7 rounded-xl bg-cream border border-brown-200">
@@ -133,7 +133,7 @@ export const AestheticTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-cream">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">PROCESS · 04</div><h2 class="t-display">심미 디자인 <span class="t-gold italic">6단계.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">PROCESS · 04</div><h2 class="t-display">심미 디자인 <span class="t-gold not-italic">6단계.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PROCESS.map((p) => (
               <div class="p-7 rounded-xl bg-ivory border border-brown-200">
@@ -149,7 +149,7 @@ export const AestheticTreatmentPage = ({
       {doctors && doctors.length > 0 && (
         <section class="py-24 lg:py-32 bg-ivory">
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="text-center mb-16"><div class="section-label mb-6">DOCTORS · 05</div><h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2></div>
+            <div class="text-center mb-16"><div class="section-label mb-6">DOCTORS · 05</div><h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2></div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
                 <a href={`/doctors/${d.id}`} class="block p-7 rounded-xl bg-cream border border-brown-200 hover:border-gold">
@@ -203,7 +203,7 @@ export const AestheticTreatmentPage = ({
         <div class="absolute inset-0 opacity-15" style="background-image:url('/r2/images/clinic/care-luxury-room.jpg?v=1');background-size:cover;background-position:center;"></div>
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 08</div>
-          <h2 class="contact-headline">치아가 아닌,<br/><span class="italic">미소를 디자인합니다.</span></h2>
+          <h2 class="contact-headline">치아가 아닌,<br/><span class="not-italic">미소를 디자인합니다.</span></h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길</a>

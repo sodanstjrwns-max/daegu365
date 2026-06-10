@@ -62,7 +62,7 @@ export const ConservativeTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12 relative">
           <div class="section-label text-gold mb-6">CONSERVATIVE · 보존치료</div>
           <h1 class="display font-black tracking-tight leading-[0.95] mb-10" style="font-size:clamp(3rem, 8vw, 7.5rem); color:#fdfbf7; text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);">
-            가능한 한,<br/><span class="italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">남깁니다.</span>
+            가능한 한,<br/><span class="not-italic" style="color:#c9a876; text-shadow: 0 4px 24px rgba(201,168,118,0.3), 0 1px 3px rgba(0,0,0,0.8);">남깁니다.</span>
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             확대경 + Q-ray + 러버댐 + 4단계 무통.<br/>
@@ -85,7 +85,7 @@ export const ConservativeTreatmentPage = ({
           <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             <div class="lg:col-span-5">
               <div class="section-label mb-6">WHAT IS · 01</div>
-              <h2 class="whatis-headline">보존은,<br/><span class="t-gold italic">철학</span>입니다.</h2>
+              <h2 class="whatis-headline">보존은,<br/><span class="t-gold not-italic">철학</span>입니다.</h2>
             </div>
             <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
@@ -101,7 +101,7 @@ export const ConservativeTreatmentPage = ({
 
       <section id="decision" class="py-24 lg:py-32 bg-cream scroll-mt-24">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">DECISION · 02</div><h2 class="t-display">단계별 <span class="t-gold italic">치료 분기.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">DECISION · 02</div><h2 class="t-display">단계별 <span class="t-gold not-italic">치료 분기.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {DECISION.map((d) => (
               <div class={`p-7 rounded-xl ${d.highlight ? 'bg-brown-950 text-ivory border-2 border-gold' : 'bg-ivory border border-brown-200'}`}>
@@ -117,7 +117,7 @@ export const ConservativeTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">PHILOSOPHY · 03</div><h2 class="t-display">우리의 <span class="t-gold italic">원칙.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">PHILOSOPHY · 03</div><h2 class="t-display">우리의 <span class="t-gold not-italic">원칙.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {PHILOSOPHY.map((p) => (
               <div class="p-7 rounded-xl bg-cream border border-brown-200">
@@ -132,7 +132,7 @@ export const ConservativeTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-cream">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">RESIN PRICES · 04</div><h2 class="t-display">레진 <span class="t-gold italic">가격표.</span></h2><p class="t-lead text-brown-700 mt-6 max-w-2xl mx-auto">정직한 가격, 무통마취 기본 포함. 신경치료·인레이는 별도 안내.</p></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">RESIN PRICES · 04</div><h2 class="t-display">레진 <span class="t-gold not-italic">가격표.</span></h2><p class="t-lead text-brown-700 mt-6 max-w-2xl mx-auto">정직한 가격, 무통마취 기본 포함. 신경치료·인레이는 별도 안내.</p></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {RESIN.map((r) => (
               <div class="p-7 rounded-xl bg-ivory border border-brown-200">
@@ -147,7 +147,7 @@ export const ConservativeTreatmentPage = ({
 
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
-          <div class="text-center mb-16"><div class="section-label mb-6">PROCESS · 05</div><h2 class="t-display">시술 <span class="t-gold italic">6단계.</span></h2></div>
+          <div class="text-center mb-16"><div class="section-label mb-6">PROCESS · 05</div><h2 class="t-display">시술 <span class="t-gold not-italic">6단계.</span></h2></div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {PROCESS.map((p) => (
               <div class="p-7 rounded-xl bg-cream border border-brown-200">
@@ -164,7 +164,7 @@ export const ConservativeTreatmentPage = ({
         <div class="max-w-5xl mx-auto px-6 lg:px-12 text-center">
           <div class="section-label text-gold mb-6">COMBINED · 06</div>
           <h2 class="t-display mb-6" style="color:#fdfbf7; text-shadow:0 2px 12px rgba(0,0,0,0.4);">
-            보존이 어려운 단계라면,<br/><span class="italic" style="color:#c9a876;">신경치료로 살립니다.</span>
+            보존이 어려운 단계라면,<br/><span class="not-italic" style="color:#c9a876;">신경치료로 살립니다.</span>
           </h2>
           <p class="t-lead max-w-2xl mx-auto mb-10" style="color:#fdfbf7; opacity:0.9;">신경 침범(C3) 단계도 자연치를 살리는 마지막 기회. 러버댐·니켈티타늄·MTA 표준 프로토콜.</p>
           <a href="/treatments/cavity-endo-crown" class="btn-outline-ivory">충치·신경치료·크라운 자세히 <i class="fas fa-arrow-right ml-2"></i></a>
@@ -174,7 +174,7 @@ export const ConservativeTreatmentPage = ({
       {doctors && doctors.length > 0 && (
         <section class="py-24 lg:py-32 bg-ivory">
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
-            <div class="text-center mb-16"><div class="section-label mb-6">DOCTORS · 07</div><h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2></div>
+            <div class="text-center mb-16"><div class="section-label mb-6">DOCTORS · 07</div><h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2></div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
                 <a href={`/doctors/${d.id}`} class="block p-7 rounded-xl bg-cream border border-brown-200 hover:border-gold">
@@ -209,7 +209,7 @@ export const ConservativeTreatmentPage = ({
         <div class="absolute inset-0 opacity-15" style="background-image:url('/r2/images/clinic/care-luxury-room.jpg?v=1');background-size:cover;background-position:center;"></div>
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 09</div>
-          <h2 class="contact-headline">남길 수 있다면,<br/><span class="italic">남깁니다.</span></h2>
+          <h2 class="contact-headline">남길 수 있다면,<br/><span class="not-italic">남깁니다.</span></h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
             <a href="/directions" class="btn-outline-ivory">오시는 길</a>

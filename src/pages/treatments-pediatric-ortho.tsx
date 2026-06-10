@@ -299,7 +299,7 @@ export const PediatricOrthoTreatmentPage = ({
             <div class="section-label mb-6">GOLDEN TIME · 03</div>
             <h2 class="t-display">
               연령별<br/>
-              <span class="t-gold italic">소아 교정 타임라인.</span>
+              <span class="t-gold not-italic">소아 교정 타임라인.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -322,7 +322,7 @@ export const PediatricOrthoTreatmentPage = ({
             <div class="section-label mb-6">PARENT CHECK · 04</div>
             <h2 class="t-display">
               이런 신호가 있다면,<br/>
-              <span class="t-gold italic">바로 검진을.</span>
+              <span class="t-gold not-italic">바로 검진을.</span>
             </h2>
             <p class="t-lead max-w-2xl mx-auto mt-4 text-brown-700">
               아래 한 가지라도 해당되면 7세 전후 첫 교정 진단을 권장합니다.
@@ -347,7 +347,7 @@ export const PediatricOrthoTreatmentPage = ({
             <div class="section-label mb-6">WHY DAEGU365 · 05</div>
             <h2 class="t-display">
               아이 협조도까지<br/>
-              <span class="t-gold italic">설계합니다.</span>
+              <span class="t-gold not-italic">설계합니다.</span>
             </h2>
           </div>
           <div class="grid md:grid-cols-2 gap-6">
@@ -371,7 +371,7 @@ export const PediatricOrthoTreatmentPage = ({
             <div class="section-label mb-6">DEVICES · 06</div>
             <h2 class="t-display mb-6">
               6종 장치<br/>
-              <span class="t-gold italic">풀라인업.</span>
+              <span class="t-gold not-italic">풀라인업.</span>
             </h2>
             <p class="t-lead max-w-2xl mx-auto text-brown-700">
               한 가지 장치로 모든 케이스를 해결할 수 없습니다. 케이스마다 가장 적합한 장치를 선택합니다.
@@ -405,7 +405,7 @@ export const PediatricOrthoTreatmentPage = ({
             <div class="section-label mb-6">PROCESS · 07</div>
             <h2 class="t-display">
               진단부터 1차 교정 종료까지,<br/>
-              <span class="t-gold italic">5단계 동선.</span>
+              <span class="t-gold not-italic">5단계 동선.</span>
             </h2>
           </div>
           <div class="space-y-6">
@@ -441,7 +441,7 @@ export const PediatricOrthoTreatmentPage = ({
             <div class="section-label mb-6">PARENT GUIDE · 08</div>
             <h2 class="t-display">
               부모님께 드리는<br/>
-              <span class="t-gold italic">동행 가이드.</span>
+              <span class="t-gold not-italic">동행 가이드.</span>
             </h2>
             <p class="t-lead max-w-2xl mx-auto mt-4 text-brown-700">
               아이의 협조도가 1차 교정의 성패를 좌우합니다. 부모님이 함께 만들어 주세요.
@@ -480,7 +480,7 @@ export const PediatricOrthoTreatmentPage = ({
           <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="text-center mb-16">
               <div class="section-label mb-6">DOCTORS · 09</div>
-              <h2 class="t-display">담당 <span class="t-gold italic">의료진.</span></h2>
+              <h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.slice(0, 6).map((d: any) => (
@@ -561,7 +561,7 @@ export const PediatricOrthoTreatmentPage = ({
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 12</div>
           <h2 class="contact-headline">7세,<br/>
-            <span class="italic">한 번의 검진이 평생을 바꿉니다.</span></h2>
+            <span class="not-italic">한 번의 검진이 평생을 바꿉니다.</span></h2>
           <p class="contact-lead">첫 진단은 “시작”이 아니라 “필요한지 확인”입니다.</p>
           <div class="flex flex-wrap justify-center gap-4">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>

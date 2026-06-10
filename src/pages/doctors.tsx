@@ -987,7 +987,7 @@ export const DoctorDetailPage = ({
                 {doctor.name} 원장 <em class="not-italic text-brown-700">치료 사례</em>
               </h2>
             </div>
-            <a href={`/before-after?doctor=${doctor.slug}`} class="link-underline display italic">전체 보기 →</a>
+            <a href={`/before-after?doctor=${doctor.slug}`} class="link-underline display not-italic">전체 보기 →</a>
           </div>
           <div class="grid md:grid-cols-3 gap-6">
             {cases.slice(0, 3).map((ba) => {
