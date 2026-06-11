@@ -9,11 +9,11 @@ import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/type
    ============================================================ */
 
 const PERIO_STAGES = [
-  { stage: '건강', name: '건강한 잇몸', desc: '분홍색·탄력. 출혈 없음. 정기 스케일링으로 유지.', treat: '예방 관리', color: 'safe' },
-  { stage: '치은염', name: '치은염', desc: '잇몸 붓기·출혈. 뼈 손상 없음. 가역적 단계.', treat: '스케일링', color: 'safe' },
-  { stage: '초기', name: '초기 치주염', desc: '뼈 손상 시작. 잇몸 주머니 4mm. 시린 증상.', treat: '잇몸치료(SRP)', color: 'warning', highlight: true },
-  { stage: '중기', name: '중등도 치주염', desc: '뼈 1/3 소실. 주머니 5~6mm. 흔들림 시작.', treat: 'SRP + 치주수술', color: 'danger' },
-  { stage: '말기', name: '진행성 치주염', desc: '뼈 1/2 이상 소실. 발치 위험. 임플란트 고려.', treat: '치주수술/발치', color: 'critical' },
+  { num: '01', stage: '건강', name: '건강한 잇몸', desc: '분홍색·탄력 · 출혈 없음 · 정기 스케일링으로 유지', treat: '예방 관리', color: 'safe' },
+  { num: '02', stage: '치은염', name: '치은염', desc: '잇몸 붓기·출혈 · 뼈 손상 없음 · 가역적 단계', treat: '스케일링', color: 'safe' },
+  { num: '03', stage: '초기', name: '초기 치주염', desc: '뼈 손상 시작 · 잇몸 주머니 4mm · 시린 증상', treat: '잇몸치료(SRP)', color: 'warning', highlight: true },
+  { num: '04', stage: '중기', name: '중등도 치주염', desc: '뼈 1/3 소실 · 주머니 5~6mm · 흔들림 시작', treat: 'SRP + 치주수술', color: 'danger' },
+  { num: '05', stage: '말기', name: '진행성 치주염', desc: '뼈 1/2 이상 소실 · 발치 위험 · 임플란트 고려', treat: '치주수술/발치', color: 'critical' },
 ]
 
 const PROCESS = [
@@ -118,6 +118,7 @@ export const PerioTreatmentPage = ({
           <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
             {PERIO_STAGES.map((s) => (
               <div class={`p-6 rounded-xl ${s.highlight ? 'bg-brown-950 text-ivory border-2 border-gold' : 'bg-ivory border border-brown-200'}`}>
+                <div class={`text-xs font-black tracking-widest mb-2 ${s.highlight ? 'text-gold/80' : 'text-brown-400'}`}>{s.num}</div>
                 <div class={`text-2xl font-black mb-3 ${s.highlight ? 'text-gold' : 't-gold'}`}>{s.stage}</div>
                 <h3 class="t-display text-lg mb-3" style={s.highlight ? 'color:#fdfbf7;' : ''}>{s.name}</h3>
                 <p class={`text-sm mb-4 ${!s.highlight ? 'text-brown-700' : ''}`} style={s.highlight ? 'color:#fdfbf7;opacity:0.85;' : ''}>{s.desc}</p>
