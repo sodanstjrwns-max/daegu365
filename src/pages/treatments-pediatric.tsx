@@ -1,4 +1,5 @@
-import { Navbar, Footer, DoctorProfileBlock } from '../components/Layout'
+import { Navbar, Footer, DoctorProfileBlock, TldrBox} from '../components/Layout'
+import { getTldr } from '../lib/tldr'
 import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -242,6 +243,8 @@ export const PediatricTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {(() => { const t = getTldr('pediatric'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
 
       {/* 2. WHAT IS */}
       <section class="py-24 lg:py-32 bg-ivory">

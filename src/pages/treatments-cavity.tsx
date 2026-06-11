@@ -1,4 +1,5 @@
-import { Navbar, Footer, DoctorProfileBlock } from '../components/Layout'
+import { Navbar, Footer, DoctorProfileBlock, TldrBox} from '../components/Layout'
+import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -184,6 +185,8 @@ export const CavityTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {(() => { const t = getTldr('cavity-endo-crown'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
 
       {/* 2. WHAT IS — 충치란 */}
       <section class="py-24 lg:py-32 bg-ivory">

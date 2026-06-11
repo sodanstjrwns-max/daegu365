@@ -1,4 +1,5 @@
-import { Navbar, Footer } from '../components/Layout'
+import { Navbar, Footer, TldrBox} from '../components/Layout'
+import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -89,6 +90,8 @@ export const IconTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {(() => { const t = getTldr('icon-resin'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
 
       {/* 2. WHAT IS */}
       <section class="py-24 lg:py-32 bg-ivory">

@@ -1,4 +1,5 @@
-import { Navbar, Footer } from '../components/Layout'
+import { Navbar, Footer, TldrBox} from '../components/Layout'
+import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -67,6 +68,8 @@ export const PreventionTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {(() => { const t = getTldr('prevention'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-6xl mx-auto px-6 lg:px-12">
           <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">

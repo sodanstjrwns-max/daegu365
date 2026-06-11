@@ -1,4 +1,5 @@
-import { Navbar, Footer, ComparisonTable } from '../components/Layout'
+import { Navbar, Footer, ComparisonTable, TldrBox} from '../components/Layout'
+import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 /* ============================================================
@@ -302,6 +303,8 @@ export const ImplantGeneralTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {(() => { const t = getTldr('implant-general'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
 
       {/* ========================================== */}
       {/* 2. WHAT IS — 의학적 정의 + 적응증 + 비적응증   */}
