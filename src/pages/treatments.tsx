@@ -1,4 +1,5 @@
-import { Navbar, Footer } from '../components/Layout'
+import { Navbar, Footer, TldrBox } from '../components/Layout'
+import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
 export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) => {
@@ -130,6 +131,8 @@ export const TreatmentDetailPage = ({
           </div>
         </div>
       </section>
+
+      {(() => { const t = getTldr(treatment.slug); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
 
       {/* CONTENT SECTIONS (for core) */}
       {isCore && (
