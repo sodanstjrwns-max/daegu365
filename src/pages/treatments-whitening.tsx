@@ -26,7 +26,7 @@ const VS = [
   },
 ]
 
-const PROCESS = [
+export const PROCESS = [
   { step: '01', name: '구강 검진', desc: '충치·잇몸 상태 점검. 미백 전 필수 처치(스케일링·충전) 우선 진행.' },
   { step: '02', name: '톤 측정', desc: 'VITA Shade Guide로 현재 톤 기록. Before 사진 촬영.' },
   { step: '03', name: '잇몸 보호', desc: '잇몸 라인에 보호제 도포. 약물 자극으로부터 연조직 차단.' },

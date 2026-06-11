@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import {
   renderer, SITE,
   medicalProcedureSchema, physicianSchema, videoObjectSchema, articleSchema, caseStudySchema,
-  dentistSchema, breadcrumbSchema
+  dentistSchema, breadcrumbSchema, howToSchema, speakableSchema
 } from './renderer'
 import type { Bindings } from './lib/types'
 import {
@@ -17,18 +17,18 @@ import { HomePage } from './pages/home'
 import { MissionPage } from './pages/mission'
 import { DoctorsListPage, DoctorDetailPage } from './pages/doctors'
 import { TreatmentsListPage, TreatmentDetailPage } from './pages/treatments'
-import { ImplantTreatmentPage } from './pages/treatments-implant'
+import { ImplantTreatmentPage, PROCESS as IMPLANT_PROCESS } from './pages/treatments-implant'
 import { ImplantGeneralTreatmentPage } from './pages/treatments-implant-general'
-import { LamineerTreatmentPage } from './pages/treatments-lamineer'
-import { OrthoTreatmentPage } from './pages/treatments-ortho'
+import { LamineerTreatmentPage, PROCESS as LAMINEER_PROCESS } from './pages/treatments-lamineer'
+import { OrthoTreatmentPage, PROCESS as ORTHO_PROCESS } from './pages/treatments-ortho'
 import { SleepTherapyTreatmentPage } from './pages/treatments-sleep'
 import { PainlessAnesthesiaTreatmentPage } from './pages/treatments-anesthesia'
 import { AirflowGBTTreatmentPage } from './pages/treatments-airflow'
 import { PediatricOrthoTreatmentPage } from './pages/treatments-pediatric-ortho'
 import { PediatricTreatmentPage } from './pages/treatments-pediatric'
 import { CavityTreatmentPage } from './pages/treatments-cavity'
-import { PerioTreatmentPage } from './pages/treatments-perio'
-import { WhiteningTreatmentPage } from './pages/treatments-whitening'
+import { PerioTreatmentPage, PROCESS as PERIO_PROCESS } from './pages/treatments-perio'
+import { WhiteningTreatmentPage, PROCESS as WHITENING_PROCESS } from './pages/treatments-whitening'
 import { IconTreatmentPage } from './pages/treatments-icon'
 import { QrayTreatmentPage } from './pages/treatments-qray'
 import { ProstheticTreatmentPage } from './pages/treatments-prosthetic'
@@ -307,6 +307,52 @@ const procedureSchemaFor = (slug: string) => {
   return medicalProcedureSchema({ slug, ...meta })
 }
 
+// ============ HowTo 스키마용 진료 절차(PROCESS) 데이터 ============
+// 각 진료 페이지에서 export 한 PROCESS 배열을 그대로 재사용 (텍스트 중복 방지)
+// PROCESS 구조 2종 정규화: {step,title,desc} 또는 {step,name,desc}
+const cleanStepText = (t: string) => (t || '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim()
+const normalizeSteps = (arr: any[]) =>
+  (arr || [])
+    .filter(s => (s?.title || s?.name) && s?.desc)
+    .map(s => ({ name: cleanStepText(s.title || s.name), text: cleanStepText(s.desc) }))
+
+const HOWTO_CONFIG: Record<string, { name: string, description: string, steps: any[], totalTime?: string }> = {
+  'implant': {
+    name: '수면 임플란트 진행 과정',
+    description: '대구365치과의 디지털 가이드 수면 임플란트 단계별 절차',
+    steps: IMPLANT_PROCESS, totalTime: 'P3M'
+  },
+  'ortho': {
+    name: '인비절라인 투명교정 진행 과정',
+    description: '대구365치과의 인비절라인 투명교정 단계별 절차',
+    steps: ORTHO_PROCESS, totalTime: 'P12M'
+  },
+  'lamineer': {
+    name: 'VINIQUE 라미네이트 진행 과정',
+    description: '대구365치과의 디지털 스마일 라미네이트 단계별 절차',
+    steps: LAMINEER_PROCESS, totalTime: 'P2W'
+  },
+  'perio': {
+    name: '잇몸치료(치주치료) 진행 과정',
+    description: '대구365치과의 단계별 잇몸치료 절차',
+    steps: PERIO_PROCESS, totalTime: 'P2M'
+  },
+  'whitening': {
+    name: '치아미백 진행 과정',
+    description: '대구365치과의 전문 치아미백 단계별 절차',
+    steps: WHITENING_PROCESS, totalTime: 'P1W'
+  },
+}
+
+/** 슬러그로 HowTo 스키마 가져오기 (PROCESS 단계가 정의된 진료만) */
+const howToSchemaFor = (slug: string) => {
+  const cfg = HOWTO_CONFIG[slug]
+  if (!cfg) return null
+  const steps = normalizeSteps(cfg.steps)
+  if (steps.length < 2) return null
+  return howToSchema({ slug, name: cfg.name, description: cfg.description, steps, totalTime: cfg.totalTime })
+}
+
 // ============ 원장 인터뷰 영상 메타 ============
 const DOCTOR_INTERVIEW_DESC: Record<string, string> = {
   'kim-seongju': '대구365치과 김성주 대표원장의 진료 철학과 병원 비전 인터뷰. 치과공포증을 가졌던 의사가 설계한 두려움 없는 치과의 시작.',
@@ -579,8 +625,20 @@ app.get('/treatments/:slug', async (c) => {
   }
   // MedicalProcedure 스키마 (AEO 핵심)
   const procSchema = procedureSchemaFor(slug)
-  // 진료 페이지 공통 스키마 배열 (Procedure + FAQ)
-  const treatmentSchemas: any[] = procSchema ? [procSchema, faqJsonLd] : [faqJsonLd]
+  // HowTo 스키마 (절차형 진료만) — "어떻게 진행되나요" AI 질문 인용 강화
+  const howTo = howToSchemaFor(slug)
+  // Speakable 스키마 — 음성/AI가 우선 발췌할 핵심 영역 지정
+  const speakable = speakableSchema({
+    url: `${SITE.url}/treatments/${slug}`,
+    cssSelectors: ['h1', '.tldr-answer', '.page-lead']
+  })
+  // 진료 페이지 공통 스키마 배열 (Procedure + FAQ + HowTo + Speakable)
+  const treatmentSchemas: any[] = [
+    ...(procSchema ? [procSchema] : []),
+    faqJsonLd,
+    ...(howTo ? [howTo] : []),
+    speakable,
+  ]
   // 진료 페이지 공통 빵부스러기
   const treatmentBC = treatmentBreadcrumb(slug, treatment.name)
 

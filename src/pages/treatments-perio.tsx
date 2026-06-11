@@ -16,7 +16,7 @@ const PERIO_STAGES = [
   { num: '05', stage: '말기', name: '진행성 치주염', desc: '뼈 1/2 이상 소실 · 발치 위험 · 임플란트 고려', treat: '치주수술/발치', color: 'critical' },
 ]
 
-const PROCESS = [
+export const PROCESS = [
   { step: '01', name: '정밀 진단', desc: '치주낭 깊이 측정·X-ray·CT로 뼈 소실 정량화. Q-ray로 플라크·치석 가시화.' },
   { step: '02', name: '에어플로우 (GBT)', desc: '비외과 1차 처치. 플라크·바이오필름을 손상 없이 제거.' },
   { step: '03', name: '스케일링·SRP', desc: '치아 표면·치근면 치석 제거. 잇몸선 아래까지 정밀 세척.' },

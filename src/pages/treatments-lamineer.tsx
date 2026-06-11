@@ -106,7 +106,7 @@ const DLAB_GALLERY = [
   },
 ]
 
-const PROCESS = [
+export const PROCESS = [
   {
     step: '01',
     title: '디지털 스마일 진단',

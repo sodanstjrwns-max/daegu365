@@ -67,7 +67,7 @@ const ADD_ONS = [
   { name: '교정 발치 (비보험)', price: '5만원', desc: '교정 목적 발치' },
 ]
 
-const PROCESS = [
+export const PROCESS = [
   {
     step: '01',
     title: '정밀 진단',

@@ -31,6 +31,8 @@ export const SITE = {
   logo: 'https://daegu365dc.kr/static/images/logo-vertical-gold.png',
   logoHorizontal: 'https://daegu365dc.kr/static/images/logo-horizontal-brown.png',
   founded: '2025',
+  // AEO 신선도(freshness) 신호 — 콘텐츠 최종 검토일. 배포 시 갱신.
+  lastReviewed: '2026-06-11',
   sameAs: [
     'https://blog.naver.com/nowhere2721',
     'https://www.instagram.com/daegu365dc_',
@@ -106,6 +108,17 @@ export const dentistSchema = () => ({
     { "@type": "AdministrativeArea", "name": "수성구" }
   ],
   "knowsLanguage": ["ko", "en"],
+  "slogan": "치과가 두려웠던 의사가 만든, 두려움 없는 치과",
+  "numberOfEmployees": { "@type": "QuantitativeValue", "value": 7, "unitText": "전문 의료진" },
+  // AI 답변엔진 주제 권위 신호 (2026 AEO) — 검증 가능한 진료 영역만 명시
+  "knowsAbout": [
+    "수면임플란트", "디지털 가이드 임플란트", "전악 임플란트", "임플란트 재수술",
+    "인비절라인 투명교정", "라미네이트", "VINIQUE 라미네이트", "심미보철",
+    "치과공포증 진정치료", "4단계 무통마취", "정맥진정(IV sedation)",
+    "치주치료", "잇몸치료", "에어플로우 GBT", "Q-ray 형광진단",
+    "소아치과", "충치치료", "신경치료", "지르코니아 크라운", "치아미백",
+    "원내 디지털 기공실", "통합치의학", "보존치과", "교정치과"
+  ],
   "sameAs": SITE.sameAs,
   "potentialAction": {
     "@type": "ReserveAction",
@@ -160,6 +173,7 @@ export const medicalProcedureSchema = (opts: {
   indication?: string[]
   cost?: string
   image?: string
+  lastReviewed?: string
 }) => ({
   "@context": "https://schema.org",
   "@type": "MedicalProcedure",
@@ -167,6 +181,9 @@ export const medicalProcedureSchema = (opts: {
   "name": opts.name,
   "description": opts.description,
   "url": `${SITE.url}/treatments/${opts.slug}`,
+  // 신선도 신호 (2026 AEO) — AI가 콘텐츠 최신성을 판단하는 핵심 가중치
+  "lastReviewed": opts.lastReviewed || SITE.lastReviewed,
+  "dateModified": opts.lastReviewed || SITE.lastReviewed,
   ...(opts.image && { "image": opts.image }),
   ...(opts.bodyLocation && { "bodyLocation": opts.bodyLocation }),
   ...(opts.procedureType && { "procedureType": opts.procedureType }),
@@ -396,6 +413,53 @@ export const caseStudySchema = (opts: {
     }
   ]
 }
+
+/** HowTo 스키마 — 진료 PROCESS 단계를 AI/구글이 "절차 가이드"로 인식 (2026 AEO 핵심)
+ *  AI 답변엔진이 "임플란트 어떻게 진행돼요?" 같은 질문에 단계별로 인용하기 쉬워짐 */
+export const howToSchema = (opts: {
+  name: string
+  description?: string
+  slug: string
+  steps: Array<{ name: string, text: string }>
+  totalTime?: string  // ISO 8601 duration, 예: "P3M" (3개월)
+  image?: string
+}) => ({
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "@id": `${SITE.url}/treatments/${opts.slug}#howto`,
+  "name": opts.name,
+  ...(opts.description && { "description": opts.description }),
+  ...(opts.image && { "image": opts.image }),
+  ...(opts.totalTime && { "totalTime": opts.totalTime }),
+  "step": opts.steps.map((s, i) => ({
+    "@type": "HowToStep",
+    "position": i + 1,
+    "name": s.name,
+    "text": s.text,
+    "url": `${SITE.url}/treatments/${opts.slug}#step-${i + 1}`
+  })),
+  "supply": { "@id": `${SITE.url}/#dentist` },
+  "inLanguage": "ko-KR"
+})
+
+/** Speakable 스키마 — 음성비서/AI가 "소리내어 읽을" 핵심 문장 지정 (2026 voice AEO)
+ *  cssSelector 로 지정된 영역을 AI가 우선 발췌 */
+export const speakableSchema = (opts: {
+  url: string
+  cssSelectors?: string[]
+}) => ({
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${opts.url}#speakable`,
+  "url": opts.url,
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": opts.cssSelectors && opts.cssSelectors.length > 0
+      ? opts.cssSelectors
+      : [".tldr-answer", "h1", ".page-lead"]
+  },
+  "inLanguage": "ko-KR"
+})
 
 // ============================================================
 //  Renderer

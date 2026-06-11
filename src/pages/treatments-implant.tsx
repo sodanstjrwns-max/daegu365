@@ -61,7 +61,7 @@ const BONE_GRAFT = [
   { name: '상악동거상술 (측방)', price: '100만원', desc: '상악 어금니 골량 부족' },
 ]
 
-const PROCESS = [
+export const PROCESS = [
   {
     step: '01',
     title: '정밀 진단',
