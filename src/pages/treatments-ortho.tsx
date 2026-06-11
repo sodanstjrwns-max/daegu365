@@ -9,28 +9,29 @@ import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/type
    - First(성장기) 400 / 클리피씨 580 / S라인 580 / 부분교정 200 / 마르페 70 등
    ============================================================ */
 
+// 모바일 Keynote [130] "패키지 소개 순서 변경" — 복잡(전체교정) → 중등도 → 가벼운 순으로 재배치
 const PACKAGES = [
-  {
-    name: '인비절라인 Lite',
-    range: '단순 케이스',
-    price: '500만원',
-    desc: '경미한 부정교합·재교정·미세 정렬에 적합한 단축 패키지.',
-    points: ['최대 14단계', '6~9개월', '단순 정렬·재교정'],
-  },
-  {
-    name: '인비절라인 Moderate',
-    range: '중등도',
-    price: '600만원',
-    desc: '일반적인 성인 교정 대부분을 커버하는 표준 패키지.',
-    points: ['최대 26단계', '10~18개월', '표준 부정교합'],
-  },
   {
     name: 'Comprehensive',
     range: '무제한',
     price: '750만원',
     badge: 'BEST CHOICE',
-    desc: '단계 무제한 + 5년 리파인먼트 보장. 복잡한 케이스도 끝까지 책임.',
+    desc: '복잡한 케이스, 전체 교정이 필요한 경우에 적합. 단계 무제한 + 5년 리파인먼트 보장.',
     points: ['단계 무제한', '5년 리파인먼트', '복잡 케이스 대응'],
+  },
+  {
+    name: '인비절라인 Moderate',
+    range: '중등도',
+    price: '600만원',
+    desc: '중등도 교정 케이스에 적합한 표준 패키지.',
+    points: ['최대 26단계', '10~18개월', '표준 부정교합'],
+  },
+  {
+    name: '인비절라인 Lite',
+    range: '단순 케이스',
+    price: '500만원',
+    desc: '앞니 배열, 재교정 등 가벼운 교정이 필요한 경우에 적합. 짧은 치료 기간.',
+    points: ['최대 14단계', '6~9개월', '단순 정렬·재교정'],
   },
   {
     name: 'First (성장기)',
@@ -446,7 +447,12 @@ export const OrthoTreatmentPage = ({
                   <div class="absolute -top-3 left-7 text-[9px] tracking-[0.25em] font-bold text-brown-950 bg-gold px-3 py-1 rounded-full">{p.badge}</div>
                 )}
                 <div class="text-[10px] tracking-[0.3em] text-brown-500 mb-3 font-bold">{p.range}</div>
-                <h3 class="display text-2xl font-black tracking-tight mb-3 text-brown-900">{p.name}</h3>
+                <h3 class="display text-2xl font-black tracking-tight mb-3 text-brown-900">
+                  {/* 모바일 Keynote [132]: 인비절라인 눈에 띄도록 색상 강조 */}
+                  {p.name.includes('인비절라인')
+                    ? <>{p.name.split('인비절라인').map((seg: string, idx: number) => idx === 0 ? seg : <><span class="t-gold">인비절라인</span>{seg}</>)}</>
+                    : p.name}
+                </h3>
                 <div class="display text-3xl font-black text-brown-900 mb-5">{p.price}</div>
                 <p class="text-sm text-brown-700 leading-relaxed mb-5 break-keep">{p.desc}</p>
                 <ul class="space-y-2 border-t border-brown-200 pt-5">

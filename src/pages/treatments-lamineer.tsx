@@ -445,7 +445,7 @@ export const LamineerTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">WHY DAEGU365 · 03</div>
             <h2 class="t-display">
-              <em class="italic text-brown-700">VINIQUE</em>가<br/>
+              <span class="font-black" style="color:#4a3520;">VINIQUE</span>가<br/>
               <span class="t-gold">다른 이유</span>
             </h2>
           </div>
@@ -472,7 +472,7 @@ export const LamineerTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">LINEUP · 04</div>
             <h2 class="t-display mb-6">
-              <span class="t-outline">VINIQUE</span> <span class="t-gold">2-Tier</span><br/>
+              <span class="font-black" style="color:#4a3520;">VINIQUE</span> <span class="t-gold">2-Tier</span><br/>
               <span class="text-brown-900">라인업</span>
             </h2>
             <p class="t-lead max-w-3xl">
