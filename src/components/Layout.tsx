@@ -931,7 +931,7 @@ export const TldrBox = ({ summary, bullets, cta, label }: {
           <span class="inline-flex items-center justify-center px-3 h-7 rounded-full bg-brown-950 text-gold text-[10px] tracking-[0.2em] font-black">TL;DR</span>
           <span class="text-xs tracking-[0.3em] text-brown-500 font-semibold uppercase">{label || '한눈에 보기'}</span>
         </div>
-        <p class="display text-xl lg:text-2xl text-brown-900 font-medium leading-relaxed mb-6">
+        <p class="tldr-answer display text-xl lg:text-2xl text-brown-900 font-medium leading-relaxed mb-6">
           {summary}
         </p>
         <dl class="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">

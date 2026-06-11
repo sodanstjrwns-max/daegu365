@@ -1,4 +1,5 @@
-import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock, TldrBox } from '../components/Layout'
+import { getTldr } from '../lib/tldr'
 import { comparisonFor } from '../lib/comparison-data'
 import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
@@ -317,6 +318,8 @@ export const OrthoTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {(() => { const t = getTldr('ortho'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
 
       {/* 2. WHAT IS */}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}

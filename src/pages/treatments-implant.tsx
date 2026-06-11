@@ -1,6 +1,7 @@
-import { Navbar, Footer, ComparisonTable, DoctorProfileBlock } from '../components/Layout'
+import { Navbar, Footer, ComparisonTable, DoctorProfileBlock, TldrBox } from '../components/Layout'
 import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { getTldr } from '../lib/tldr'
 
 /* ============================================================
    대구365치과 · 수면임플란트 풀볼륨 상세 페이지 v2
@@ -298,6 +299,8 @@ export const ImplantTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      {(() => { const t = getTldr('implant'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
 
       {/* ========================================== */}
       {/* 2. WHAT IS — 의학적 정의 + 적응증 + 비적응증   */}

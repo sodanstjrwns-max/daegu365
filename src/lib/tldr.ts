@@ -302,10 +302,18 @@ export const TLDR_BY_SLUG: Record<string, TldrData> = {
   },
 }
 
+// 슬러그 별칭 — DB엔 있으나 TL;DR 키가 다른 진료를 가까운 항목으로 매핑
+const TLDR_ALIAS: Record<string, string> = {
+  'implant-general': 'implant',
+  'vinique': 'lamineer',
+  'general': 'prosthetic',
+  'sleep': 'sleep-therapy',
+}
+
 /**
  * 슬러그로 TL;DR 데이터 조회.
  * 매칭 실패 시 undefined → 컴포넌트 측에서 조건부 렌더링으로 안전 처리.
  */
 export function getTldr(slug: string): TldrData | undefined {
-  return TLDR_BY_SLUG[slug]
+  return TLDR_BY_SLUG[slug] || TLDR_BY_SLUG[TLDR_ALIAS[slug]]
 }
