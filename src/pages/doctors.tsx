@@ -662,6 +662,20 @@ export const DoctorDetailPage = ({
   const cleanedMessage = ensureClosingQuote(stripEmDash(doctor.message || ''))
   const videoUrl = getDoctorVideo(doctor.slug)
 
+  // 모바일 Keynote [23][24][25][26] "일부볼드 해 주세요" 반영:
+  // 인터뷰 본문의 **...** 마크다운 볼드를 <strong>으로 렌더링.
+  // whitespace-pre-line이 \n을 줄바꿈으로 보존하므로, 텍스트 노드는 그대로 두고 ** 구간만 strong 처리.
+  const renderBold = (text: string) => {
+    if (!text) return text
+    if (text.indexOf('**') === -1) return text
+    const parts = text.split(/(\*\*[^*]+\*\*)/g)
+    return parts.map((p) =>
+      p.startsWith('**') && p.endsWith('**') && p.length > 4
+        ? <strong class="font-bold text-brown-950">{p.slice(2, -2)}</strong>
+        : p
+    )
+  }
+
   return (
     <>
       <Navbar />
@@ -905,13 +919,25 @@ export const DoctorDetailPage = ({
                   quote = quoteMatch[1].replace(/[""]/g, '').trim()
                   rest = content.slice(quoteMatch[0].length).trim()
                 }
+                // 모바일 Keynote [24][25][26] "슬래시 부분에서 줄변경 후 : 넣어주세요"
+                // splitMiddleDot이 가운뎃점/슬래시를 \n으로 바꿔둠 → 첫 줄=라벨, 나머지=부제
+                const titleLines = String(s.title || '').split('\n').map(t => t.trim()).filter(Boolean)
+                const labelLine = titleLines[0] || ''
+                const subLine = titleLines.slice(1).join(' ')
                 return (
                   <div class="fade-in">
-                    {/* 섹션 헤더 — 골드 좌측 보더 + 굵은 제목 (참고사진 스타일) */}
-                    <div class="flex items-center gap-3 mb-5 pb-3 border-b border-brown-200">
-                      <div class="w-1 h-6 rounded-full bg-gold"></div>
-                      <h3 class="display text-xl md:text-[1.4rem] font-black tracking-tight text-brown-950 leading-tight whitespace-pre-line">
-                        {String(s.title || '').replace(/\n/g, ' ')}
+                    {/* 섹션 헤더 — 골드 좌측 보더 + 라벨(콜론) + 줄바꿈 후 부제 (모바일 가독성) */}
+                    <div class="flex items-start gap-3 mb-5 pb-3 border-b border-brown-200">
+                      <div class="w-1 h-6 rounded-full bg-gold flex-shrink-0 mt-1"></div>
+                      <h3 class="display font-black tracking-tight leading-tight">
+                        <span class="block text-xl md:text-[1.4rem] text-brown-950">
+                          {labelLine}{subLine ? ' :' : ''}
+                        </span>
+                        {subLine && (
+                          <span class="block text-base md:text-lg text-gold mt-1.5 break-keep">
+                            {subLine}
+                          </span>
+                        )}
                       </h3>
                     </div>
                     {/* 본문 — 큰 글씨, 진한 톤, 넓은 행간 */}
@@ -923,7 +949,7 @@ export const DoctorDetailPage = ({
                       </div>
                     )}
                     <p class="text-brown-800 text-[15px] md:text-base leading-[1.85] whitespace-pre-line">
-                      {rest}
+                      {renderBold(rest)}
                     </p>
 
                     {/* 섹션 사이 장식 구분자 (마지막 제외) */}
@@ -954,7 +980,7 @@ export const DoctorDetailPage = ({
                       </div>
                       <div class="flex gap-3 pl-4 border-l-2 border-gold/40 ml-1">
                         <span class="display text-xl italic text-brown-500 font-black flex-shrink-0">A.</span>
-                        <p class="text-brown-800 text-[15px] md:text-base leading-[1.8]">{qa.a}</p>
+                        <p class="text-brown-800 text-[15px] md:text-base leading-[1.8] whitespace-pre-line">{renderBold(qa.a)}</p>
                       </div>
                     </div>
                   ))}
