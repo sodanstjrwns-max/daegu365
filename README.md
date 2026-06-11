@@ -68,13 +68,20 @@
 - ✅ **Canonical URL** 자동 생성
 - ✅ **OpenGraph + Twitter Card** 전체 세팅 + 커스텀 OG 이미지
 - ✅ **JSON-LD Schema**:
-  - `Dentist` (전체 기본, 주소·좌표·진료시간·전화 포함)
+  - `Dentist` (전체 기본, 주소·좌표·진료시간·전화 + **knowsAbout 24개 주제 권위 신호 · numberOfEmployees · slogan**)
   - `Physician` (원장 프로필)
+  - `MedicalProcedure` (진료별, **lastReviewed·dateModified 신선도 신호 포함**)
+  - `HowTo` (임플란트·교정·라미네이트·잇몸치료·미백 — 단계별 절차, AI 답변 인용 강화)
+  - `SpeakableSpecification` (음성/AI 발췌 영역 지정)
   - `FAQPage` (진료별 FAQ)
-  - `Article` (블로그)
+  - `Article`/`BlogPosting` (블로그, DB updated_at → dateModified 자동 반영)
   - `DefinedTerm` (백과사전)
 - ✅ **지역 SEO 페이지** 5종 (침산동·북구·수성구별 임플란트/라미네이트/교정 등)
 - ✅ H1~H3 시맨틱 구조, meta robots, theme-color
+
+> **2026 AEO 머신 강화 (2026-06-11)**: AI 답변엔진(ChatGPT·Gemini·Perplexity 등) 인용 최적화를 위해
+> ① 주제 권위 신호(`knowsAbout`) ② 신선도 신호(`lastReviewed`/`dateModified`) ③ 절차 스키마(`HowTo`)
+> ④ 음성/발췌 스키마(`Speakable`) 추가. **검증 가능한 사실만 사용 — 가짜 평점/후기는 일절 넣지 않음.**
 - ✅ 파비콘(SVG) + OG 이미지(SVG) + 프리텐다드/Cormorant Garamond 프리미엄 폰트
 
 ### 6. 디자인 시스템
