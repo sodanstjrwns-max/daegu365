@@ -119,6 +119,39 @@ export const dentistSchema = () => ({
     "소아치과", "충치치료", "신경치료", "지르코니아 크라운", "치아미백",
     "원내 디지털 기공실", "통합치의학", "보존치과", "교정치과"
   ],
+  // 진료과 계층 엔티티 (2026 AEO) — AI가 "이 치과가 어떤 진료과를 보유하고 누가 담당하는가" 매핑
+  "department": [
+    {
+      "@type": "MedicalClinic", "name": "임플란트·구강외과",
+      "medicalSpecialty": "Implantology",
+      "availableService": { "@id": `${SITE.url}/treatments/implant#procedure` },
+      "physician": { "@id": `${SITE.url}/doctors/kim-seongju#physician` }
+    },
+    {
+      "@type": "MedicalClinic", "name": "치과교정과",
+      "medicalSpecialty": "OrthodonticMedicine",
+      "availableService": { "@id": `${SITE.url}/treatments/ortho#procedure` },
+      "physician": { "@id": `${SITE.url}/doctors/kim-jinduk#physician` }
+    },
+    {
+      "@type": "MedicalClinic", "name": "치과보존과·심미",
+      "medicalSpecialty": "Endodontics",
+      "availableService": { "@id": `${SITE.url}/treatments/lamineer#procedure` },
+      "physician": { "@id": `${SITE.url}/doctors/choi-hyejung#physician` }
+    },
+    {
+      "@type": "MedicalClinic", "name": "치주과·평생관리",
+      "medicalSpecialty": "Periodontics",
+      "availableService": { "@id": `${SITE.url}/treatments/perio#procedure` },
+      "physician": { "@id": `${SITE.url}/doctors/lee-seoyoung#physician` }
+    },
+    {
+      "@type": "MedicalClinic", "name": "소아치과",
+      "medicalSpecialty": "PediatricDentistry",
+      "availableService": { "@id": `${SITE.url}/treatments/pediatric#procedure` },
+      "physician": { "@id": `${SITE.url}/doctors/han-jieun#physician` }
+    }
+  ],
   "sameAs": SITE.sameAs,
   "potentialAction": {
     "@type": "ReserveAction",
@@ -174,6 +207,7 @@ export const medicalProcedureSchema = (opts: {
   cost?: string
   image?: string
   lastReviewed?: string
+  reviewedBy?: { name: string; slug: string; position: string }
 }) => ({
   "@context": "https://schema.org",
   "@type": "MedicalProcedure",
@@ -184,6 +218,17 @@ export const medicalProcedureSchema = (opts: {
   // 신선도 신호 (2026 AEO) — AI가 콘텐츠 최신성을 판단하는 핵심 가중치
   "lastReviewed": opts.lastReviewed || SITE.lastReviewed,
   "dateModified": opts.lastReviewed || SITE.lastReviewed,
+  // YMYL 의료 검수 신호 (2026 AEO 핵심) — 전문의가 의학적으로 검수했음을 기계가 읽도록
+  ...(opts.reviewedBy && {
+    "reviewedBy": {
+      "@type": "Physician",
+      "@id": `${SITE.url}/doctors/${opts.reviewedBy.slug}#physician`,
+      "name": opts.reviewedBy.name,
+      "jobTitle": opts.reviewedBy.position,
+      "url": `${SITE.url}/doctors/${opts.reviewedBy.slug}`,
+      "worksFor": { "@id": `${SITE.url}/#dentist` }
+    }
+  }),
   ...(opts.image && { "image": opts.image }),
   ...(opts.bodyLocation && { "bodyLocation": opts.bodyLocation }),
   ...(opts.procedureType && { "procedureType": opts.procedureType }),
@@ -204,7 +249,7 @@ export const medicalProcedureSchema = (opts: {
   "availableService": { "@id": `${SITE.url}/#dentist` }
 })
 
-/** Physician 스키마 — 원장 프로필 강화 */
+/** Physician 스키마 — 원장 프로필 강화 (2026 YMYL 자격 신호 정밀화) */
 export const physicianSchema = (doctor: any) => {
   let education: string[] = []
   let career: string[] = []
@@ -212,6 +257,31 @@ export const physicianSchema = (doctor: any) => {
   try { education = JSON.parse(doctor.education || '[]') } catch {}
   try { career = JSON.parse(doctor.career || '[]') } catch {}
   try { specialties = JSON.parse(doctor.specialties || '[]') } catch {}
+
+  // 항목을 의미 단위로 분류 — AI가 자격/학위/소속을 정확히 식별하도록
+  const isCredential = (s: string) => /전문의|인정의|펠로우|fellow|자격|board/i.test(s)
+  const isDegree = (s: string) => /석사|박사|학사|졸업|수료|대학원|대학|레지던트|인턴|residency|master|phd/i.test(s)
+  const isMembership = (s: string) => /정회원|학회|협회|위원|member/i.test(s)
+
+  // 출신 교육기관 (학위/수련) → alumniOf
+  const alumni = [...education, ...career].filter(isDegree)
+  // 전문의·인정의 등 자격증 → hasCredential (Certification)
+  const certs = [...education, ...career].filter(isCredential)
+  // 학회/협회 소속 → memberOf 보조 (텍스트)
+  const memberships = career.filter(isMembership)
+
+  const credentials: any[] = []
+  certs.forEach(c => credentials.push({
+    "@type": "EducationalOccupationalCredential",
+    "credentialCategory": "Specialist Certification",
+    "name": c,
+    "recognizedBy": { "@type": "GovernmentOrganization", "name": "보건복지부" }
+  }))
+  memberships.forEach(m => credentials.push({
+    "@type": "EducationalOccupationalCredential",
+    "credentialCategory": "Professional Membership",
+    "name": m
+  }))
 
   return {
     "@context": "https://schema.org",
@@ -222,19 +292,18 @@ export const physicianSchema = (doctor: any) => {
     "description": doctor.philosophy || doctor.message || '',
     "url": `${SITE.url}/doctors/${doctor.slug}`,
     "image": `${SITE.url}/r2/images/doctors/${doctor.slug}.jpg`,
+    "hasOccupation": {
+      "@type": "Occupation",
+      "name": "치과의사",
+      "occupationalCategory": "치과 전문의"
+    },
     "worksFor": { "@id": `${SITE.url}/#dentist` },
     "memberOf": { "@id": `${SITE.url}/#dentist` },
     "medicalSpecialty": specialties.length > 0 ? specialties : ["Dentistry"],
-    ...(education.length > 0 && {
-      "alumniOf": education.map(e => ({ "@type": "EducationalOrganization", "name": e }))
+    ...(alumni.length > 0 && {
+      "alumniOf": Array.from(new Set(alumni)).map(e => ({ "@type": "EducationalOrganization", "name": e }))
     }),
-    ...(career.length > 0 && {
-      "hasCredential": career.map(c => ({
-        "@type": "EducationalOccupationalCredential",
-        "credentialCategory": "Professional Certification",
-        "name": c
-      }))
-    }),
+    ...(credentials.length > 0 && { "hasCredential": credentials }),
     "knowsLanguage": ["ko"]
   }
 }

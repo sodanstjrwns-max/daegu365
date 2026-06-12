@@ -15,14 +15,41 @@
  *  <TldrBox label={tldr.label} summary={tldr.summary} bullets={tldr.bullets} cta={tldr.cta} />
  */
 
+export type Reviewer = { name: string; position: string; slug: string; date?: string }
+
 export type TldrData = {
   label: string
   summary: string
   bullets: Array<{ label: string; value: string }>
   cta?: { text: string; href: string }
+  reviewer?: Reviewer
 }
 
 const PHONE_CTA = { text: '053-357-0365 상담 예약하기', href: 'tel:053-357-0365' }
+
+// 콘텐츠 최종 의학 검수일 (배포 시 갱신)
+const REVIEW_DATE = '2026-06-11'
+
+// 진료별 검수 전문의 (전공 일치 · 실제 DB doctors 자격 기반)
+const R: Record<string, Reviewer> = {
+  kim:    { name: '김성주', position: '대표원장 · 통합치의학과 전문의', slug: 'kim-seongju',  date: REVIEW_DATE },
+  jung:   { name: '정재헌', position: '통합진료센터장 · 치과보존과 전문의', slug: 'jung-jaeheon', date: REVIEW_DATE },
+  sangwon:{ name: '김상원', position: '치과보존과 전문의', slug: 'kim-sangwon',  date: REVIEW_DATE },
+  choi:   { name: '최혜정', position: '비니크 센터장 · 치과보존과 전문의', slug: 'choi-hyejung', date: REVIEW_DATE },
+  jin:    { name: '김진덕', position: '치과교정과 전문의', slug: 'kim-jinduk',   date: REVIEW_DATE },
+  han:    { name: '한지은', position: '소아치과 전문의', slug: 'han-jieun',    date: REVIEW_DATE },
+  seo:    { name: '이서영', position: '평생관리센터장 · 치주과 전문의', slug: 'lee-seoyoung', date: REVIEW_DATE },
+}
+const TLDR_REVIEWER: Record<string, Reviewer> = {
+  'implant': R.kim, 'implant-general': R.kim, 'sleep-therapy': R.kim,
+  'painless-anesthesia': R.kim, 'general': R.kim,
+  'lamineer': R.choi, 'vinique': R.choi, 'aesthetic': R.choi,
+  'cavity-endo-crown': R.sangwon, 'conservative': R.sangwon,
+  'icon-resin': R.jung, 'prosthetic': R.jung, 'in-house-lab': R.jung,
+  'ortho': R.jin, 'pediatric-ortho': R.jin,
+  'pediatric': R.han,
+  'perio': R.seo, 'airflow-gbt': R.seo, 'qray': R.seo, 'prevention': R.seo,
+}
 
 export const TLDR_BY_SLUG: Record<string, TldrData> = {
   // ============================================================
@@ -313,7 +340,11 @@ const TLDR_ALIAS: Record<string, string> = {
 /**
  * 슬러그로 TL;DR 데이터 조회.
  * 매칭 실패 시 undefined → 컴포넌트 측에서 조건부 렌더링으로 안전 처리.
+ * reviewer(검수 전문의)를 함께 합쳐 반환 — YMYL E-E-A-T 신호.
  */
 export function getTldr(slug: string): TldrData | undefined {
-  return TLDR_BY_SLUG[slug] || TLDR_BY_SLUG[TLDR_ALIAS[slug]]
+  const base = TLDR_BY_SLUG[slug] || TLDR_BY_SLUG[TLDR_ALIAS[slug]]
+  if (!base) return undefined
+  const reviewer = TLDR_REVIEWER[slug] || TLDR_REVIEWER[TLDR_ALIAS[slug]] || TLDR_REVIEWER['general']
+  return { ...base, reviewer }
 }

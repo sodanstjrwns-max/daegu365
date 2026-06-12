@@ -918,11 +918,12 @@ export const Navbar = () => (
  *    ]}
  *  />
  */
-export const TldrBox = ({ summary, bullets, cta, label }: {
+export const TldrBox = ({ summary, bullets, cta, label, reviewer }: {
   summary: string
   bullets: Array<{ label: string; value: string }>
   cta?: { text: string; href: string }
   label?: string
+  reviewer?: { name: string; position: string; slug: string; date?: string }
 }) => (
   <section class="py-10 lg:py-14 bg-cream border-y border-brown-200/40" aria-label="핵심 요약">
     <div class="max-w-[1100px] mx-auto px-6 lg:px-12">
@@ -948,6 +949,15 @@ export const TldrBox = ({ summary, bullets, cta, label }: {
               <i class="fas fa-arrow-right text-xs"></i>
               <span>{cta.text}</span>
             </a>
+          </div>
+        )}
+        {reviewer && (
+          <div class="mt-5 pt-4 border-t border-brown-100 flex items-center gap-2 text-xs text-brown-500">
+            <i class="fas fa-user-md text-gold"></i>
+            <span>
+              이 내용은 <a href={`/doctors/${reviewer.slug}`} class="font-semibold text-brown-700 hover:text-gold">{reviewer.name} {reviewer.position}</a>가 의학적으로 검수했습니다.
+              {reviewer.date && <span class="text-brown-400"> · 최종 검수 {reviewer.date}</span>}
+            </span>
           </div>
         )}
       </div>

@@ -300,11 +300,35 @@ const treatmentBreadcrumb = (slug: string, name: string) => [
   { name, url: `/treatments/${slug}` }
 ]
 
+// ============ 진료별 의료 검수 전문의 매핑 (reviewedBy · YMYL 신뢰 신호) ============
+// 각 진료를 전공이 일치하는 전문의가 검수 — 실제 DB doctors 자격 기반 (검증 가능 사실)
+const REVIEWERS: Record<string, { name: string; slug: string; position: string }> = {
+  'kim-seongju':   { name: '김성주', slug: 'kim-seongju',  position: '대표원장 · 통합치의학과 전문의' },
+  'jung-jaeheon':  { name: '정재헌', slug: 'jung-jaeheon', position: '통합진료센터장 · 치과보존과 전문의' },
+  'kim-sangwon':   { name: '김상원', slug: 'kim-sangwon',  position: '자연치아살리기 센터장 · 치과보존과/통합치의학과 전문의' },
+  'choi-hyejung':  { name: '최혜정', slug: 'choi-hyejung', position: '비니크 센터장 · 치과보존과 전문의' },
+  'kim-jinduk':    { name: '김진덕', slug: 'kim-jinduk',   position: '치과교정과 전문의' },
+  'han-jieun':     { name: '한지은', slug: 'han-jieun',    position: '소아치과 전문의 · 통합치의학과 전문의' },
+  'lee-seoyoung':  { name: '이서영', slug: 'lee-seoyoung', position: '평생관리센터장 · 치주과 전문의' },
+}
+// 진료 슬러그 → 검수 담당 전문의 (전공 일치). 미지정 시 대표원장 검수.
+const PROCEDURE_REVIEWER: Record<string, string> = {
+  'implant': 'kim-seongju', 'implant-general': 'kim-seongju', 'sleep-therapy': 'kim-seongju',
+  'painless-anesthesia': 'kim-seongju', 'general': 'kim-seongju',
+  'lamineer': 'choi-hyejung', 'vinique': 'choi-hyejung', 'aesthetic': 'choi-hyejung',
+  'cavity-endo-crown': 'kim-sangwon', 'conservative': 'kim-sangwon',
+  'icon-resin': 'jung-jaeheon', 'prosthetic': 'jung-jaeheon', 'in-house-lab': 'jung-jaeheon',
+  'ortho': 'kim-jinduk', 'pediatric-ortho': 'kim-jinduk',
+  'pediatric': 'han-jieun',
+  'perio': 'lee-seoyoung', 'airflow-gbt': 'lee-seoyoung', 'qray': 'lee-seoyoung', 'prevention': 'lee-seoyoung',
+}
+const reviewerFor = (slug: string) => REVIEWERS[PROCEDURE_REVIEWER[slug] || 'kim-seongju']
+
 /** 슬러그로 MedicalProcedure 스키마 가져오기 */
 const procedureSchemaFor = (slug: string) => {
   const meta = PROCEDURE_META[slug]
   if (!meta) return null
-  return medicalProcedureSchema({ slug, ...meta })
+  return medicalProcedureSchema({ slug, ...meta, reviewedBy: reviewerFor(slug) })
 }
 
 // ============ HowTo 스키마용 진료 절차(PROCESS) 데이터 ============

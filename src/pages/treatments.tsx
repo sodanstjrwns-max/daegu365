@@ -132,7 +132,7 @@ export const TreatmentDetailPage = ({
         </div>
       </section>
 
-      {(() => { const t = getTldr(treatment.slug); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
+      {(() => { const t = getTldr(treatment.slug); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} reviewer={t.reviewer} /> : null })()}
 
       {/* CONTENT SECTIONS (for core) */}
       {isCore && (

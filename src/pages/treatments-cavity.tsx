@@ -186,7 +186,7 @@ export const CavityTreatmentPage = ({
         </div>
       </section>
 
-      {(() => { const t = getTldr('cavity-endo-crown'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
+      {(() => { const t = getTldr('cavity-endo-crown'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} reviewer={t.reviewer} /> : null })()}
 
       {/* 2. WHAT IS — 충치란 */}
       <section class="py-24 lg:py-32 bg-ivory">

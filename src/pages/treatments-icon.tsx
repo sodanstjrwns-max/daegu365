@@ -91,7 +91,7 @@ export const IconTreatmentPage = ({
         </div>
       </section>
 
-      {(() => { const t = getTldr('icon-resin'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
+      {(() => { const t = getTldr('icon-resin'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} reviewer={t.reviewer} /> : null })()}
 
       {/* 2. WHAT IS */}
       <section class="py-24 lg:py-32 bg-ivory">

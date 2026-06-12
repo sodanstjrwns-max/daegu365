@@ -86,7 +86,7 @@ export const ProstheticTreatmentPage = ({
         </div>
       </section>
 
-      {(() => { const t = getTldr('prosthetic'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
+      {(() => { const t = getTldr('prosthetic'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} reviewer={t.reviewer} /> : null })()}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}
       {(() => {
         const _cmp = comparisonFor("prosthetic")

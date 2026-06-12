@@ -300,7 +300,7 @@ export const ImplantTreatmentPage = ({
         </div>
       </section>
 
-      {(() => { const t = getTldr('implant'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
+      {(() => { const t = getTldr('implant'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} reviewer={t.reviewer} /> : null })()}
 
       {/* ========================================== */}
       {/* 2. WHAT IS — 의학적 정의 + 적응증 + 비적응증   */}

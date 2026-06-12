@@ -357,7 +357,7 @@ export const LamineerTreatmentPage = ({
         </div>
       </section>
 
-      {(() => { const t = getTldr('lamineer'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
+      {(() => { const t = getTldr('lamineer'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} reviewer={t.reviewer} /> : null })()}
 
       {/* 2. WHAT IS */}
       {/* ===== Comparison Table — AEO 'A vs B' 검색 직격 ===== */}

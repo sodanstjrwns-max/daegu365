@@ -86,7 +86,7 @@ export const InhouseLabPage = ({
         </div>
       </section>
 
-      {(() => { const t = getTldr('in-house-lab'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} /> : null })()}
+      {(() => { const t = getTldr('in-house-lab'); return t ? <TldrBox label={t.label} summary={t.summary} bullets={t.bullets} cta={t.cta} reviewer={t.reviewer} /> : null })()}
       <section class="py-24 lg:py-32 bg-ivory">
         <div class="max-w-6xl mx-auto px-6 lg:px-12">
           <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
