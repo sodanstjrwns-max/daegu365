@@ -21,7 +21,7 @@ const DEVICES = [
     points: ['고정식 (스스로 빼지 않음)', '하루 1~2회 키 돌리기', '평균 3~6개월 사용'],
   },
   {
-    name: '근기능장치 (프리올소)',
+    name: 'MFT 근기능 훈련',
     eng: 'Myofunctional Appliance',
     price: '70만원',
     desc: '입 호흡·혀 위치·삼킴 습관을 바로잡는 탈착식 장치. 잘못된 구강 습관이 부정교합의 진짜 원인일 때 적용.',
@@ -61,7 +61,7 @@ const GOLDEN_TIME = [
   {
     age: '4~6세',
     title: '예방기',
-    desc: '유치열 완성기. 입 호흡·손가락 빨기·혀 내밀기 등 잘못된 구강 습관을 잡아주는 시기. MRC·근기능장치 적용.',
+    desc: '유치열 완성기. 입 호흡·손가락 빨기·혀 내밀기 등 잘못된 구강 습관을 잡아주는 시기. MFT 적용.',
     color: 'from-yellow-100',
   },
   {
@@ -143,7 +143,7 @@ const WHY_US = [
     icon: 'fa-puzzle-piece',
     emoji: '🧩',
     title: '6종 장치\n풀라인업',
-    desc: 'RPE·근기능·페이스마스크·MRC·\n공간유지·할터만까지 한 곳에서.\n케이스마다 가장 적합한 장치 선택.',
+    desc: 'RPE · 근기능장치 · 페이스마스크 · 트윈블럭 · 공간유지장치 · 할터만까지 한 곳에서.\n케이스마다 가장 적합한 장치 선택.',
   },
   {
     icon: 'fa-handshake',
@@ -155,7 +155,7 @@ const WHY_US = [
     icon: 'fa-route',
     emoji: '🗺️',
     title: '평생 관리\n로드맵',
-    desc: '1차 교정 → 영구치 맹출 추적\n→ 2차 인비절라인까지.\n한 병원에서 평생 관리되는 장점.',
+    desc: '1차 교정 → 영구치 맹출 추적\n→ 2차 인비절라인까지.\n한 곳에서 평생 관리되는 장점.',
   },
 ]
 
@@ -230,7 +230,7 @@ export const PediatricOrthoTreatmentPage = ({
           </h1>
           <p class="t-lead text-xl lg:text-2xl max-w-2xl mb-12" style="color:#fdfbf7; opacity:0.92; text-shadow:0 2px 12px rgba(0,0,0,0.6);">
             골격성 부정교합을 비수술로 잡을 수 있는 골든타임.<br/>
-            RPE·페이스마스크·근기능 장치 6종 풀라인업.
+            RPE·페이스마스크·근기능 장치 등<br/>6종 풀라인업.
           </p>
           <div class="flex flex-wrap gap-4 mb-16">
             <a href="tel:053-357-0365" class="btn-primary"><i class="fas fa-phone"></i> 053-357-0365</a>
@@ -272,18 +272,18 @@ export const PediatricOrthoTreatmentPage = ({
             </div>
             <div class="lg:col-span-7 space-y-6 t-body text-lg">
               <p>
-                많은 부모님이 “아이 치아가 비뚤어졌으니 교정해야 할까?”로 시작하시지만, 사실 소아 교정의 핵심은 <b>치아가 아니라 턱(골격)</b>입니다. 7~10세는 위·아래턱이 가장 활발하게 성장하는 시기로, 이때만 가능한 골격 교정이 평생을 좌우합니다.
+                많은 부모님께서 “아이 치아가 비뚤어졌으니 교정이 필요할까요?” 라고 하시지만, 소아 교정에서 더 중요한 것은 <b>치아보다 턱의 성장(골격)</b>입니다. 7~10세는 위·아래턱이 가장 활발하게 성장하는 시기로, 이 시기에만 가능한 성장 조절 치료가 아이의 얼굴과 교합의 방향을 크게 좌우합니다.
               </p>
               <p>
-                이 시기를 놓치면 어떻게 될까요? 골격성 부정교합(주걱턱·좁은 위턱 등)은 영구치열이 되면 <b>양악수술 외에는 답이 없는 케이스</b>가 됩니다. 반대로 7~10세에 RPE·페이스마스크로 잡으면 비수술로 끝납니다.
+                이 시기를 놓치면 <b>골격성 부정교합은(주걱턱, 좁은 위턱 등) 성장 이후 수술적 치료가 필요한 경우</b>가 많아집니다. 반대로 성장기인 7~10세에는 RPE, 페이스마스크와 같은 장치를 이용해 턱의 성장을 유도함으로써 비수술적으로 개선 가능한 경우도 많습니다.
               </p>
               <p>
-                대구365치과의 소아 교정은 <b>“얼굴이 만들어지는 단 한 번의 시기”</b>를 놓치지 않는 정밀 진단에서 시작합니다.
+                대구365치과의 소아 교정은 <b>“얼굴이 만들어지는 단 한 번의 성장 시기”</b>를 놓치지 않기 위한 정밀 진단에서 시작합니다.
               </p>
               <div class="grid grid-cols-2 gap-4 pt-4">
                 <div class="border-l-2 border-brown-300 pl-4">
                   <div class="text-xs text-brown-500 uppercase tracking-wider mb-1">놓친 케이스</div>
-                  <div class="t-body">영구치열 + 양악수술<br/><span class="text-sm text-brown-500">→ 수백만원·전신마취</span></div>
+                  <div class="t-body">영구치열 + 양악수술<br/><span class="text-sm text-brown-500">→ 수천만원·전신마취</span></div>
                 </div>
                 <div class="border-l-2 border-gold pl-4">
                   <div class="text-xs text-gold uppercase tracking-wider mb-1">제때 시작</div>
@@ -563,7 +563,7 @@ export const PediatricOrthoTreatmentPage = ({
         <div class="absolute inset-0 opacity-10" style="background-image:url('/r2/images/clinic/precision-arch-corridor.jpg?v=1');background-size:cover;background-position:center;"></div>
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 12</div>
-          <h2 class="contact-headline">7세,<br/>
+          <h2 class="contact-headline">5세,<br/>
             <span class="not-italic">한 번의 검진이 평생을 바꿉니다.</span></h2>
           <p class="contact-lead">첫 진단은 “시작”이 아니라 “필요한지 확인”입니다.</p>
           <div class="flex flex-wrap justify-center gap-4">

@@ -73,14 +73,14 @@ export const PROCESS = [
     step: '01',
     title: '정밀 진단',
     duration: '약 60분',
-    desc: '파노라마·세팔로·3D 구강 스캔으로 치아·골격을 입체 분석.',
-    detail: ['파노라마·세팔로 X-ray', '3D iTero 스캔', '교합 분석', '얼굴 사진 기록'],
+    desc: '파노라마 · 세팔로 X-ray · 3D CT로 치아와 골격을 입체분석.',
+    detail: ['파노라마·세팔로 X-ray', '3D CT', '3D iTero 스캔', '교합 분석', '얼굴 사진 기록'],
   },
   {
     step: '02',
     title: '클린체크 (ClinCheck) 시뮬레이션',
     duration: '7~10일',
-    desc: '인비절라인 본사에서 환자 맞춤 치료 시뮬레이션. 시작-끝 미리보기.',
+    desc: '환자 맞춤 치료 시뮬레이션. 시작-끝 미리보기.',
     detail: ['단계별 이동 시뮬레이션', '치료 결과 미리보기', '기간·단계 수 산출', '환자 의견 반영'],
   },
   {
@@ -92,27 +92,34 @@ export const PROCESS = [
   },
   {
     step: '04',
-    title: '얼라이너 장착',
+    title: '맞춤 장치 제작',
+    duration: '약 4주 소요',
+    desc: '인비절라인 본사에서 환자 맞춤 투명 교정 장치 제작.',
+    detail: ['환자 맞춤 투명 교정 장치 제작', '단계별 얼라이너 일괄 제작', '정품 인증', '제작 완료 시 내원 안내'],
+  },
+  {
+    step: '05',
+    title: '얼라이너 장치 장착 및 교육',
     duration: '약 30~45분',
     desc: '맞춤 제작된 얼라이너 첫 착용. 어태치먼트 부착 + 사용법 교육.',
     detail: ['어태치먼트 부착', '얼라이너 착용 연습', '관리법 교육', '응급 연락처 안내'],
   },
   {
-    step: '05',
+    step: '06',
     title: '단계별 교환 + 정기 체크',
     duration: '6~24개월',
     desc: '1~2주마다 새 얼라이너로 교체. 4~8주마다 내원해 진행 점검.',
     detail: ['1~2주마다 얼라이너 교체', '4~8주 정기 내원', '하루 22시간 착용', 'My Invisalign 앱 활용'],
   },
   {
-    step: '06',
+    step: '07',
     title: '리파인먼트 (Refinement)',
     duration: '필요시',
     desc: '미세조정이 필요하면 추가 얼라이너 제작. Comprehensive는 5년 무제한.',
     detail: ['미세 정렬 보정', '추가 얼라이너 제작', 'Comprehensive 무제한 보장', '치료 완성도 극대화'],
   },
   {
-    step: '07',
+    step: '08',
     title: '유지장치 + 평생 관리',
     duration: '평생',
     desc: '치아가 원위치로 돌아가지 않도록 유지장치 착용. 6개월 정기 검진.',
@@ -529,8 +536,7 @@ export const OrthoTreatmentPage = ({
           <div class="mb-16 fade-in">
             <div class="section-label mb-6">PROCESS · 06</div>
             <h2 class="t-display mb-6">
-              <span class="text-brown-900">7단계</span><br/>
-              <span class="t-gold">교정 여정</span>
+              <span class="text-brown-900">8단계 교정과정</span>
             </h2>
             <p class="t-lead max-w-3xl">진단부터 평생 유지까지, 인비절라인 전 과정을 안내합니다.</p>
           </div>

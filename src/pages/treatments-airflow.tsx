@@ -498,7 +498,7 @@ export const AirflowGBTTreatmentPage = ({
         slug="lee-seoyoung"
         name="이서영"
         position="치주과 전문의"
-        quote={'잇몸병은 치아 자체보다 더 빠르게 진행됩니다.\n에어플로우 GBT는 통증 없이 바이오필름을 제거해, 잇몸의 시간을 되돌립니다.'}
+        quote={'잇몸병은 충치 등 치아 자체의 문제보다 더 빠르게 진행되며, 주변 치아들을 지탱하는 기반을 동시에 약하게 만듭니다.\n에어플로우 GBT는 통증 없이 바이오필름을 제거해, 잇몸의 시간을 되돌립니다.'}
         credentials={['치주과 전문의', 'GBT 가이드 케어', '정기 유지관리 전문']}
         treatmentLabel="에어플로우 GBT"
       />

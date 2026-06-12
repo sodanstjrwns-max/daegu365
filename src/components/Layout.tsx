@@ -1069,7 +1069,7 @@ export const DoctorProfileBlock = ({ slug, name, position, quote, credentials, t
               {treatmentLabel ? `${treatmentLabel} · 담당 원장` : '담당 원장'}
             </div>
             <h3 class="display text-2xl lg:text-3xl font-black tracking-tight text-brown-900 mb-2">
-              {name} <span class="text-brown-600 font-medium text-xl lg:text-2xl">{position}</span>
+              {name}<br class="md:hidden" /> <span class="text-brown-600 font-medium text-xl lg:text-2xl">{position}</span>
             </h3>
             <div class="gold-divider my-5"></div>
             <p class="text-brown-800 leading-[1.85] text-[15px] mb-6 whitespace-pre-line">
