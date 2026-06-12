@@ -15,7 +15,7 @@ const DEVICES = [
   {
     name: 'RPE (구개확장장치)',
     eng: 'Rapid Palatal Expander',
-    price: '50만원',
+    price: '80만원',
     badge: 'BEST FOR 7-10세',
     desc: '좁은 위턱을 옆으로 넓혀주는 고정식 장치. 위·아래턱 폭이 안 맞는 경우, 영구치가 들어갈 자리를 만드는 핵심 장치.',
     points: ['고정식 (스스로 빼지 않음)', '하루 1~2회 키 돌리기', '평균 3~6개월 사용'],
@@ -45,8 +45,8 @@ const DEVICES = [
     name: '할터만 장치',
     eng: 'Halterman Appliance',
     price: '35만원',
-    desc: '제1대구치(#6번 어금니)가 잘못된 위치로 나오는 “락킹” 케이스를 풀어주는 장치. 재료 교체 시 3만원 추가.',
-    points: ['제1대구치 위치 교정', '재료 교체 시 +3만원', '단기 적용'],
+    desc: '제1대구치(#6번 어금니)가 잘못된 위치로 나오는 “락킹” 케이스를 풀어주는 장치.',
+    points: ['제1대구치 위치 교정', '단기 적용'],
   },
   {
     name: 'MRC 마이오브레이스',
@@ -195,7 +195,7 @@ const DEFAULT_FAQS = [
   },
   {
     q: '비용은 얼마인가요?',
-    a: 'RPE 50만원, 근기능장치(프리올소) 70만원, 공간유지장치 20~40만원, 할터만 35만원, 페이스마스크·MRC는 케이스별 상담가입니다. 사전 진단 후 정확한 비용을 안내드립니다.',
+    a: 'RPE 80만원, 근기능장치(프리올소) 70만원, 공간유지장치 20~40만원, 할터만 35만원, 페이스마스크·MRC는 케이스별 상담가입니다. 사전 진단 후 정확한 비용을 안내드립니다.',
   },
   {
     q: '소아 교정 중에도 충치 치료·예방 관리가 필요한가요?',
@@ -239,7 +239,7 @@ export const PediatricOrthoTreatmentPage = ({
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 pt-10 border-t" style="border-color:rgba(253,251,247,0.2);">
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">7세</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">첫 교정 검진 권장 시기</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">6종</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">장치 풀라인업</div></div>
-            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">50만원~</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">RPE 시작가</div></div>
+            <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">80만원~</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">RPE 시작가</div></div>
             <div><div class="t-gold text-4xl lg:text-5xl font-bold mb-1">평생</div><div class="text-sm" style="color:#fdfbf7;opacity:0.7;">2차 교정까지 관리</div></div>
           </div>
         </div>

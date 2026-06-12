@@ -60,8 +60,8 @@ const PACKAGES = [
 const ADD_ONS = [
   { name: '진단비', price: '20만원', desc: '3D 스캔·세팔로·파노라마 정밀 진단' },
   { name: '부분교정 (1/3악당)', price: '200만원', desc: '난이도에 따라 변동 가능' },
-  { name: '소아 RPE (구개확장)', price: '50만원', desc: '소아 구개 확장 장치' },
-  { name: '성인 마르페 MARPE', price: '70만원', desc: '성인용 구개 확장' },
+  { name: '소아 RPE (구개확장)', price: '80만원', desc: '소아 구개 확장 장치' },
+  { name: '성인 마르페 MARPE', price: '120만원', desc: '성인용 구개 확장' },
   { name: '미니스크류', price: '10만원', desc: '교정 보조 장치' },
   { name: '가철식 유지장치', price: '20만원', desc: '악당 (Wrap around)' },
   { name: '고정식 유지장치', price: '20만원', desc: '악당 (Fixed Retainer)' },

@@ -368,7 +368,7 @@ export const ImplantTreatmentPage = ({
                 <li class="flex gap-3"><i class="fas fa-circle text-brown-400 text-[6px] mt-2.5"></i><span>혈액응고제 복용 중인 분 (의사 협진 필수)</span></li>
                 <li class="flex gap-3"><i class="fas fa-circle text-brown-400 text-[6px] mt-2.5"></i><span>임신·수유 중이신 분</span></li>
                 <li class="flex gap-3"><i class="fas fa-circle text-brown-400 text-[6px] mt-2.5"></i><span>심한 골다공증으로 약물 치료 중이신 분</span></li>
-                <li class="flex gap-3"><i class="fas fa-circle text-brown-400 text-[6px] mt-2.5"></i><span>흡연이 많거나 구강위생 관리가 어려우신 분</span></li>
+                <li class="flex gap-3"><i class="fas fa-circle text-brown-400 text-[6px] mt-2.5"></i><span>흡연 등 구강위생 관리가 어려우신 분</span></li>
               </ul>
               <p class="text-xs text-brown-500 mt-5 leading-relaxed">
                 ※ 비적응증이라도 내과 협진 후<br class="hidden md:inline"/>
