@@ -1007,14 +1007,13 @@ export const DoctorDetailPage = ({
       {/* CASES */}
       {cases.length > 0 && (
         <section class="py-24 max-w-7xl mx-auto px-6">
-          <div class="flex justify-between items-end mb-12 fade-in">
-            <div>
-              <div class="section-label mb-6">CASES</div>
-              <h2 class="display text-4xl font-black tracking-tight">
-                {doctor.name} 원장 <em class="not-italic text-brown-700">치료 사례</em>
-              </h2>
-            </div>
-            <a href={`/before-after?doctor=${doctor.slug}`} class="link-underline display not-italic">전체 보기 →</a>
+          {/* PPT 모바일 슬라이드 32/44/56/68 — 제목 한 줄 배열(기울임 없음) + 전체보기→는 제목 아래 한 줄로 */}
+          <div class="mb-12 fade-in">
+            <div class="section-label mb-6">CASES</div>
+            <h2 class="display not-italic text-2xl sm:text-3xl md:text-4xl font-black tracking-tight whitespace-nowrap">
+              {doctor.name} 원장 <em class="not-italic text-brown-700">치료사례</em>
+            </h2>
+            <a href={`/before-after?doctor=${doctor.slug}`} class="link-underline display not-italic inline-flex items-center gap-1 mt-4">전체보기 <span aria-hidden="true">→</span></a>
           </div>
           <div class="grid md:grid-cols-3 gap-6">
             {cases.slice(0, 3).map((ba) => {

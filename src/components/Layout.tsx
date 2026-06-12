@@ -987,7 +987,8 @@ export const ComparisonTable = ({ title, headers, rows, caption }: {
   <div class="my-10 fade-in">
     {title && <h3 class="display text-xl lg:text-2xl font-black text-brown-900 mb-4 tracking-tight">{title}</h3>}
     <div class="overflow-x-auto rounded-2xl border border-brown-200/60 shadow-card">
-      <table class="w-full text-sm bg-ivory">
+      {/* PPT 모바일 슬라이드 325 — 모바일에서 셀 글자가 세로로 한 자씩 격리되지 않도록 최소 폭 확보(가로 스크롤) */}
+      <table class="w-full min-w-[640px] text-sm bg-ivory">
         <thead>
           <tr class="bg-brown-950 text-gold">
             {headers.map((h) => (
@@ -1008,7 +1009,7 @@ export const ComparisonTable = ({ title, headers, rows, caption }: {
         </tbody>
       </table>
     </div>
-    {caption && <p class="text-xs text-brown-500 mt-3 not-italic">{caption}</p>}
+    {caption && <p class="text-xs text-brown-500 mt-3 not-italic whitespace-pre-line">{caption}</p>}
   </div>
 )
 
@@ -1152,8 +1153,9 @@ export const Footer = () => (
     {/* Big brand headline */}
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12 mb-20 relative">
       <div class="overflow-hidden">
-        <h2 class="display font-black leading-[0.95] text-ivory/95" style="font-size:clamp(1.9rem,8.4vw,8.6rem);letter-spacing:-0.01em;white-space:nowrap;padding:0.06em 0.06em;max-width:100%;">
-          DAEGU<span class="text-gold mx-[0.06em]">365</span>DENTAL
+        {/* PPT 모바일 슬라이드 16/33/45 — 모바일에서 우측 "DENTAL" 잘림 방지: vw 축소 + 자간 타이트 */}
+        <h2 class="display font-black leading-[0.95] text-ivory/95" style="font-size:clamp(1.5rem,6.6vw,8.6rem);letter-spacing:-0.02em;white-space:nowrap;padding:0.06em 0.06em;max-width:100%;">
+          DAEGU<span class="text-gold mx-[0.04em]">365</span>DENTAL
         </h2>
       </div>
       <div class="gold-divider mt-8" style="width:100%;"></div>
