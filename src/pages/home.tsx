@@ -1018,7 +1018,7 @@ export const HomePage = () => (
               <i class="fas fa-utensils text-gold"></i>
               <div>
                 <div class="font-bold text-brown-900">점심시간</div>
-                <div class="text-brown-600 mt-0.5">12:30 – 14:00 (평일)</div>
+                <div class="text-brown-600 mt-0.5">13:00 – 14:00 (평일)</div>
               </div>
             </div>
             <div class="bg-ivory p-5 flex items-center gap-3">

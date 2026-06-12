@@ -627,9 +627,11 @@ app.get('/treatments/:slug', async (c) => {
 
   const faqs = await c.env.DB.prepare('SELECT * FROM faqs WHERE treatment_slug=? ORDER BY display_order, id').bind(slug).all()
   // Doctors who specialize
+  // PPT 모바일 슬라이드 249 — vinique(특화진료>라미네이트) 페이지도 핵심진료 라미네이트와 동일 의료진(정재헌·최혜정) 노출
+  const doctorMatchSlug = slug === 'vinique' ? 'lamineer' : slug
   const allDocs = await c.env.DB.prepare('SELECT * FROM doctors ORDER BY display_order').all()
   const doctors = (allDocs.results as any[]).filter(d => {
-    try { return JSON.parse(d.specialties || '[]').includes(slug) } catch { return false }
+    try { return JSON.parse(d.specialties || '[]').includes(doctorMatchSlug) } catch { return false }
   })
   // 임플란트 페이지는 'implant' / 'implant-general' 케이스를 통합 노출
   const isImplantPage = (slug === 'implant' || slug === 'implant-general')

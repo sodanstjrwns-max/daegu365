@@ -20,7 +20,7 @@ export const Navbar = () => (
             {/* LIVE 진료 상태 — 영업시간에 따라 자동 갱신 (스크립트로 텍스트/색상 변경) */}
             <div
               id="nav-live-status"
-              class="hidden md:inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full border transition whitespace-nowrap"
+              class="inline-flex items-center gap-1.5 text-[10px] md:text-[11px] px-2 md:px-2.5 py-1 rounded-full border transition whitespace-nowrap"
               style="background:rgba(34,197,94,0.10); border-color:rgba(34,197,94,0.35); color:#15803d;"
               role="status"
               aria-live="polite"
@@ -157,7 +157,7 @@ export const Navbar = () => (
 
     </nav>
 
-    {/* LIVE 진료 상태 자동 갱신 — 영업시간 (월·목 09:30~21:00, 화·수·금 09:30~18:30, 토·일 09:30~17:00, 점심 12:30~14:00) */}
+    {/* LIVE 진료 상태 자동 갱신 — 영업시간 (월·목 09:30~21:00, 화·수·금 09:30~18:30, 토·일 09:30~17:00, 점심 13:00~14:00) */}
     <script dangerouslySetInnerHTML={{ __html: `
 (function(){
   function getStatus(){
@@ -174,7 +174,7 @@ export const Navbar = () => (
       5: { open: 9*60+30, close: 18*60+30 },     // 금
       6: { open: 9*60+30, close: 17*60 }         // 토
     };
-    var LUNCH_OPEN = 12*60+30;
+    var LUNCH_OPEN = 13*60;
     var LUNCH_CLOSE = 14*60;
     var s = SCHEDULE[day];
     if (!s) return { state:'closed', label:'CLOSED', text:'휴진' };
@@ -576,7 +576,7 @@ export const Navbar = () => (
                 </li>
                 <li class="flex items-center justify-between pt-2 mt-2 border-t border-brown-100">
                   <span class="text-brown-500 text-[12px]">점심시간 (평일)</span>
-                  <span class="font-bold text-brown-700 text-[12px]">12:30 ~ 14:00</span>
+                  <span class="font-bold text-brown-700 text-[12px]">13:00 ~ 14:00</span>
                 </li>
               </ul>
             </div>
@@ -744,7 +744,7 @@ export const Navbar = () => (
                     class="w-full px-3 py-3 rounded-xl border border-brown-200 bg-cream text-sm text-brown-950 focus:outline-none focus:border-brown-700 transition"
                   >
                     <option value="">선택</option>
-                    <option value="morning">오전 (09:30-12:30)</option>
+                    <option value="morning">오전 (09:30-13:00)</option>
                     <option value="afternoon">오후 (14:00-18:30)</option>
                     <option value="evening">야간 (월·목 18:30-21:00)</option>
                     <option value="weekend">주말 (토·일)</option>

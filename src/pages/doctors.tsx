@@ -112,8 +112,9 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           <div class="text-xs tracking-[0.5em] text-gold mb-6">WEEKLY SCHEDULE</div>
           {/* 7인 글자 잘림 방지 — whitespace-nowrap + 폭 여유 */}
           <h2 class="display text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-ivory mb-6 leading-[1.15]" style="padding:0.1em 0.05em;">
-            <span class="inline-block" style="white-space:nowrap;">원장님 <span class="t-gold" style="padding:0 0.08em;">7인</span></span>{' '}
-            <span class="inline-block">요일별 진료 스케줄</span>
+            {/* PPT 모바일 슬라이드 18 — "원장님 7인" → "7인의 원장님" + 기울임 없음 */}
+            <span class="inline-block not-italic" style="white-space:nowrap;"><span class="t-gold not-italic" style="padding:0 0.08em;">7인의</span> 원장님</span>{' '}
+            <span class="inline-block not-italic">요일별 진료 스케줄</span>
           </h2>
           <p class="text-brown-200 max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
             오늘 진료 중인 원장님을 한눈에 — 요일을 눌러 다른 날 스케줄을 확인하세요.
@@ -271,7 +272,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
         </div>
 
         <div class="mt-12 text-center text-[11px] text-brown-300/80 tracking-wide max-w-2xl mx-auto fade-in">
-          ※ 점심시간 12:30 ~ 14:00 · 진료 일정은 사정에 따라 변동될 수 있으니 예약 시 재확인 부탁드립니다.
+          ※ 점심시간 13:00 ~ 14:00 · 진료 일정은 사정에 따라 변동될 수 있으니 신청 시 재확인 부탁드립니다.
         </div>
       </div>
 

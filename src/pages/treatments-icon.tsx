@@ -103,7 +103,7 @@ export const IconTreatmentPage = ({
             </div>
             <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
-                일반 레진은 “충전”입니다. 충치 부위를 깎고 채웁니다. 아이콘은 다릅니다. <strong class="t-gold">에나멜 내부의 미세 결손부에 스며들어</strong> 변색·초기 우식을 차단해요.
+                일반 레진은 “충전”입니다.<br/>충전은 충치 부위를 깎고 채우지만 아이콘은 <strong class="t-gold">에나멜 내부의 미세 결손부에 스며들어</strong> 변색·초기 우식을 차단해요.
               </p>
               <p class="text-brown-700 leading-relaxed">
                 치아를 깎지 않으니 마취가 필요 없고, 시술 후에도 자연치 그대로입니다. 교정 후 흰 반점, 초기 충치, 소아 변색에 가장 효과적인 비삭제 옵션이에요.

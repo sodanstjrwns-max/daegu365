@@ -67,7 +67,7 @@ const PHILOSOPHY = [
   {
     icon: 'fa-tooth',
     title: '신경치료 ≠ 발치',
-    desc: '신경치료는 자연치를 살리는 마지막 기회. 정밀 근관 치료 + 크라운 보호로 평생 사용 가능합니다.',
+    desc: '신경치료는 자연치를 살리는 마지막 기회. 정밀 근관치료 + 크라운으로 자연 치아를 최대한 보호합니다.',
   },
 ]
 
@@ -200,7 +200,7 @@ export const CavityTreatmentPage = ({
             </div>
             <div class="lg:col-span-7 space-y-6">
               <p class="t-lead text-brown-700">
-                충치는 단순한 “구멍”이 아닙니다. 뮤탄스균이 만든 산이 치아 미네랄을 녹여 진행하는 <strong class="t-gold">감염성 진행 질환</strong>이에요.
+                충치는 단순한 “구멍”이 아닙니다. 뮤탄스균이 만든 산이 치아 미네랄을 녹여 진행하는<br class="md:hidden" /> <strong class="t-gold">감염성 진행 질환</strong>이에요.
               </p>
               <p class="text-brown-700 leading-relaxed">
                 초기에는 통증이 없습니다. 통증을 느낄 때는 이미 신경 가까이 도달한 상태. 그래서 “안 아프니까 괜찮다”는 가장 위험한 신호입니다. 정기 검진과 Q-ray 형광 진단으로 <strong>보이지 않는 단계</strong>에서 잡는 것이 핵심입니다.
@@ -208,11 +208,11 @@ export const CavityTreatmentPage = ({
               <div class="grid sm:grid-cols-2 gap-4 pt-4">
                 <div class="p-5 rounded-xl bg-cream border border-brown-200">
                   <div class="t-gold font-bold mb-1">조기 발견 = 레진</div>
-                  <div class="text-sm text-brown-700">7만원 · 1회 30분 · 마취 최소</div>
+                  <div class="text-sm text-brown-700">8만원~ · 1회 30분 · 마취 최소</div>
                 </div>
                 <div class="p-5 rounded-xl bg-brown-950 text-ivory">
                   <div class="text-gold font-bold mb-1">방치 = 신경치료 + 크라운</div>
-                  <div class="text-sm" style="opacity:0.85;">95만원~ · 4~6회 방문 · 마취 필수</div>
+                  <div class="text-sm" style="opacity:0.85;">60만원~ · 4~6회 방문 · 마취 필수</div>
                 </div>
               </div>
             </div>
@@ -271,7 +271,7 @@ export const CavityTreatmentPage = ({
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
           <div class="text-center mb-16">
             <div class="section-label mb-6">ENDO · 04</div>
-            <h2 class="t-display">신경치료 <span class="t-gold not-italic">6단계.</span></h2>
+            <h2 class="t-display">신경치료 <span class="t-gold not-italic">6단계</span></h2>
             <p class="t-lead text-brown-700 mt-6 max-w-2xl mx-auto">
               자연치를 살리는 마지막 기회. 한 번에 정확하게.
             </p>

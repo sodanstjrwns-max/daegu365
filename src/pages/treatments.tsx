@@ -237,7 +237,8 @@ export const TreatmentDetailPage = ({
         <section class="py-20 max-w-5xl mx-auto px-6">
           <div class="fade-in prose-dental text-brown-700 text-lg">
             <h2>{treatment.name}에 대해</h2>
-            <p>{treatment.short_desc}. 대구365치과는 분야별 협진 시스템을 통해 완성도 높은 {treatment.name} 치료를 제공합니다.</p>
+            {/* PPT 모바일 슬라이드 248 — short_desc가 마침표로 끝나는 경우 이중 마침표 방지 */}
+            <p>{(treatment.short_desc || '').replace(/\.\s*$/, '')}. 대구365치과는 분야별 협진 시스템을 통해 완성도 높은 {treatment.name} 치료를 제공합니다.</p>
             <h3>대구365치과의 {treatment.name}</h3>
             <ul>
               <li>정확한 진단을 위한 디지털 검사 시스템 활용</li>
@@ -247,6 +248,43 @@ export const TreatmentDetailPage = ({
             </ul>
             <h3>담당 의료진</h3>
             <p>아래 의료진이 {treatment.name}을(를) 담당합니다.</p>
+          </div>
+        </section>
+      )}
+
+      {/* PPT 모바일 슬라이드 247 — 특화진료>라미네이트(vinique)에도 핵심진료와 동일한 비포애프터 시네마틱 노출 */}
+      {!isCore && treatment.slug === 'vinique' && (
+        <section class="py-20 bg-brown-950 text-ivory">
+          <div class="max-w-5xl mx-auto px-6">
+            <div class="mb-10 fade-in">
+              <div class="section-label text-gold mb-6">BEFORE &amp; AFTER</div>
+              <h2 class="display text-3xl lg:text-4xl font-black tracking-tight mb-4">
+                실제 <span class="t-gold not-italic">비포애프터</span> 시네마틱
+              </h2>
+              <p class="text-brown-200 leading-relaxed">
+                대구365치과 사이니지에서 상영 중인 <strong class="text-ivory">VINIQUE 비포애프터 마스터 영상</strong>.<br/>
+                실제 환자분의 미소 변화를 4K 세로형으로 담았습니다.
+              </p>
+            </div>
+            <div class="relative mx-auto fade-in" style="max-width:380px;">
+              <div class="relative bg-brown-900 rounded-[2rem] p-3 shadow-lux">
+                <div class="relative rounded-[1.5rem] overflow-hidden bg-black" style="aspect-ratio: 9/16;">
+                  <video
+                    src="/r2/videos/treatments/vinique/vinique-beforeafter-master.mp4"
+                    poster="/r2/images/treatments/vinique/vinique-package.jpg"
+                    class="absolute inset-0 w-full h-full object-cover"
+                    autoplay loop muted playsinline preload="metadata"
+                    controls controlslist="nodownload"
+                  ></video>
+                  <div class="absolute top-4 left-4 bg-brown-950/85 backdrop-blur-sm px-3 py-1.5 rounded-full text-[9px] tracking-[0.3em] font-bold pointer-events-none" style="color:var(--gold);">
+                    VINIQUE
+                  </div>
+                </div>
+              </div>
+              <div class="text-center mt-5 text-xs text-brown-400 tracking-wider">
+                <i class="fas fa-volume-mute mr-1.5"></i> 음소거 자동재생 — 사운드는 컨트롤바에서 ON
+              </div>
+            </div>
           </div>
         </section>
       )}
