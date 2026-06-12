@@ -271,12 +271,21 @@ export const physicianSchema = (doctor: any) => {
   const memberships = career.filter(isMembership)
 
   const credentials: any[] = []
-  certs.forEach(c => credentials.push({
-    "@type": "EducationalOccupationalCredential",
-    "credentialCategory": "Specialist Certification",
-    "name": c,
-    "recognizedBy": { "@type": "GovernmentOrganization", "name": "보건복지부" }
-  }))
+  certs.forEach(c => {
+    // 국가 전문의 자격은 보건복지부, 학회 인정의·펠로우는 해당 학회가 인증
+    const isBoardSpecialist = /전문의/.test(c)
+    const societyMatch = c.match(/(대한[가-힣]+학회)/)
+    credentials.push({
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": isBoardSpecialist ? "Specialist Certification" : "Society Certification",
+      "name": c,
+      "recognizedBy": isBoardSpecialist
+        ? { "@type": "GovernmentOrganization", "name": "보건복지부" }
+        : societyMatch
+          ? { "@type": "Organization", "name": societyMatch[1] }
+          : { "@type": "Organization", "name": "대한치과의사협회" }
+    })
+  })
   memberships.forEach(m => credentials.push({
     "@type": "EducationalOccupationalCredential",
     "credentialCategory": "Professional Membership",

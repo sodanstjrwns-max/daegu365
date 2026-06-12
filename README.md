@@ -68,20 +68,25 @@
 - ✅ **Canonical URL** 자동 생성
 - ✅ **OpenGraph + Twitter Card** 전체 세팅 + 커스텀 OG 이미지
 - ✅ **JSON-LD Schema**:
-  - `Dentist` (전체 기본, 주소·좌표·진료시간·전화 + **knowsAbout 24개 주제 권위 신호 · numberOfEmployees · slogan**)
-  - `Physician` (원장 프로필)
-  - `MedicalProcedure` (진료별, **lastReviewed·dateModified 신선도 신호 포함**)
+  - `Dentist` (주소·좌표·진료시간·전화 + **knowsAbout 24개 주제 권위 · numberOfEmployees · slogan + department 5개 진료과 계층**)
+  - `Physician` (원장 프로필 — **전문의 자격/학회 인정의 구분(recognizedBy: 보건복지부/학회) · alumniOf · hasOccupation**)
+  - `MedicalProcedure` (진료별, **lastReviewed·dateModified 신선도 + reviewedBy 의료 검수 전문의**)
   - `HowTo` (임플란트·교정·라미네이트·잇몸치료·미백 — 단계별 절차, AI 답변 인용 강화)
   - `SpeakableSpecification` (음성/AI 발췌 영역 지정)
   - `FAQPage` (진료별 FAQ)
   - `Article`/`BlogPosting` (블로그, DB updated_at → dateModified 자동 반영)
   - `DefinedTerm` (백과사전)
+- ✅ **TL;DR 직접답변 블록** — 21개 전 진료 페이지 (`.tldr-answer` + 진료별 검수 전문의 표기)
 - ✅ **지역 SEO 페이지** 5종 (침산동·북구·수성구별 임플란트/라미네이트/교정 등)
 - ✅ H1~H3 시맨틱 구조, meta robots, theme-color
 
-> **2026 AEO 머신 강화 (2026-06-11)**: AI 답변엔진(ChatGPT·Gemini·Perplexity 등) 인용 최적화를 위해
-> ① 주제 권위 신호(`knowsAbout`) ② 신선도 신호(`lastReviewed`/`dateModified`) ③ 절차 스키마(`HowTo`)
-> ④ 음성/발췌 스키마(`Speakable`) 추가. **검증 가능한 사실만 사용 — 가짜 평점/후기는 일절 넣지 않음.**
+> **2026 AEO 머신 1차 (2026-06-11)**: ① 주제 권위(`knowsAbout`) ② 신선도(`lastReviewed`/`dateModified`)
+> ③ 절차(`HowTo`) ④ 음성/발췌(`Speakable`) ⑤ TL;DR 직접답변 21개 진료 전체.
+>
+> **2026 AEO 머신 2차 (YMYL 신뢰 강화, 2026-06-12)**: ① 진료별 `reviewedBy` 의료 검수 전문의(전공 일치 매핑) +
+> 본문 가시적 검수자 표기 ② `Physician` 자격 정밀화(국가 전문의 vs 학회 인정의 구분, `recognizedBy`/`alumniOf`/`hasOccupation`)
+> ③ `department` 진료과 계층 엔티티(임플란트·교정·보존·치주·소아 → 담당 전문의 연결).
+> **검증 가능한 사실(DB doctors 자격)만 사용 — 가짜 평점/후기·논문·해외 식별자는 일절 넣지 않음.**
 - ✅ 파비콘(SVG) + OG 이미지(SVG) + 프리텐다드/Cormorant Garamond 프리미엄 폰트
 
 ### 6. 디자인 시스템
