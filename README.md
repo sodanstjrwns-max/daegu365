@@ -322,12 +322,12 @@ GSC 리포트(404 4건, robots 차단 3건, 크롤링됨-색인안됨 514건) �
   - 프로덕션 검증: dictionary indexable=50 · sitemap-content 50 URL · sitemap-blog 9 URL · 신규 글 200 렌더 · 저자 표기 정상
 - **조치 5 — 배치3 (데이터 전용, 재배포 불필요)**: 용어사전 16개 추가 리라이트 + 블로그 4편 추가 발행
   - 마이그레이션 0041~0043: 용어사전 16개 리라이트 → indexable=1 (수복·보철 6: inlay·onlay·rpd·overdenture·retainer·apicoectomy / 교정 5: extraction-orthodontics·non-extraction-orthodontics·lingual-orthodontics·metal-bracket·malocclusion / 증상·심미 5: oral-cancer·xerostomia·gingivectomy·in-office-whitening·home-whitening) → **색인 대상 총 66개**, sitemap-content.xml 66 URL 자동 합류 (ai_model='step3-rewrite-batch3-202607')
-  - 마이그레이션 0044: 블로그 신규 4편 발행 (denture-vs-implant-overdenture-guide·orthodontic-retainer-complete-guide·extraction-vs-nonextraction-ortho·inlay-crown-cavity-treatment-choice) — 배치3 리라이트 용어와 내부링크 연계, 저자 kim-seongju·kim-jinduk×2·kim-sangwon → 블로그 총 13편
-  - 프로덕션 검증: dictionary indexable=66 · sitemap-content 66 URL · sitemap-blog 13 URL · 신규 글·용어 전부 200 + robots index · 저자 표기 정상
+  - 마이그레이션 0044로 블로그 4편 발행했으나 원장님 지시로 **0045에서 전부 삭제** → 블로그는 기존 9편 유지
+  - 프로덕션 검증: dictionary indexable=66 · sitemap-content 66 URL · sitemap-blog 9 URL · 삭제 4편 404 확인 · 리라이트 용어 전부 200 + robots index
 - **다음 단계 (승인 대기)**: GSC 색인 추이 관찰(2~6주) / 블로그 정기 발행 루틴 / 추가 리라이트 배치4 / region 페이지 선별 복귀
 
 ## 🎨 배포 상태
 - **플랫폼**: Cloudflare Pages (Edge)
 - **운영 도메인**: https://daegu365dc.kr (canonical 통일)
 - **상태**: ✅ 프로덕션 라이브 (daegu365dc.pages.dev → daegu365dc.kr 301)
-- **최종 업데이트**: 2026-07-21 (SEO 배치3 — 용어사전 16개 추가 리라이트 → 색인 대상 66개 + 블로그 4편 추가 → 총 13편, 사이트맵 총 147 URL(main 44·blog 13·cases 24·content 66) · D1 데이터 전용 갱신, 워커 재배포 불필요)
+- **최종 업데이트**: 2026-07-21 (SEO 배치3 — 용어사전 16개 추가 리라이트 → 색인 대상 66개 · 배치3 블로그 4편은 지시에 따라 삭제(0045), 블로그 9편 유지 · 사이트맵 총 143 URL(main 44·blog 9·cases 24·content 66) · D1 데이터 전용 갱신, 워커 재배포 불필요)
