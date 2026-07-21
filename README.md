@@ -316,10 +316,14 @@ GSC 리포트(404 4건, robots 차단 3건, 크롤링됨-색인안됨 514건) �
   - 대상: 수복 8(scaling·dental-caries·root-canal-treatment·composite-resin·crown·gold-crown·zirconia·bridge) / 임플란트 8(dental-implant·peri-implantitis·bone-graft·sinus-lift·immediate-implant·all-on-4·osseointegration·iv-sedation) / 치주·외과 9(gingivitis·periodontitis·calculus·halitosis·wisdom-teeth·wisdom-tooth-extraction·extraction·tmd·cervical-sensitivity) / 심미·교정·예방 9(teeth-whitening·laminate-veneer·invisalign·clear-aligner·sealant·fluoride-application·dental-floss·root-canal·cd)
   - 라우트: `indexable=1`이면 meta robots·X-Robots-Tag noindex 모두 해제, 나머지 466개는 noindex 유지
   - sitemap-content.xml: `WHERE indexable=1`만 출력(34 URL) — sitemap index·robots.txt·llms.txt에 재등록 → 총 사이트맵 **88 URL**
-- **다음 단계 (승인 대기)**: Step 2 블로그 SEO 콘텐츠 발행 재개 / 추가 용어 리라이트 배치(회복 추이 확인 후) / region 페이지 선별 복귀
+- **조치 4 — Step 2 + 배치2 (데이터 전용, 재배포 불필요)**: 블로그 발행 재개 + 용어사전 추가 16개 리라이트
+  - 마이그레이션 0037~0039: 용어사전 16개 리라이트 → indexable=1 (임플란트 6: straumann·osstem·digital-implant·navigation-surgery·fixture·abutment / 증상·일반 6: stomatitis·mobility·abscess·pregnancy-dental-care·tooth-numbering·mouthguard / 심미·교정·외과 4: veneer·lumineers·ceramic-bracket·double-jaw-surgery) → **색인 대상 총 50개**, sitemap-content.xml 50 URL 자동 합류
+  - 마이그레이션 0040: 블로그 신규 6편 발행 (scaling-insurance-complete-guide·wisdom-tooth-when-to-extract·implant-bone-graft-explained·root-canal-crown-necessity·bruxism-nightguard-guide·whitening-vs-laminate-choice) — 각 글에 리라이트 용어사전 내부링크 연계, 전문의별 저자 배정. 기존 3편의 author_doctor_slug 불일치 버그 수정(kim-sung-ju→kim-seongju 등, 저자 미표시 해결)
+  - 프로덕션 검증: dictionary indexable=50 · sitemap-content 50 URL · sitemap-blog 9 URL · 신규 글 200 렌더 · 저자 표기 정상
+- **다음 단계 (승인 대기)**: GSC 색인 추이 관찰(2~6주) / 블로그 정기 발행 루틴 / 추가 리라이트 배치3 / region 페이지 선별 복귀
 
 ## 🎨 배포 상태
 - **플랫폼**: Cloudflare Pages (Edge)
 - **운영 도메인**: https://daegu365dc.kr (canonical 통일)
 - **상태**: ✅ 프로덕션 라이브 (daegu365dc.pages.dev → daegu365dc.kr 301)
-- **최종 업데이트**: 2026-07-21 (SEO Step 3 — 용어사전 34개 리라이트·선별 색인 복귀, 사이트맵 88 URL · 배포 https://ba5121d3.daegu365dc.pages.dev)
+- **최종 업데이트**: 2026-07-21 (SEO Step 2+배치2 — 블로그 6편 신규 발행 + 용어사전 16개 추가 리라이트 → 색인 대상 50개, 사이트맵 총 127 URL(main 44·blog 9·cases 24·content 50) · D1 데이터 전용 갱신, 워커 재배포 불필요)
