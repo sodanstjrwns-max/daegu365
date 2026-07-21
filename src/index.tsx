@@ -474,10 +474,13 @@ app.use('*', async (c, next) => {
   ) {
     c.res.headers.set('X-Robots-Tag', 'noindex, nofollow')
   }
-  // SEO Step1: 얇은 중복 페이지(용어사전 detail·지역 detail) 색인 철수
+  // SEO Step1+3: 얇은 중복 페이지(용어사전 detail·지역 detail) 색인 철수
   // 허브(/dictionary, /regions)는 색인 유지 — trailing slash 로 detail 만 매칭
-  // follow 유지: 내부 링크 크롤링 경로는 살려둠 (사용자용 페이지는 그대로 서비스)
-  if (path.startsWith('/dictionary/') || path.startsWith('/region/')) {
+  // Step3: 리라이트 완료(indexable=1) 용어는 라우트에서 dictIndexable 플래그를 세트해 색인 복귀
+  if (
+    (path.startsWith('/dictionary/') || path.startsWith('/region/')) &&
+    !c.get('dictIndexable' as never)
+  ) {
     c.res.headers.set('X-Robots-Tag', 'noindex, follow')
   }
 })
@@ -1424,6 +1427,9 @@ app.get('/dictionary/:slug', async (c) => {
   const entry = await c.env.DB.prepare('SELECT * FROM dictionary WHERE slug=?').bind(slug).first<any>()
   if (!entry) return c.notFound()
   await c.env.DB.prepare('UPDATE dictionary SET view_count=view_count+1 WHERE id=?').bind(entry.id).run()
+  // SEO Step3: 리라이트 완료 용어(indexable=1)는 색인 복귀 — 미들웨어 noindex 헤더 제외
+  const isIndexable = !!entry.indexable
+  if (isIndexable) c.set('dictIndexable' as never, true as never)
 
   const relSlugs: string[] = (() => { try { return JSON.parse(entry.related_treatments || '[]') } catch { return [] } })()
   let relatedTreatments: any[] = []
@@ -1504,7 +1510,8 @@ app.get('/dictionary/:slug', async (c) => {
   return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} />, {
     title: `${entry.term} - 치과 용어사전`,
     description: metaDesc,
-    robots: 'noindex, follow', // SEO Step1: 얇은 페이지 색인 철수 (X-Robots-Tag 이중 방어)
+    // SEO Step3: indexable=1(리라이트 완료)만 색인 허용, 나머지는 noindex 유지
+    robots: isIndexable ? undefined : 'noindex, follow',
     canonical: `https://daegu365dc.kr/dictionary/${slug}`,
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -2784,7 +2791,7 @@ app.get('/admin/seo', async (c) => {
     ba: baCount?.n || 0,
     doctors: doctorCount?.n || 0,
     treatments: treatmentCount?.n || 0,
-    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-blog.xml', 'sitemap-cases.xml']
+    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-blog.xml', 'sitemap-cases.xml', 'sitemap-content.xml']
   }
   return c.render(<AdminSeoGuidePage stats={stats} />, { title: 'Admin · SEO 가이드', robots: 'noindex,nofollow' })
 })
@@ -2950,6 +2957,7 @@ app.get('/robots.txt', (c) => {
     `Sitemap: ${SITE.url}/sitemap-main.xml`,
     `Sitemap: ${SITE.url}/sitemap-blog.xml`,
     `Sitemap: ${SITE.url}/sitemap-cases.xml`,
+    `Sitemap: ${SITE.url}/sitemap-content.xml`,
     `Host: ${SITE.url.replace(/^https?:\/\//, '')}`,
     ''
   ].join('\n')
@@ -3080,6 +3088,7 @@ app.get('/sitemap.xml', async (c) => {
   <sitemap><loc>${base}/sitemap-main.xml</loc><lastmod>${lastmodMain}</lastmod></sitemap>
   <sitemap><loc>${base}/sitemap-blog.xml</loc><lastmod>${lastmodBlog}</lastmod></sitemap>
   <sitemap><loc>${base}/sitemap-cases.xml</loc><lastmod>${lastmodCases}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-content.xml</loc><lastmod>${lastmodContent}</lastmod></sitemap>
 </sitemapindex>`
   return c.text(xml, 200, {
     'Content-Type': 'application/xml; charset=utf-8',
@@ -3263,13 +3272,28 @@ ${urls.join('\n')}
   })
 })
 
-// ============ Sitemap: Content — SEO Step1 색인 철수 (2026-07) ============
-// 용어사전 500개는 페이지 간 고유율 7%로 구글 품질 필터에 걸려
-// 색인 전량 해제됨 → 사이트맵에서 제외 + noindex 처리.
-// GSC 기존 제출분 404 방지를 위해 빈 urlset 반환 (허브는 sitemap-main 에 포함)
-app.get('/sitemap-content.xml', (c) => {
+// ============ Sitemap: Content — SEO Step3 선별 색인 복귀 (2026-07) ============
+// Step1에서 전량 철수 → Step3에서 리라이트 완료된 용어(indexable=1)만 선별 복귀.
+// 나머지 용어는 noindex 유지 + 사이트맵 미포함.
+app.get('/sitemap-content.xml', async (c) => {
+  const base = SITE.url
+  let dict: any = { results: [] }
+  try {
+    dict = await c.env.DB.prepare(
+      'SELECT slug, COALESCE(updated_at, created_at) as lastmod FROM dictionary WHERE indexable=1 ORDER BY COALESCE(updated_at, created_at) DESC'
+    ).all()
+  } catch {
+    // indexable 컬럼 미적용 DB에서는 빈 사이트맵 유지 (안전 fallback)
+  }
+
+  const urls: string[] = []
+  ;((dict.results || []) as any[]).forEach((d: any) =>
+    urls.push(`  <url><loc>${base}/dictionary/${d.slug}</loc><lastmod>${sitemapIso(d.lastmod)}</lastmod><priority>0.7</priority><changefreq>monthly</changefreq></url>`)
+  )
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join('\n')}
 </urlset>`
   return c.text(xml, 200, {
     'Content-Type': 'application/xml; charset=utf-8',
