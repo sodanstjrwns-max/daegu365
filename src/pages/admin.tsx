@@ -1744,7 +1744,6 @@ export const AdminSeoGuidePage = ({ stats }: { stats: { blog: number, ba: number
             <div>sitemap-main.xml</div>
             <div>sitemap-blog.xml</div>
             <div>sitemap-cases.xml</div>
-            <div>sitemap-content.xml</div>
           </div>
         </li>
         <li>좌측 <strong>URL 검사</strong> → 새 글 URL 입력 → "색인 생성 요청" 클릭 (포스팅마다 수동 푸시 가능)</li>

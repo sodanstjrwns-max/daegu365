@@ -474,6 +474,12 @@ app.use('*', async (c, next) => {
   ) {
     c.res.headers.set('X-Robots-Tag', 'noindex, nofollow')
   }
+  // SEO Step1: 얇은 중복 페이지(용어사전 detail·지역 detail) 색인 철수
+  // 허브(/dictionary, /regions)는 색인 유지 — trailing slash 로 detail 만 매칭
+  // follow 유지: 내부 링크 크롤링 경로는 살려둠 (사용자용 페이지는 그대로 서비스)
+  if (path.startsWith('/dictionary/') || path.startsWith('/region/')) {
+    c.res.headers.set('X-Robots-Tag', 'noindex, follow')
+  }
 })
 
 // ============ Public pages ============
@@ -1498,6 +1504,7 @@ app.get('/dictionary/:slug', async (c) => {
   return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} />, {
     title: `${entry.term} - 치과 용어사전`,
     description: metaDesc,
+    robots: 'noindex, follow', // SEO Step1: 얇은 페이지 색인 철수 (X-Robots-Tag 이중 방어)
     canonical: `https://daegu365dc.kr/dictionary/${slug}`,
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -1903,6 +1910,7 @@ app.get('/region/:slug', async (c) => {
     />,
     {
       title: r.title, description: r.meta_description,
+      robots: 'noindex, follow', // SEO Step1: 얇은 페이지 색인 철수 (X-Robots-Tag 이중 방어)
       canonical: `https://daegu365dc.kr/region/${slug}`,
       breadcrumb,
       jsonLd,
@@ -2776,7 +2784,7 @@ app.get('/admin/seo', async (c) => {
     ba: baCount?.n || 0,
     doctors: doctorCount?.n || 0,
     treatments: treatmentCount?.n || 0,
-    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-regions.xml', 'sitemap-blog.xml', 'sitemap-cases.xml', 'sitemap-content.xml']
+    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-blog.xml', 'sitemap-cases.xml']
   }
   return c.render(<AdminSeoGuidePage stats={stats} />, { title: 'Admin · SEO 가이드', robots: 'noindex,nofollow' })
 })
@@ -2940,10 +2948,8 @@ app.get('/robots.txt', (c) => {
     '',
     `Sitemap: ${SITE.url}/sitemap.xml`,
     `Sitemap: ${SITE.url}/sitemap-main.xml`,
-    `Sitemap: ${SITE.url}/sitemap-regions.xml`,
     `Sitemap: ${SITE.url}/sitemap-blog.xml`,
     `Sitemap: ${SITE.url}/sitemap-cases.xml`,
-    `Sitemap: ${SITE.url}/sitemap-content.xml`,
     `Host: ${SITE.url.replace(/^https?:\/\//, '')}`,
     ''
   ].join('\n')
@@ -3072,10 +3078,8 @@ app.get('/sitemap.xml', async (c) => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap><loc>${base}/sitemap-main.xml</loc><lastmod>${lastmodMain}</lastmod></sitemap>
-  <sitemap><loc>${base}/sitemap-regions.xml</loc><lastmod>${lastmodRegions}</lastmod></sitemap>
   <sitemap><loc>${base}/sitemap-blog.xml</loc><lastmod>${lastmodBlog}</lastmod></sitemap>
   <sitemap><loc>${base}/sitemap-cases.xml</loc><lastmod>${lastmodCases}</lastmod></sitemap>
-  <sitemap><loc>${base}/sitemap-content.xml</loc><lastmod>${lastmodContent}</lastmod></sitemap>
 </sitemapindex>`
   return c.text(xml, 200, {
     'Content-Type': 'application/xml; charset=utf-8',
@@ -3154,34 +3158,13 @@ ${urls.join('\n')}
   })
 })
 
-// ============ Sitemap: Regions (지역×진료 랜딩페이지 전용 — 색인 가속) ============
-// 별도 분리하여 Google 이 region 전체를 한 번에 인식하도록
-app.get('/sitemap-regions.xml', async (c) => {
-  const base = SITE.url
-  const today = new Date().toISOString().substring(0, 10)
-
-  let regions: any
-  try {
-    regions = await c.env.DB.prepare(
-      'SELECT slug, region_name, treatment_slug, title, COALESCE(updated_at, created_at) as lastmod FROM region_seo ORDER BY region_name, treatment_slug'
-    ).all()
-  } catch {
-    regions = await c.env.DB.prepare(
-      'SELECT slug, region_name, treatment_slug, title, created_at as lastmod FROM region_seo ORDER BY region_name, treatment_slug'
-    ).all()
-  }
-
-  const urls: string[] = []
-  // 허브 페이지
-  urls.push(`  <url><loc>${base}/regions</loc><lastmod>${today}</lastmod><priority>0.95</priority><changefreq>weekly</changefreq></url>`)
-
-  ;(regions.results as any[]).forEach((r: any) => {
-    urls.push(`  <url><loc>${base}/region/${r.slug}</loc><lastmod>${sitemapIso(r.lastmod)}</lastmod><priority>0.9</priority><changefreq>weekly</changefreq></url>`)
-  })
-
+// ============ Sitemap: Regions — SEO Step1 색인 철수 (2026-07) ============
+// 지역×진료 페이지 98개는 페이지 간 고유율 6~12%로 구글 품질 필터에 걸려
+// 색인 전량 해제됨 → 사이트맵에서 제외 + noindex 처리.
+// GSC 기존 제출분 404 방지를 위해 빈 urlset 반환 (허브는 sitemap-main 에 포함)
+app.get('/sitemap-regions.xml', (c) => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.join('\n')}
 </urlset>`
   return c.text(xml, 200, {
     'Content-Type': 'application/xml; charset=utf-8',
@@ -3280,27 +3263,13 @@ ${urls.join('\n')}
   })
 })
 
-// ============ Sitemap: Content (Dictionary 500개) ============
-// FAQ 는 단일 페이지(/faq)이므로 sitemap-main 에 포함됨
-app.get('/sitemap-content.xml', async (c) => {
-  const base = SITE.url
-  let dict: any
-  try {
-    dict = await c.env.DB.prepare(
-      'SELECT slug, COALESCE(updated_at, created_at) as lastmod FROM dictionary ORDER BY COALESCE(updated_at, created_at) DESC'
-    ).all()
-  } catch {
-    dict = await c.env.DB.prepare('SELECT slug, created_at as lastmod FROM dictionary').all()
-  }
-
-  const urls: string[] = []
-  ;(dict.results as any[]).forEach((d: any) =>
-    urls.push(`  <url><loc>${base}/dictionary/${d.slug}</loc><lastmod>${sitemapIso(d.lastmod)}</lastmod><priority>0.65</priority><changefreq>monthly</changefreq></url>`)
-  )
-
+// ============ Sitemap: Content — SEO Step1 색인 철수 (2026-07) ============
+// 용어사전 500개는 페이지 간 고유율 7%로 구글 품질 필터에 걸려
+// 색인 전량 해제됨 → 사이트맵에서 제외 + noindex 처리.
+// GSC 기존 제출분 404 방지를 위해 빈 urlset 반환 (허브는 sitemap-main 에 포함)
+app.get('/sitemap-content.xml', (c) => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.join('\n')}
 </urlset>`
   return c.text(xml, 200, {
     'Content-Type': 'application/xml; charset=utf-8',
