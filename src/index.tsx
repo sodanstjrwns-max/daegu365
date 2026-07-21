@@ -440,7 +440,13 @@ const ALIAS_REDIRECTS: Record<string, string> = {
 }
 
 app.use('*', async (c, next) => {
-  const path = new URL(c.req.url).pathname
+  const url = new URL(c.req.url)
+  const path = url.pathname
+  // 0) SEO: pages.dev(중복 도메인) → daegu365dc.kr 301 통합
+  //    구글 중복 콘텐츠 신호 제거 — canonical 방어에 더해 리다이렉트로 확정
+  if (url.hostname.endsWith('.pages.dev')) {
+    return c.redirect(`https://daegu365dc.kr${path}${url.search}`, 301)
+  }
   // 1) trailing slash 제거 (단, 루트는 제외, 그리고 정적 파일은 제외)
   if (path.length > 1 && path.endsWith('/') && !path.startsWith('/static/') && !path.startsWith('/r2/') && !path.startsWith('/api/')) {
     const q = new URL(c.req.url).search
