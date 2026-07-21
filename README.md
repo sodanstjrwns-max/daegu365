@@ -311,10 +311,15 @@ GSC 리포트(404 4건, robots 차단 3건, 크롤링됨-색인안됨 514건) �
   - 사이트맵 압축: sitemap.xml → main(46)/blog(4)/cases(4) = **54 URL** (기존 669)
   - sitemap-regions.xml·sitemap-content.xml은 빈 urlset 200 반환 (GSC 기존 제출분 404 방지)
   - robots.txt·llms.txt·admin SEO 가이드에서 두 사이트맵 참조 제거
-- **다음 단계 (승인 대기)**: Step 2 블로그 SEO 콘텐츠 발행 재개, Step 3 용어사전 핵심 30~50개 리라이트 후 선별 색인 복귀
+- **조치 3 — Step 3 (9f8a2c7)**: 용어사전 핵심 34개 리라이트 → 선별 색인 복귀
+  - 마이그레이션 0032(indexable·updated_at 컬럼) + 0033~0036(34개 용어 전면 리라이트, 평균 1,268자 고유 콘텐츠: long_desc 3문단·key_points 5·usage_context(병원 연결)·cautions 4·FAQ 3)
+  - 대상: 수복 8(scaling·dental-caries·root-canal-treatment·composite-resin·crown·gold-crown·zirconia·bridge) / 임플란트 8(dental-implant·peri-implantitis·bone-graft·sinus-lift·immediate-implant·all-on-4·osseointegration·iv-sedation) / 치주·외과 9(gingivitis·periodontitis·calculus·halitosis·wisdom-teeth·wisdom-tooth-extraction·extraction·tmd·cervical-sensitivity) / 심미·교정·예방 9(teeth-whitening·laminate-veneer·invisalign·clear-aligner·sealant·fluoride-application·dental-floss·root-canal·cd)
+  - 라우트: `indexable=1`이면 meta robots·X-Robots-Tag noindex 모두 해제, 나머지 466개는 noindex 유지
+  - sitemap-content.xml: `WHERE indexable=1`만 출력(34 URL) — sitemap index·robots.txt·llms.txt에 재등록 → 총 사이트맵 **88 URL**
+- **다음 단계 (승인 대기)**: Step 2 블로그 SEO 콘텐츠 발행 재개 / 추가 용어 리라이트 배치(회복 추이 확인 후) / region 페이지 선별 복귀
 
 ## 🎨 배포 상태
 - **플랫폼**: Cloudflare Pages (Edge)
 - **운영 도메인**: https://daegu365dc.kr (canonical 통일)
 - **상태**: ✅ 프로덕션 라이브 (daegu365dc.pages.dev → daegu365dc.kr 301)
-- **최종 업데이트**: 2026-07-21 (SEO Step 1 — 얇은 페이지 noindex + 사이트맵 54 URL 압축 · 배포 https://33d0093f.daegu365dc.pages.dev)
+- **최종 업데이트**: 2026-07-21 (SEO Step 3 — 용어사전 34개 리라이트·선별 색인 복귀, 사이트맵 88 URL · 배포 https://ba5121d3.daegu365dc.pages.dev)
