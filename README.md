@@ -303,8 +303,18 @@ GSC 리포트(404 4건, robots 차단 3건, 크롤링됨-색인안됨 514건) �
   - **미백(325)**: 표 캡션 줄변경("잇몸 보호제 + VITA Shade 정량측정 + 시술" / "시술 후 48시간 컬러푸드 자제") + 비교표 min-w-[640px]로 모바일 세로 한 글자 깨짐 방지
   - **소아(306)**: "기억의 설계" 3개 문단 키노트 지정 줄바꿈 적용 (기존 볼드 유지)
 
+## 🔍 SEO 색인 복구 작업 (2026-07)
+- **진단**: GSC "크롤링됨 - 현재 색인이 생성되지 않음" 563건 = 얇은 중복 페이지 품질 페널티 (5월초 400+ 색인 후 전량 해제됨). 실측: dictionary 페이지 간 고유 텍스트 7%, region 6~12%. 사이트맵 669 URL 중 598개(89%)가 얇은 페이지.
+- **조치 1 (388b1b1)**: pages.dev 중복 도메인 → daegu365dc.kr 301 리다이렉트
+- **조치 2 — Step 1 (098ec5d)**: 얇은 페이지 색인 전략 철수
+  - `/dictionary/:slug` 500개 + `/region/:slug` 98개 → `X-Robots-Tag: noindex, follow` + `<meta name="robots" content="noindex, follow">` (페이지 자체는 사용자용으로 유지, 허브 `/dictionary`·`/regions`는 색인 유지)
+  - 사이트맵 압축: sitemap.xml → main(46)/blog(4)/cases(4) = **54 URL** (기존 669)
+  - sitemap-regions.xml·sitemap-content.xml은 빈 urlset 200 반환 (GSC 기존 제출분 404 방지)
+  - robots.txt·llms.txt·admin SEO 가이드에서 두 사이트맵 참조 제거
+- **다음 단계 (승인 대기)**: Step 2 블로그 SEO 콘텐츠 발행 재개, Step 3 용어사전 핵심 30~50개 리라이트 후 선별 색인 복귀
+
 ## 🎨 배포 상태
 - **플랫폼**: Cloudflare Pages (Edge)
 - **운영 도메인**: https://daegu365dc.kr (canonical 통일)
-- **상태**: ✅ 프로덕션 라이브 (daegu365dc.pages.dev → daegu365dc.kr)
-- **최종 업데이트**: 2026-06-12 (모바일 3차 — 키노트 260531 **396슬라이드 전량 반영 완료** · 마이그레이션 0028~0031 로컬+프로덕션 D1 적용 · 최종 배포 https://d8c01e01.daegu365dc.pages.dev)
+- **상태**: ✅ 프로덕션 라이브 (daegu365dc.pages.dev → daegu365dc.kr 301)
+- **최종 업데이트**: 2026-07-21 (SEO Step 1 — 얇은 페이지 noindex + 사이트맵 54 URL 압축 · 배포 https://33d0093f.daegu365dc.pages.dev)
