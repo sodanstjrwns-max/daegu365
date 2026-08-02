@@ -1,4 +1,4 @@
-import { Navbar, Footer, DoctorProfileBlock, TldrBox } from '../components/Layout'
+import { Navbar, Footer, TldrBox } from '../components/Layout'
 import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 
@@ -291,16 +291,6 @@ export const PerioTreatmentPage = ({
           </div>
         </div>
       </section>
-
-      {/* PPT PC2 슬라이드 26-27 — 치주치료 담당 이서영 원장 프로필 박스 */}
-      <DoctorProfileBlock
-        slug="lee-seoyoung"
-        name="이서영"
-        position="치주과 전문의"
-        quote={'잇몸 출혈은 사소한 신호가 아닙니다.\n조기에 잡으면 평생 자기 치아로 살 수 있고, 늦으면 임플란트가 답이 됩니다.'}
-        credentials={['치주과 전문의', '잇몸 수술·재생 치료', '정기 유지관리(SPT)']}
-        treatmentLabel="치주치료"
-      />
 
       <Footer />
     </>

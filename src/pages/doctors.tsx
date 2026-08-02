@@ -1,7 +1,7 @@
 import { Navbar, Footer } from '../components/Layout'
 import type { Doctor, Treatment, BeforeAfter, BlogPost } from '../lib/types'
 
-// 의료진 슬러그 → 프로필 사진 매핑 (파일명 기준 7명 + 단체 4장)
+// 의료진 슬러그 → 프로필 사진 매핑 (파일명 기준 6명 + 단체 사진)
 // PPT 모바일 슬라이드 7 + PC1 슬라이드 13 — 최혜정 ↔ 김진덕 사진 서로 교체
 // export: 진료별 페이지에서도 동일한 매핑을 공유하여 사진이 누락되지 않도록 함
 export const DOCTOR_PHOTO: Record<string, string> = {
@@ -11,7 +11,6 @@ export const DOCTOR_PHOTO: Record<string, string> = {
   'choi-hyejung': '/r2/images/doctors/kim-jinduk.jpg',
   'kim-jinduk':   '/r2/images/doctors/choi-hyejung.jpg',
   'han-jieun':    '/r2/images/doctors/han-jieun.jpg',
-  'lee-seoyoung': '/r2/images/doctors/lee-seoyoung.jpg',
 }
 export const getDoctorPhoto = (slug: string) =>
   DOCTOR_PHOTO[slug] || '/r2/images/doctors/team-horizontal-smile.jpg'
@@ -26,7 +25,6 @@ const DOCTOR_VIDEO: Record<string, string> = {
   'choi-hyejung': '/api/videos/choi-hyejung',
   'kim-jinduk':   '/api/videos/kim-jinduk',
   'han-jieun':    '/api/videos/han-jieun',
-  'lee-seoyoung': '/api/videos/lee-seoyoung',
 }
 const getDoctorVideo = (slug: string): string | null =>
   DOCTOR_VIDEO[slug] || null
@@ -54,14 +52,14 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
         {/* 7인의 전문 의료진 — 폰트 키움 (PPT 요청) */}
         <h1 class="display font-black tracking-tight leading-[0.92] text-ivory mb-10"
             style="font-size: clamp(3.5rem, 9vw, 8rem);">
-          <span class="block">7인의</span>
+          <span class="block">6인의</span>
           <span class="block text-gold mt-2">전문 의료진</span>
         </h1>
 
-        {/* 4개 칩 — 7인 협진 / 365일 진료 / 평일 야간 21시 / 대구침산동 */}
+        {/* 4개 칩 — 6인 협진 / 365일 진료 / 평일 야간 21시 / 대구침산동 */}
         <div class="flex flex-wrap justify-center gap-3 md:gap-4 mb-12 max-w-3xl mx-auto">
           {[
-            { icon: 'fa-user-doctor', text: '7인 협진' },
+            { icon: 'fa-user-doctor', text: '6인 협진' },
             { icon: 'fa-calendar-check', text: '365일 진료' },
             { icon: 'fa-moon', text: '평일 야간 21시' },
             { icon: 'fa-location-dot', text: '대구 침산동' },
@@ -75,7 +73,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
 
         {/* 카피 */}
         <p class="text-brown-200 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-12">
-          보존 · 치주 · 소아 · 교정, 각 분야 전문성을 갖춘 의료진이<br class="hidden md:inline"/>
+          보존 · 소아 · 교정, 각 분야 전문성을 갖춘 의료진이<br class="hidden md:inline"/>
           협진으로 완성도 있는 치료를 제공합니다.
         </p>
 
@@ -113,7 +111,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           {/* 7인 글자 잘림 방지 — whitespace-nowrap + 폭 여유 */}
           <h2 class="display text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-ivory mb-6 leading-[1.15]" style="padding:0.1em 0.05em;">
             {/* PPT 모바일 슬라이드 18 — "원장님 7인" → "7인의 원장님" + 기울임 없음 */}
-            <span class="inline-block not-italic" style="white-space:nowrap;"><span class="t-gold not-italic" style="padding:0 0.08em;">7인의</span> 원장님</span>{' '}
+            <span class="inline-block not-italic" style="white-space:nowrap;"><span class="t-gold not-italic" style="padding:0 0.08em;">6인의</span> 원장님</span>{' '}
             <span class="inline-block not-italic">요일별 진료 스케줄</span>
           </h2>
           <p class="text-brown-200 max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
@@ -176,21 +174,19 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
               '최혜정': 'choi-hyejung',
               '김진덕': 'kim-jinduk',
               '한지은': 'han-jieun',
-              '이서영': 'lee-seoyoung',
             }
             const SCHEDULE: Record<string, { doctors: { name: string; hours?: string; tag?: string }[] }> = {
               mon: { doctors: [
                 { name: '김성주' }, { name: '정재헌' }, { name: '김상원' },
-                { name: '이서영', hours: '09:30 ~ 19:00', tag: '단축' },
               ]},
               tue: { doctors: [
                 { name: '정재헌' }, { name: '김상원' }, { name: '최혜정' }, { name: '한지은' },
               ]},
               wed: { doctors: [
-                { name: '정재헌' }, { name: '김상원' }, { name: '최혜정' }, { name: '이서영' },
+                { name: '정재헌' }, { name: '김상원' }, { name: '최혜정' },
               ]},
               thu: { doctors: [
-                { name: '김성주' }, { name: '최혜정' }, { name: '이서영' }, { name: '김진덕' },
+                { name: '김성주' }, { name: '최혜정' }, { name: '김진덕' },
               ]},
               fri: { doctors: [
                 { name: '김성주' }, { name: '정재헌' }, { name: '김상원' }, { name: '김진덕' },
@@ -199,7 +195,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
                 { name: '김성주' }, { name: '최혜정' }, { name: '김진덕' }, { name: '한지은' },
               ]},
               sun: { doctors: [
-                { name: '김성주' }, { name: '정재헌' }, { name: '김상원' }, { name: '이서영' },
+                { name: '김성주' }, { name: '정재헌' }, { name: '김상원' },
               ]},
             }
             // 각 의료진의 직책 (대표원장/원장)을 doctors prop에서 추출
@@ -272,7 +268,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
         </div>
 
         <div class="mt-12 text-center text-[11px] text-brown-300/80 tracking-wide max-w-2xl mx-auto fade-in">
-          ※ 점심시간 13:00 ~ 14:00 · 진료 일정은 사정에 따라 변동될 수 있으니 신청 시 재확인 부탁드립니다.
+          ※ 점심시간 12:30 ~ 14:00 · 진료 일정은 사정에 따라 변동될 수 있으니 신청 시 재확인 부탁드립니다.
         </div>
       </div>
 
@@ -398,7 +394,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
             함께, <em class="text-brown-700 not-italic">협진</em>으로 완성합니다
           </h2>
           <p class="mt-6 text-brown-700 max-w-2xl mx-auto leading-relaxed">
-            7인의 전문의가 한 자리에서 케이스를 검토하고 진단합니다.<br/>
+            6인의 전문의가 한 자리에서 케이스를 검토하고 진단합니다.<br/>
             한 환자의 모든 진료를 같은 기준으로, 그것이 협진의 약속입니다.
           </p>
         </div>
@@ -409,8 +405,8 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           <figure class="md:col-span-7 group">
             <div class="img-frame aspect-[3/2] rounded-[24px] overflow-hidden bg-brown-100">
               <img
-                src="/r2/images/doctors/team-2rows.jpg"
-                alt="대구365치과 7인 의료진 가로 단체컷 — 2열 구성"
+                src="/r2/images/doctors/team-6-horizontal.jpg"
+                alt="대구365치과 6인 의료진 가로 단체컷"
                 loading="lazy"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
@@ -425,8 +421,8 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           <figure class="md:col-span-5 group">
             <div class="img-frame aspect-[2/3] rounded-[24px] overflow-hidden bg-brown-100">
               <img
-                src="/r2/images/doctors/team-3rows.jpg"
-                alt="대구365치과 7인 의료진 세로 단체컷 — 3열 클로즈업"
+                src="/r2/images/doctors/team-6-vertical.jpg"
+                alt="대구365치과 6인 의료진 세로 단체컷"
                 loading="lazy"
                 class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
               />
@@ -467,8 +463,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
             { icon: 'fa-gem', title: '비니크 라미네이트', sub: '0.3mm 박막 심미보철', doctor: '최혜정 원장', slug: 'choi-hyejung', href: '/treatments/lamineer', accent: 'gold' },
             { icon: 'fa-grip', title: '인비절라인 · 교정', sub: '성장기 · 중장년 · 디지털 교정', doctor: '김진덕 원장', slug: 'kim-jinduk', href: '/treatments/ortho' },
             { icon: 'fa-child', title: '소아치과 · 소아교정', sub: '웃음가스 진정치료 · 인비절라인 퍼스트', doctor: '한지은 원장', slug: 'han-jieun', href: '/treatments/pediatric' },
-            { icon: 'fa-shield-heart', title: '치주치료 · 평생관리', sub: '에어플로우 GBT · 잇몸치료', doctor: '이서영 원장', slug: 'lee-seoyoung', href: '/treatments/perio' },
-            { icon: 'fa-wind', title: '에어플로우 GBT', sub: '스케일링이 아닌 첨단 잇몸케어', doctor: '이서영 원장', slug: 'lee-seoyoung', href: '/treatments/airflow' },
+            { icon: 'fa-wind', title: '에어플로우 GBT', sub: '스케일링이 아닌 첨단 잇몸케어', doctor: '전문 의료진 협진', slug: '', href: '/treatments/airflow' },
             { icon: 'fa-syringe', title: '4단계 무통마취', sub: '가글 → 도포 → 무통기 → 본마취', doctor: '김성주 대표원장', slug: 'kim-seongju', href: '/treatments/anesthesia' },
           ].map((item: any) => (
             <a href={item.href}

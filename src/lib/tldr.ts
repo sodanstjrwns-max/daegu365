@@ -28,7 +28,7 @@ export type TldrData = {
 const PHONE_CTA = { text: '053-357-0365 상담 예약하기', href: 'tel:053-357-0365' }
 
 // 콘텐츠 최종 의학 검수일 (배포 시 갱신)
-const REVIEW_DATE = '2026-06-11'
+const REVIEW_DATE = '2026-08-02'
 
 // 진료별 검수 전문의 (전공 일치 · 실제 DB doctors 자격 기반)
 const R: Record<string, Reviewer> = {
@@ -38,7 +38,6 @@ const R: Record<string, Reviewer> = {
   choi:   { name: '최혜정', position: '비니크 센터장 · 치과보존과 전문의', slug: 'choi-hyejung', date: REVIEW_DATE },
   jin:    { name: '김진덕', position: '치과교정과 전문의', slug: 'kim-jinduk',   date: REVIEW_DATE },
   han:    { name: '한지은', position: '소아치과 전문의', slug: 'han-jieun',    date: REVIEW_DATE },
-  seo:    { name: '이서영', position: '평생관리센터장 · 치주과 전문의', slug: 'lee-seoyoung', date: REVIEW_DATE },
 }
 const TLDR_REVIEWER: Record<string, Reviewer> = {
   'implant': R.kim, 'implant-general': R.kim, 'sleep-therapy': R.kim,
@@ -48,7 +47,7 @@ const TLDR_REVIEWER: Record<string, Reviewer> = {
   'icon-resin': R.jung, 'prosthetic': R.jung, 'in-house-lab': R.jung,
   'ortho': R.jin, 'pediatric-ortho': R.jin,
   'pediatric': R.han,
-  'perio': R.seo, 'airflow-gbt': R.seo, 'qray': R.seo, 'prevention': R.seo,
+  'perio': R.kim, 'airflow-gbt': R.kim, 'qray': R.kim, 'prevention': R.kim,
 }
 
 export const TLDR_BY_SLUG: Record<string, TldrData> = {

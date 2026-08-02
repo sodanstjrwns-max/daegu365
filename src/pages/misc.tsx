@@ -430,7 +430,7 @@ export const DirectionsPage = () => (
             <li><strong>월·목</strong>: 09:30 ~ 21:00 (야간)</li>
             <li><strong>화·수·금</strong>: 09:30 ~ 18:30</li>
             <li><strong>토·일</strong>: 09:30 ~ 17:00</li>
-            <li class="text-xs text-brown-500 pt-2">점심시간: 13:00 ~ 14:00</li>
+            <li class="text-xs text-brown-500 pt-2">점심시간: 12:30 ~ 14:00</li>
           </ul>
         </div>
       </div>
@@ -474,7 +474,7 @@ export const HoursPage = () => (
           ))}
         </div>
         <div class="mt-8 pt-6 border-t border-brown-800 text-sm text-brown-300">
-          점심시간: 매일 13:00 — 14:00 · 공휴일은 전화 문의 바랍니다.
+          점심시간: 매일 12:30 — 14:00 · 공휴일은 전화 문의 바랍니다.
         </div>
       </div>
     </section>

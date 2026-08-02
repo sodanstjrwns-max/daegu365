@@ -32,7 +32,7 @@ const TYPES: Record<string,{name:string,nick:string,emoji:string,color:string,de
   MPHL:{name:'안전 추구 VIP',nick:'MPHL',emoji:'🛡️',color:'#10b981',desc:'기능 우선이면서 무통 + 프리미엄 추구. 안전한 치료를 위해 비용 투자 의향 있음.',strength:'장기적 관점, 신뢰 중시',care:'네비게이션 수면 임플란트가 잘 맞아요',doctor:'김성주 대표원장',treat:'/treatments/implant'},
   MEWB:{name:'현실 자취왕',nick:'MEWB',emoji:'💪',color:'#f59e0b',desc:'관리도 잘하고 미용 챙기고 통증도 견딤. 비용까지 합리적 — 갓생 사는 타입.',strength:'멘탈 강함, 자립적',care:'레진·미백 등 가성비 미용진료가 좋아요',doctor:'한지은 원장',treat:'/treatments/aesthetic'},
   MEWL:{name:'욕심쟁이 완벽러',nick:'MEWL',emoji:'✨',color:'#a855f7',desc:'미용 진심, 통증도 OK, 프리미엄 진료 선호. 결과만 좋다면 어떤 과정도 견딘다.',strength:'목표지향적, 결과 중심',care:'세라믹 라미네이트 / 풀 베니어 추천',doctor:'김상원 원장',treat:'/treatments/lamineer'},
-  MEHB:{name:'갓생 효율러',nick:'MEHB',emoji:'⚡',color:'#06b6d4',desc:'관리 철저, 기능 중시, 견딤 OK, 가성비 — 시간·비용·통증 다 효율적으로.',strength:'실용주의, 우선순위 명확',care:'정기 스케일링 + 보험 진료 위주가 좋아요',doctor:'이서영 원장',treat:'/treatments/perio'},
+  MEHB:{name:'갓생 효율러',nick:'MEHB',emoji:'⚡',color:'#06b6d4',desc:'관리 철저, 기능 중시, 견딤 OK, 가성비 — 시간·비용·통증 다 효율적으로.',strength:'실용주의, 우선순위 명확',care:'정기 스케일링 + 보험 진료 위주가 좋아요',doctor:'김성주 대표원장',treat:'/treatments/perio'},
   MEHL:{name:'장인정신 베테랑',nick:'MEHL',emoji:'🦷',color:'#8b5cf6',desc:'관리·기능·견딤·프리미엄 — 가장 강하고 진지한 타입. 평생 쓸 치아를 만든다.',strength:'장기 관리 의지, 인내심',care:'풀 마우스 리해빌리테이션 적합',doctor:'김성주 대표원장',treat:'/treatments/prosthetic'},
   NPWB:{name:'분위기파 인스타러',nick:'NPWB',emoji:'📸',color:'#f472b6',desc:'평소엔 적당, 미용엔 진심, 통증 NO, 가성비 추구. 즉흥적이지만 외모 챙김.',strength:'센스, 트렌드 캐치',care:'이벤트 미백 + 가성비 라미네이트 추천',doctor:'한지은 원장',treat:'/treatments/whitening'},
   NPWL:{name:'한방의 미녀/미남',nick:'NPWL',emoji:'🌹',color:'#e11d48',desc:'평소 관리 약하지만 한 번 결심하면 프리미엄으로. 통증은 절대 사절.',strength:'결단력, 큰 그림',care:'수면 풀 라미네이트가 잘 어울려요',doctor:'김성주 대표원장',treat:'/treatments/lamineer'},
@@ -40,7 +40,7 @@ const TYPES: Record<string,{name:string,nick:string,emoji:string,color:string,de
   NPHL:{name:'한 방에 끝내는 결단가',nick:'NPHL',emoji:'🎯',color:'#dc2626',desc:'평소엔 미루다가 큰 결심하면 프리미엄으로 끝내는 타입. 통증 NO.',strength:'추진력, 한 번에 해결',care:'수면 풀 임플란트 / 원데이 진료 추천',doctor:'김성주 대표원장',treat:'/treatments/implant'},
   NEWB:{name:'쿨내 진동 미니멀',nick:'NEWB',emoji:'🧊',color:'#0ea5e9',desc:'적당한 관리, 미용 살짝, 통증 견딤, 가성비. 쿨하고 시크한 타입.',strength:'쿨한 멘탈, 합리성',care:'레진 + 단순 미백 진료가 잘 어울려요',doctor:'최혜정 원장',treat:'/treatments/cavity'},
   NEWL:{name:'쾌락주의 미식가',nick:'NEWL',emoji:'🍷',color:'#7c3aed',desc:'관리는 약해도 미용·프리미엄 진심. 인생은 한 번이라 외치는 타입.',strength:'즐기는 삶, 풍요로움',care:'세라믹 라미네이트 + 인비절라인 추천',doctor:'김상원 원장',treat:'/treatments/ortho'},
-  NEHB:{name:'무던한 자연인',nick:'NEHB',emoji:'🌿',color:'#65a30d',desc:'관리·미용·통증·비용 — 모든 것에 무던. 자연 그대로의 마이웨이.',strength:'편안함, 휘둘리지 않음',care:'정기검진 + 보험 진료 정도로 충분',doctor:'이서영 원장',treat:'/treatments/prevention'},
+  NEHB:{name:'무던한 자연인',nick:'NEHB',emoji:'🌿',color:'#65a30d',desc:'관리·미용·통증·비용 — 모든 것에 무던. 자연 그대로의 마이웨이.',strength:'편안함, 휘둘리지 않음',care:'정기검진 + 보험 진료 정도로 충분',doctor:'김성주 대표원장',treat:'/treatments/prevention'},
   NEHL:{name:'잠수 후 큰 결심파',nick:'NEHL',emoji:'⚓',color:'#0f766e',desc:'평소엔 잠수 타다가 결심하면 프리미엄으로. 견딜 줄도 안다.',strength:'인내심, 큰 결심',care:'풀 임플란트 / 보철 리해빌리테이션',doctor:'김성주 대표원장',treat:'/treatments/prosthetic'},
 }
 

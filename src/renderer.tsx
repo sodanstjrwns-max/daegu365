@@ -51,7 +51,7 @@ export const dentistSchema = () => ({
   "@id": `${SITE.url}/#dentist`,
   "name": SITE.name,
   "alternateName": SITE.nameEn,
-  "description": "대구 북구 침산동 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인 투명교정, VINIQUE 라미네이트 전문 치과. 월·목 21시까지, 주말 진료. 7명의 전문 의료진 협진.",
+  "description": "대구 북구 침산동 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인 투명교정, VINIQUE 라미네이트 전문 치과. 월·목 21시까지, 주말 진료. 6명의 전문 의료진 협진.",
   "url": SITE.url,
   "telephone": SITE.phone,
   "email": SITE.email,
@@ -140,10 +140,10 @@ export const dentistSchema = () => ({
       "physician": { "@id": `${SITE.url}/doctors/choi-hyejung#physician` }
     },
     {
-      "@type": "MedicalClinic", "name": "치주과·평생관리",
+      "@type": "MedicalClinic", "name": "치주치료·평생관리",
       "medicalSpecialty": "Periodontics",
       "availableService": { "@id": `${SITE.url}/treatments/perio#procedure` },
-      "physician": { "@id": `${SITE.url}/doctors/lee-seoyoung#physician` }
+      "physician": { "@id": `${SITE.url}/doctors/kim-seongju#physician` }
     },
     {
       "@type": "MedicalClinic", "name": "소아치과",

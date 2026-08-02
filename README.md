@@ -324,10 +324,16 @@ GSC 리포트(404 4건, robots 차단 3건, 크롤링됨-색인안됨 514건) �
   - 마이그레이션 0041~0043: 용어사전 16개 리라이트 → indexable=1 (수복·보철 6: inlay·onlay·rpd·overdenture·retainer·apicoectomy / 교정 5: extraction-orthodontics·non-extraction-orthodontics·lingual-orthodontics·metal-bracket·malocclusion / 증상·심미 5: oral-cancer·xerostomia·gingivectomy·in-office-whitening·home-whitening) → **색인 대상 총 66개**, sitemap-content.xml 66 URL 자동 합류 (ai_model='step3-rewrite-batch3-202607')
   - 마이그레이션 0044로 블로그 4편 발행했으나 원장님 지시로 **0045에서 전부 삭제** → 블로그는 기존 9편 유지
   - 프로덕션 검증: dictionary indexable=66 · sitemap-content 66 URL · sitemap-blog 9 URL · 삭제 4편 404 확인 · 리라이트 용어 전부 200 + robots index
+- **조치 6 — 원장단 변동 7인→6인 개편 (2026-08-02, 코드+데이터 · 재배포 완료)**: 이서영 원장(치주과 전문의·평생관리센터장) 퇴사 반영
+  - 전 페이지 "7인/7명" → "6인/6명", 진료분야 나열에서 "치주" 삭제, 점심시간 13:00 → **12:30~14:00** (표기 5곳 + Layout LIVE 상태 로직 + 예약폼 오전 슬롯)
+  - 이서영 제거: 홈 원장카드·진료과 탭 / 의료진 페이지 스케줄(월·수·목·일) / 치주·에어플로우 담당원장 프로필 블록 / play-bti 담당의(→김성주) / 검수자(tldr·REVIEWERS: perio·airflow·qray·prevention → 김성주 대표원장, 검수일 2026-08-02 갱신) / 스키마(renderer 치주클리닉 physician → 김성주)
+  - 단체사진 3장 교체(PNG 1.7MB → JPG 120~130KB, R2 업로드): 메인 team-6-main.jpg(단체6인_2) · 의료진 가로 team-6-horizontal.jpg(단체6인_1) · 세로 team-6-vertical.jpg(단체6인_3)
+  - 마이그레이션 0046: 블로그 스케일링 글 저자 NULL + excerpt "치주과 전문의가"→"대구365치과가" + doctors에서 lee-seoyoung DELETE (로컬+프로덕션)
+  - SEO 보강: /doctors/lee-seoyoung → /doctors 301 리다이렉트, 사이트맵 143→**142 URL** 자동 반영 · 보너스: 블로그 날짜 표기 버그 수정(created_at 공백 구분 포맷이라 시각까지 노출되던 문제 → 날짜만 표시)
 - **다음 단계 (승인 대기)**: GSC 색인 추이 관찰(2~6주) / 블로그 정기 발행 루틴 / 추가 리라이트 배치4 / region 페이지 선별 복귀
 
 ## 🎨 배포 상태
 - **플랫폼**: Cloudflare Pages (Edge)
 - **운영 도메인**: https://daegu365dc.kr (canonical 통일)
 - **상태**: ✅ 프로덕션 라이브 (daegu365dc.pages.dev → daegu365dc.kr 301)
-- **최종 업데이트**: 2026-07-21 (SEO 배치3 — 용어사전 16개 추가 리라이트 → 색인 대상 66개 · 배치3 블로그 4편은 지시에 따라 삭제(0045), 블로그 9편 유지 · 사이트맵 총 143 URL(main 44·blog 9·cases 24·content 66) · D1 데이터 전용 갱신, 워커 재배포 불필요)
+- **최종 업데이트**: 2026-08-02 (원장단 변동 7인→6인 개편 — 이서영 원장 퇴사 반영, 점심 12:30~14:00, 단체사진 3장 교체, 0046 적용, 사이트맵 총 142 URL(main 43·blog 9·cases 24·content 66), 워커 재배포 완료)

@@ -43,7 +43,7 @@ export const HomePage = () => (
           {/* PPT PC3 슬라이드 2 — 상단 정보 박스 (7인 협진 / 365일 / 평일 야간 21시 / 대구침산동) */}
           <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-2 mt-6 fade-in">
             {[
-              { icon: 'fa-user-doctor', label: '전문의 7인 협진', sub: 'SPECIALIZED TEAM' },
+              { icon: 'fa-user-doctor', label: '전문의 6인 협진', sub: 'SPECIALIZED TEAM' },
               { icon: 'fa-calendar-days', label: '365일 연중무휴', sub: 'ALWAYS OPEN' },
               { icon: 'fa-moon', label: '평일 야간 21시까지', sub: 'LATE NIGHT' },
               { icon: 'fa-location-dot', label: '대구 북구 침산동', sub: 'CHIMSAN-DONG' },
@@ -325,12 +325,12 @@ export const HomePage = () => (
               ],
             },
             {
-              num: 7,
+              num: 6,
               suffix: '명',
               label: 'SPECIALIZED TEAM',
               lines: [
-                '대표원장 1명 + 진료원장 6명',
-                '보존·치주·소아·교정·보철·심미',
+                '대표원장 1명 + 진료원장 5명',
+                '보존·소아·교정·보철·심미',
                 '각 분야 전문의가',
                 '하나의 케이스를 함께 설계합니다',
               ],
@@ -393,7 +393,7 @@ export const HomePage = () => (
             </h2>
           </div>
           <p class="t-lead max-w-md text-brown-700">
-            13개 진료 영역, 7인의 전문의가 함께 설계하는 정밀 협진
+            13개 진료 영역, 6인의 전문의가 함께 설계하는 정밀 협진
           </p>
         </div>
 
@@ -454,19 +454,19 @@ export const HomePage = () => (
           <div class="max-w-xl">
             <div class="section-label mb-6">MEDICAL TEAM · 05</div>
             <h2 class="t-display medical-team-title" style="letter-spacing:-0.02em; line-height:1.05;">
-              <span class="medical-team-keyword">7인의</span><br/>
+              <span class="medical-team-keyword">6인의</span><br/>
               <span class="t-gold">전문 의료진</span>
             </h2>
           </div>
           <p class="t-lead max-w-md">
-            보존·치주·소아·교정·<br class="md:hidden"/>보철·심미.<br class="hidden md:inline"/>
+            보존·소아·교정·<br class="md:hidden"/>보철·심미.<br class="hidden md:inline"/>
             각 분야 전문의가<br class="md:hidden"/> 하나의 케이스를<br class="md:hidden"/> 함께 설계합니다.
           </p>
         </div>
 
         {/* Team group image */}
         <div class="img-frame img-reveal aspect-[16/9] rounded-[32px] mb-8 fade-in shadow-xl">
-          <img src="/r2/images/doctors/team-horizontal-smile.jpg" alt="대구365치과 의료진 7인" loading="lazy" />
+          <img src="/r2/images/doctors/team-6-main.jpg" alt="대구365치과 의료진 6인" loading="lazy" />
         </div>
 
         {/* 대표원장 스포트라이트 */}
@@ -510,7 +510,6 @@ export const HomePage = () => (
               { dep: '보존과',   doctors: '정재헌·최혜정·김상원' },
               { dep: '교정과',   doctors: '김진덕' },
               { dep: '소아치과', doctors: '한지은' },
-              { dep: '치주과',   doctors: '이서영' },
               { dep: '통합치의학과', doctors: '김성주 대표원장' },
             ].map((d: any) => (
               <a href="/doctors" class="inline-flex flex-col items-center gap-1 px-5 py-3 rounded-2xl border border-brown-300 bg-ivory hover:border-gold hover:shadow-md transition">
@@ -521,14 +520,13 @@ export const HomePage = () => (
           </div>
         </div>
 
-        <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-4 fade-in-stagger">
+        <div class="grid md:grid-cols-3 lg:grid-cols-5 gap-4 fade-in-stagger">
           {[
             { slug: 'jung-jaeheon',  name: '정재헌', pos: '보존과 전문의',   spec: '보존·심미 치료',     img: '/r2/images/doctors/jung-jaeheon.jpg' },
             { slug: 'choi-hyejung',  name: '최혜정', pos: '보존과 전문의',   spec: '보존·정직 치료',     img: '/r2/images/doctors/kim-jinduk.jpg' },
             { slug: 'han-jieun',     name: '한지은', pos: '소아치과 전문의', spec: '소아·따뜻한 기억',   img: '/r2/images/doctors/han-jieun.jpg' },
             { slug: 'kim-jinduk',    name: '김진덕', pos: '교정과 전문의',   spec: '교정·자신감 미소',   img: '/r2/images/doctors/choi-hyejung.jpg' },
             { slug: 'kim-sangwon',   name: '김상원', pos: '보존과 전문의',   spec: '자연치아 보존',     img: '/r2/images/doctors/kim-sangwon.jpg' },
-            { slug: 'lee-seoyoung',  name: '이서영', pos: '치주과 전문의',   spec: '치주·세심한 케어',   img: '/r2/images/doctors/lee-seoyoung.jpg' },
           ].map((d: any) => (
             <a href={`/doctors/${d.slug}`} class="group block">
               <div class="img-frame aspect-[3/4] rounded-2xl mb-4 overflow-hidden">
@@ -594,7 +592,7 @@ export const HomePage = () => (
               {
                 step: '01 · COLLABORATION',
                 title: '분야별 전문의 협진',
-                desc: '보존·치주·소아·교정 각 분야 전문가가 한 명의 환자 케이스를 함께 설계합니다. 한 의사의 판단이 아닌, 팀의 판단으로 최선의 치료를 제공합니다.'
+                desc: '보존·소아·교정 각 분야 전문가가 한 명의 환자 케이스를 함께 설계합니다. 한 의사의 판단이 아닌, 팀의 판단으로 최선의 치료를 제공합니다.'
               },
               {
                 step: '02 · ANESTHESIA',
@@ -1018,7 +1016,7 @@ export const HomePage = () => (
               <i class="fas fa-utensils text-gold"></i>
               <div>
                 <div class="font-bold text-brown-900">점심시간</div>
-                <div class="text-brown-600 mt-0.5">13:00 – 14:00 (평일)</div>
+                <div class="text-brown-600 mt-0.5">12:30 – 14:00 (평일)</div>
               </div>
             </div>
             <div class="bg-ivory p-5 flex items-center gap-3">

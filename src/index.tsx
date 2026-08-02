@@ -309,7 +309,6 @@ const REVIEWERS: Record<string, { name: string; slug: string; position: string }
   'choi-hyejung':  { name: '최혜정', slug: 'choi-hyejung', position: '비니크 센터장 · 치과보존과 전문의' },
   'kim-jinduk':    { name: '김진덕', slug: 'kim-jinduk',   position: '치과교정과 전문의' },
   'han-jieun':     { name: '한지은', slug: 'han-jieun',    position: '소아치과 전문의 · 통합치의학과 전문의' },
-  'lee-seoyoung':  { name: '이서영', slug: 'lee-seoyoung', position: '평생관리센터장 · 치주과 전문의' },
 }
 // 진료 슬러그 → 검수 담당 전문의 (전공 일치). 미지정 시 대표원장 검수.
 const PROCEDURE_REVIEWER: Record<string, string> = {
@@ -320,7 +319,7 @@ const PROCEDURE_REVIEWER: Record<string, string> = {
   'icon-resin': 'jung-jaeheon', 'prosthetic': 'jung-jaeheon', 'in-house-lab': 'jung-jaeheon',
   'ortho': 'kim-jinduk', 'pediatric-ortho': 'kim-jinduk',
   'pediatric': 'han-jieun',
-  'perio': 'lee-seoyoung', 'airflow-gbt': 'lee-seoyoung', 'qray': 'lee-seoyoung', 'prevention': 'lee-seoyoung',
+  'perio': 'kim-seongju', 'airflow-gbt': 'kim-seongju', 'qray': 'kim-seongju', 'prevention': 'kim-seongju',
 }
 const reviewerFor = (slug: string) => REVIEWERS[PROCEDURE_REVIEWER[slug] || 'kim-seongju']
 
@@ -385,7 +384,6 @@ const DOCTOR_INTERVIEW_DESC: Record<string, string> = {
   'choi-hyejung': '대구365치과 최혜정 원장의 진료 철학과 전문 분야 인터뷰.',
   'kim-jinduk': '대구365치과 김진덕 원장의 진료 철학과 전문 분야 인터뷰.',
   'han-jieun': '대구365치과 한지은 원장의 진료 철학과 전문 분야 인터뷰.',
-  'lee-seoyoung': '대구365치과 이서영 원장의 진료 철학과 전문 분야 인터뷰.',
 }
 
 // ============ SEO: trailing slash + alias redirect 미들웨어 ============
@@ -394,6 +392,8 @@ const DOCTOR_INTERVIEW_DESC: Record<string, string> = {
 // 2) 흔한 alias 키워드 (/implant 등) → 정식 경로 301 redirect
 // 3) 누락된 흔한 SEO 경로 (/about, /contact 등) → 적절한 페이지 301 redirect
 const ALIAS_REDIRECTS: Record<string, string> = {
+  // 퇴사 원장 프로필 → 의료진 목록 (2026-08 원장단 7인→6인 변동, 색인 잔존 대비)
+  '/doctors/lee-seoyoung': '/doctors',
   // 진료 단축 경로 → /treatments/:slug
   '/implant': '/treatments/implant',
   '/implants': '/treatments/implant',
@@ -517,7 +517,7 @@ app.get('/doctors', async (c) => {
     "@type": "ItemList",
     "@id": `${SITE.url}/doctors#itemlist`,
     "name": "대구365치과 의료진",
-    "description": "대구365치과 7인의 의료진 — 보존·치주·소아·교정·보철·심미 분야 전문 협진",
+    "description": "대구365치과 6인의 의료진 — 보존·소아·교정·보철·심미 분야 전문 협진",
     "url": `${SITE.url}/doctors`,
     "numberOfItems": doctorRows.length,
     "itemListElement": doctorRows.map((d: any, i: number) => ({
@@ -530,9 +530,9 @@ app.get('/doctors', async (c) => {
   }
   return c.render(<DoctorsListPage doctors={r.results as any} />, {
     title: '의료진 소개',
-    description: '대구365치과 7인의 의료진. 보존·치주·소아·교정·보철·심미 각 분야 전문 협진.',
+    description: '대구365치과 6인의 의료진. 보존·소아·교정·보철·심미 각 분야 전문 협진.',
     canonical: 'https://daegu365dc.kr/doctors',
-    ogImage: ogUrl.default('의료진 소개', '7인의 전문 협진.'),
+    ogImage: ogUrl.default('의료진 소개', '6인의 전문 협진.'),
     ogType: 'profile',
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -2056,7 +2056,6 @@ const DOCTOR_VIDEO_KEYS: Record<string, string> = {
   'choi-hyejung': '최혜정_인터뷰_master.mp4',
   'kim-jinduk':   '김진덕_인터뷰_master.mp4',
   'han-jieun':    '한지은_인터뷰_master.mp4',
-  'lee-seoyoung': '이서영_인터뷰_master.mp4',
   'kim-seongju':  '김성주_인터뷰_master.mp4',
 }
 
@@ -2988,7 +2987,7 @@ app.get('/llms.txt', async (c) => {
   lines.push(`- 이메일: ${SITE.email}`)
   lines.push(`- 진료시간: 월·목 09:30~21:00 (야간), 화·수·금 09:30~18:30, 토·일 09:30~17:00`)
   lines.push(`- 휴진: 명절 당일`)
-  lines.push(`- 의료진: 7명 협진 시스템`)
+  lines.push(`- 의료진: 6명 협진 시스템`)
   lines.push(`- 설립: ${SITE.founded}년`)
   lines.push('')
   lines.push('## 주요 진료')
@@ -3518,7 +3517,7 @@ app.notFound((c) => {
             </a>
             <a href="/doctors" class="lux-card hover:bg-brown-50 transition text-left">
               <div class="display text-lg font-medium mb-1">의료진</div>
-              <div class="text-xs text-brown-600">7명 협진 시스템</div>
+              <div class="text-xs text-brown-600">6명 협진 시스템</div>
             </a>
             <a href="/before-after" class="lux-card hover:bg-brown-50 transition text-left">
               <div class="display text-lg font-medium mb-1">치료 사례</div>
