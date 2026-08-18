@@ -26,7 +26,7 @@ const VINIQUE_TIERS = [
     block: 'Denbio NT Mill Hybrid (CAD/CAM 디스크)',
     strength: 213,
     warranty: '1년',
-    image: '/r2/images/treatments/vinique/nt-mill-hybrid-disk.jpg',
+    image: '/r2/images/treatments/vinique/nt-mill-hybrid-disk.webp',
     desc: '나노입자 세라믹(0.3~0.7㎛ 필러)으로 자연치아와 유사한 질감을 구현합니다. 최소 삭제 프로토콜로 자연 치아 건강을 우선적으로 보호합니다.',
     points: [
       '최소 삭제 — 자연치 건강 우선 보호',
@@ -45,7 +45,7 @@ const VINIQUE_TIERS = [
     block: 'Rosetta SP / IPS e.max® Press (LS₂ ingot)',
     strength: 510,
     warranty: '5년',
-    image: '/r2/images/treatments/vinique/rosetta-emax-ingots.jpg',
+    image: '/r2/images/treatments/vinique/rosetta-emax-ingots.webp',
     desc: '프리미엄 글라스 세라믹 블록으로 치아의 형태와 색상을 동시에 완벽하게 개선합니다. Standard 대비 2.4배 강한 510MPa 굴곡강도로 5년의 반영구적 보증을 제공합니다.',
     points: [
       '강력한 강도 — Standard 대비 2.4배 (510MPa 굴곡강도)',
@@ -70,38 +70,38 @@ const TIER_MATRIX = [
 /* 원내 D.LAB STUDIO 365 갤러리 (실제 시술 공정 입증) */
 const DLAB_GALLERY = [
   {
-    img: '/r2/images/treatments/vinique/dlab-overview.jpg',
+    img: '/r2/images/treatments/vinique/dlab-overview.webp',
     title: 'D.LAB STUDIO 365',
     caption: '환자 대기실에서 직접 보이는 원내 디지털 기공실. 외주 대기 시간 0, 당일 조정 가능.',
     span: 'lg:col-span-2 lg:row-span-2',
   },
   {
-    img: '/r2/images/treatments/vinique/milling-machine.jpg',
+    img: '/r2/images/treatments/vinique/milling-machine.webp',
     title: 'CAD/CAM 5축 밀링',
     caption: '세라믹 디스크를 마이크로 단위로 정밀 가공하는 5축 밀링 머신.',
   },
   {
-    img: '/r2/images/treatments/vinique/dlab-cad-station.jpg',
+    img: '/r2/images/treatments/vinique/dlab-cad-station.webp',
     title: 'Smile Design CAD',
     caption: '3D 구강스캔 데이터로 환자만의 미소를 디지털 설계.',
   },
   {
-    img: '/r2/images/treatments/vinique/dlab-microscope.jpg',
+    img: '/r2/images/treatments/vinique/dlab-microscope.webp',
     title: '현미경 정밀 마감',
     caption: '베니어 가장자리(margin)를 현미경으로 미세 조정 — 자연스러운 라인 완성.',
   },
   {
-    img: '/r2/images/treatments/vinique/dlab-furnace.jpg',
+    img: '/r2/images/treatments/vinique/dlab-furnace.webp',
     title: '세라믹 소결 퍼니스',
     caption: '고온 소결로 세라믹 강도와 광택을 최대치로 끌어올립니다.',
   },
   {
-    img: '/r2/images/treatments/vinique/veneer-model-1829.jpg',
+    img: '/r2/images/treatments/vinique/veneer-model-1829.webp',
     title: 'Try-In 시연',
     caption: '실제 모형에 베니어를 시연 — 부착 전 형태·색·교합 최종 확인.',
   },
   {
-    img: '/r2/images/treatments/vinique/veneer-macro-brush.jpg',
+    img: '/r2/images/treatments/vinique/veneer-macro-brush.webp',
     title: '완성 베니어',
     caption: '0.3~0.7mm 박막 — 자연치 광택 그대로의 라미네이트.',
   },
@@ -307,7 +307,7 @@ export const LamineerTreatmentPage = ({
       {/* 1. CINEMATIC HERO */}
       <section class="relative bg-brown-950 text-ivory pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden">
         <img
-          src="/r2/images/treatments/vinique/vinique-package.jpg"
+          src="/r2/images/treatments/vinique/vinique-package.webp"
           alt="VINIQUE 프리미엄 라미네이트 패키지"
           class="absolute inset-0 w-full h-full object-cover opacity-20"
           loading="eager"
@@ -659,7 +659,7 @@ export const LamineerTreatmentPage = ({
                   <div class="relative rounded-[1.5rem] overflow-hidden bg-black" style="aspect-ratio: 9/16;">
                     <video
                       src="/r2/videos/treatments/vinique/vinique-beforeafter-master.mp4"
-                      poster="/r2/images/treatments/vinique/vinique-package.jpg"
+                      poster="/r2/images/treatments/vinique/vinique-package.webp"
                       class="absolute inset-0 w-full h-full object-cover"
                       autoplay
                       loop
@@ -968,7 +968,7 @@ export const LamineerTreatmentPage = ({
 
       {/* 12. CTA */}
       <section class="relative py-24 lg:py-32 text-ivory overflow-hidden" style="background:var(--brown-950);">
-        <img src="/r2/images/journal/before-after.jpg?v=3" alt="" class="absolute inset-0 w-full h-full object-cover opacity-15" loading="lazy" aria-hidden="true" />
+        <img src="/r2/images/journal/before-after.webp?v=3" alt="" class="absolute inset-0 w-full h-full object-cover opacity-15" loading="lazy" aria-hidden="true" />
         <div class="absolute inset-0" style="background:linear-gradient(135deg, rgba(26,18,10,0.92) 0%, rgba(26,18,10,0.75) 100%);"></div>
         <div class="blob" style="width:600px;height:600px;background:#c9a876;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.18;"></div>
         <div class="relative max-w-3xl mx-auto px-6 text-center">

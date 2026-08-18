@@ -18,7 +18,7 @@ export const HomePage = () => (
     {/* ================================================== */}
     <section class="cinematic-hero">
       <img
-        src="/r2/images/hero/lobby-curve.jpg"
+        src="/r2/images/hero/lobby-curve.webp"
         alt="대구365치과 메인 로비 — 곡선 천장 라인과 365 로고 사인"
         class="cinematic-hero-bg loaded"
         aria-hidden="true"
@@ -106,7 +106,7 @@ export const HomePage = () => (
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-12 pt-14 border-t border-ivory/10 fade-in">
           {[
             { num: '365', unit: '일', label: '연중무휴', stack: true },
-            { num: '7', unit: '명의', label: '전문 의료진', stack: true },
+            { num: '6', unit: '명의', label: '전문 의료진', stack: true },
             { num: '21:00', unit: '', label: '월·목 야간진료' },
             { num: '∞', unit: '', label: '평생 보증 임플란트' },
           ].map((s: any) => (
@@ -157,10 +157,10 @@ export const HomePage = () => (
           {/* Editorial grid */}
           <div class="editorial-grid fade-in">
             <div class="eg-1 img-frame img-reveal rounded-[20px] overflow-hidden">
-              <img src="/r2/images/doctors/kim-seongju.jpg" alt="김성주 대표원장" loading="lazy" class="w-full h-full object-cover object-[center_15%]" />
+              <img src="/r2/images/doctors/kim-seongju.webp" alt="김성주 대표원장" loading="lazy" class="w-full h-full object-cover object-[center_15%]" />
             </div>
             <div class="eg-2 img-frame img-reveal rounded-[20px]">
-              <img src="/static/images/macro-veneer.jpg" alt="세라믹 베니어 매크로" loading="lazy" />
+              <img src="/static/images/macro-veneer.webp" alt="세라믹 베니어 매크로" loading="lazy" />
             </div>
             <div class="eg-3 bg-brown-950 text-ivory rounded-[20px] p-8 flex flex-col justify-center">
               <div class="text-[10px] tracking-[0.3em] text-gold mb-3 font-bold">SINCE 2025</div>
@@ -171,7 +171,7 @@ export const HomePage = () => (
             </div>
             {/* PPT PC4 슬라이드 4 — 하단 사진(eg-4) 삭제 후 좌측 글·우측 사진 수평 정렬 */}
             <div class="eg-5 img-frame img-reveal rounded-[20px]">
-              <img src="/r2/images/clinic/care-luxury-room.jpg?v=1" alt="대구365치과 럭셔리 진료실 — 호텔 라운지 무드의 단독 진료 공간" loading="lazy" class="w-full h-full object-cover" />
+              <img src="/r2/images/clinic/care-luxury-room.webp" alt="대구365치과 럭셔리 진료실 — 호텔 라운지 무드의 단독 진료 공간" loading="lazy" class="w-full h-full object-cover" />
             </div>
           </div>
         </div>
@@ -245,7 +245,7 @@ export const HomePage = () => (
               tagline: '공포 없는 임플란트',
               num: '01',
               // 티타늄 임플란트 픽스처 매크로 컷 (R2, 4K, 골드톤)
-              img: '/r2/images/treatments/implant-fixture.jpg',
+              img: '/r2/images/treatments/implant-fixture.webp',
               points: ['수면 진정 + 무통마취', '메가젠 BD · 오스템 BA', '평생 임플란트 보증'],
             },
             {
@@ -254,7 +254,7 @@ export const HomePage = () => (
               tagline: '투명하게, 자유롭게 (교정)',
               num: '02',
               // 투명 인비절라인 얼라이너 매크로 컷 (R2, 4K)
-              img: '/r2/images/treatments/invisalign-aligner.jpg',
+              img: '/r2/images/treatments/invisalign-aligner.webp',
               points: ['인비절라인 공인 의료진', '3D 시뮬레이션', '티 나지 않는 교정'],
             },
             {
@@ -263,7 +263,7 @@ export const HomePage = () => (
               tagline: '프리미엄 라미네이트',
               num: '03',
               // 매크로 베니어 컷 — 라미네이트 결과 자체를 보여주는 이미지로 스왑
-              img: '/static/images/macro-veneer.jpg',
+              img: '/static/images/macro-veneer.webp',
               points: ['얼굴형·스마일 라인 설계', '최소 삭제 · 자연광택', '원내 디지털 기공실'],
             },
           ].map((t: any) => (
@@ -466,12 +466,12 @@ export const HomePage = () => (
 
         {/* Team group image */}
         <div class="img-frame img-reveal aspect-[16/9] rounded-[32px] mb-8 fade-in shadow-xl">
-          <img src="/r2/images/doctors/team-6-main.jpg" alt="대구365치과 의료진 6인" loading="lazy" />
+          <img src="/r2/images/doctors/team-6-main.webp" alt="대구365치과 의료진 6인" loading="lazy" />
         </div>
 
         {/* 대표원장 스포트라이트 */}
         <a href="/doctors/kim-seongju" class="block spotlight-card shadow-xl fade-in group mb-8">
-          <img src="/r2/images/doctors/kim-seongju.jpg" alt="김성주 대표원장" class="spotlight-card-img" loading="lazy" style="object-position: center 20%;" />
+          <img src="/r2/images/doctors/kim-seongju.webp" alt="김성주 대표원장" class="spotlight-card-img" loading="lazy" style="object-position: center 20%;" />
           <div class="relative h-full p-10 lg:p-16 flex flex-col justify-end min-h-[580px]">
             <div class="section-label mb-6" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.3);">
               FOUNDER · DIRECTOR
@@ -522,11 +522,11 @@ export const HomePage = () => (
 
         <div class="grid md:grid-cols-3 lg:grid-cols-5 gap-4 fade-in-stagger">
           {[
-            { slug: 'jung-jaeheon',  name: '정재헌', pos: '보존과 전문의',   spec: '보존·심미 치료',     img: '/r2/images/doctors/jung-jaeheon.jpg' },
-            { slug: 'choi-hyejung',  name: '최혜정', pos: '보존과 전문의',   spec: '보존·정직 치료',     img: '/r2/images/doctors/kim-jinduk.jpg' },
-            { slug: 'han-jieun',     name: '한지은', pos: '소아치과 전문의', spec: '소아·따뜻한 기억',   img: '/r2/images/doctors/han-jieun.jpg' },
-            { slug: 'kim-jinduk',    name: '김진덕', pos: '교정과 전문의',   spec: '교정·자신감 미소',   img: '/r2/images/doctors/choi-hyejung.jpg' },
-            { slug: 'kim-sangwon',   name: '김상원', pos: '보존과 전문의',   spec: '자연치아 보존',     img: '/r2/images/doctors/kim-sangwon.jpg' },
+            { slug: 'jung-jaeheon',  name: '정재헌', pos: '보존과 전문의',   spec: '보존·심미 치료',     img: '/r2/images/doctors/jung-jaeheon.webp' },
+            { slug: 'choi-hyejung',  name: '최혜정', pos: '보존과 전문의',   spec: '보존·정직 치료',     img: '/r2/images/doctors/kim-jinduk.webp' },
+            { slug: 'han-jieun',     name: '한지은', pos: '소아치과 전문의', spec: '소아·따뜻한 기억',   img: '/r2/images/doctors/han-jieun.webp' },
+            { slug: 'kim-jinduk',    name: '김진덕', pos: '교정과 전문의',   spec: '교정·자신감 미소',   img: '/r2/images/doctors/choi-hyejung.webp' },
+            { slug: 'kim-sangwon',   name: '김상원', pos: '보존과 전문의',   spec: '자연치아 보존',     img: '/r2/images/doctors/kim-sangwon.webp' },
           ].map((d: any) => (
             <a href={`/doctors/${d.slug}`} class="group block">
               <div class="img-frame aspect-[3/4] rounded-2xl mb-4 overflow-hidden">
@@ -744,13 +744,13 @@ export const HomePage = () => (
         </div>
         <div class="grid grid-cols-12 gap-4 mb-20 fade-in-stagger">
           <div class="col-span-12 lg:col-span-7 img-frame img-reveal aspect-[16/10] rounded-[24px]">
-            <img src="/r2/images/clinic/arrival-lobby-wide.jpg" alt="대구365치과 와이드 로비 라운지" loading="lazy" />
+            <img src="/r2/images/clinic/arrival-lobby-wide.webp" alt="대구365치과 와이드 로비 라운지" loading="lazy" />
           </div>
           <div class="col-span-6 lg:col-span-5 img-frame img-reveal aspect-[4/5] lg:aspect-auto rounded-[24px]">
-            <img src="/r2/images/clinic/arrival-entrance.jpg" alt="대구365치과 입구 365 로고 사인" loading="lazy" />
+            <img src="/r2/images/clinic/arrival-entrance.webp" alt="대구365치과 입구 365 로고 사인" loading="lazy" />
           </div>
           <div class="col-span-6 lg:col-span-5 img-frame img-reveal aspect-[4/3] rounded-[20px]">
-            <img src="/r2/images/clinic/arrival-lounge.jpg" alt="대기 라운지 디스플레이 월" loading="lazy" />
+            <img src="/r2/images/clinic/arrival-lounge.webp" alt="대기 라운지 디스플레이 월" loading="lazy" />
           </div>
           <div class="hidden lg:flex col-span-7 items-center px-8">
             <p class="text-brown-700 text-base leading-relaxed">
@@ -770,13 +770,13 @@ export const HomePage = () => (
         </div>
         <div class="grid grid-cols-12 gap-4 mb-20 fade-in-stagger">
           <div class="col-span-12 lg:col-span-8 img-frame img-reveal aspect-[16/10] rounded-[24px]">
-            <img src="/r2/images/clinic/care-treatment-rooms.jpg" alt="진료실 다중뷰" loading="lazy" />
+            <img src="/r2/images/clinic/care-treatment-rooms.webp" alt="진료실 다중뷰" loading="lazy" />
           </div>
           <div class="col-span-6 lg:col-span-4 img-frame img-reveal aspect-[3/4] rounded-[20px]">
-            <img src="/r2/images/clinic/care-digital-room.jpg" alt="디지털 진료실" loading="lazy" />
+            <img src="/r2/images/clinic/care-digital-room.webp" alt="디지털 진료실" loading="lazy" />
           </div>
           <div class="col-span-6 lg:col-span-4 img-frame img-reveal aspect-[4/3] rounded-[20px]">
-            <img src="/r2/images/clinic/care-luxury-room.jpg" alt="블랙 천장 럭셔리 진료실" loading="lazy" />
+            <img src="/r2/images/clinic/care-luxury-room.webp" alt="블랙 천장 럭셔리 진료실" loading="lazy" />
           </div>
           <div class="hidden lg:flex col-span-8 items-center px-8">
             <p class="text-brown-700 text-base leading-relaxed">
@@ -796,13 +796,13 @@ export const HomePage = () => (
         </div>
         <div class="grid grid-cols-12 gap-4 mb-20 fade-in-stagger">
           <div class="col-span-12 lg:col-span-6 img-frame img-reveal aspect-[3/2] rounded-[24px]">
-            <img src="/r2/images/clinic/precision-dlab.jpg" alt="D.LAB STUDIO 365 디지털 기공실" loading="lazy" />
+            <img src="/r2/images/clinic/precision-dlab.webp" alt="D.LAB STUDIO 365 디지털 기공실" loading="lazy" />
           </div>
           <div class="col-span-6 lg:col-span-3 img-frame img-reveal aspect-[3/4] rounded-[20px]">
-            <img src="/r2/images/clinic/precision-implant-center.jpg" alt="365 임플란트 수술센터" loading="lazy" />
+            <img src="/r2/images/clinic/precision-implant-center.webp" alt="365 임플란트 수술센터" loading="lazy" />
           </div>
           <div class="col-span-6 lg:col-span-3 img-frame img-reveal aspect-[3/4] rounded-[20px]">
-            <img src="/r2/images/clinic/precision-arch-corridor.jpg" alt="아치형 정밀 동선 복도" loading="lazy" />
+            <img src="/r2/images/clinic/precision-arch-corridor.webp" alt="아치형 정밀 동선 복도" loading="lazy" />
           </div>
         </div>
 
@@ -816,13 +816,13 @@ export const HomePage = () => (
         </div>
         <div class="grid grid-cols-12 gap-4 mb-20 fade-in-stagger">
           <div class="col-span-6 lg:col-span-4 img-frame img-reveal aspect-[3/4] rounded-[20px]">
-            <img src="/r2/images/clinic/lifetime-care-center.jpg" alt="평생치아관리센터 입구" loading="lazy" />
+            <img src="/r2/images/clinic/lifetime-care-center.webp" alt="평생치아관리센터 입구" loading="lazy" />
           </div>
           <div class="col-span-6 lg:col-span-4 img-frame img-reveal aspect-[3/4] rounded-[20px]">
-            <img src="/r2/images/clinic/lifetime-airflow-zone.jpg" alt="AIRFLOW ZONE 예방 진료실" loading="lazy" />
+            <img src="/r2/images/clinic/lifetime-airflow-zone.webp" alt="AIRFLOW ZONE 예방 진료실" loading="lazy" />
           </div>
           <div class="col-span-12 lg:col-span-4 img-frame img-reveal aspect-[3/4] rounded-[20px]">
-            <img src="/r2/images/clinic/lifetime-vip-rooms.jpg" alt="VIP 룸 입구" loading="lazy" />
+            <img src="/r2/images/clinic/lifetime-vip-rooms.webp" alt="VIP 룸 입구" loading="lazy" />
           </div>
         </div>
 
@@ -836,10 +836,10 @@ export const HomePage = () => (
         </div>
         <div class="grid grid-cols-12 gap-4 mb-12 fade-in-stagger">
           <div class="col-span-12 lg:col-span-7 img-frame img-reveal aspect-[16/10] rounded-[24px]">
-            <img src="/r2/images/clinic/detail-led-corridor.jpg" alt="LED 라인 시그니처 복도" loading="lazy" />
+            <img src="/r2/images/clinic/detail-led-corridor.webp" alt="LED 라인 시그니처 복도" loading="lazy" />
           </div>
           <div class="col-span-12 lg:col-span-5 img-frame img-reveal aspect-[4/5] rounded-[24px]">
-            <img src="/r2/images/clinic/detail-restroom.jpg" alt="럭셔리 호텔 무드 화장실" loading="lazy" />
+            <img src="/r2/images/clinic/detail-restroom.webp" alt="럭셔리 호텔 무드 화장실" loading="lazy" />
           </div>
         </div>
 
@@ -942,10 +942,10 @@ export const HomePage = () => (
 
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 fade-in-stagger">
           {[
-            { href: '/before-after', label: 'BEFORE & AFTER', title: '치료 사례', desc: '실제 진행된 케이스', img: '/r2/images/journal/before-after.jpg?v=3' },
-            { href: '/blog', label: 'JOURNAL', title: '블로그', desc: '의료진 직접 작성', img: '/r2/images/journal/journal.jpg' },
-            { href: '/dictionary', label: 'KNOWLEDGE', title: '치과 백과', desc: '500+ 용어 사전', img: '/r2/images/journal/knowledge.jpg' },
-            { href: '/faq', label: 'FAQ', title: '자주 묻는 질문', desc: '268개 상세 답변', img: '/r2/images/journal/faq.jpg?v=2' },
+            { href: '/before-after', label: 'BEFORE & AFTER', title: '치료 사례', desc: '실제 진행된 케이스', img: '/r2/images/journal/before-after.webp?v=3' },
+            { href: '/blog', label: 'JOURNAL', title: '블로그', desc: '의료진 직접 작성', img: '/r2/images/journal/journal.webp' },
+            { href: '/dictionary', label: 'KNOWLEDGE', title: '치과 백과', desc: '500+ 용어 사전', img: '/r2/images/journal/knowledge.webp' },
+            { href: '/faq', label: 'FAQ', title: '자주 묻는 질문', desc: '268개 상세 답변', img: '/r2/images/journal/faq.webp?v=2' },
           ].map((c: any) => (
             <a href={c.href} class="photo-card aspect-[3/4] group block">
               <img src={c.img} alt={c.title} loading="lazy" />
@@ -1046,7 +1046,7 @@ export const HomePage = () => (
     {/* 12. CTA — CINEMATIC                                 */}
     {/* ================================================== */}
     <section class="relative py-28 lg:py-40 text-ivory overflow-hidden" style="background:var(--brown-950);">
-      <img src="/static/images/cta-operation-room.jpg" alt="" class="absolute inset-0 w-full h-full object-cover opacity-30" aria-hidden="true" loading="lazy" />
+      <img src="/static/images/cta-operation-room.webp" alt="" class="absolute inset-0 w-full h-full object-cover opacity-30" aria-hidden="true" loading="lazy" />
       <div class="absolute inset-0 bg-gradient-to-b from-brown-950/70 via-brown-950/85 to-brown-950"></div>
       <div class="blob" style="width:600px;height:600px;background:#c9a876;top:10%;left:50%;transform:translateX(-50%);opacity:0.2;"></div>
 

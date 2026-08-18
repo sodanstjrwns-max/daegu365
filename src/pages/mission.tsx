@@ -96,7 +96,7 @@ export const MissionPage = () => (
       {/* 풀블리드 이미지 */}
       <div
         class="absolute inset-0 bg-cover bg-center"
-        style="background-image:url('/static/images/mission-digital-lab.jpg');"
+        style="background-image:url('/static/images/mission-digital-lab.webp');"
       ></div>
       {/* 그라디언트 오버레이 (좌측 텍스트 가독성 확보) */}
       <div class="absolute inset-0" style="background:linear-gradient(90deg, rgba(28,18,11,0.95) 0%, rgba(28,18,11,0.78) 40%, rgba(28,18,11,0.25) 100%);"></div>
@@ -131,7 +131,7 @@ export const MissionPage = () => (
           <div class="lg:col-span-6 fade-in">
             <div class="relative overflow-hidden rounded-sm">
               <img
-                src="/static/images/mission-signage.jpg"
+                src="/static/images/mission-signage.webp"
                 alt="대구365치과 대기실 메인 사이니지"
                 class="w-full h-[640px] object-cover hover:scale-105 transition-transform duration-[1200ms]"
                 loading="lazy"
@@ -173,7 +173,7 @@ export const MissionPage = () => (
       {/* 상단 풀블리드 이미지 (높이 60vh) */}
       <div class="relative h-[60vh] overflow-hidden">
         <img
-          src="/static/images/mission-vip-room.jpg"
+          src="/static/images/mission-vip-room.webp"
           alt="대구365치과 VIP room"
           class="w-full h-full object-cover"
           style="animation: kenburns 24s ease-in-out infinite alternate;"

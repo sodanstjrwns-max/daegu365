@@ -13,6 +13,7 @@ type RendererProps = {
   publishedTime?: string
   modifiedTime?: string
   author?: string
+  preloadImage?: string
 }
 
 export const SITE = {
@@ -109,7 +110,7 @@ export const dentistSchema = () => ({
   ],
   "knowsLanguage": ["ko", "en"],
   "slogan": "치과가 두려웠던 의사가 만든, 두려움 없는 치과",
-  "numberOfEmployees": { "@type": "QuantitativeValue", "value": 7, "unitText": "전문 의료진" },
+  "numberOfEmployees": { "@type": "QuantitativeValue", "value": 6, "unitText": "전문 의료진" },
   // AI 답변엔진 주제 권위 신호 (2026 AEO) — 검증 가능한 진료 영역만 명시
   "knowsAbout": [
     "수면임플란트", "디지털 가이드 임플란트", "전악 임플란트", "임플란트 재수술",
@@ -546,7 +547,7 @@ export const speakableSchema = (opts: {
 export const renderer = jsxRenderer(({
   children, title, description, keywords, canonical, ogImage,
   ogType, jsonLd, breadcrumb, publishedTime, modifiedTime, author,
-  robots,
+  robots, preloadImage,
   naverVerify: nv, googleVerify: gv, msVerify: mv
 }: any, c: any) => {
   // 환경변수 우선, props fallback (wrangler secret put 으로 한 번에 박기 위함)
@@ -655,8 +656,12 @@ export const renderer = jsxRenderer(({
         <link rel="apple-touch-icon" href="/static/favicon-180.png" />
         <link rel="manifest" href="/manifest.webmanifest" />
 
+        {/* LCP 이미지 preload (F2 페이지 경험 — 핵심 리소스 힌트) */}
+        {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
+
         {/* Fonts */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="" />
+        <link rel="dns-prefetch" href="https://cdn.tailwindcss.com" />
         <link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 
         {/* Tailwind + Icons */}

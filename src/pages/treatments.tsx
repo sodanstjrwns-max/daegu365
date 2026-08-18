@@ -271,7 +271,7 @@ export const TreatmentDetailPage = ({
                 <div class="relative rounded-[1.5rem] overflow-hidden bg-black" style="aspect-ratio: 9/16;">
                   <video
                     src="/r2/videos/treatments/vinique/vinique-beforeafter-master.mp4"
-                    poster="/r2/images/treatments/vinique/vinique-package.jpg"
+                    poster="/r2/images/treatments/vinique/vinique-package.webp"
                     class="absolute inset-0 w-full h-full object-cover"
                     autoplay loop muted playsinline preload="metadata"
                     controls controlslist="nodownload"

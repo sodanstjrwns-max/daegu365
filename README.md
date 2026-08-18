@@ -16,7 +16,7 @@
 ### 1. 퍼블릭 사이트 (비회원 열람)
 | URL | 설명 |
 |---|---|
-| `/` | 홈 — 히어로, 미션, 3대 핵심 진료, 의료진 7명, Why Us, CTA |
+| `/` | 홈 — 히어로, 미션, 3대 핵심 진료, 의료진 6명, Why Us, CTA |
 | `/mission` | 병원 미션 풀블리드 히어로 (치과공포증 의사의 다짐) |
 | `/doctors` | 의료진 전체 목록 |
 | `/doctors/:slug` | 개별 원장 프로필 (철학/학력/경력/**8단 인터뷰**/Q&A/시그니처/담당 케이스/**인터뷰 영상**) |
@@ -330,10 +330,22 @@ GSC 리포트(404 4건, robots 차단 3건, 크롤링됨-색인안됨 514건) �
   - 단체사진 3장 교체(PNG 1.7MB → JPG 120~130KB, R2 업로드): 메인 team-6-main.jpg(단체6인_2) · 의료진 가로 team-6-horizontal.jpg(단체6인_1) · 세로 team-6-vertical.jpg(단체6인_3)
   - 마이그레이션 0046: 블로그 스케일링 글 저자 NULL + excerpt "치주과 전문의가"→"대구365치과가" + doctors에서 lee-seoyoung DELETE (로컬+프로덕션)
   - SEO 보강: /doctors/lee-seoyoung → /doctors 301 리다이렉트, 사이트맵 143→**142 URL** 자동 반영 · 보너스: 블로그 날짜 표기 버그 수정(created_at 공백 구분 포맷이라 시각까지 노출되던 문제 → 날짜만 표시)
-- **다음 단계 (승인 대기)**: GSC 색인 추이 관찰(2~6주) / 블로그 정기 발행 루틴 / 추가 리라이트 배치4 / region 페이지 선별 복귀
+- **조치 7 — Patient Grader 기술 감점 회복 (2026-08-18, 코드+데이터+R2 · 재배포 완료)**: PF 14곳 감점분석 지시서 기준 대구365치과 75.8점(-24.2) 중 기술적 감점 즉시 회복
+  - **A4 (-0.5)**: www.daegu365dc.kr → daegu365dc.kr 301 리다이렉트 (워커 미들웨어 hostname 체크, canonical 단일화)
+  - **F3 (-2.5) / F2 (-1.2)**: WebP 사용률 0% → 전면 WebP 전환
+    - R2 이미지 41장 변환·업로드 (29.9MB→1.6MB, 94%↓), static 8장 생성, 코드 24파일 jpg→webp 참조 교체
+    - before_afters 업로드 사례사진 48장 변환·업로드 (84.2MB→4.9MB, 94%↓) + 코드성 4장 — 마이그레이션 0048로 4개 URL 컬럼 일괄 전환 (로컬+프로덕션)
+    - 마이그레이션 0047: 블로그 썸네일 6건 webp 전환
+    - 홈 히어로 `<link rel="preload" as="image">` + dns-prefetch 적용 (renderer preloadImage prop 신설)
+    - 원본 jpg/png는 R2에 유지 (OG·스키마 파서 호환) — 깨진 배경 참조 5곳(care-precision-room)도 존재 이미지로 수정
+  - **B1 (-1)**: 홈 노출 리치 스키마 4종 → **25종** 확장: FAQPage(대표 FAQ 10)·Physician(대표원장)·MedicalWebPage·ItemList(대표 진료 6종) 추가 주입 — 만점 조건(리치 8종+) 충족
+  - 잔재 수정: 홈 히어로 스탯 "7명"→"6명", 스키마 numberOfEmployees 7→6
+  - 프로덕션 검증: 홈/lamineer/implant jpg 0 · webp 정상, www 301, before_afters jpg/png 잔여 0행
+  - **콘텐츠성 감점 (C3 직답 -3 · C4 경험신호 -3 · C7 물량 -3 · D2~D8 카피 -5.5 등)은 개선안 보고 후 승인 대기**
+- **다음 단계 (승인 대기)**: PF 콘텐츠 개선안 승인 / GSC 색인 추이 관찰(2~6주) / 블로그 정기 발행 루틴 / 추가 리라이트 배치4 / region 페이지 선별 복귀
 
 ## 🎨 배포 상태
 - **플랫폼**: Cloudflare Pages (Edge)
 - **운영 도메인**: https://daegu365dc.kr (canonical 통일)
 - **상태**: ✅ 프로덕션 라이브 (daegu365dc.pages.dev → daegu365dc.kr 301)
-- **최종 업데이트**: 2026-08-02 (원장단 변동 7인→6인 개편 — 이서영 원장 퇴사 반영, 점심 12:30~14:00, 단체사진 3장 교체, 0046 적용, 사이트맵 총 142 URL(main 43·blog 9·cases 24·content 66), 워커 재배포 완료)
+- **최종 업데이트**: 2026-08-18 (Patient Grader 기술 감점 회복 — www 301 통일, 이미지 전면 WebP(코드 41+static 8+사례사진 48+썸네일 6), preload, 홈 리치 스키마 25종, 0047~0048 적용, 워커 재배포 완료)

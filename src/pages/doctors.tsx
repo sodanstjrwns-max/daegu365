@@ -5,15 +5,15 @@ import type { Doctor, Treatment, BeforeAfter, BlogPost } from '../lib/types'
 // PPT 모바일 슬라이드 7 + PC1 슬라이드 13 — 최혜정 ↔ 김진덕 사진 서로 교체
 // export: 진료별 페이지에서도 동일한 매핑을 공유하여 사진이 누락되지 않도록 함
 export const DOCTOR_PHOTO: Record<string, string> = {
-  'kim-seongju':  '/r2/images/doctors/kim-seongju.jpg',
-  'jung-jaeheon': '/r2/images/doctors/jung-jaeheon.jpg',
-  'kim-sangwon':  '/r2/images/doctors/kim-sangwon.jpg',
-  'choi-hyejung': '/r2/images/doctors/kim-jinduk.jpg',
-  'kim-jinduk':   '/r2/images/doctors/choi-hyejung.jpg',
-  'han-jieun':    '/r2/images/doctors/han-jieun.jpg',
+  'kim-seongju':  '/r2/images/doctors/kim-seongju.webp',
+  'jung-jaeheon': '/r2/images/doctors/jung-jaeheon.webp',
+  'kim-sangwon':  '/r2/images/doctors/kim-sangwon.webp',
+  'choi-hyejung': '/r2/images/doctors/kim-jinduk.webp',
+  'kim-jinduk':   '/r2/images/doctors/choi-hyejung.webp',
+  'han-jieun':    '/r2/images/doctors/han-jieun.webp',
 }
 export const getDoctorPhoto = (slug: string) =>
-  DOCTOR_PHOTO[slug] || '/r2/images/doctors/team-horizontal-smile.jpg'
+  DOCTOR_PHOTO[slug] || '/r2/images/doctors/team-horizontal-smile.webp'
 
 // 의료진 슬러그 → 인터뷰 영상 R2 스트리밍 라우트 매핑
 // (R2 버킷 daegu365dc-assets 의 한글 master 파일을 /api/videos/:slug 라우트로 서빙)
@@ -213,7 +213,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-[1200px] mx-auto">
                   {info.doctors.map(doc => {
                     const slug = NAME_TO_SLUG[doc.name]
-                    const photo = slug ? getDoctorPhoto(slug) : '/r2/images/doctors/team-horizontal-smile.jpg'
+                    const photo = slug ? getDoctorPhoto(slug) : '/r2/images/doctors/team-horizontal-smile.webp'
                     const pos = positionMap[doc.name] || '원장'
                     return (
                       <a
@@ -405,7 +405,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           <figure class="md:col-span-7 group">
             <div class="img-frame aspect-[3/2] rounded-[24px] overflow-hidden bg-brown-100">
               <img
-                src="/r2/images/doctors/team-6-horizontal.jpg"
+                src="/r2/images/doctors/team-6-horizontal.webp"
                 alt="대구365치과 6인 의료진 가로 단체컷"
                 loading="lazy"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -421,7 +421,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
           <figure class="md:col-span-5 group">
             <div class="img-frame aspect-[2/3] rounded-[24px] overflow-hidden bg-brown-100">
               <img
-                src="/r2/images/doctors/team-6-vertical.jpg"
+                src="/r2/images/doctors/team-6-vertical.webp"
                 alt="대구365치과 6인 의료진 세로 단체컷"
                 loading="lazy"
                 class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"

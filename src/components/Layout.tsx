@@ -1039,14 +1039,14 @@ export const DoctorProfileBlock = ({ slug, name, position, quote, credentials, t
 }) => {
   // 최혜정 ↔ 김진덕 사진 스왑 (PPT 모바일 s7 / PC1 s13)
   const photoMap: Record<string, string> = {
-    'kim-seongju':  '/r2/images/doctors/kim-seongju.jpg',
-    'jung-jaeheon': '/r2/images/doctors/jung-jaeheon.jpg',
-    'kim-sangwon':  '/r2/images/doctors/kim-sangwon.jpg',
-    'choi-hyejung': '/r2/images/doctors/kim-jinduk.jpg',
-    'kim-jinduk':   '/r2/images/doctors/choi-hyejung.jpg',
-    'han-jieun':    '/r2/images/doctors/han-jieun.jpg',
+    'kim-seongju':  '/r2/images/doctors/kim-seongju.webp',
+    'jung-jaeheon': '/r2/images/doctors/jung-jaeheon.webp',
+    'kim-sangwon':  '/r2/images/doctors/kim-sangwon.webp',
+    'choi-hyejung': '/r2/images/doctors/kim-jinduk.webp',
+    'kim-jinduk':   '/r2/images/doctors/choi-hyejung.webp',
+    'han-jieun':    '/r2/images/doctors/han-jieun.webp',
   }
-  const photo = photoMap[slug] || '/r2/images/doctors/team-horizontal-smile.jpg'
+  const photo = photoMap[slug] || '/r2/images/doctors/team-horizontal-smile.webp'
 
   return (
     <section class="py-20 lg:py-24 bg-cream" aria-label={`${name} 원장 담당 진료 안내`}>

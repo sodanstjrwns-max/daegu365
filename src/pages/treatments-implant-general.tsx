@@ -258,7 +258,7 @@ export const ImplantGeneralTreatmentPage = ({
       {/* ========================================== */}
       <section class="relative bg-brown-950 text-ivory pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden">
         <img
-          src="/r2/images/clinic/precision-implant-center.jpg?v=1"
+          src="/r2/images/clinic/precision-implant-center.webp"
           alt="365 임플란트 수술센터"
           class="absolute inset-0 w-full h-full object-cover opacity-15"
           loading="eager"

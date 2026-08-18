@@ -442,9 +442,9 @@ const ALIAS_REDIRECTS: Record<string, string> = {
 app.use('*', async (c, next) => {
   const url = new URL(c.req.url)
   const path = url.pathname
-  // 0) SEO: pages.dev(중복 도메인) → daegu365dc.kr 301 통합
-  //    구글 중복 콘텐츠 신호 제거 — canonical 방어에 더해 리다이렉트로 확정
-  if (url.hostname.endsWith('.pages.dev')) {
+  // 0) SEO: pages.dev(중복 도메인) + www 서브도메인 → daegu365dc.kr 301 통합
+  //    구글 중복 콘텐츠 신호 제거 — canonical 방어에 더해 리다이렉트로 확정 (A4 canonical 정합성)
+  if (url.hostname.endsWith('.pages.dev') || url.hostname === 'www.daegu365dc.kr') {
     return c.redirect(`https://daegu365dc.kr${path}${url.search}`, 301)
   }
   // 1) trailing slash 제거 (단, 루트는 제외, 그리고 정적 파일은 제외)
@@ -486,13 +486,70 @@ app.use('*', async (c, next) => {
 })
 
 // ============ Public pages ============
-app.get('/', (c) => c.render(<HomePage />, {
-  title: '대구 북구 치과 · 수면임플란트 · 인비절라인 전문',
-  description: '치과가 두려웠던 의사가 만든 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인, 라미네이트 전문. 월·목 21시까지, 주말 진료.',
-  canonical: 'https://daegu365dc.kr/',
-  ogImage: ogUrl.default('치과가 두려워도', '괜찮습니다.'),
-  breadcrumb: [{ name: '홈', url: '/' }]
-}))
+app.get('/', async (c) => {
+  // B1 리치 스키마 — 홈 노출 타입 8종+ (Dentist·WebSite·BreadcrumbList + 아래 추가)
+  const [faqRows, doctorRows] = await Promise.all([
+    c.env.DB.prepare('SELECT question, answer FROM faqs ORDER BY display_order LIMIT 10').all(),
+    c.env.DB.prepare('SELECT * FROM doctors WHERE is_representative=1 LIMIT 1').all()
+  ])
+  const homeSchemas: any[] = []
+  // FAQPage — 대표 FAQ 10개
+  const faqs = (faqRows.results as any[]) || []
+  if (faqs.length > 0) {
+    homeSchemas.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "@id": `${SITE.url}/#faq`,
+      "mainEntity": faqs.map((f: any) => ({
+        "@type": "Question", "name": f.question,
+        "acceptedAnswer": { "@type": "Answer", "text": f.answer }
+      }))
+    })
+  }
+  // Physician — 대표원장 knowledge graph 연결
+  const rep = (doctorRows.results as any[])?.[0]
+  if (rep) homeSchemas.push(physicianSchema(rep))
+  // MedicalWebPage — 페이지 성격 명시
+  homeSchemas.push({
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "@id": `${SITE.url}/#webpage`,
+    "url": `${SITE.url}/`,
+    "name": "대구365치과 — 대구 북구 치과 · 수면임플란트 · 인비절라인 전문",
+    "about": { "@id": `${SITE.url}/#dentist` },
+    "isPartOf": { "@id": `${SITE.url}/#website` },
+    "inLanguage": "ko-KR",
+    "medicalAudience": { "@type": "Patient" },
+    "lastReviewed": "2026-08-18",
+    "reviewedBy": { "@id": `${SITE.url}/doctors/kim-seongju#physician` }
+  })
+  // ItemList — 대표 진료 6종 carousel
+  homeSchemas.push({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${SITE.url}/#treatments-list`,
+    "name": "대구365치과 대표 진료",
+    "itemListElement": [
+      { name: '수면임플란트', url: '/treatments/implant' },
+      { name: 'VINIQUE 라미네이트', url: '/treatments/lamineer' },
+      { name: '인비절라인 투명교정', url: '/treatments/ortho' },
+      { name: '수면치료 시스템', url: '/treatments/sleep-therapy' },
+      { name: '4단계 무통마취', url: '/treatments/painless-anesthesia' },
+      { name: '에어플로우 GBT', url: '/treatments/airflow-gbt' }
+    ].map((t, i) => ({
+      "@type": "ListItem", "position": i + 1, "name": t.name, "url": `${SITE.url}${t.url}`
+    }))
+  })
+  return c.render(<HomePage />, {
+    title: '대구 북구 치과 · 수면임플란트 · 인비절라인 전문',
+    description: '치과가 두려웠던 의사가 만든 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인, 라미네이트 전문. 월·목 21시까지, 주말 진료.',
+    canonical: 'https://daegu365dc.kr/',
+    ogImage: ogUrl.default('치과가 두려워도', '괜찮습니다.'),
+    preloadImage: '/r2/images/hero/lobby-curve.webp',
+    breadcrumb: [{ name: '홈', url: '/' }],
+    jsonLd: homeSchemas
+  })
+})
 
 app.get('/mission', (c) => c.render(<MissionPage />, {
   title: '병원 미션',

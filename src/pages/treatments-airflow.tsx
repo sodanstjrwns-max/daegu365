@@ -193,7 +193,7 @@ export const AirflowGBTTreatmentPage = ({
 
       {/* 1. CINEMATIC HERO */}
       <section class="relative bg-brown-950 text-ivory pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden">
-        <div class="absolute inset-0 opacity-15" style="background-image:url('/r2/images/clinic/care-digital-room.jpg?v=1');background-size:cover;background-position:center;"></div>
+        <div class="absolute inset-0 opacity-15" style="background-image:url('/r2/images/clinic/care-digital-room.webp');background-size:cover;background-position:center;"></div>
         <div class="absolute inset-0" style="background:linear-gradient(90deg,rgba(20,14,8,0.96) 0%,rgba(20,14,8,0.85) 35%,rgba(20,14,8,0.55) 100%);"></div>
         <div class="absolute top-1/2 left-[20%] w-[500px] h-[500px] -translate-y-1/2 rounded-full" style="background:radial-gradient(circle,rgba(20,14,8,0.4) 0%,transparent 70%);"></div>
         <div class="max-w-7xl mx-auto px-6 lg:px-12 relative">
@@ -480,7 +480,7 @@ export const AirflowGBTTreatmentPage = ({
 
       {/* 11. FINAL CTA */}
       <section class="relative py-24 lg:py-32 text-ivory overflow-hidden" style="background:var(--brown-950);">
-        <div class="absolute inset-0 opacity-10" style="background-image:url('/r2/images/clinic/care-digital-room.jpg?v=1');background-size:cover;background-position:center;"></div>
+        <div class="absolute inset-0 opacity-10" style="background-image:url('/r2/images/clinic/care-digital-room.webp');background-size:cover;background-position:center;"></div>
         <div class="max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
           <div class="section-label text-gold mb-6">CONTACT · 11</div>
           <h2 class="contact-headline">예방이<br/>

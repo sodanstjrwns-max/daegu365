@@ -255,7 +255,7 @@ export const ImplantTreatmentPage = ({
       {/* ========================================== */}
       <section class="relative bg-brown-950 text-ivory pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden">
         <img
-          src="/r2/images/clinic/precision-implant-center.jpg?v=1"
+          src="/r2/images/clinic/precision-implant-center.webp"
           alt="365 임플란트 수술센터"
           class="absolute inset-0 w-full h-full object-cover opacity-15"
           loading="eager"
@@ -792,7 +792,7 @@ export const ImplantTreatmentPage = ({
       {/* ========================================== */}
       <section class="relative py-24 lg:py-32 text-ivory overflow-hidden" style="background:var(--brown-950);">
         <img
-          src="/r2/images/clinic/precision-implant-center.jpg?v=1"
+          src="/r2/images/clinic/precision-implant-center.webp"
           alt=""
           class="absolute inset-0 w-full h-full object-cover opacity-20"
           loading="lazy"

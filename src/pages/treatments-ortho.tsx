@@ -276,7 +276,7 @@ export const OrthoTreatmentPage = ({
       {/* 1. CINEMATIC HERO */}
       <section class="relative bg-brown-950 text-ivory pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden">
         <img
-          src="/r2/images/clinic/precision-dlab.jpg?v=1"
+          src="/r2/images/clinic/precision-dlab.webp"
           alt="인비절라인 디지털 교정"
           class="absolute inset-0 w-full h-full object-cover opacity-15"
           loading="eager"
@@ -742,7 +742,7 @@ export const OrthoTreatmentPage = ({
 
       {/* 12. CTA */}
       <section class="relative py-24 lg:py-32 text-ivory overflow-hidden" style="background:var(--brown-950);">
-        <img src="/r2/images/clinic/precision-dlab.jpg?v=1" alt="" class="absolute inset-0 w-full h-full object-cover opacity-15" loading="lazy" aria-hidden="true" />
+        <img src="/r2/images/clinic/precision-dlab.webp" alt="" class="absolute inset-0 w-full h-full object-cover opacity-15" loading="lazy" aria-hidden="true" />
         <div class="absolute inset-0" style="background:linear-gradient(135deg, rgba(26,18,10,0.92) 0%, rgba(26,18,10,0.75) 100%);"></div>
         <div class="blob" style="width:600px;height:600px;background:#c9a876;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.18;"></div>
         <div class="relative max-w-3xl mx-auto px-6 text-center">
