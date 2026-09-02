@@ -694,6 +694,9 @@ export const renderer = jsxRenderer(({
         {pageSchemas.map((s) => (
           <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(s)}} />
         ))}
+      {/* GA4 */}
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZLNLY4JWXR"></script>
+      <script dangerouslySetInnerHTML={{ __html: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZLNLY4JWXR',{anonymize_ip:true});" }} />
       </head>
       <body class="bg-ivory text-brown-900">
         {children}
