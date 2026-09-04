@@ -10,7 +10,7 @@ import {
   setAdmin, isAdmin, clearAdmin
 } from './lib/auth'
 import { buildOgSvg, ogUrl, type OgType } from './lib/og'
-import { fetchSiteStats, renderStatsPage } from './lib/stats'
+import { fetchSiteStats, renderStatsPage, isValidStatsKey } from './lib/stats'
 import { renderOgPng } from './lib/og-png'
 
 // Pages
@@ -2374,6 +2374,8 @@ app.get('/admin/logout', (c) => {
 app.use('/admin/*', async (c, next) => {
   const path = c.req.path
   if (path === '/admin/login' || path === '/admin/logout') return next()
+  // /admin/stats 는 ?key=<사이트 토큰|마스터 키> 로도 접근 허용
+  if (path === '/admin/stats' && isValidStatsKey(c.req.query('key'))) return next()
   if (!(await isAdmin(c))) return c.redirect('/admin/login')
   return next()
 })
