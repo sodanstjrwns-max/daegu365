@@ -53,6 +53,7 @@ const AdminShell = ({ active, children }: { active: string, children: any }) => 
         <nav class="flex-1 p-4 space-y-1 text-sm">
           {[
             { href: '/admin', label: '대시보드', icon: 'fa-gauge', key: 'dash' },
+            { href: '/admin/stats', label: '사이트 통계', icon: 'fa-chart-line', key: 'stats' },
             { href: '/admin/consultations', label: '상담 신청', icon: 'fa-comments-dollar', key: 'consult' },
             { href: '/admin/before-after', label: '비포애프터', icon: 'fa-images', key: 'ba' },
             { href: '/admin/blog', label: '블로그', icon: 'fa-pen-nib', key: 'blog' },

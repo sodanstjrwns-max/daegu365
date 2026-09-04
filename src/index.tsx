@@ -10,6 +10,7 @@ import {
   setAdmin, isAdmin, clearAdmin
 } from './lib/auth'
 import { buildOgSvg, ogUrl, type OgType } from './lib/og'
+import { fetchSiteStats, renderStatsPage } from './lib/stats'
 import { renderOgPng } from './lib/og-png'
 
 // Pages
@@ -2516,6 +2517,9 @@ app.post('/api/admin/:type/bulk', async (c) => {
 })
 
 // 회원 CSV 내보내기
+// 사이트 통계 (중앙 대시보드 연동)
+app.get('/admin/stats', async (c) => c.html(renderStatsPage(await fetchSiteStats())))
+
 app.get('/admin/members/export.csv', async (c) => {
   const r = await c.env.DB.prepare('SELECT * FROM members ORDER BY created_at DESC').all()
   const rows: any[] = r.results as any[]
