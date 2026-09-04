@@ -3279,6 +3279,62 @@ ${urls.join('\n')}
   })
 })
 
+// ============ RSS 2.0 피드 (/rss.xml) — 블로그 최신 글 (구독·AI 크롤러 발견성 + 네이버 서치어드바이저 RSS 제출용) ============
+app.get('/rss.xml', async (c) => {
+  const base = SITE.url
+  const toRfc822 = (v: any): string => {
+    const s = String(v || '').replace(' ', 'T')
+    const d = new Date(/Z$|[+-]\d{2}:\d{2}$/.test(s) ? s : s + 'Z')
+    return isNaN(d.getTime()) ? new Date().toUTCString() : d.toUTCString()
+  }
+  const stripHtml = (h: any) => String(h || '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  // noindex 컬럼 없을 수도 있어 fallback 쿼리 보호 (sitemap-blog와 동일 패턴)
+  let posts: any[] = []
+  try {
+    posts = ((await c.env.DB.prepare(
+      'SELECT slug, title, meta_description, excerpt, content, category, created_at, updated_at FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0 ORDER BY created_at DESC LIMIT 50'
+    ).all()).results as any[]) || []
+  } catch {
+    try {
+      posts = ((await c.env.DB.prepare(
+        'SELECT slug, title, excerpt, content, created_at FROM blog_posts WHERE is_published=1 ORDER BY created_at DESC LIMIT 50'
+      ).all()).results as any[]) || []
+    } catch {}
+  }
+  const items = posts.map((p: any) => {
+    const desc = p.meta_description || p.excerpt || stripHtml(p.content).slice(0, 300) || p.title
+    return `  <item>
+    <title>${xmlEscape(p.title)}</title>
+    <link>${base}/blog/${xmlEscape(p.slug)}</link>
+    <guid isPermaLink="true">${base}/blog/${xmlEscape(p.slug)}</guid>
+    <description>${xmlEscape(desc)}</description>${p.category ? `
+    <category>${xmlEscape(p.category)}</category>` : ''}
+    <pubDate>${toRfc822(p.created_at)}</pubDate>
+  </item>`
+  }).join('\n')
+  const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>${xmlEscape(SITE.name)} 블로그</title>
+  <link>${base}/blog</link>
+  <atom:link href="${base}/rss.xml" rel="self" type="application/rss+xml"/>
+  <description>${xmlEscape(SITE.name)} 의료진이 직접 쓰는 치과 칼럼 — 수면임플란트·인비절라인·라미네이트</description>
+  <language>ko-KR</language>
+  <lastBuildDate>${posts.length ? toRfc822(posts[0].created_at) : new Date().toUTCString()}</lastBuildDate>
+${items}
+</channel>
+</rss>`
+  return c.text(rss, 200, {
+    'Content-Type': 'application/rss+xml; charset=utf-8',
+    'Cache-Control': 'public, max-age=1800'
+  })
+})
+
 // ============ Sitemap: Before & After Cases ============
 app.get('/sitemap-cases.xml', async (c) => {
   const base = SITE.url

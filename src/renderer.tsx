@@ -611,6 +611,7 @@ export const renderer = jsxRenderer(({
         <link rel="canonical" href={pageCanonical} />
         <link rel="alternate" hreflang="ko-KR" href={pageCanonical} />
         <link rel="alternate" hreflang="x-default" href={pageCanonical} />
+        <link rel="alternate" type="application/rss+xml" title="대구365치과 블로그 RSS" href={`${SITE.url}/rss.xml`} />
 
         {/* OpenGraph */}
         <meta property="og:type" content={pageOgType} />
