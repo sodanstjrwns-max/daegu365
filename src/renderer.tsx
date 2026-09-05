@@ -699,6 +699,7 @@ export const renderer = jsxRenderer(({
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZLNLY4JWXR"></script>
       <script dangerouslySetInnerHTML={{ __html: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZLNLY4JWXR',{anonymize_ip:true});" }} />
       <script dangerouslySetInnerHTML={{ __html: '(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","yc7wel27et");' }} />
+      <script defer src="https://pf-dashboard-2nt.pages.dev/beacon.js"></script>
       </head>
       <body class="bg-ivory text-brown-900">
         {children}
