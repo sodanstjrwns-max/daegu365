@@ -104,6 +104,8 @@ export type DictEntry = {
   faq_json?: string | null
   ai_generated_at?: string | null
   ai_model?: string | null
+  indexable?: number | null
+  updated_at?: string | null
   related_treatments: string
   view_count: number
 }

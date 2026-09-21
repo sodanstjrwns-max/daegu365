@@ -1435,6 +1435,16 @@ app.get('/dictionary', async (c) => {
   const sql = 'SELECT * FROM dictionary' + (where.length ? ' WHERE ' + where.join(' AND ') : '') + ' ORDER BY term LIMIT 1000'
   const r = await c.env.DB.prepare(sql).bind(...binds).all()
   const dictRows = (r.results as any[]) || []
+  // 색인 허용(indexable=1) 용어는 허브 상단에 별도 노출 — 내부 링크 신호 강화 (검색/카테고리 필터 시 생략)
+  let featured: any[] = []
+  if (!q && !category) {
+    try {
+      const fr = await c.env.DB.prepare(
+        'SELECT slug, term, term_en, short_desc, category FROM dictionary WHERE indexable=1 ORDER BY term'
+      ).all()
+      featured = (fr.results as any[]) || []
+    } catch { featured = [] }
+  }
   // DefinedTermSet (기존 유지) + ItemList (신규 carousel rich result)
   const definedTermSetSchema = {
     "@context": "https://schema.org",
@@ -1468,7 +1478,7 @@ app.get('/dictionary', async (c) => {
       "item": { "@id": `${SITE.url}/dictionary/${d.slug}#term` }
     }))
   }
-  return c.render(<DictionaryListPage items={r.results as any} selectedCategory={category} query={q} />, {
+  return c.render(<DictionaryListPage items={r.results as any} featured={featured} selectedCategory={category} query={q} />, {
     title: '치과 백과사전 · 500+ 용어',
     description: '치과 용어 500여 개를 담은 대구365치과 백과사전. 임플란트·교정·라미네이트 등 전문 용어 해설.',
     canonical: 'https://daegu365dc.kr/dictionary',
@@ -1496,7 +1506,8 @@ app.get('/dictionary/:slug', async (c) => {
     const rr = await c.env.DB.prepare(`SELECT * FROM treatments WHERE slug IN (${ph})`).bind(...relSlugs).all()
     relatedTreatments = rr.results as any[]
   }
-  const relatedEntries = await c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? AND id!=? ORDER BY RANDOM() LIMIT 6').bind(entry.category, entry.id).all()
+  // 비슷한 용어: 색인 허용 용어를 우선 노출 (색인 페이지 간 내부 링크 강화)
+  const relatedEntries = await c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? AND id!=? ORDER BY indexable DESC, RANDOM() LIMIT 6').bind(entry.category, entry.id).all()
 
   // FAQ schema: related_treatments에 매핑되는 진료 FAQ 자동 주입 (rich result)
   // dictionary의 related_treatments → faqs.treatment_slug 매핑
@@ -2853,7 +2864,7 @@ app.get('/admin/seo', async (c) => {
     ba: baCount?.n || 0,
     doctors: doctorCount?.n || 0,
     treatments: treatmentCount?.n || 0,
-    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-blog.xml', 'sitemap-cases.xml', 'sitemap-content.xml']
+    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-blog.xml', 'sitemap-cases.xml', 'sitemap-dictionary.xml']
   }
   return c.render(<AdminSeoGuidePage stats={stats} />, { title: 'Admin · SEO 가이드', robots: 'noindex,nofollow' })
 })
@@ -3019,7 +3030,7 @@ app.get('/robots.txt', (c) => {
     `Sitemap: ${SITE.url}/sitemap-main.xml`,
     `Sitemap: ${SITE.url}/sitemap-blog.xml`,
     `Sitemap: ${SITE.url}/sitemap-cases.xml`,
-    `Sitemap: ${SITE.url}/sitemap-content.xml`,
+    `Sitemap: ${SITE.url}/sitemap-dictionary.xml`,
     `Host: ${SITE.url.replace(/^https?:\/\//, '')}`,
     ''
   ].join('\n')
@@ -3133,7 +3144,7 @@ app.get('/sitemap.xml', async (c) => {
       safeMax('SELECT MAX(updated_at) as m FROM treatments', 'SELECT MAX(created_at) as m FROM treatments'),
       safeMax('SELECT MAX(updated_at) as m FROM blog_posts WHERE is_published=1', 'SELECT MAX(created_at) as m FROM blog_posts WHERE is_published=1'),
       safeMax('SELECT MAX(updated_at) as m FROM before_afters WHERE is_published=1', 'SELECT MAX(created_at) as m FROM before_afters WHERE is_published=1'),
-      safeMax('SELECT MAX(updated_at) as m FROM dictionary', 'SELECT MAX(created_at) as m FROM dictionary'),
+      safeMax('SELECT MAX(COALESCE(updated_at, created_at)) as m FROM dictionary WHERE indexable=1', 'SELECT MAX(created_at) as m FROM dictionary'),
       safeMax('SELECT MAX(updated_at) as m FROM region_seo', 'SELECT MAX(created_at) as m FROM region_seo'),
     ])
     lastmodMain = [tMain1, tMain2].sort().reverse()[0] || today
@@ -3150,7 +3161,7 @@ app.get('/sitemap.xml', async (c) => {
   <sitemap><loc>${base}/sitemap-main.xml</loc><lastmod>${lastmodMain}</lastmod></sitemap>
   <sitemap><loc>${base}/sitemap-blog.xml</loc><lastmod>${lastmodBlog}</lastmod></sitemap>
   <sitemap><loc>${base}/sitemap-cases.xml</loc><lastmod>${lastmodCases}</lastmod></sitemap>
-  <sitemap><loc>${base}/sitemap-content.xml</loc><lastmod>${lastmodContent}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-dictionary.xml</loc><lastmod>${lastmodContent}</lastmod></sitemap>
 </sitemapindex>`
   return c.text(xml, 200, {
     'Content-Type': 'application/xml; charset=utf-8',
@@ -3232,13 +3243,11 @@ ${urls.join('\n')}
 // ============ Sitemap: Regions — SEO Step1 색인 철수 (2026-07) ============
 // 지역×진료 페이지 98개는 페이지 간 고유율 6~12%로 구글 품질 필터에 걸려
 // 색인 전량 해제됨 → 사이트맵에서 제외 + noindex 처리.
-// GSC 기존 제출분 404 방지를 위해 빈 urlset 반환 (허브는 sitemap-main 에 포함)
+// 지역 상세(/region/*)는 noindex 유지 → 사이트맵에 넣을 URL 이 없다.
+// 빈 urlset(200)은 GSC 에서 '1개 오류'로 잡히므로 410 Gone 으로 응답해 GSC 에서 삭제할 수 있게 한다. (2026-09-21)
 app.get('/sitemap-regions.xml', (c) => {
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-</urlset>`
-  return c.text(xml, 200, {
-    'Content-Type': 'application/xml; charset=utf-8',
+  return c.text('Gone: region pages are noindex and not listed in any sitemap.', 410, {
+    'Content-Type': 'text/plain; charset=utf-8',
     'Cache-Control': 'public, max-age=3600'
   })
 })
@@ -3390,10 +3399,11 @@ ${urls.join('\n')}
   })
 })
 
-// ============ Sitemap: Content — SEO Step3 선별 색인 복귀 (2026-07) ============
+// ============ Sitemap: Dictionary — SEO Step3 선별 색인 복귀 (2026-07) ============
 // Step1에서 전량 철수 → Step3에서 리라이트 완료된 용어(indexable=1)만 선별 복귀.
 // 나머지 용어는 noindex 유지 + 사이트맵 미포함.
-app.get('/sitemap-content.xml', async (c) => {
+// 2026-09-21: 정식 경로 /sitemap-dictionary.xml 신설. /sitemap-content.xml 은 GSC 기존 제출분 호환용 별칭(동일 내용).
+const dictionarySitemap = async (c: any) => {
   const base = SITE.url
   let dict: any = { results: [] }
   try {
@@ -3417,7 +3427,9 @@ ${urls.join('\n')}
     'Content-Type': 'application/xml; charset=utf-8',
     'Cache-Control': 'public, max-age=3600'
   })
-})
+}
+app.get('/sitemap-dictionary.xml', dictionarySitemap)
+app.get('/sitemap-content.xml', dictionarySitemap)
 
 // ============ Region SEO inline component ============
 function RegionSEOInline({ r, treatments, doctors, mainTreatment, relatedRegions, relatedDict, regionFaqs }: any) {

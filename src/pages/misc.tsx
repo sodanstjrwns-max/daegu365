@@ -89,7 +89,7 @@ export const NoticeDetailPage = ({ notice }: { notice: Notice }) => (
 )
 
 // === Dictionary ===
-export const DictionaryListPage = ({ items, selectedCategory, query }: { items: DictEntry[], selectedCategory?: string, query?: string }) => {
+export const DictionaryListPage = ({ items, featured, selectedCategory, query }: { items: DictEntry[], featured?: DictEntry[], selectedCategory?: string, query?: string }) => {
   const categories = ['implant','ortho','prosthetics','lamineer','aesthetic','whitening','conservative','endo','periodontics','pediatric','preventive','general','equipment']
   const categoryNames: Record<string,string> = {
     implant:'임플란트', ortho:'교정', prosthetics:'보철', lamineer:'라미네이트',
@@ -143,6 +143,23 @@ export const DictionaryListPage = ({ items, selectedCategory, query }: { items: 
           </div>
         </div>
       </section>
+
+      {featured && featured.length > 0 && (
+        <section class="pt-16 max-w-7xl mx-auto px-6" id="featured">
+          <div class="section-label mb-3">IN-DEPTH</div>
+          <h2 class="display text-3xl font-black tracking-tight text-brown-800 mb-2">상세 해설 용어</h2>
+          <p class="text-sm text-brown-600 mb-6">대구365치과 의료진이 핵심 포인트·주의사항·자주 묻는 질문까지 자세히 풀어 쓴 {featured.length}개 용어입니다.</p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 pb-6 border-b border-brown-200">
+            {featured.map(d => (
+              <a href={`/dictionary/${d.slug}`} class="group p-4 rounded-xl bg-cream hover:bg-brown-100 transition">
+                <div class="display text-lg font-medium group-hover:text-brown-700">{d.term}</div>
+                {d.term_en && <div class="text-xs text-brown-500 italic">{d.term_en}</div>}
+                <div class="text-sm text-brown-700 mt-1 line-clamp-2">{d.short_desc}</div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section class="py-16 max-w-7xl mx-auto px-6">
         {items.length === 0 ? (
