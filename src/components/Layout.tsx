@@ -772,7 +772,7 @@ export const Navbar = () => (
                 <label class="flex items-start gap-2.5 cursor-pointer p-2.5 rounded-lg hover:bg-brown-50 transition">
                   <input type="checkbox" id="consultPrivacy" class="mt-0.5 w-4 h-4 accent-brown-800 cursor-pointer shrink-0" />
                   <span class="text-[12px] text-brown-800 leading-relaxed">
-                    <strong class="text-brown-950">(필수)</strong> 상담 신청을 위한 <strong class="text-brown-900">개인정보 수집·이용</strong>에 동의합니다.
+                    <strong class="text-brown-950">(필수)</strong> 상담 신청을 위한 개인정보 수집·이용에 동의합니다. <a href="/privacy" target="_blank" rel="noopener" class="underline text-brown-900 font-bold">개인정보처리방침</a>
                     <br /><span class="text-[10px] text-brown-500">수집 항목: 이름, 연락처 · 수집 목적: 상담·예약 안내 · 보유 기간: 상담 완료 후 1년</span>
                   </span>
                 </label>
@@ -1240,6 +1240,7 @@ export const Footer = () => (
           <div>사업자: 대구365치과 · 대표: 김성주</div>
           <div>주소: 대구광역시 북구 침산로 148 엠브로스퀘어 7층</div>
           <div>TEL: 053-357-0365 · E: daegu365dc@naver.com</div>
+          <div>개인정보 보호책임자: 김성주(대표원장) · <a href="/privacy" class="underline hover:text-ivory">개인정보처리방침</a></div>
         </div>
         <div class="text-right">
           <div>© <span data-year></span> DAEGU365 DENTAL. All Rights Reserved.</div>

@@ -45,6 +45,7 @@ import {
   FAQPage, DirectionsPage, HoursPage
 } from './pages/misc'
 import { FeesPage } from './pages/fees'
+import { PrivacyPage } from './pages/privacy'
 import { PlayHubPage } from './pages/play'
 import { PlayDefensePage } from './pages/play-defense'
 import { PlayBtiPage } from './pages/play-bti'
@@ -1698,6 +1699,21 @@ app.get('/directions', (c) => {
     jsonLd: [placeSchema, travelActionSchema]
   })
 })
+// 개인정보처리방침 — 보일러플레이트 성격이라 noindex, follow (사이트맵 제외)
+app.get('/privacy', (c) => {
+  c.header('X-Robots-Tag', 'noindex, follow')
+  return c.render(<PrivacyPage />, {
+    title: '개인정보처리방침',
+    description: '대구365치과 홈페이지 개인정보처리방침. 온라인 상담 신청·회원가입 시 처리하는 개인정보 항목, 보유 기간, 위탁·국외 이전, 쿠키·분석도구, 개인정보 보호책임자 안내.',
+    canonical: 'https://daegu365dc.kr/privacy',
+    robots: 'noindex, follow',
+    breadcrumb: [
+      { name: '홈', url: '/' },
+      { name: '개인정보처리방침', url: '/privacy' }
+    ]
+  })
+})
+
 app.get('/hours', (c) => c.render(<HoursPage />, {
   title: '진료시간',
   description: '대구365치과 진료시간. 월·목 09:30~21:00 야간진료, 주말도 진료. 365일 연중 환자 곁에.',
