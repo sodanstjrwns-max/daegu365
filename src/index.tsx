@@ -3381,16 +3381,19 @@ app.get('/sitemap-main.xml', async (c) => {
   addUrl('/faq',          '0.85', 'monthly')
   addUrl('/regions',      '0.95', 'weekly')
 
+  // 의료진·진료 상세 lastmod = max(행 날짜, 그 테이블을 수정하는 마이그레이션 마지막 커밋) (2026-09-29)
+  // doctors·treatments 는 updated_at 컬럼이 없고 created_at 이 시드 시각(04-27/04-30)이라
+  // 이후 마이그레이션(인터뷰·설명 수정, 원장 삭제 등)이 반영되지 않았다 — 목록 페이지(/doctors·/treatments)와 같은 기준.
   // 의료진
   ;(doctors.results as any[]).forEach((d: any) =>
-    addUrl(`/doctors/${d.slug}`, '0.85', 'monthly', sitemapIso(d.lastmod),
+    addUrl(`/doctors/${d.slug}`, '0.85', 'monthly', latestDate(sitemapIso(d.lastmod), CONTENT_DATES.doctorsData),
       d.photo_url ? { url: d.photo_url, title: `${d.name} 원장`, caption: `대구365치과 ${d.name} 원장` } : undefined)
   )
   // 진료(핵심진료는 priority/changefreq 가속)
   ;(treatments.results as any[]).forEach((t: any) => {
     const pri = t.is_core ? '0.95' : '0.85'
     const chf = t.is_core ? 'weekly' : 'monthly'
-    addUrl(`/treatments/${t.slug}`, pri, chf, sitemapIso(t.lastmod))
+    addUrl(`/treatments/${t.slug}`, pri, chf, latestDate(sitemapIso(t.lastmod), CONTENT_DATES.treatmentsData))
   })
   // 공지
   ;(notices.results as any[]).forEach((n: any) =>
@@ -3476,15 +3479,17 @@ app.get('/rss.xml', async (c) => {
     .replace(/\s+/g, ' ')
     .trim()
   // noindex 컬럼 없을 수도 있어 fallback 쿼리 보호 (sitemap-blog와 동일 패턴)
+  // (2026-09-29) blog_posts 에 없는 category 컬럼을 조회해 첫 쿼리가 항상 실패 → 폴백(updated_at·noindex 조건 없음)만 쓰이고 있었다.
+  // 컬럼은 migrations/0001(blog_posts)·0018(og_image·noindex) 기준. 폴백도 updated_at 을 읽는다.
   let posts: any[] = []
   try {
     posts = ((await c.env.DB.prepare(
-      'SELECT slug, title, meta_description, excerpt, content, category, created_at, updated_at FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0 ORDER BY created_at DESC LIMIT 50'
+      'SELECT slug, title, meta_description, excerpt, content, created_at, updated_at FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0 ORDER BY created_at DESC LIMIT 50'
     ).all()).results as any[]) || []
   } catch {
     try {
       posts = ((await c.env.DB.prepare(
-        'SELECT slug, title, excerpt, content, created_at FROM blog_posts WHERE is_published=1 ORDER BY created_at DESC LIMIT 50'
+        'SELECT slug, title, meta_description, excerpt, content, created_at, updated_at FROM blog_posts WHERE is_published=1 ORDER BY created_at DESC LIMIT 50'
       ).all()).results as any[]) || []
     } catch {}
   }
@@ -3494,13 +3499,12 @@ app.get('/rss.xml', async (c) => {
     <title>${xmlEscape(p.title)}</title>
     <link>${base}/blog/${xmlEscape(p.slug)}</link>
     <guid isPermaLink="true">${base}/blog/${xmlEscape(p.slug)}</guid>
-    <description>${xmlEscape(desc)}</description>${p.category ? `
-    <category>${xmlEscape(p.category)}</category>` : ''}${toRfc822(p.created_at) ? `
+    <description>${xmlEscape(desc)}</description>${toRfc822(p.created_at) ? `
     <pubDate>${toRfc822(p.created_at)}</pubDate>` : ''}
   </item>`
   }).join('\n')
-  // lastBuildDate = 피드 항목 중 최신 작성/수정 시각 (요청 시각·오늘 아님). 없으면 생략.
-  const newest = posts.map((p: any) => String(p.updated_at || p.created_at || '')).filter(Boolean).sort().pop()
+  // lastBuildDate = 피드 항목의 updated_at·created_at 중 최신값 (요청 시각·오늘 아님). 없으면 생략. pubDate 는 작성일(created_at).
+  const newest = posts.flatMap((p: any) => [p.updated_at, p.created_at]).filter((v: any) => v && toRfc822(v)).map(String).sort().pop()
   const lastBuild = newest ? toRfc822(newest) : ''
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
