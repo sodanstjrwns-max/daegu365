@@ -1,0 +1,27 @@
+// 자동 생성: node scripts/gen-og-static.mjs — 직접 수정하지 말 것
+// public/static/og/{key}.png 로 미리 렌더된 og:image 목록
+export const OG_STATIC_KEYS = new Set<string>([
+  'before-after-d624a279',
+  'default-3dd93094',
+  'default-7cf31fdb',
+  'default-7e38cb5c',
+  'default-84ecf1f6',
+  'default-8e31a70b',
+  'default-d084a0f3',
+  'default-ff7c2184',
+  'treatment-09a62e77',
+  'treatment-26d2bb2c',
+  'treatment-28e3f1e4',
+  'treatment-5125051a',
+  'treatment-800311c1',
+  'treatment-905d223b',
+  'treatment-933e3fd6',
+  'treatment-a97359c7',
+  'treatment-aab8d068',
+  'treatment-b6441c80',
+  'treatment-c52d9f02',
+  'treatment-c9c4a4b7',
+  'treatment-e435eb5f',
+  'treatment-fe4bdc76',
+  'treatment-ff23f2b6',
+])

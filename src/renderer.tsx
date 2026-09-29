@@ -1,4 +1,6 @@
 import { jsxRenderer } from 'hono/jsx-renderer'
+import { ogStaticUrl } from './lib/og'
+import { REVIEW_DATE } from './lib/tldr'
 
 type RendererProps = {
   title?: string
@@ -33,7 +35,8 @@ export const SITE = {
   logoHorizontal: 'https://daegu365dc.kr/static/images/logo-horizontal-brown.png',
   founded: '2025',
   // AEO 신선도(freshness) 신호 — 콘텐츠 최종 검토일. 배포 시 갱신.
-  lastReviewed: '2026-06-11',
+  // 진료 페이지 화면의 '최종 검수' 날짜(src/lib/tldr.ts REVIEW_DATE)와 스키마 lastReviewed 를 한 값으로 통일
+  lastReviewed: REVIEW_DATE,
   sameAs: [
     'https://blog.naver.com/nowhere2721',
     'https://www.instagram.com/daegu365dc_',
@@ -58,7 +61,7 @@ export const dentistSchema = () => ({
   "email": SITE.email,
   "image": [
     `${SITE.url}/static/images/logo-vertical-gold.png`,
-    `${SITE.url}/api/og.png?type=default`,
+    ogStaticUrl('default', {}),
   ],
   "logo": SITE.logo,
   "foundingDate": SITE.founded,
@@ -535,7 +538,7 @@ export const speakableSchema = (opts: {
     "@type": "SpeakableSpecification",
     "cssSelector": opts.cssSelectors && opts.cssSelectors.length > 0
       ? opts.cssSelectors
-      : [".tldr-answer", "h1", ".page-lead"]
+      : [".tldr-answer", "h1"]
   },
   "inLanguage": "ko-KR"
 })
@@ -560,7 +563,7 @@ export const renderer = jsxRenderer(({
   const pageDesc = description || '대구 북구 침산동 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인, 라미네이트 전문. 월·목 21시까지, 주말 진료.'
   const pageKw = keywords || '대구치과,대구365치과,침산동치과,북구치과,수면임플란트,인비절라인,라미네이트,대구임플란트,수성구치과,대구교정,투명교정,치과공포증'
   const pageCanonical = canonical || SITE.url
-  const pageOg = ogImage || `${SITE.url}/static/og-default.svg`
+  const pageOg = ogImage || ogStaticUrl('default', {})
   const pageOgType = ogType || 'website'
 
   // 모든 페이지에 박는 기본 스키마: Dentist + WebSite (전역 1회씩)

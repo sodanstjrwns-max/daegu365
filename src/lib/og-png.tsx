@@ -438,7 +438,7 @@ function tplBeforeAfter(opts: { title: string; treatment?: string; doctor?: stri
 // ============ 메인 분기 ============
 export type OgType = 'default' | 'doctor' | 'treatment' | 'blog' | 'before-after'
 
-function buildElement(type: OgType, params: URLSearchParams): any {
+export function buildElement(type: OgType, params: URLSearchParams): any {
   switch (type) {
     case 'doctor':
       return tplDoctor({

@@ -9,12 +9,13 @@ import {
   hashPassword, verifyPassword, setSession, getSession, clearSession,
   setAdmin, isAdmin, clearAdmin
 } from './lib/auth'
-import { buildOgSvg, ogUrl, type OgType } from './lib/og'
+import { buildOgSvg, ogUrl, ogStaticUrl, type OgType } from './lib/og'
+import { REVIEW_DATE, getTldr, TLDR_BY_SLUG } from './lib/tldr'
 import { fetchSiteStats, renderStatsPage, isValidStatsKey } from './lib/stats'
 import { renderOgPng } from './lib/og-png'
 
 // Pages
-import { HomePage } from './pages/home'
+import { HomePage, HOME_FAQS } from './pages/home'
 import { MissionPage } from './pages/mission'
 import { DoctorsListPage, DoctorDetailPage } from './pages/doctors'
 import { TreatmentsListPage, TreatmentDetailPage } from './pages/treatments'
@@ -491,27 +492,42 @@ app.use('*', async (c, next) => {
   }
 })
 
+// ============ 메타 설명 보강 ============
+// 70자 미만 설명은 검색 스니펫이 빈약하다 → 같은 페이지 화면에 이미 있는 문장(또는 병원 기본 정보)으로 이어 붙여 155자 이내로.
+const NAP_DESC = '대구 북구 침산로 148 엠브로스퀘어 7층 · 월·목 09:30~21:00, 화·수·금 09:30~18:30, 토·일 09:30~17:00 · 053-357-0365.'
+const fitDesc = (parts: Array<string | null | undefined>, max = 155): string => {
+  const clean = (t: string) => t.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+  let out = ''
+  for (const raw of parts) {
+    if (!raw) continue
+    const t = clean(String(raw))
+    if (!t || out.includes(t)) continue
+    out = out ? `${out} ${t}` : t
+    if (out.length >= 90) break
+  }
+  if (out.length <= max) return out
+  const cut = out.slice(0, max)
+  const end = Math.max(cut.lastIndexOf('다.'), cut.lastIndexOf('. '))
+  if (end >= 70) return cut.slice(0, end + (cut[end] === '다' ? 2 : 1)).trim()
+  const sp = cut.lastIndexOf(' ')
+  return (sp >= 70 ? cut.slice(0, sp) : cut.slice(0, max - 1)).replace(/[\s,·—-]+$/, '') + '…'
+}
+
 // ============ Public pages ============
 app.get('/', async (c) => {
   // B1 리치 스키마 — 홈 노출 타입 8종+ (Dentist·WebSite·BreadcrumbList + 아래 추가)
-  const [faqRows, doctorRows] = await Promise.all([
-    c.env.DB.prepare('SELECT question, answer FROM faqs ORDER BY display_order LIMIT 10').all(),
-    c.env.DB.prepare('SELECT * FROM doctors WHERE is_representative=1 LIMIT 1').all()
-  ])
+  const doctorRows = await c.env.DB.prepare('SELECT * FROM doctors WHERE is_representative=1 LIMIT 1').all()
   const homeSchemas: any[] = []
-  // FAQPage — 대표 FAQ 10개
-  const faqs = (faqRows.results as any[]) || []
-  if (faqs.length > 0) {
-    homeSchemas.push({
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "@id": `${SITE.url}/#faq`,
-      "mainEntity": faqs.map((f: any) => ({
-        "@type": "Question", "name": f.question,
-        "acceptedAnswer": { "@type": "Answer", "text": f.answer }
-      }))
-    })
-  }
+  // FAQPage — 홈 화면 FAQ 아코디언과 같은 배열(HOME_FAQS)로 생성 (화면에 없는 문항을 스키마에 넣지 않음)
+  homeSchemas.push({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${SITE.url}/#faq`,
+    "mainEntity": HOME_FAQS.map((f) => ({
+      "@type": "Question", "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a }
+    }))
+  })
   // Physician — 대표원장 knowledge graph 연결
   const rep = (doctorRows.results as any[])?.[0]
   if (rep) homeSchemas.push(physicianSchema(rep))
@@ -593,7 +609,11 @@ app.get('/doctors', async (c) => {
   }
   return c.render(<DoctorsListPage doctors={r.results as any} />, {
     title: '의료진 소개',
-    description: '대구365치과 6인의 의료진. 보존·소아·교정·보철·심미 각 분야 전문 협진.',
+    description: fitDesc([
+      '대구365치과 6인의 의료진. 보존·소아·교정·보철·심미 각 분야 전문 협진.',
+      doctorRows.length ? `의료진: ${doctorRows.map((d: any) => d.is_representative ? `${d.name} 대표원장` : d.name).join(', ')}.` : '',
+      NAP_DESC
+    ]),
     canonical: 'https://daegu365dc.kr/doctors',
     ogImage: ogUrl.default('의료진 소개', '6인의 전문 협진.'),
     ogType: 'profile',
@@ -739,10 +759,28 @@ app.get('/treatments/:slug', async (c) => {
   // HowTo 스키마 (절차형 진료만) — "어떻게 진행되나요" AI 질문 인용 강화
   const howTo = howToSchemaFor(slug)
   // Speakable 스키마 — 음성/AI가 우선 발췌할 핵심 영역 지정
-  const speakable = speakableSchema({
-    url: `${SITE.url}/treatments/${slug}`,
-    cssSelectors: ['h1', '.tldr-answer', '.page-lead']
-  })
+  // .page-lead 는 진료 페이지 DOM 에 없어 제거 — 실제 답변 블록(.tldr-answer)과 h1 만 지정
+  // 같은 노드를 MedicalWebPage 로 선언: about(MedicalProcedure) + reviewedBy + lastReviewed(화면 '최종 검수'와 동일 값)
+  const pageReviewer = reviewerFor(slug)
+  const speakable = {
+    ...speakableSchema({
+      url: `${SITE.url}/treatments/${slug}`,
+      cssSelectors: ['h1', '.tldr-answer']
+    }),
+    "@type": "MedicalWebPage",
+    "@id": `${SITE.url}/treatments/${slug}#webpage`,
+    "name": treatment.name,
+    "isPartOf": { "@id": `${SITE.url}/#website` },
+    ...(procSchema ? { "about": { "@id": (procSchema as any)["@id"] } } : {}),
+    "reviewedBy": {
+      "@type": "Physician",
+      "@id": `${SITE.url}/doctors/${pageReviewer.slug}#physician`,
+      "name": pageReviewer.name,
+      "url": `${SITE.url}/doctors/${pageReviewer.slug}`
+    },
+    "lastReviewed": REVIEW_DATE,
+    "medicalAudience": { "@type": "Patient" }
+  }
   // 진료 페이지 공통 스키마 배열 (Procedure + FAQ + HowTo + Speakable)
   const treatmentSchemas: any[] = [
     ...(procSchema ? [procSchema] : []),
@@ -1120,7 +1158,11 @@ app.get('/treatments/:slug', async (c) => {
       dictTerms={dictTerms.results as any}
     />, {
       title: `${treatment.name} - ${treatment.tagline || ''}`,
-      description: `${treatment.short_desc} — 대구365치과 ${treatment.name} 전문 진료.`,
+      description: fitDesc([
+        `${treatment.short_desc} — 대구365치과 ${treatment.name} 전문 진료.`,
+        TLDR_BY_SLUG[slug]?.summary,
+        NAP_DESC
+      ]),
       canonical: `https://daegu365dc.kr/treatments/${slug}`,
       breadcrumb: treatmentBC,
       jsonLd: treatmentSchemas
@@ -1588,9 +1630,18 @@ app.get('/dictionary/:slug', async (c) => {
   }
 
   // meta description: full_desc가 더 풍부하면 사용 (검색결과 스니펫 개선)
-  const metaDesc = (entry.full_desc && entry.full_desc.length > entry.short_desc.length)
+  const metaDescBase = (entry.full_desc && entry.full_desc.length > entry.short_desc.length)
     ? entry.full_desc
     : entry.short_desc
+  // 70자 미만이면 화면에 보이는 본문(요약 → 설명 → 상세 → 핵심 포인트) 문장으로 보강
+  const metaDesc = (metaDescBase || '').length >= 70 ? metaDescBase : fitDesc([
+    String(entry.short_desc || '').startsWith(entry.term)
+      ? entry.short_desc
+      : `${entry.term}${entry.term_en ? `(${entry.term_en})` : ''}: ${entry.short_desc || ''}`,
+    entry.full_desc,
+    entry.long_desc,
+    entry.key_points
+  ])
 
   return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} />, {
     title: `${entry.term} - 치과 용어사전`,
@@ -1619,7 +1670,11 @@ app.get('/faq', async (c) => {
   }
   return c.render(<FAQPage grouped={grouped} treatments={treatments.results as any} />, {
     title: '자주 묻는 질문 · 전체 FAQ',
-    description: '진료 과목별 자주 묻는 질문 200개 이상. 대구365치과가 성심껏 답변드립니다.',
+    description: fitDesc([
+      '진료 과목별 자주 묻는 질문 200개 이상. 대구365치과가 성심껏 답변드립니다.',
+      `${(treatments.results as any[]).filter((t: any) => grouped[t.slug]?.length).slice(0, 6).map((t: any) => t.name).join('·')} 등 진료별 질문과 답변.`,
+      NAP_DESC
+    ]),
     canonical: 'https://daegu365dc.kr/faq',
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -1690,7 +1745,7 @@ app.get('/directions', (c) => {
   }
   return c.render(<DirectionsPage />, {
     title: '오시는 길 · 내원 안내',
-    description: '대구365치과 위치·주차·대중교통 안내. 대구광역시 북구 침산로 148 엠브로스퀘어 7층. 053-357-0365.',
+    description: '대구365치과 위치·주차·대중교통 안내. 대구광역시 북구 침산로 148 엠브로스퀘어 7층, 건물 내 무료 주차. 진료 월·목 09:30~21:00, 화·수·금 09:30~18:30, 토·일 09:30~17:00. 053-357-0365.',
     canonical: 'https://daegu365dc.kr/directions',
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -1978,7 +2033,7 @@ app.get('/region/:slug', async (c) => {
     "inLanguage": "ko-KR",
     "isPartOf": { "@id": `${SITE.url}/#website` },
     "about": { "@id": `${SITE.url}/#dentist` },
-    "primaryImageOfPage": `${SITE.url}/api/og.png?type=default`,
+    "primaryImageOfPage": ogStaticUrl('default', {}),
     "specialty": "Dentistry",
     "audience": {
       "@type": "MedicalAudience",
@@ -2056,13 +2111,16 @@ app.get('/api/og.png', async (c) => {
       }
     })
   } catch (err: any) {
-    // PNG 실패 시 SVG 폴백 (디버그를 위해 에러 헤더에 메시지)
-    const svg = buildOgSvg(type, url.searchParams)
-    return new Response(svg, {
+    // Workers 런타임은 wasm 컴파일을 막아 렌더가 실패한다 → 미리 만든 정적 PNG 로 보낸다 (SVG 폴백 제거:
+    // 카카오톡·페이스북·네이버는 SVG og:image 를 읽지 못함). 페이지 og:image 는 이미 정적 PNG 를 직접 가리킨다.
+    const q: Record<string, string> = {}
+    url.searchParams.forEach((v, k) => { if (k !== 'type') q[k] = v })
+    return new Response(null, {
+      status: 302,
       headers: {
-        'Content-Type': 'image/svg+xml; charset=utf-8',
-        'Cache-Control': 'public, max-age=300',
-        'X-OG-Fallback': 'svg',
+        'Location': ogStaticUrl(type, q),
+        'Cache-Control': 'public, max-age=3600',
+        'X-OG-Fallback': 'static-png',
         'X-OG-Error': String(err?.message || err).slice(0, 200),
       }
     })
@@ -3039,23 +3097,12 @@ app.get('/robots.txt', (c) => {
     //  → 크롤은 허용해야 페이지의 noindex(X-Robots-Tag) 를 구글이 읽고 색인에서 뺄 수 있음.
     //    robots.txt 로 막으면 noindex 를 못 읽어 "robots.txt 차단됨" 경고만 남음 (구글 공식 권장).
     '',
-    '# AI 답변 엔진 명시 허용 (AEO)',
-    'User-agent: GPTBot',
-    'Allow: /',
-    'User-agent: ClaudeBot',
-    'Allow: /',
-    'User-agent: PerplexityBot',
-    'Allow: /',
-    'User-agent: Google-Extended',
-    'Allow: /',
-    'User-agent: Bingbot',
-    'Allow: /',
-    'User-agent: NaverBot',
-    'Allow: /',
-    'User-agent: Yeti',
-    'Allow: /',
-    'User-agent: Daum',
-    'Allow: /',
+    '# AI 답변 엔진·검색 크롤러 명시 허용 (AEO, PFWE-SPEC §10) — 관리자 영역은 동일하게 차단',
+    ...['GPTBot', 'ChatGPT-User', 'OAI-SearchBot', 'ClaudeBot', 'Claude-Web', 'Claude-SearchBot', 'Claude-User',
+      'anthropic-ai', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Applebot', 'Applebot-Extended',
+      'Bingbot', 'DuckAssistBot', 'meta-externalagent', 'Amazonbot', 'cohere-ai', 'MistralAI-User', 'Bytespider',
+      'NaverBot', 'Yeti', 'Daum', 'Daumoa']
+      .flatMap((ua) => [`User-agent: ${ua}`, 'Allow: /', 'Disallow: /admin', 'Disallow: /api/admin/']),
     '',
     `Sitemap: ${SITE.url}/sitemap.xml`,
     `Sitemap: ${SITE.url}/sitemap-main.xml`,
@@ -3074,7 +3121,7 @@ app.get('/robots.txt', (c) => {
 
 // llms.txt — 2025년 신설된 AI 답변 엔진용 사이트 요약 표준
 // AI 크롤러가 한 페이지로 사이트 전체 맥락을 이해하도록 함
-app.get('/llms.txt', async (c) => {
+const buildLlmsLines = async (c: any): Promise<string[]> => {
   const base = SITE.url
   const [treatments, doctors] = await Promise.all([
     c.env.DB.prepare('SELECT slug, name, short_desc FROM treatments ORDER BY is_core DESC, display_order').all(),
@@ -3127,7 +3174,69 @@ app.get('/llms.txt', async (c) => {
   lines.push('- 카카오톡 채널: http://pf.kakao.com/_PGaxmn')
   lines.push(`- 전화: ${SITE.phone}`)
   lines.push('')
+  return lines
+}
+
+app.get('/llms.txt', async (c) => {
+  const lines = await buildLlmsLines(c)
+  if (lines[lines.length - 1] === '') lines.pop()
+  lines.push(`- 상세판(진료별 요약·FAQ): ${SITE.url}/llms-full.txt`)
+  lines.push('')
   return c.text(lines.join('\n'), 200, { 'Content-Type': 'text/plain; charset=utf-8' })
+})
+
+// llms-full.txt — llms.txt + 진료별 요약(화면 TL;DR 박스와 같은 데이터)·감수자·FAQ. 사이트에 이미 공개된 내용만 모은다.
+app.get('/llms-full.txt', async (c) => {
+  const base = SITE.url
+  const lines = await buildLlmsLines(c)
+  const [treatments, faqs] = await Promise.all([
+    c.env.DB.prepare('SELECT slug, name, tagline, short_desc FROM treatments ORDER BY is_core DESC, display_order').all(),
+    c.env.DB.prepare('SELECT treatment_slug, question, answer FROM faqs WHERE treatment_slug IS NOT NULL ORDER BY treatment_slug, display_order, id').all(),
+  ])
+  const faqBySlug: Record<string, any[]> = {}
+  for (const f of (faqs.results as any[])) (faqBySlug[f.treatment_slug] ||= []).push(f)
+  const flat = (t: any) => String(t ?? '').replace(/\s+/g, ' ').trim()
+
+  lines.push('---')
+  lines.push('')
+  lines.push('## 진료별 요약')
+  lines.push(`각 진료 페이지 상단 요약 박스와 같은 내용입니다. 의학 검수일: ${REVIEW_DATE}. 비용·기간은 개인 상태에 따라 달라지며 진단 후 안내합니다.`)
+  lines.push('')
+  for (const t of (treatments.results as any[])) {
+    // 별칭(다른 진료의 요약을 빌려 쓰는 슬러그)은 제외 — 진료명과 요약이 어긋나지 않게
+    const tl = TLDR_BY_SLUG[t.slug] ? getTldr(t.slug) : undefined
+    lines.push(`### ${t.name}${t.tagline ? ` — ${flat(t.tagline)}` : ''}`)
+    lines.push(`URL: ${base}/treatments/${t.slug}`)
+    if (t.short_desc) lines.push(flat(t.short_desc))
+    if (tl) {
+      lines.push('')
+      lines.push(flat(tl.summary))
+      for (const b of tl.bullets) lines.push(`- ${b.label}: ${flat(b.value)}`)
+      if (tl.reviewer) lines.push(`- 감수: ${tl.reviewer.name} ${tl.reviewer.position} · 최종 검수 ${REVIEW_DATE}`)
+    }
+    const tf = (faqBySlug[t.slug] || []).slice(0, 5)
+    if (tf.length) {
+      lines.push('')
+      lines.push('자주 묻는 질문:')
+      for (const f of tf) {
+        lines.push(`- Q. ${flat(f.question)}`)
+        lines.push(`  A. ${flat(f.answer)}`)
+      }
+    }
+    lines.push('')
+  }
+  lines.push('## 홈 자주 묻는 질문')
+  for (const f of HOME_FAQS) {
+    lines.push(`- Q. ${flat(f.q)}`)
+    lines.push(`  A. ${flat(f.a)}`)
+  }
+  lines.push('')
+  lines.push(`전체 FAQ: ${base}/faq · 비용 안내: ${base}/fees`)
+  lines.push('')
+  return c.text(lines.join('\n'), 200, {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'public, max-age=3600'
+  })
 })
 
 // ============ Sitemap helpers ============

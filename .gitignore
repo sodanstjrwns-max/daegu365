@@ -32,3 +32,7 @@ lerna-debug.log*
 # misc
 .DS_Store
 core
+
+# og:image 생성용 폰트/임시 번들 (scripts/gen-og-static.mjs)
+.og-fonts/
+.og-build/

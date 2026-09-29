@@ -1,3 +1,4 @@
+import { OG_STATIC_KEYS } from './og-static-manifest'
 // ============ Dynamic OG Image Generation ============
 // 페이지 타입별 5종 SVG 템플릿: default / doctor / treatment / blog / before-after
 // 카톡·페북·네이버 미리보기 호환을 위해 SVG → PNG 변환 없이도 OG에 SVG 직접 노출 가능한
@@ -255,14 +256,37 @@ export function buildOgSvg(type: OgType, params: URLSearchParams): string {
 // ============ URL 헬퍼 (페이지에서 ogImage 값을 만들 때 사용) ============
 const SITE_URL = 'https://daegu365dc.kr'
 
-function buildUrl(type: OgType, q: Record<string, string | undefined>): string {
-  const sp = new URLSearchParams()
-  sp.set('type', type)
-  for (const [k, v] of Object.entries(q)) {
-    if (v) sp.set(k, v)
+// og:image 는 정적 PNG(1200×630)로 제공한다.
+// Cloudflare Workers 는 런타임 WebAssembly 컴파일을 막아(/api/og.png → "Wasm code generation disallowed")
+// 동적 PNG 렌더가 항상 SVG 로 폴백됐고, 카카오톡·페이스북·네이버는 SVG 를 읽지 못한다.
+// → scripts/gen-og-static.mjs 가 소스의 ogUrl.*('문자열', …) 호출을 모아 public/static/og/{key}.png 를 미리 렌더하고
+//   src/lib/og-static-manifest.ts 에 키 목록을 기록한다. 목록에 없는 조합(DB 제목 기반 등)은 기본 PNG 를 쓴다.
+export function ogStaticKey(type: OgType, q: Record<string, string | undefined>): string {
+  const raw = `${type}|` + Object.entries(q)
+    .filter(([k, v]) => k !== 'type' && !!v)
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([k, v]) => `${k}=${v}`)
+    .join('&')
+  // FNV-1a 32bit — 런타임·빌드 스크립트가 같은 값을 내도록 순수 함수로 유지
+  let h = 0x811c9dc5
+  for (const ch of raw) {
+    const cp = ch.codePointAt(0) || 0
+    h ^= cp & 0xff; h = Math.imul(h, 0x01000193)
+    h ^= (cp >>> 8) & 0xff; h = Math.imul(h, 0x01000193)
+    h ^= (cp >>> 16) & 0xff; h = Math.imul(h, 0x01000193)
   }
-  // PNG (카카오톡·페이스북·네이버 미리보기 호환)
-  return `${SITE_URL}/api/og.png?${sp.toString()}`
+  return `${type}-${(h >>> 0).toString(16).padStart(8, '0')}`
+}
+
+export const OG_DEFAULT_KEY = ogStaticKey('default', {})
+
+export function ogStaticUrl(type: OgType, q: Record<string, string | undefined>): string {
+  const key = ogStaticKey(type, q)
+  return `${SITE_URL}/static/og/${OG_STATIC_KEYS.has(key) ? key : OG_DEFAULT_KEY}.png`
+}
+
+function buildUrl(type: OgType, q: Record<string, string | undefined>): string {
+  return ogStaticUrl(type, q)
 }
 
 export const ogUrl = {

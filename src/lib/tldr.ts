@@ -27,8 +27,9 @@ export type TldrData = {
 
 const PHONE_CTA = { text: '053-357-0365 상담 예약하기', href: 'tel:053-357-0365' }
 
-// 콘텐츠 최종 의학 검수일 (배포 시 갱신)
-const REVIEW_DATE = '2026-08-02'
+// 콘텐츠 최종 의학 검수일 — 화면 '최종 검수' 줄과 스키마 lastReviewed/dateModified 가 모두 이 값을 쓴다.
+// 원장 검수를 다시 받은 날에만 직접 갱신 (자동 오늘 날짜 금지)
+export const REVIEW_DATE = '2026-08-02'
 
 // 진료별 검수 전문의 (전공 일치 · 실제 DB doctors 자격 기반)
 const R: Record<string, Reviewer> = {
