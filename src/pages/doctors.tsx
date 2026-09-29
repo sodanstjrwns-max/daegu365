@@ -458,13 +458,13 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 fade-in-stagger">
           {[
             { icon: 'fa-bed', title: '수면 임플란트', sub: '4단계 무통마취 · 평생 보증', doctor: '김성주 대표원장', slug: 'kim-seongju', href: '/treatments/implant', accent: 'gold' },
-            { icon: 'fa-tooth', title: '충치 · 신경치료 · 크라운', sub: '보존이 가능하면 보존부터', doctor: '정재헌 원장', slug: 'jung-jaeheon', href: '/treatments/cavity' },
+            { icon: 'fa-tooth', title: '충치 · 신경치료 · 크라운', sub: '보존이 가능하면 보존부터', doctor: '정재헌 원장', slug: 'jung-jaeheon', href: '/treatments/cavity-endo-crown' },
             { icon: 'fa-leaf', title: '자연치아 살리기', sub: '재신경치료 · 재생 근관치료', doctor: '김상원 원장', slug: 'kim-sangwon', href: '/treatments/conservative' },
             { icon: 'fa-gem', title: '비니크 라미네이트', sub: '0.3mm 박막 심미보철', doctor: '최혜정 원장', slug: 'choi-hyejung', href: '/treatments/lamineer', accent: 'gold' },
             { icon: 'fa-grip', title: '인비절라인 · 교정', sub: '성장기 · 중장년 · 디지털 교정', doctor: '김진덕 원장', slug: 'kim-jinduk', href: '/treatments/ortho' },
             { icon: 'fa-child', title: '소아치과 · 소아교정', sub: '웃음가스 진정치료 · 인비절라인 퍼스트', doctor: '한지은 원장', slug: 'han-jieun', href: '/treatments/pediatric' },
-            { icon: 'fa-wind', title: '에어플로우 GBT', sub: '스케일링이 아닌 첨단 잇몸케어', doctor: '전문 의료진 협진', slug: '', href: '/treatments/airflow' },
-            { icon: 'fa-syringe', title: '4단계 무통마취', sub: '가글 → 도포 → 무통기 → 본마취', doctor: '김성주 대표원장', slug: 'kim-seongju', href: '/treatments/anesthesia' },
+            { icon: 'fa-wind', title: '에어플로우 GBT', sub: '스케일링이 아닌 첨단 잇몸케어', doctor: '전문 의료진 협진', slug: '', href: '/treatments/airflow-gbt' },
+            { icon: 'fa-syringe', title: '4단계 무통마취', sub: '가글 → 도포 → 무통기 → 본마취', doctor: '김성주 대표원장', slug: 'kim-seongju', href: '/treatments/painless-anesthesia' },
           ].map((item: any) => (
             <a href={item.href}
                class={`group relative block p-6 rounded-2xl border transition-all duration-500 hover:-translate-y-1 ${

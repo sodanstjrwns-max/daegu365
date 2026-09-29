@@ -180,7 +180,7 @@ export const ConservativeTreatmentPage = ({
             <div class="text-center mb-16"><div class="section-label mb-6">DOCTORS · 07</div><h2 class="t-display">담당 <span class="t-gold not-italic">의료진.</span></h2></div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
-                <a href={`/doctors/${d.id}`} class="block p-7 rounded-xl bg-cream border border-brown-200 hover:border-gold">
+                <a href={`/doctors/${d.slug}`} class="block p-7 rounded-xl bg-cream border border-brown-200 hover:border-gold">
                   <div class="w-16 h-16 rounded-full bg-brown-950 text-gold flex items-center justify-center mb-5 text-2xl"><i class="fas fa-user-md"></i></div>
                   <h3 class="t-display text-xl mb-1">{d.name}</h3>
                   <div class="text-sm text-brown-500">{d.position || ''}</div>

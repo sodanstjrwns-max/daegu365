@@ -409,6 +409,10 @@ const ALIAS_REDIRECTS: Record<string, string> = {
   '/teeth-whitening': '/treatments/whitening',
   '/cavity': '/treatments/cavity-endo-crown',
   '/cavity-treatment': '/treatments/cavity-endo-crown',
+  // 예전 의료진 페이지 카드가 쓰던 진료 슬러그 (DB treatments 에 없는 짧은 슬러그 → 실제 페이지)
+  '/treatments/cavity': '/treatments/cavity-endo-crown',
+  '/treatments/airflow': '/treatments/airflow-gbt',
+  '/treatments/anesthesia': '/treatments/painless-anesthesia',
   '/perio-treatment': '/treatments/perio',
   '/perio': '/treatments/perio',
   '/prosthetics': '/treatments/prosthetic',
@@ -603,7 +607,14 @@ app.get('/doctors', async (c) => {
 app.get('/doctors/:slug', async (c) => {
   const slug = c.req.param('slug')
   const doctor = await c.env.DB.prepare('SELECT * FROM doctors WHERE slug=?').bind(slug).first<any>()
-  if (!doctor) return c.notFound()
+  if (!doctor) {
+    // 예전 진료 페이지가 /doctors/{id} 숫자로 링크하던 주소 → 슬러그 주소로 301
+    if (/^\d+$/.test(slug)) {
+      const byId = await c.env.DB.prepare('SELECT slug FROM doctors WHERE id=?').bind(parseInt(slug, 10)).first<{ slug: string }>()
+      if (byId?.slug) return c.redirect(`/doctors/${byId.slug}`, 301)
+    }
+    return c.notFound()
+  }
   const treatments = await c.env.DB.prepare('SELECT * FROM treatments').all()
   const cases = await c.env.DB.prepare('SELECT * FROM before_afters WHERE doctor_slug=? AND is_published=1 ORDER BY id DESC LIMIT 6').bind(slug).all()
   // 다른 의료진 보기 — 현재 원장 제외한 전체 명단 (이름·슬러그·직책만)
@@ -1234,9 +1245,13 @@ app.get('/before-after/:id', async (c) => {
   // 인덱스 차단 옵션
   const robotsOverride = item.noindex ? 'noindex, nofollow' : undefined
 
+  // 같은 제목의 공개 사례가 또 있으면(예: 9·10번 '상악 전치 라미네이트') 사례 번호를 붙여 <title> 중복 방지
+  const sameTitle = await c.env.DB.prepare('SELECT COUNT(*) AS n FROM before_afters WHERE title=? AND is_published=1 AND id!=?').bind(item.title, id).first<{ n: number }>()
+  const caseSuffix = (sameTitle?.n || 0) > 0 ? ` (사례 ${id})` : ''
+
   return c.render(
     <BeforeAfterDetailPage item={{...item, before_alt: beforeAlt, after_alt: afterAlt}} doctor={doctor} treatment={treatment} isLoggedIn={!!session} />, {
-      title: `${item.title} · ${treatmentLabel} 치료사례 | ${doctorLabel}`,
+      title: `${item.title}${caseSuffix} · ${treatmentLabel} 치료사례 | ${doctorLabel}`,
       description: autoDesc,
       keywords: autoKeywords,
       canonical: `https://daegu365dc.kr/before-after/${id}`,

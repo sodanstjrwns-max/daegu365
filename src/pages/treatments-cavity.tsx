@@ -347,7 +347,7 @@ export const CavityTreatmentPage = ({
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {doctors.map((d) => (
-                <a href={`/doctors/${d.id}`} class="block p-7 rounded-xl bg-cream border border-brown-200 hover:border-gold transition-colors">
+                <a href={`/doctors/${d.slug}`} class="block p-7 rounded-xl bg-cream border border-brown-200 hover:border-gold transition-colors">
                   <div class="w-16 h-16 rounded-full bg-brown-950 text-gold flex items-center justify-center mb-5 text-2xl">
                     <i class="fas fa-user-md"></i>
                   </div>

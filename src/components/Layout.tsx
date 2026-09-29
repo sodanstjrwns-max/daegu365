@@ -772,8 +772,8 @@ export const Navbar = () => (
                 <label class="flex items-start gap-2.5 cursor-pointer p-2.5 rounded-lg hover:bg-brown-50 transition">
                   <input type="checkbox" id="consultPrivacy" class="mt-0.5 w-4 h-4 accent-brown-800 cursor-pointer shrink-0" />
                   <span class="text-[12px] text-brown-800 leading-relaxed">
-                    <strong class="text-brown-950">(필수)</strong> 상담 신청을 위한 <a href="/privacy" target="_blank" class="underline text-brown-900 font-bold">개인정보 수집·이용</a>에 동의합니다.
-                    <br /><span class="text-[10px] text-brown-500">수집 항목: 이름, 연락처 · 보유 기간: 상담 완료 후 1년</span>
+                    <strong class="text-brown-950">(필수)</strong> 상담 신청을 위한 <strong class="text-brown-900">개인정보 수집·이용</strong>에 동의합니다.
+                    <br /><span class="text-[10px] text-brown-500">수집 항목: 이름, 연락처 · 수집 목적: 상담·예약 안내 · 보유 기간: 상담 완료 후 1년</span>
                   </span>
                 </label>
                 <label class="flex items-start gap-2.5 cursor-pointer p-2.5 rounded-lg hover:bg-brown-50 transition">
@@ -1243,7 +1243,6 @@ export const Footer = () => (
         </div>
         <div class="text-right">
           <div>© <span data-year></span> DAEGU365 DENTAL. All Rights Reserved.</div>
-          <div class="mt-1"><a href="/admin" class="opacity-40 hover:opacity-80">관리자</a></div>
         </div>
       </div>
     </div>
