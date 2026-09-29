@@ -1,5 +1,6 @@
 import { Navbar, Footer } from '../components/Layout'
 import type { Notice, DictEntry, FAQ, Treatment } from '../lib/types'
+import { kstYmd } from '../lib/content-dates'
 
 // === Notices ===
 export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
@@ -26,7 +27,7 @@ export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
                   <div class="text-xs tracking-widest text-gold mb-4">★ MAIN</div>
                   <h2 class="display text-3xl font-black tracking-tight mb-4 text-ivory">{main.title}</h2>
                   <div class="text-brown-300 text-sm" dangerouslySetInnerHTML={{__html: main.content.replace(/<[^>]+>/g,'').substring(0,120)+'...'}}></div>
-                  <div class="mt-6 text-xs text-brown-400">{main.created_at?.split('T')[0]} · 조회 {main.view_count}</div>
+                  <div class="mt-6 text-xs text-brown-400">{kstYmd(main.created_at)} · 조회 {main.view_count}</div>
                 </div>
               </div>
             ) : (
@@ -34,7 +35,7 @@ export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
                 <div class="text-xs tracking-widest text-gold mb-4">★ MAIN</div>
                 <h2 class="display text-3xl font-black tracking-tight mb-4 text-ivory">{main.title}</h2>
                 <div class="text-brown-300 text-sm" dangerouslySetInnerHTML={{__html: main.content.replace(/<[^>]+>/g,'').substring(0,120)+'...'}}></div>
-                <div class="mt-6 text-xs text-brown-400">{main.created_at?.split('T')[0]} · 조회 {main.view_count}</div>
+                <div class="mt-6 text-xs text-brown-400">{kstYmd(main.created_at)} · 조회 {main.view_count}</div>
               </div>
             )}
           </a>
@@ -57,7 +58,7 @@ export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
                   )}
                   <div class="flex-1 min-w-0">
                     <h3 class="display text-xl font-medium group-hover:text-brown-700 transition mb-2">{n.title}</h3>
-                    <div class="text-xs text-brown-500">{n.created_at?.split('T')[0]} · 조회 {n.view_count}</div>
+                    <div class="text-xs text-brown-500">{kstYmd(n.created_at)} · 조회 {n.view_count}</div>
                   </div>
                   <i class="fas fa-arrow-right text-brown-400 group-hover:text-brown-700 group-hover:translate-x-1 transition mt-2 flex-shrink-0"></i>
                 </div>
@@ -79,7 +80,7 @@ export const NoticeDetailPage = ({ notice }: { notice: Notice }) => (
       {notice.is_main ? <div class="mt-8 text-xs tracking-widest text-gold">★ MAIN NOTICE</div> : <div class="mt-8 text-xs tracking-widest text-brown-500">NOTICE</div>}
       <h1 class="display text-4xl md:text-5xl font-black tracking-tight leading-tight my-6">{notice.title}</h1>
       <div class="text-sm text-brown-500 mb-10 pb-6 border-b border-brown-200">
-        {notice.created_at?.split('T')[0]} · 조회 {notice.view_count}
+        {kstYmd(notice.created_at)} · 조회 {notice.view_count}
       </div>
       {notice.thumbnail_url && <img src={notice.thumbnail_url} class="w-full rounded-2xl mb-10" alt="" />}
       <div class="prose-dental" dangerouslySetInnerHTML={{__html: notice.content}}></div>

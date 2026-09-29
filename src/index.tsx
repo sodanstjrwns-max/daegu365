@@ -11,7 +11,7 @@ import {
 } from './lib/auth'
 import { buildOgSvg, ogUrl, ogStaticUrl, type OgType } from './lib/og'
 import { REVIEW_DATE, getTldr, TLDR_BY_SLUG } from './lib/tldr'
-import { CONTENT_DATES, latestDate } from './lib/content-dates'
+import { CONTENT_DATES, latestDate, toIsoKst, kstYmd } from './lib/content-dates'
 import { fetchSiteStats, renderStatsPage, isValidStatsKey } from './lib/stats'
 import { renderOgPng } from './lib/og-png'
 
@@ -656,7 +656,7 @@ app.get('/doctors/:slug', async (c) => {
       doctorPosition: doctor.position || '원장',
       doctorSlug: slug,
       description: videoDesc,
-      uploadDate: doctor.created_at?.substring(0,10) || '2024-12-01'
+      uploadDate: kstYmd(doctor.created_at) || '2024-12-01'
     }))
   }
   // ProfilePage 스키마 (구글 Knowledge Graph용)
@@ -1301,8 +1301,8 @@ app.get('/before-after/:id', async (c) => {
       canonical: `https://daegu365dc.kr/before-after/${id}`,
       ogImage,
       ogType: 'article',
-      publishedTime: item.created_at,
-      modifiedTime: item.updated_at || item.created_at,
+      publishedTime: toIsoKst(item.created_at),
+      modifiedTime: toIsoKst(item.updated_at || item.created_at),
       author: doctor?.name || '대구365치과',
       ...(robotsOverride && { robots: robotsOverride }),
       breadcrumb: [
@@ -1322,8 +1322,8 @@ app.get('/before-after/:id', async (c) => {
         doctorSlug: doctor?.slug,
         treatmentName: treatment?.name,
         treatmentSlug: treatment?.slug,
-        createdAt: item.created_at,
-        updatedAt: item.updated_at || item.created_at
+        createdAt: toIsoKst(item.created_at),
+        updatedAt: toIsoKst(item.updated_at || item.created_at)
       })
     }
   )
@@ -1356,8 +1356,8 @@ app.get('/blog', async (c) => {
         "@id": `${SITE.url}/blog/${p.slug}#article`,
         "headline": p.title,
         "url": `${SITE.url}/blog/${p.slug}`,
-        "datePublished": p.created_at,
-        "dateModified": p.updated_at || p.created_at
+        "datePublished": toIsoKst(p.created_at),
+        "dateModified": toIsoKst(p.updated_at || p.created_at)
       }))
     }
   })
@@ -1411,8 +1411,8 @@ app.get('/blog/:slug', async (c) => {
     canonical: `https://daegu365dc.kr/blog/${slug}`,
     ogImage,
     ogType: 'article',
-    publishedTime: post.created_at,
-    modifiedTime: post.updated_at || post.created_at,
+    publishedTime: toIsoKst(post.created_at),
+    modifiedTime: toIsoKst(post.updated_at || post.created_at),
     author: author?.name || '대구365치과',
     ...(robotsOverride && { robots: robotsOverride }),
     breadcrumb: [
@@ -1427,8 +1427,8 @@ app.get('/blog/:slug', async (c) => {
       authorName: author?.name,
       authorSlug: author?.slug,
       authorPosition: author?.position,
-      publishedTime: post.created_at,
-      modifiedTime: post.updated_at || post.created_at,
+      publishedTime: toIsoKst(post.created_at),
+      modifiedTime: toIsoKst(post.updated_at || post.created_at),
       image: ogImage,
       keywords: autoKeywords,
       wordCount,
@@ -1461,8 +1461,8 @@ app.get('/notices/:id', async (c) => {
     canonical: `https://daegu365dc.kr/notices/${id}`,
     ogImage: ogUrl.blog(n.title, '대구365치과'),
     ogType: 'article',
-    publishedTime: n.created_at,
-    modifiedTime: n.updated_at || n.created_at,
+    publishedTime: toIsoKst(n.created_at),
+    modifiedTime: toIsoKst(n.updated_at || n.created_at),
     breadcrumb: [
       { name: '홈', url: '/' },
       { name: '공지사항', url: '/notices' },
@@ -1474,8 +1474,8 @@ app.get('/notices/:id', async (c) => {
       "@id": `${SITE.url}/notices/${id}#article`,
       "headline": n.title,
       "description": n.content?.replace(/<[^>]+>/g, '').substring(0, 160),
-      "datePublished": n.created_at,
-      "dateModified": n.updated_at || n.created_at,
+      "datePublished": toIsoKst(n.created_at),
+      "dateModified": toIsoKst(n.updated_at || n.created_at),
       "author": { "@id": `${SITE.url}/#dentist` },
       "publisher": { "@id": `${SITE.url}/#dentist` },
       "mainEntityOfPage": `${SITE.url}/notices/${id}`,
@@ -3242,14 +3242,8 @@ app.get('/llms-full.txt', async (c) => {
 
 // ============ Sitemap helpers ============
 // 날짜 없음/무효 → '' (오늘 날짜로 채우지 않음 — 2026-09-29). 빈 값이면 lastmodTag 가 <lastmod> 를 생략.
-const sitemapIso = (v: any): string => {
-  if (!v) return ''
-  try {
-    const d = new Date(typeof v === 'string' ? v.replace(' ', 'T') : v)
-    if (isNaN(d.getTime())) return ''
-    return d.toISOString().substring(0, 10)
-  } catch { return '' }
-}
+// D1 시각(UTC) → KST 날짜 (2026-09-29, 예전엔 UTC 날짜라 KST 새벽 작성분이 하루 앞섰다 — 화면·스키마(+09:00)와 통일)
+const sitemapIso = (v: any): string => kstYmd(v)
 const lastmodTag = (d: string): string => (d ? `<lastmod>${d}</lastmod>` : '')
 
 // D1 에서 MAX(날짜) 하나 조회 — 컬럼이 없는 DB 대비 SQL 을 순서대로 시도, 모두 실패/빈 값이면 ''
@@ -3321,7 +3315,7 @@ app.get('/sitemap.xml', async (c) => {
     d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM before_afters WHERE is_published=1 AND COALESCE(noindex,0)=0', 'SELECT MAX(created_at) as m FROM before_afters WHERE is_published=1']),
     d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM dictionary WHERE indexable=1']),
   ])
-  const lastmodMain = latestDate(...Object.values(staticDates), tDoc, tTreat, tNotice)
+  const lastmodMain = latestDate(...Object.values(staticDates), tDoc, tTreat, tNotice, CONTENT_DATES.doctorsData, CONTENT_DATES.treatmentsData, REVIEW_DATE)
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -3393,7 +3387,8 @@ app.get('/sitemap-main.xml', async (c) => {
   ;(treatments.results as any[]).forEach((t: any) => {
     const pri = t.is_core ? '0.95' : '0.85'
     const chf = t.is_core ? 'weekly' : 'monthly'
-    addUrl(`/treatments/${t.slug}`, pri, chf, latestDate(sitemapIso(t.lastmod), CONTENT_DATES.treatmentsData))
+    // + REVIEW_DATE: 진료 상세는 스키마 dateModified·lastReviewed 와 화면 '최종 검수' 가 REVIEW_DATE(lib/tldr.ts) — lastmod 가 그보다 이르지 않게 (2026-09-29)
+    addUrl(`/treatments/${t.slug}`, pri, chf, latestDate(sitemapIso(t.lastmod), CONTENT_DATES.treatmentsData, REVIEW_DATE))
   })
   // 공지
   ;(notices.results as any[]).forEach((n: any) =>

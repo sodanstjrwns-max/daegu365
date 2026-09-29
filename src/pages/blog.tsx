@@ -1,5 +1,6 @@
 import { Navbar, Footer } from '../components/Layout'
 import type { BlogPost, Doctor } from '../lib/types'
+import { kstYmd } from '../lib/content-dates'
 
 export const BlogListPage = ({ posts, doctors }: { posts: BlogPost[], doctors: Doctor[] }) => (
   <>
@@ -42,7 +43,7 @@ export const BlogListPage = ({ posts, doctors }: { posts: BlogPost[], doctors: D
                 <div class="mt-4 text-xs text-brown-500 flex items-center gap-3">
                   <span><i class="fas fa-eye mr-1"></i>{p.view_count}</span>
                   <span>·</span>
-                  <span>{p.created_at?.split('T')[0]?.split(' ')[0]?.replace(/-/g,'.') || ''}</span>
+                  <span>{kstYmd(p.created_at).replace(/-/g,'.')}</span>
                 </div>
               </a>
             )
@@ -68,7 +69,7 @@ export const BlogDetailPage = ({ post, author, related }: { post: BlogPost, auth
         <div class="mt-6 flex items-center gap-3 text-sm text-brown-500">
           {author && <a href={`/doctors/${author.slug}`} class="font-medium text-brown-700 hover:underline">by {author.name} {author.position}</a>}
           <span>·</span>
-          <span>{post.created_at?.split('T')[0]?.split(' ')[0]?.replace(/-/g,'.') || ''}</span>
+          <span>{kstYmd(post.created_at).replace(/-/g,'.')}</span>
           <span>·</span>
           <span><i class="fas fa-eye mr-1"></i>{post.view_count}</span>
         </div>
