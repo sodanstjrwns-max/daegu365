@@ -11,6 +11,7 @@ import {
 } from './lib/auth'
 import { buildOgSvg, ogUrl, ogStaticUrl, type OgType } from './lib/og'
 import { REVIEW_DATE, getTldr, TLDR_BY_SLUG } from './lib/tldr'
+import { CONTENT_DATES, latestDate } from './lib/content-dates'
 import { fetchSiteStats, renderStatsPage, isValidStatsKey } from './lib/stats'
 import { renderOgPng } from './lib/og-png'
 
@@ -3240,13 +3241,60 @@ app.get('/llms-full.txt', async (c) => {
 })
 
 // ============ Sitemap helpers ============
+// 날짜 없음/무효 → '' (오늘 날짜로 채우지 않음 — 2026-09-29). 빈 값이면 lastmodTag 가 <lastmod> 를 생략.
 const sitemapIso = (v: any): string => {
-  if (!v) return new Date().toISOString().substring(0, 10)
+  if (!v) return ''
   try {
     const d = new Date(typeof v === 'string' ? v.replace(' ', 'T') : v)
-    if (isNaN(d.getTime())) return new Date().toISOString().substring(0, 10)
+    if (isNaN(d.getTime())) return ''
     return d.toISOString().substring(0, 10)
-  } catch { return new Date().toISOString().substring(0, 10) }
+  } catch { return '' }
+}
+const lastmodTag = (d: string): string => (d ? `<lastmod>${d}</lastmod>` : '')
+
+// D1 에서 MAX(날짜) 하나 조회 — 컬럼이 없는 DB 대비 SQL 을 순서대로 시도, 모두 실패/빈 값이면 ''
+const d1MaxDate = async (DB: D1Database, sqls: string[]): Promise<string> => {
+  for (const sql of sqls) {
+    try {
+      const r = await DB.prepare(sql).first<any>()
+      return r?.m ? sitemapIso(r.m) : ''
+    } catch { /* 다음 SQL 시도 */ }
+  }
+  return ''
+}
+
+// sitemap-main 정적 진입 페이지 13개의 lastmod (2026-09-29, 예전엔 매일 오늘)
+// - 정적 페이지: 페이지 파일의 마지막 커밋 날짜(빌드 상수, lib/content-dates.ts)
+// - 목록 페이지: 목록에 실린 항목 중 최신 작성/수정일
+// - 마이그레이션으로만 바뀌는 테이블(의료진·진료·FAQ·지역): max(행 날짜, 해당 마이그레이션 커밋 날짜)
+// - 비용: max(수가 행 updated_at — 관리자 수가표 편집 시 갱신, 페이지 파일 커밋 날짜)
+const mainStaticDates = async (DB: D1Database): Promise<Record<string, string>> => {
+  const [doctors, treatments, cases, blog, notices, fees, dict, faqs, regions] = await Promise.all([
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM doctors', 'SELECT MAX(created_at) as m FROM doctors']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM treatments', 'SELECT MAX(created_at) as m FROM treatments']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM before_afters WHERE is_published=1', 'SELECT MAX(created_at) as m FROM before_afters WHERE is_published=1']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM blog_posts WHERE is_published=1', 'SELECT MAX(created_at) as m FROM blog_posts WHERE is_published=1']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM notices WHERE is_published=1', 'SELECT MAX(created_at) as m FROM notices WHERE is_published=1']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM fees']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM dictionary', 'SELECT MAX(created_at) as m FROM dictionary']),
+    d1MaxDate(DB, ['SELECT MAX(created_at) as m FROM faqs WHERE treatment_slug IS NOT NULL']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM region_seo', 'SELECT MAX(created_at) as m FROM region_seo']),
+  ])
+  return {
+    '/': CONTENT_DATES.home,
+    '/mission': CONTENT_DATES.mission,
+    '/doctors': latestDate(doctors, CONTENT_DATES.doctorsData),
+    '/treatments': latestDate(treatments, CONTENT_DATES.treatmentsData),
+    '/before-after': cases,
+    '/blog': blog,
+    '/notices': notices,
+    '/directions': CONTENT_DATES.directions,
+    '/hours': CONTENT_DATES.hours,
+    '/fees': latestDate(fees, CONTENT_DATES.feesPage),
+    '/dictionary': dict,
+    '/faq': latestDate(faqs, CONTENT_DATES.faqsData),
+    '/regions': latestDate(regions, CONTENT_DATES.regionsData),
+  }
 }
 const xmlEscape = (s: any): string => {
   if (s == null) return ''
@@ -3262,46 +3310,25 @@ const xmlEscape = (s: any): string => {
 // sitemap-regions 분리 (지역 SEO 색인 가속) + lastmod 최신값 사용
 app.get('/sitemap.xml', async (c) => {
   const base = SITE.url
-  const today = new Date().toISOString().substring(0, 10)
-
-  // 각 sub-sitemap 의 가장 최근 lastmod 를 추적 (테이블별 안전 fallback)
-  let lastmodMain = today, lastmodBlog = today, lastmodCases = today
-  let lastmodContent = today, lastmodRegions = today
-  const safeMax = async (sql: string, fb: string) => {
-    try {
-      const r = await c.env.DB.prepare(sql).first<any>()
-      return r?.m ? sitemapIso(r.m) : today
-    } catch {
-      try {
-        const r = await c.env.DB.prepare(fb).first<any>()
-        return r?.m ? sitemapIso(r.m) : today
-      } catch { return today }
-    }
-  }
-  try {
-    const [tMain1, tMain2, tBlog, tCases, tDict, tReg] = await Promise.all([
-      safeMax('SELECT MAX(updated_at) as m FROM doctors', 'SELECT MAX(created_at) as m FROM doctors'),
-      safeMax('SELECT MAX(updated_at) as m FROM treatments', 'SELECT MAX(created_at) as m FROM treatments'),
-      safeMax('SELECT MAX(updated_at) as m FROM blog_posts WHERE is_published=1', 'SELECT MAX(created_at) as m FROM blog_posts WHERE is_published=1'),
-      safeMax('SELECT MAX(updated_at) as m FROM before_afters WHERE is_published=1', 'SELECT MAX(created_at) as m FROM before_afters WHERE is_published=1'),
-      safeMax('SELECT MAX(COALESCE(updated_at, created_at)) as m FROM dictionary WHERE indexable=1', 'SELECT MAX(created_at) as m FROM dictionary'),
-      safeMax('SELECT MAX(updated_at) as m FROM region_seo', 'SELECT MAX(created_at) as m FROM region_seo'),
-    ])
-    lastmodMain = [tMain1, tMain2].sort().reverse()[0] || today
-    lastmodBlog = tBlog
-    lastmodCases = tCases
-    lastmodContent = tDict
-    lastmodRegions = tReg
-  } catch (e) {
-    // ignore
-  }
+  // 각 하위 사이트맵 lastmod = 그 사이트맵에 실린 URL 중 최신 lastmod (알 수 없으면 생략, 오늘로 채우지 않음)
+  const DB = c.env.DB
+  const [staticDates, tDoc, tTreat, tNotice, tBlog, tCases, tDict] = await Promise.all([
+    mainStaticDates(DB),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM doctors', 'SELECT MAX(created_at) as m FROM doctors']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM treatments', 'SELECT MAX(created_at) as m FROM treatments']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM notices WHERE is_published=1', 'SELECT MAX(created_at) as m FROM notices WHERE is_published=1']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0', 'SELECT MAX(created_at) as m FROM blog_posts WHERE is_published=1']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM before_afters WHERE is_published=1 AND COALESCE(noindex,0)=0', 'SELECT MAX(created_at) as m FROM before_afters WHERE is_published=1']),
+    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM dictionary WHERE indexable=1']),
+  ])
+  const lastmodMain = latestDate(...Object.values(staticDates), tDoc, tTreat, tNotice)
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap><loc>${base}/sitemap-main.xml</loc><lastmod>${lastmodMain}</lastmod></sitemap>
-  <sitemap><loc>${base}/sitemap-blog.xml</loc><lastmod>${lastmodBlog}</lastmod></sitemap>
-  <sitemap><loc>${base}/sitemap-cases.xml</loc><lastmod>${lastmodCases}</lastmod></sitemap>
-  <sitemap><loc>${base}/sitemap-dictionary.xml</loc><lastmod>${lastmodContent}</lastmod></sitemap>
+  <sitemap><loc>${base}/sitemap-main.xml</loc>${lastmodTag(lastmodMain)}</sitemap>
+  <sitemap><loc>${base}/sitemap-blog.xml</loc>${lastmodTag(tBlog)}</sitemap>
+  <sitemap><loc>${base}/sitemap-cases.xml</loc>${lastmodTag(tCases)}</sitemap>
+  <sitemap><loc>${base}/sitemap-dictionary.xml</loc>${lastmodTag(tDict)}</sitemap>
 </sitemapindex>`
   return c.text(xml, 200, {
     'Content-Type': 'application/xml; charset=utf-8',
@@ -3313,12 +3340,12 @@ app.get('/sitemap.xml', async (c) => {
 // 핵심 진료(is_core=1)는 priority 0.95, 일반 진료는 0.85, 변경 빈도 가속
 app.get('/sitemap-main.xml', async (c) => {
   const base = SITE.url
-  const today = new Date().toISOString().substring(0, 10)
   // updated_at 컬럼 존재 여부에 따라 fallback (doctors/treatments 는 created_at 만 있음)
   const safeSelect = async (sql: string, fallback: string) => {
     try { return await c.env.DB.prepare(sql).all() } catch { return await c.env.DB.prepare(fallback).all() }
   }
-  const [doctors, treatments, notices] = await Promise.all([
+  const [staticDates, doctors, treatments, notices] = await Promise.all([
+    mainStaticDates(c.env.DB),
     safeSelect(
       'SELECT slug, name, photo_url, COALESCE(updated_at, created_at) as lastmod FROM doctors',
       'SELECT slug, name, photo_url, created_at as lastmod FROM doctors'
@@ -3334,9 +3361,9 @@ app.get('/sitemap-main.xml', async (c) => {
   ])
 
   const urls: string[] = []
-  const addUrl = (loc: string, pri = '0.8', chf = 'weekly', lastmod = today, image?: { url: string; caption?: string; title?: string }) => {
+  const addUrl = (loc: string, pri = '0.8', chf = 'weekly', lastmod = staticDates[loc] || '', image?: { url: string; caption?: string; title?: string }) => {
     const img = image && image.url ? `\n    <image:image><image:loc>${xmlEscape(image.url)}</image:loc>${image.title ? `<image:title>${xmlEscape(image.title)}</image:title>` : ''}${image.caption ? `<image:caption>${xmlEscape(image.caption)}</image:caption>` : ''}</image:image>` : ''
-    urls.push(`  <url><loc>${base}${loc}</loc><lastmod>${lastmod}</lastmod><priority>${pri}</priority><changefreq>${chf}</changefreq>${img}</url>`)
+    urls.push(`  <url><loc>${base}${loc}</loc>${lastmodTag(lastmod)}<priority>${pri}</priority><changefreq>${chf}</changefreq>${img}</url>`)
   }
 
   // 정적 진입 페이지
@@ -3421,7 +3448,7 @@ app.get('/sitemap-blog.xml', async (c) => {
     const img = imgUrl
       ? `\n    <image:image><image:loc>${xmlEscape(imgUrl)}</image:loc><image:title>${xmlEscape(b.title)}</image:title><image:caption>${xmlEscape(b.title)} - 대구365치과 컬럼</image:caption></image:image>`
       : ''
-    urls.push(`  <url><loc>${base}/blog/${b.slug}</loc><lastmod>${sitemapIso(b.lastmod)}</lastmod><priority>0.85</priority><changefreq>weekly</changefreq>${img}</url>`)
+    urls.push(`  <url><loc>${base}/blog/${b.slug}</loc>${lastmodTag(sitemapIso(b.lastmod))}<priority>0.85</priority><changefreq>weekly</changefreq>${img}</url>`)
   })
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -3440,7 +3467,7 @@ app.get('/rss.xml', async (c) => {
   const toRfc822 = (v: any): string => {
     const s = String(v || '').replace(' ', 'T')
     const d = new Date(/Z$|[+-]\d{2}:\d{2}$/.test(s) ? s : s + 'Z')
-    return isNaN(d.getTime()) ? new Date().toUTCString() : d.toUTCString()
+    return isNaN(d.getTime()) ? '' : d.toUTCString()  // 무효 날짜 → 생략(오늘로 채우지 않음)
   }
   const stripHtml = (h: any) => String(h || '')
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -3468,10 +3495,13 @@ app.get('/rss.xml', async (c) => {
     <link>${base}/blog/${xmlEscape(p.slug)}</link>
     <guid isPermaLink="true">${base}/blog/${xmlEscape(p.slug)}</guid>
     <description>${xmlEscape(desc)}</description>${p.category ? `
-    <category>${xmlEscape(p.category)}</category>` : ''}
-    <pubDate>${toRfc822(p.created_at)}</pubDate>
+    <category>${xmlEscape(p.category)}</category>` : ''}${toRfc822(p.created_at) ? `
+    <pubDate>${toRfc822(p.created_at)}</pubDate>` : ''}
   </item>`
   }).join('\n')
+  // lastBuildDate = 피드 항목 중 최신 작성/수정 시각 (요청 시각·오늘 아님). 없으면 생략.
+  const newest = posts.map((p: any) => String(p.updated_at || p.created_at || '')).filter(Boolean).sort().pop()
+  const lastBuild = newest ? toRfc822(newest) : ''
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
@@ -3479,8 +3509,8 @@ app.get('/rss.xml', async (c) => {
   <link>${base}/blog</link>
   <atom:link href="${base}/rss.xml" rel="self" type="application/rss+xml"/>
   <description>${xmlEscape(SITE.name)} 의료진이 직접 쓰는 치과 칼럼 — 수면임플란트·인비절라인·라미네이트</description>
-  <language>ko-KR</language>
-  <lastBuildDate>${posts.length ? toRfc822(posts[0].created_at) : new Date().toUTCString()}</lastBuildDate>
+  <language>ko-KR</language>${lastBuild ? `
+  <lastBuildDate>${lastBuild}</lastBuildDate>` : ''}
 ${items}
 </channel>
 </rss>`
@@ -3526,7 +3556,7 @@ app.get('/sitemap-cases.xml', async (c) => {
     if (beforeUrl) push(beforeUrl, b.before_alt || `${b.title || '치료 전'} 비포`, b.before_alt || `${b.title || ''} 치료 전 사진`)
     if (afterUrl) push(afterUrl, b.after_alt || `${b.title || '치료 후'} 애프터`, b.after_alt || `${b.title || ''} 치료 후 사진`)
     const imgXml = images.length ? '\n' + images.join('\n') : ''
-    urls.push(`  <url><loc>${base}/before-after/${b.id}</loc><lastmod>${sitemapIso(b.lastmod)}</lastmod><priority>0.85</priority><changefreq>monthly</changefreq>${imgXml}</url>`)
+    urls.push(`  <url><loc>${base}/before-after/${b.id}</loc>${lastmodTag(sitemapIso(b.lastmod))}<priority>0.85</priority><changefreq>monthly</changefreq>${imgXml}</url>`)
   })
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -3556,7 +3586,7 @@ const dictionarySitemap = async (c: any) => {
 
   const urls: string[] = []
   ;((dict.results || []) as any[]).forEach((d: any) =>
-    urls.push(`  <url><loc>${base}/dictionary/${d.slug}</loc><lastmod>${sitemapIso(d.lastmod)}</lastmod><priority>0.7</priority><changefreq>monthly</changefreq></url>`)
+    urls.push(`  <url><loc>${base}/dictionary/${d.slug}</loc>${lastmodTag(sitemapIso(d.lastmod))}<priority>0.7</priority><changefreq>monthly</changefreq></url>`)
   )
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
