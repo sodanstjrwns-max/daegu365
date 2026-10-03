@@ -2850,9 +2850,19 @@ app.get('/admin/before-after/new', async (c) => {
   ])
   return c.render(<AdminBAFormPage doctors={doctors.results as any} treatments={treatments.results as any} />, { title: 'Admin · 새 비포애프터' })
 })
+// IndexNow — 칼럼·비포애프터 발행/수정 시 검색엔진 알림 (Bing·Naver 등). 응답 뒤 waitUntil (2026-10-03 표준 A1)
+const INDEXNOW_KEY = '3307ed77b4eca573d4acc72eb90721e9'
+app.get(`/${INDEXNOW_KEY}.txt`, (c) => c.text(INDEXNOW_KEY))
+const pingIndexNow = (c: any, paths: string[]) => {
+  const body = JSON.stringify({ host: 'daegu365dc.kr', key: INDEXNOW_KEY, keyLocation: `${SITE.url}/${INDEXNOW_KEY}.txt`, urlList: paths.map(p => `${SITE.url}${p}`) })
+  const send = Promise.allSettled(['https://api.indexnow.org/indexnow', 'https://searchadvisor.naver.com/indexnow'].map(u =>
+    fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json; charset=utf-8' }, body })))
+  try { c.executionCtx.waitUntil(send) } catch { /* 로컬 등 ctx 없음 */ }
+}
+
 app.post('/admin/before-after/new', async (c) => {
   const b = await c.req.parseBody()
-  await c.env.DB.prepare(
+  const inserted = await c.env.DB.prepare(
     `INSERT INTO before_afters (title,description,pano_before_url,pano_after_url,intra_before_url,intra_after_url,age_group,gender,treatment_slug,region_sido,region_sigungu,region_dong,doctor_slug,treatment_period,is_published,meta_description,meta_keywords,og_image,before_alt,after_alt,noindex)
      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
   ).bind(
@@ -2868,6 +2878,7 @@ app.post('/admin/before-after/new', async (c) => {
     String(b.og_image||'') || null, String(b.before_alt||'') || null,
     String(b.after_alt||'') || null, b.noindex ? 1 : 0
   ).run()
+  if (b.is_published && !b.noindex) { const nid = (inserted as any)?.meta?.last_row_id; pingIndexNow(c, [...(nid ? [`/before-after/${nid}`] : []), '/before-after']) }
   return c.redirect('/admin/before-after')
 })
 app.get('/admin/before-after/:id/edit', async (c) => {
@@ -2898,6 +2909,7 @@ app.post('/admin/before-after/:id/edit', async (c) => {
     String(b.og_image||'') || null, String(b.before_alt||'') || null,
     String(b.after_alt||'') || null, b.noindex ? 1 : 0, id
   ).run()
+  if (b.is_published && !b.noindex) pingIndexNow(c, [`/before-after/${id}`])
   return c.redirect('/admin/before-after')
 })
 app.post('/admin/before-after/:id/delete', async (c) => {
@@ -2928,6 +2940,7 @@ app.post('/admin/blog/new', async (c) => {
     String(b.og_image||'') || null, b.noindex ? 1 : 0,
     b.is_published ? 1 : 0
   ).run()
+  if (b.is_published && !b.noindex && b.slug) pingIndexNow(c, [`/blog/${String(b.slug)}`, '/blog'])
   return c.redirect('/admin/blog')
 })
 app.get('/admin/blog/:id/edit', async (c) => {
@@ -2952,6 +2965,7 @@ app.post('/admin/blog/:id/edit', async (c) => {
     String(b.og_image||'') || null, b.noindex ? 1 : 0,
     b.is_published ? 1 : 0, id
   ).run()
+  if (b.is_published && !b.noindex && b.slug) pingIndexNow(c, [`/blog/${String(b.slug)}`])
   return c.redirect('/admin/blog')
 })
 app.post('/admin/blog/:id/delete', async (c) => {
