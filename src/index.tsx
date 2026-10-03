@@ -12,6 +12,7 @@ import {
 import { buildOgSvg, ogUrl, ogStaticUrl, type OgType } from './lib/og'
 import { REVIEW_DATE, getTldr, TLDR_BY_SLUG } from './lib/tldr'
 import { CONTENT_DATES, latestDate, toIsoKst, kstYmd } from './lib/content-dates'
+import { blogTreatmentSlug, treatmentGroup, stripTags, answerSummary, faqsFromArticleHtml, enhanceContentImages, DOCTOR_SLUG_ALIAS, periodLabel } from './lib/column-seo'
 import { fetchSiteStats, renderStatsPage, isValidStatsKey } from './lib/stats'
 import { renderOgPng } from './lib/og-png'
 
@@ -725,6 +726,28 @@ app.get('/treatments', async (c) => {
   })
 })
 
+// 진료 상세 하단(푸터 앞)에 같은 진료의 최신 칼럼 링크 삽입 — 진료 페이지 컴포넌트가 slug 별로 17개라
+// 각각 수정하지 않고 응답 HTML 에 한 번 끼워 넣는다 (2026-10-03 칼럼 표준 A5). DB 실패 시 원본 그대로.
+app.use('/treatments/:slug', async (c, next) => {
+  await next()
+  const res = c.res
+  if (res.status !== 200 || !(res.headers.get('content-type') || '').includes('text/html')) return
+  try {
+    const slug = c.req.param('slug')
+    const grp = treatmentGroup(slug)
+    const posts = ((await c.env.DB.prepare('SELECT slug, title, created_at FROM blog_posts WHERE is_published=1 ORDER BY created_at DESC').all()).results || []) as any[]
+    const match = posts.filter(p => grp.includes(blogTreatmentSlug(p.title))).slice(0, 5)
+    if (!match.length) return
+    const esc = (x: string) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    const section = `<section class="py-16 max-w-5xl mx-auto px-6 tx-related-columns" aria-label="관련 칼럼"><div class="section-label mb-4">JOURNAL</div><h2 class="display text-3xl font-medium mb-6">관련 의료진 칼럼</h2><ul class="divide-y divide-brown-200 border-y border-brown-200">${match.map(p => `<li><a href="/blog/${esc(p.slug)}" class="flex justify-between gap-4 py-4 text-brown-800 hover:text-brown-600"><span>${esc(p.title)}</span><time class="text-xs text-brown-500 whitespace-nowrap" datetime="${kstYmd(p.created_at)}">${kstYmd(p.created_at).replace(/-/g, '.')}</time></a></li>`).join('')}</ul></section>`
+    const html = await res.text()
+    const i = html.indexOf('<footer class="footer')
+    const out = i > 0 ? html.slice(0, i) + section + html.slice(i) : html
+    const h = new Headers(res.headers); h.delete('content-length')
+    c.res = new Response(out, { status: res.status, headers: h })
+  } catch { /* 원본 응답 유지 */ }
+})
+
 app.get('/treatments/:slug', async (c) => {
   const slug = c.req.param('slug')
   const treatment = await c.env.DB.prepare('SELECT * FROM treatments WHERE slug=?').bind(slug).first<any>()
@@ -1224,7 +1247,7 @@ app.get('/before-after', async (c) => {
       "position": i + 1,
       "url": `${SITE.url}/before-after/${c2.id}`,
       "name": c2.title || `${c2.treatment_slug || ''} 케이스`,
-      "item": { "@id": `${SITE.url}/before-after/${c2.id}#case` }
+      "item": { "@id": `${SITE.url}/before-after/${c2.id}#webpage` }
     }))
   }
   return c.render(
@@ -1255,8 +1278,9 @@ app.get('/before-after/:id', async (c) => {
   if (!item) return c.notFound()
   await c.env.DB.prepare('UPDATE before_afters SET view_count=view_count+1 WHERE id=?').bind(id).run()
 
+  const docSlug = item.doctor_slug ? (DOCTOR_SLUG_ALIAS[item.doctor_slug] || item.doctor_slug) : ''
   const [doctor, treatment] = await Promise.all([
-    item.doctor_slug ? c.env.DB.prepare('SELECT * FROM doctors WHERE slug=?').bind(item.doctor_slug).first<any>() : Promise.resolve(null),
+    docSlug ? c.env.DB.prepare('SELECT * FROM doctors WHERE slug=?').bind(docSlug).first<any>() : Promise.resolve(null),
     item.treatment_slug ? c.env.DB.prepare('SELECT * FROM treatments WHERE slug=?').bind(item.treatment_slug).first<any>() : Promise.resolve(null),
   ])
 
@@ -1267,24 +1291,37 @@ app.get('/before-after/:id', async (c) => {
   const doctorLabel = doctor?.name ? `${doctor.name} ${doctor.position || '원장'}` : '대구365치과 의료진'
   const regionLabel = item.region_dong || item.region_sigungu || '대구 북구'
 
+  // 공개 텍스트 자동 요약 — 저장된 구조 필드(진료·기간·담당)만 사용, 단위 없는 기간 숫자는 제외 (2026-10-03 표준)
+  const period = periodLabel(item.treatment_period)
+  const caseSummary = [
+    `${treatmentLabel} 치료 사례입니다.`,
+    period ? `치료 기간은 ${period}입니다.` : '',
+    doctor?.name ? `${doctorLabel}이(가) 담당했습니다.` : '',
+    '치료 결과는 구강 상태에 따라 개인마다 다를 수 있습니다.',
+  ].filter(Boolean).join(' ')
   // description fallback 강화
   const autoDesc = item.meta_description
     || item.description?.substring(0, 155)
-    || `${item.title} — ${treatmentLabel} ${item.treatment_period || ''} 치료 사례. ${doctorLabel} 진료. ${regionLabel} 대구365치과의 검증된 ${treatmentLabel} Before/After 실제 결과.`
+    || `${item.title} — ${caseSummary}`
+  // 같은 진료 칼럼 (사례 ↔ 칼럼 내부 링크)
+  const caseGroup = item.treatment_slug ? treatmentGroup(item.treatment_slug) : []
+  const allPosts = ((await c.env.DB.prepare('SELECT slug, title FROM blog_posts WHERE is_published=1 ORDER BY created_at DESC').all()).results || []) as any[]
+  const relatedPosts = allPosts.filter(p => caseGroup.includes(blogTreatmentSlug(p.title))).slice(0, 3)
 
   // keywords 자동 조합 (필수 5개 + 케이스별 변수)
   const baseKeywords = '임플란트,인비절라인,라미네이트,글로우네이트,치아교정,대구치과,대구365치과,침산동치과,북구치과'
   const autoKeywords = item.meta_keywords
     || `${treatmentLabel},${item.title},${doctorLabel},${regionLabel} ${treatmentLabel},대구 ${treatmentLabel},${baseKeywords}`
 
-  // 이미지 alt 자동 빌더
-  const beforeAlt = item.before_alt || `${item.title} Before — ${treatmentLabel} 치료 전 (${doctorLabel} · ${regionLabel} 대구365치과)`
-  const afterAlt = item.after_alt || `${item.title} After — ${treatmentLabel} 치료 후 (${doctorLabel} · ${regionLabel} 대구365치과)`
+  // 이미지 alt 자동 빌더 — 표준 '{진료명} 치료 전/후' (관리자가 입력한 alt 는 우선)
+  const beforeAlt = item.before_alt || `${treatmentLabel} 치료 전`
+  const afterAlt = item.after_alt || `${treatmentLabel} 치료 후`
 
   // OG 이미지: DB의 og_image > 비포 사진 > 자동 OG 생성
   const beforePhoto = item.intra_before_url || item.pano_before_url
   const afterPhoto = item.intra_after_url || item.pano_after_url
-  const ogImage = item.og_image || beforePhoto || ogUrl.beforeAfter(item.title, treatment?.name || undefined, doctor?.name ? `${doctor.name} ${doctor.position || ''}`.trim() : undefined)
+  // AFTER 사진이 회원 전용(게이트)이라 og:image 에 환자 사진은 쓰지 않음 — 관리자 지정 og_image 또는 자동 OG
+  const ogImage = item.og_image || ogUrl.beforeAfter(item.title, treatment?.name || undefined, doctor?.name ? `${doctor.name} ${doctor.position || ''}`.trim() : undefined)
 
   // 인덱스 차단 옵션
   const robotsOverride = item.noindex ? 'noindex, nofollow' : undefined
@@ -1294,8 +1331,8 @@ app.get('/before-after/:id', async (c) => {
   const caseSuffix = (sameTitle?.n || 0) > 0 ? ` (사례 ${id})` : ''
 
   return c.render(
-    <BeforeAfterDetailPage item={{...item, before_alt: beforeAlt, after_alt: afterAlt}} doctor={doctor} treatment={treatment} isLoggedIn={!!session} />, {
-      title: `${item.title}${caseSuffix} · ${treatmentLabel} 치료사례 | ${doctorLabel}`,
+    <BeforeAfterDetailPage item={{...item, before_alt: beforeAlt, after_alt: afterAlt}} doctor={doctor} treatment={treatment} isLoggedIn={!!session} summary={caseSummary} relatedPosts={relatedPosts} />, {
+      title: `${item.title}${caseSuffix}${item.title.includes(treatmentLabel) ? ' 사례' : ` — ${treatmentLabel} 사례`}${period ? `, ${period}` : ''}`,
       description: autoDesc,
       keywords: autoKeywords,
       canonical: `https://daegu365dc.kr/before-after/${id}`,
@@ -1308,6 +1345,7 @@ app.get('/before-after/:id', async (c) => {
       breadcrumb: [
         { name: '홈', url: '/' },
         { name: '비포애프터', url: '/before-after' },
+        ...(treatment ? [{ name: treatment.name, url: `/before-after?group=${treatmentGroup(treatment.slug)[0]}` }] : []),
         { name: item.title, url: `/before-after/${id}` }
       ],
       jsonLd: caseStudySchema({
@@ -1315,7 +1353,10 @@ app.get('/before-after/:id', async (c) => {
         title: item.title,
         description: autoDesc,
         beforeImage: beforePhoto,
-        afterImage: afterPhoto,
+        // AFTER 는 회원 전용 — 구조화 데이터에도 노출하지 않음
+        afterImage: undefined,
+        reviewerSlug: doctor?.slug || 'kim-seongju',
+        reviewerName: doctor?.name || '김성주',
         beforeAlt,
         afterAlt,
         doctorName: doctor?.name,
@@ -1331,12 +1372,22 @@ app.get('/before-after/:id', async (c) => {
 
 // --- Blog ---
 app.get('/blog', async (c) => {
-  const posts = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE is_published=1 ORDER BY created_at DESC').all()
+  // 서버 페이지네이션(?page=N, a 링크) + CollectionPage/ItemList (2026-10-03 칼럼 표준)
+  const PER_PAGE = 12
+  let page = parseInt(c.req.query('page') || '1', 10)
+  if (!page || page < 1) page = 1
+  const totalRow = await c.env.DB.prepare('SELECT COUNT(*) AS n FROM blog_posts WHERE is_published=1').first<{ n: number }>()
+  const total = Number(totalRow?.n) || 0
+  const totalPages = Math.max(1, Math.ceil(total / PER_PAGE))
+  const posts = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE is_published=1 ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?').bind(PER_PAGE, (page - 1) * PER_PAGE).all()
   const doctors = await c.env.DB.prepare('SELECT * FROM doctors').all()
-  return c.render(<BlogListPage posts={posts.results as any} doctors={doctors.results as any} />, {
-    title: '블로그 · 의료진 칼럼',
-    description: '대구365치과 의료진이 직접 쓰는 치과 칼럼과 건강 이야기.',
-    canonical: 'https://daegu365dc.kr/blog',
+  const listPath = page > 1 ? `/blog?page=${page}` : '/blog'
+  const rows = (posts.results as any[]) || []
+  return c.render(<BlogListPage posts={rows as any} doctors={doctors.results as any} page={page} totalPages={totalPages} />, {
+    title: page > 1 ? `블로그 · 의료진 칼럼 (${page}페이지)` : '블로그 · 의료진 칼럼',
+    description: `대구365치과 의료진이 직접 쓰는 치과 칼럼과 건강 이야기.${page > 1 ? ` ${page}페이지` : ''}`,
+    canonical: `https://daegu365dc.kr${listPath}`,
+    ...(rows.length === 0 && page > 1 ? { robots: 'noindex, follow' } : {}),
     ogImage: ogUrl.default('의료진 칼럼', '직접 쓰는 치과 이야기.'),
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -1351,14 +1402,19 @@ app.get('/blog', async (c) => {
       "url": `${SITE.url}/blog`,
       "publisher": { "@id": `${SITE.url}/#dentist` },
       "inLanguage": "ko-KR",
-      "blogPost": (posts.results as any[]).slice(0, 20).map((p: any) => ({
-        "@type": "BlogPosting",
-        "@id": `${SITE.url}/blog/${p.slug}#article`,
-        "headline": p.title,
-        "url": `${SITE.url}/blog/${p.slug}`,
-        "datePublished": toIsoKst(p.created_at),
-        "dateModified": toIsoKst(p.updated_at || p.created_at)
-      }))
+      "blogPost": rows.map((p: any) => ({ "@id": `${SITE.url}/blog/${p.slug}#article` })),
+      "mainEntityOfPage": {
+        "@type": "CollectionPage",
+        "@id": `${SITE.url}${listPath}#webpage`,
+        "url": `${SITE.url}${listPath}`,
+        "name": `대구365치과 블로그${page > 1 ? ` ${page}페이지` : ''}`,
+        "isPartOf": { "@id": `${SITE.url}/#website` },
+        "mainEntity": {
+          "@type": "ItemList",
+          "numberOfItems": rows.length,
+          "itemListElement": rows.map((p: any, i: number) => ({ "@type": "ListItem", "position": (page - 1) * PER_PAGE + i + 1, "url": `${SITE.url}/blog/${p.slug}`, "name": p.title }))
+        }
+      }
     }
   })
 })
@@ -1372,68 +1428,111 @@ app.get('/blog/:slug', async (c) => {
   const author = post.author_doctor_slug
     ? await c.env.DB.prepare('SELECT * FROM doctors WHERE slug=?').bind(post.author_doctor_slug).first<any>()
     : null
-  const related = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE id!=? AND is_published=1 ORDER BY id DESC LIMIT 4').bind(post.id).all()
+  // 작성 의료진이 없는 글: author 는 병원(Organization) 유지(날조 금지), 감수(reviewedBy)는 대표원장으로 연결
+  const reviewer = author || await c.env.DB.prepare("SELECT * FROM doctors WHERE slug='kim-seongju'").first<any>()
 
-  // description fallback 3단계: meta_description > excerpt > 본문에서 자동 추출
-  const stripHtml = (html: string) => (html || '')
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&[a-z]+;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-  const bodyText = stripHtml(post.content || '')
+  // 관련 진료(제목 키워드 매핑) → 같은 진료 칼럼·비포애프터 (내부 링크, 2026-10-03 칼럼 표준)
+  const txSlug = blogTreatmentSlug(post.title)
+  const treatment = txSlug ? await c.env.DB.prepare('SELECT slug, name, short_desc FROM treatments WHERE slug=?').bind(txSlug).first<any>() : null
+  const others = ((await c.env.DB.prepare('SELECT id, slug, title, excerpt, thumbnail_url, created_at FROM blog_posts WHERE id!=? AND is_published=1 ORDER BY created_at DESC, id DESC').bind(post.id).all()).results || []) as any[]
+  const sameTx = txSlug ? others.filter(p => blogTreatmentSlug(p.title) === txSlug).slice(0, 3) : []
+  const related = [...sameTx, ...others.filter(p => !sameTx.includes(p))].slice(0, 4)
+  let cases: any[] = []
+  if (treatment) {
+    const grp = treatmentGroup(txSlug)
+    cases = ((await c.env.DB.prepare(`SELECT id, title, treatment_period FROM before_afters WHERE is_published=1 AND treatment_slug IN (${grp.map(() => '?').join(',')}) ORDER BY id DESC LIMIT 3`).bind(...grp).all()).results || []) as any[]
+  }
+
+  const bodyText = stripTags(post.content || '')
+  const summary = answerSummary(post.excerpt, post.content || '')
+  const faqs = faqsFromArticleHtml(post.content || '')
+  const contentHtml = enhanceContentImages(post.content || '', post.title)
   const autoDesc = post.meta_description
     || post.excerpt
+    || summary
     || bodyText.substring(0, 155)
-    || `${post.title} — 대구365치과 ${author?.name || '의료진'} 칼럼. 임플란트·인비절라인·라미네이트·치아교정 전문.`
+    || `${post.title} — 대구365치과 ${author?.name || '의료진'} 칼럼.`
 
-  // keywords 자동 조합 (필수 5개 + 작성자 + 카테고리)
   const baseKeywords = '임플란트,인비절라인,라미네이트,글로우네이트,치아교정,대구치과,대구365치과,침산동치과,북구치과'
   const autoKeywords = post.meta_keywords
     || `${post.title},${author?.name || '대구365치과'} ${author?.position || ''},${baseKeywords}`
 
-  // OG 이미지 fallback
   const ogImage = post.og_image
     || post.thumbnail_url
     || ogUrl.blog(post.title, author?.name ? `${author.name} ${author.position || ''}`.trim() : undefined)
+  const ogAbs = ogImage.startsWith('http') ? ogImage : `${SITE.url}${ogImage}`
 
   const robotsOverride = post.noindex ? 'noindex, nofollow' : undefined
-
-  // 본문 단어 수 (스키마용)
   const wordCount = bodyText.split(/\s+/).filter(Boolean).length
+  const pageUrl = `${SITE.url}/blog/${slug}`
+  const published = toIsoKst(post.created_at)
+  const modified = toIsoKst(post.updated_at || post.created_at)
+  const physician = (d: any) => ({ "@type": "Physician", "@id": `${SITE.url}/doctors/${d.slug}#physician`, "name": d.name, "jobTitle": d.position || '치과의사', "url": `${SITE.url}/doctors/${d.slug}` })
 
-  return c.render(<BlogDetailPage post={post} author={author} related={related.results as any} />, {
+  const graph: any[] = [
+    {
+      "@type": "MedicalWebPage",
+      "@id": `${pageUrl}#webpage`,
+      "url": pageUrl,
+      "name": post.title,
+      "description": autoDesc,
+      "inLanguage": "ko-KR",
+      "isPartOf": { "@id": `${SITE.url}/#website` },
+      "datePublished": published,
+      "dateModified": modified,
+      ...(reviewer ? { "reviewedBy": physician(reviewer) } : {}),
+      "medicalAudience": { "@type": "MedicalAudience", "audienceType": "Patient" },
+      ...(treatment ? { "about": { "@type": "MedicalProcedure", "@id": `${SITE.url}/treatments/${treatment.slug}#procedure`, "name": treatment.name, "url": `${SITE.url}/treatments/${treatment.slug}` } } : {}),
+      "primaryImageOfPage": { "@type": "ImageObject", "url": ogAbs },
+      "speakable": { "@type": "SpeakableSpecification", "cssSelector": ["h1", ...(summary ? [".answer-summary"] : [])] },
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": `${pageUrl}#article`,
+      "headline": post.title,
+      "description": autoDesc,
+      "url": pageUrl,
+      "mainEntityOfPage": { "@id": `${pageUrl}#webpage` },
+      "isPartOf": { "@id": `${SITE.url}/blog#blog` },
+      "inLanguage": "ko-KR",
+      "datePublished": published,
+      "dateModified": modified,
+      "image": { "@type": "ImageObject", "url": ogAbs },
+      "author": author ? physician(author) : { "@id": `${SITE.url}/#dentist` },
+      ...(reviewer ? { "reviewedBy": { "@id": `${SITE.url}/doctors/${reviewer.slug}#physician` } } : {}),
+      "publisher": { "@id": `${SITE.url}/#dentist` },
+      "keywords": autoKeywords,
+      "wordCount": wordCount,
+      "articleSection": treatment?.name || '치과 의학정보',
+      "isAccessibleForFree": true,
+      ...(treatment ? { "about": { "@id": `${SITE.url}/treatments/${treatment.slug}#procedure` } } : {}),
+    },
+    ...(faqs.length ? [{
+      "@type": "FAQPage",
+      "@id": `${pageUrl}#faq`,
+      "isPartOf": { "@id": `${pageUrl}#webpage` },
+      "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": f.a } })),
+    }] : []),
+  ]
+
+  return c.render(<BlogDetailPage post={{ ...post, content: contentHtml }} author={author} reviewer={reviewer} summary={summary} treatment={treatment} cases={cases} related={related as any} />, {
     title: post.title,
     description: autoDesc,
     keywords: autoKeywords,
-    canonical: `https://daegu365dc.kr/blog/${slug}`,
-    ogImage,
+    canonical: pageUrl,
+    ogImage: ogAbs,
     ogType: 'article',
-    publishedTime: toIsoKst(post.created_at),
-    modifiedTime: toIsoKst(post.updated_at || post.created_at),
+    publishedTime: published,
+    modifiedTime: modified,
     author: author?.name || '대구365치과',
     ...(robotsOverride && { robots: robotsOverride }),
     breadcrumb: [
       { name: '홈', url: '/' },
       { name: '블로그', url: '/blog' },
+      ...(treatment ? [{ name: treatment.name, url: `/treatments/${treatment.slug}` }] : []),
       { name: post.title, url: `/blog/${slug}` }
     ],
-    jsonLd: articleSchema({
-      title: post.title,
-      description: autoDesc,
-      slug,
-      authorName: author?.name,
-      authorSlug: author?.slug,
-      authorPosition: author?.position,
-      publishedTime: toIsoKst(post.created_at),
-      modifiedTime: toIsoKst(post.updated_at || post.created_at),
-      image: ogImage,
-      keywords: autoKeywords,
-      wordCount,
-      articleSection: '치과 의학정보'
-    })
+    jsonLd: { "@context": "https://schema.org", "@graph": graph }
   })
 })
 

@@ -111,7 +111,7 @@ export const BeforeAfterListPage = ({
               <div class="aspect-[4/3] relative rounded-2xl overflow-hidden mb-4 shadow-card group-hover:shadow-lux transition bg-cream">
                 {/* Before 사진만 노출 - 로그인 여부와 무관 */}
                 {beforeImg ? (
-                  <img src={beforeImg} alt={`${ba.title} - Before`} loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                  <img src={beforeImg} alt={`${ba.title} 치료 전`} loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                 ) : (
                   <div class="absolute inset-0 placeholder-img flex items-center justify-center"><i class="fas fa-tooth text-4xl"></i></div>
                 )}
@@ -148,8 +148,8 @@ export const BeforeAfterListPage = ({
 }
 
 export const BeforeAfterDetailPage = ({
-  item, doctor, treatment, isLoggedIn
-}: { item: BeforeAfter, doctor: Doctor | null, treatment: Treatment | null, isLoggedIn: boolean }) => (
+  item, doctor, treatment, isLoggedIn, summary = '', relatedPosts = []
+}: { item: BeforeAfter, doctor: Doctor | null, treatment: Treatment | null, isLoggedIn: boolean, summary?: string, relatedPosts?: { slug: string, title: string }[] }) => (
   <>
     <Navbar />
 
@@ -167,7 +167,8 @@ export const BeforeAfterDetailPage = ({
           {item.region_sigungu && <span class="tag tag-brown">{item.region_sido} {item.region_sigungu} {item.region_dong}</span>}
         </div>
         <h1 class="display text-4xl md:text-5xl font-black tracking-tight mb-6">{item.title}</h1>
-        <p class="text-brown-700 text-lg leading-relaxed mb-10">{item.description}</p>
+        {item.description && <p class="text-brown-700 text-lg leading-relaxed mb-4">{item.description}</p>}
+        {summary && <p class="case-summary text-brown-700 leading-relaxed mb-10">{summary}</p>}
       </div>
 
       {/* Slider Before/After */}
@@ -178,7 +179,7 @@ export const BeforeAfterDetailPage = ({
             <div class="ba-slider">
               <div class="absolute inset-0">
                 {item.pano_before_url ? (
-                  <img src={item.pano_before_url} alt={`${item.title} 파노라마 Before`} class="w-full h-full object-cover" />
+                  <img src={item.pano_before_url} alt={`${item.before_alt} (파노라마)`} class="w-full h-full object-cover" />
                 ) : (
                   <div class="w-full h-full placeholder-img flex items-center justify-center"><i class="fas fa-x-ray text-6xl"></i></div>
                 )}
@@ -186,7 +187,7 @@ export const BeforeAfterDetailPage = ({
               <div class="ba-after-wrap">
                 {isLoggedIn ? (
                   item.pano_after_url ? (
-                    <img src={item.pano_after_url} alt={`${item.title} 파노라마 After`} class="w-full h-full object-cover" />
+                    <img src={item.pano_after_url} alt={`${item.after_alt} (파노라마)`} class="w-full h-full object-cover" />
                   ) : (
                     <div class="w-full h-full placeholder-img flex items-center justify-center" style="background:linear-gradient(135deg,#e6d7bf,#c9a876);"><i class="fas fa-x-ray text-6xl text-brown-800"></i></div>
                   )
@@ -214,7 +215,7 @@ export const BeforeAfterDetailPage = ({
             <div class="ba-slider">
               <div class="absolute inset-0">
                 {item.intra_before_url ? (
-                  <img src={item.intra_before_url} alt={`${item.title} 구내 Before`} class="w-full h-full object-cover" />
+                  <img src={item.intra_before_url} alt={item.before_alt} class="w-full h-full object-cover" />
                 ) : (
                   <div class="w-full h-full placeholder-img flex items-center justify-center"><i class="fas fa-camera text-6xl"></i></div>
                 )}
@@ -222,7 +223,7 @@ export const BeforeAfterDetailPage = ({
               <div class="ba-after-wrap">
                 {isLoggedIn ? (
                   item.intra_after_url ? (
-                    <img src={item.intra_after_url} alt={`${item.title} 구내 After`} class="w-full h-full object-cover" />
+                    <img src={item.intra_after_url} alt={item.after_alt} class="w-full h-full object-cover" />
                   ) : (
                     <div class="w-full h-full placeholder-img flex items-center justify-center" style="background:linear-gradient(135deg,#e6d7bf,#c9a876);"><i class="fas fa-camera text-6xl text-brown-800"></i></div>
                   )
@@ -263,6 +264,17 @@ export const BeforeAfterDetailPage = ({
           </a>
         )}
       </div>
+
+      {relatedPosts.length > 0 && (
+        <div class="mb-16 fade-in">
+          <h2 class="display text-2xl font-medium mb-4">{treatment ? `${treatment.name} 관련 칼럼` : '관련 칼럼'}</h2>
+          <ul class="space-y-2">
+            {relatedPosts.map(p => <li><a href={`/blog/${p.slug}`} class="text-brown-700 hover:underline">{p.title}</a></li>)}
+          </ul>
+        </div>
+      )}
+
+      <p class="text-xs text-brown-500 text-center mb-8">※ 치료 전후 사진은 해당 환자의 사례이며, 결과와 기간은 개인에 따라 다를 수 있습니다.</p>
 
       <div class="text-center fade-in">
         <a href="tel:053-357-0365" class="btn-primary">

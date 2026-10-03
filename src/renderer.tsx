@@ -407,7 +407,9 @@ export const articleSchema = (opts: {
   "inLanguage": "ko-KR"
 })
 
-/** 비포애프터 케이스 스키마 — MedicalCaseStudy + Article 듀얼 */
+/** 비포애프터 케이스 스키마 — PFWE-COLUMN-CASE-SEO B절 (2026-10-03)
+ *  MedicalWebPage(about → MedicalProcedure @id, reviewedBy → 원장 @id, lastReviewed) + 공개 사진 ImageObject.
+ *  Review/Rating 없음. (기존 'MedicalCaseStudy' 는 schema.org 에 없는 타입이라 제거) */
 export const caseStudySchema = (opts: {
   id: number
   title: string
@@ -418,82 +420,39 @@ export const caseStudySchema = (opts: {
   afterAlt?: string
   doctorName?: string
   doctorSlug?: string
+  reviewerName?: string
+  reviewerSlug?: string
   treatmentName?: string
   treatmentSlug?: string
   createdAt?: string
   updatedAt?: string
 }) => {
+  const url = `${SITE.url}/before-after/${opts.id}`
+  const abs = (u: string) => u.startsWith('http') ? u : `${SITE.url}${u}`
   const images: any[] = []
-  if (opts.beforeImage) images.push({
-    "@type": "ImageObject",
-    "url": opts.beforeImage,
-    "caption": opts.beforeAlt || `${opts.title} - 치료 전`,
-    "representativeOfPage": true
-  })
-  if (opts.afterImage) images.push({
-    "@type": "ImageObject",
-    "url": opts.afterImage,
-    "caption": opts.afterAlt || `${opts.title} - 치료 후`
-  })
-  return [
-    // (1) MedicalCaseStudy — 의료 도메인 신호
-    {
-      "@context": "https://schema.org",
-      "@type": "MedicalCaseStudy",
-      "@id": `${SITE.url}/before-after/${opts.id}#case`,
-      "name": opts.title,
-      "description": opts.description,
-      "url": `${SITE.url}/before-after/${opts.id}`,
-      ...(images.length > 0 && { "image": images }),
-      ...(opts.treatmentName && {
-        "medicalSpecialty": "Dentistry",
-        "about": {
-          "@type": "MedicalProcedure",
-          "@id": `${SITE.url}/treatments/${opts.treatmentSlug}#procedure`,
-          "name": opts.treatmentName
-        }
-      }),
-      ...(opts.doctorSlug && opts.doctorName && {
-        "author": {
-          "@type": "Physician",
-          "@id": `${SITE.url}/doctors/${opts.doctorSlug}#physician`,
-          "name": opts.doctorName,
-          "url": `${SITE.url}/doctors/${opts.doctorSlug}`
-        }
-      }),
-      "provider": { "@id": `${SITE.url}/#dentist` },
-      "datePublished": opts.createdAt,
-      "dateModified": opts.updatedAt || opts.createdAt
-    },
-    // (2) Article — 구글이 인덱싱 잘하는 보조 스키마
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "@id": `${SITE.url}/before-after/${opts.id}#article`,
-      "headline": opts.title,
-      "description": opts.description,
-      "url": `${SITE.url}/before-after/${opts.id}`,
-      ...(images[0] && { "image": images[0] }),
-      "datePublished": opts.createdAt,
-      "dateModified": opts.updatedAt || opts.createdAt,
-      "publisher": {
-        "@type": "Organization",
-        "@id": `${SITE.url}/#dentist`,
-        "name": SITE.name,
-        "logo": { "@type": "ImageObject", "url": SITE.logo }
-      },
-      "author": opts.doctorSlug && opts.doctorName ? {
-        "@type": "Person",
-        "@id": `${SITE.url}/doctors/${opts.doctorSlug}#physician`,
-        "name": opts.doctorName
-      } : { "@id": `${SITE.url}/#dentist` },
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": `${SITE.url}/before-after/${opts.id}`
-      },
-      "inLanguage": "ko-KR"
-    }
-  ]
+  if (opts.beforeImage) images.push({ "@type": "ImageObject", "contentUrl": abs(opts.beforeImage), "caption": opts.beforeAlt || `${opts.treatmentName || opts.title} 치료 전` })
+  if (opts.afterImage) images.push({ "@type": "ImageObject", "contentUrl": abs(opts.afterImage), "caption": opts.afterAlt || `${opts.treatmentName || opts.title} 치료 후` })
+  const revSlug = opts.reviewerSlug || opts.doctorSlug
+  const revName = opts.reviewerName || opts.doctorName
+  return {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "@id": `${url}#webpage`,
+    "url": url,
+    "name": opts.title,
+    "description": opts.description,
+    "inLanguage": "ko-KR",
+    "isPartOf": { "@id": `${SITE.url}/#website` },
+    "publisher": { "@id": `${SITE.url}/#dentist` },
+    "datePublished": opts.createdAt,
+    "dateModified": opts.updatedAt || opts.createdAt,
+    ...(opts.updatedAt || opts.createdAt ? { "lastReviewed": String(opts.updatedAt || opts.createdAt).slice(0, 10) } : {}),
+    ...(revSlug && revName ? { "reviewedBy": { "@type": "Physician", "@id": `${SITE.url}/doctors/${revSlug}#physician`, "name": revName, "url": `${SITE.url}/doctors/${revSlug}` } } : {}),
+    "specialty": { "@type": "MedicalSpecialty", "name": "Dentistry" },
+    ...(opts.treatmentName && opts.treatmentSlug ? { "about": { "@type": "MedicalProcedure", "@id": `${SITE.url}/treatments/${opts.treatmentSlug}#procedure`, "name": opts.treatmentName, "url": `${SITE.url}/treatments/${opts.treatmentSlug}` } } : {}),
+    "speakable": { "@type": "SpeakableSpecification", "cssSelector": ["h1", ".case-summary"] },
+    ...(images.length ? { "image": images, "primaryImageOfPage": images[0] } : {}),
+  }
 }
 
 /** HowTo 스키마 — 진료 PROCESS 단계를 AI/구글이 "절차 가이드"로 인식 (2026 AEO 핵심)
@@ -693,10 +652,10 @@ export const renderer = jsxRenderer(({
 
         {/* JSON-LD: 전역 (Dentist + WebSite + Breadcrumb) + 페이지별 */}
         {baseSchemas.map((s) => (
-          <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(s)}} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(s).replace(/</g, '\\u003c')}} />
         ))}
         {pageSchemas.map((s) => (
-          <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(s)}} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(s).replace(/</g, '\\u003c')}} />
         ))}
       {/* GA4 */}
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZLNLY4JWXR"></script>
