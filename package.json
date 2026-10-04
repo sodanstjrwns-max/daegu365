@@ -3,13 +3,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "build:prod": "vite build && npm run copy:assets",
+    "build": "npm run css:build && vite build",
+    "build:prod": "npm run build && npm run copy:assets",
     "copy:assets": "mkdir -p dist/static/videos && cp -f public/static/videos/*.mp4 dist/static/videos/ 2>/dev/null || true",
     "preview": "wrangler pages dev",
     "deploy": "npm run build:prod && wrangler pages deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "css:build": "tailwindcss -c tailwind.config.cjs -i src/styles/tailwind.css -o public/static/tailwind.css && node scripts/tailwind-version.mjs"
   },
+  "browserslist": [
+    "defaults",
+    "safari >= 12",
+    "ios_saf >= 12"
+  ],
   "dependencies": {
     "@resvg/resvg-wasm": "^2.6.2",
     "hono": "^4.12.12",
@@ -21,6 +27,7 @@
     "@hono/vite-build": "^1.2.0",
     "@hono/vite-dev-server": "^0.18.2",
     "playwright": "^1.60.0",
+    "tailwindcss": "3.4.17",
     "vite": "^6.3.5",
     "vite-plugin-wasm": "^3.6.0",
     "wrangler": "^4.4.0"
