@@ -1,5 +1,10 @@
 # 대구365치과 (Daegu365 Dental Clinic) — 공식 홈페이지
 
+## 2026-09-13 로컬 개선 (운영 배포 전)
+
+공통 화면의 Tailwind를 CDN 실행에서 빌드 CSS로 전환했다. 사이트 고유 색·폰트 설정은 `tailwind.config.cjs`, 입력은 `src/styles/tailwind.css`, 출력은 `public/static/tailwind.css`다. `npm run css:build`로 CSS를 다시 만들고 `npm run build`로 함께 빌드한다. 새 유틸리티 클래스나 테마를 추가하면 CSS도 재생성해야 한다.
+기존 화면과 같은 우선순위를 위해 Tailwind 스타일시트는 head의 마지막에서 로드한다.
+
 > 치과가 무서웠던 의사가 만든 치과. 수면임플란트·인비절라인·라미네이트 전문.
 > **대구 북구 침산로 148 엠브로스퀘어 7층**
 

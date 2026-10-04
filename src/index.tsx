@@ -62,6 +62,17 @@ import {
 } from './pages/admin'
 
 const app = new Hono<{ Bindings: Bindings }>()
+
+// 동적 HTML 응답에도 기본 헤더 적용 (_headers는 정적 자산에만 적용됨).
+app.use('*', async (c, next) => {
+  await next()
+  c.header('X-Content-Type-Options', 'nosniff')
+  c.header('X-Frame-Options', 'SAMEORIGIN')
+  c.header('Referrer-Policy', 'strict-origin-when-cross-origin')
+  if (new URL(c.req.url).protocol === 'https:') {
+    c.header('Strict-Transport-Security', 'max-age=31536000')
+  }
+})
 app.use(renderer)
 
 // ============ Helpers ============

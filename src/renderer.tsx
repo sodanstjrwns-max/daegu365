@@ -662,31 +662,12 @@ export const renderer = jsxRenderer(({
 
         {/* Fonts */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="" />
-        <link rel="dns-prefetch" href="https://cdn.tailwindcss.com" />
         <link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 
         {/* Tailwind + Icons */}
-        <script src="https://cdn.tailwindcss.com"></script>
+
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
         <link href="/static/styles.css" rel="stylesheet" />
-
-        <script dangerouslySetInnerHTML={{__html: `
-          tailwind.config = {
-            theme: {
-              extend: {
-                colors: {
-                  brown: {50:'#faf7f3',100:'#f3ecdf',200:'#e6d7bf',300:'#d4ba94',400:'#b89468',500:'#a07747',600:'#8a6235',700:'#6b4c2a',800:'#4a3520',900:'#2c1f14',950:'#1a120a'},
-                  ivory:'#fdfbf7', cream:'#f5efe5', gold:'#c9a876'
-                },
-                fontFamily: {
-                  display:['Pretendard','-apple-system','BlinkMacSystemFont','Segoe UI','sans-serif'],
-                  serif:['Pretendard','-apple-system','BlinkMacSystemFont','Segoe UI','sans-serif'],
-                  sans:['Pretendard','-apple-system','BlinkMacSystemFont','Segoe UI','sans-serif']
-                }
-              }
-            }
-          }
-        `}} />
 
         {/* JSON-LD: 전역 (Dentist + WebSite + Breadcrumb) + 페이지별 */}
         {baseSchemas.map((s) => (
@@ -700,6 +681,8 @@ export const renderer = jsxRenderer(({
       <script dangerouslySetInnerHTML={{ __html: "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZLNLY4JWXR',{anonymize_ip:true});" }} />
       <script dangerouslySetInnerHTML={{ __html: '(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","yc7wel27et");' }} />
       <script defer src="https://pf-dashboard-2nt.pages.dev/beacon.js"></script>
+      {/* CDN이 마지막에 주입하던 유틸리티 우선순위를 유지합니다. */}
+      <link rel="stylesheet" href="/static/tailwind.css?v=20260913" />
       </head>
       <body class="bg-ivory text-brown-900">
         {children}
