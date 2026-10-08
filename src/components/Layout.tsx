@@ -1216,7 +1216,7 @@ export const Footer = () => (
           <div class="display text-base text-gold mb-4 font-bold tracking-tight" role="heading" aria-level="3">내원안내</div>
           <ul class="space-y-3 text-sm text-brown-200">
             <li class="flex gap-2"><i class="fas fa-map-marker-alt mt-1 text-gold"></i>
-              <span>대구광역시 북구 침산로 148<br/>엠브로스퀘어 7층</span>
+              <span>대구광역시 북구 침산로 148<br/>엠브로스퀘어 7층<br/><a href="/regions" class="underline hover:text-ivory">대구 북구 치과 안내</a></span>
             </li>
             <li class="flex gap-2"><i class="fas fa-phone mt-1 text-gold"></i>
               <a href="tel:053-357-0365">053-357-0365</a>

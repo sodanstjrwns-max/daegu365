@@ -91,7 +91,7 @@ export const HomePage = () => (
           {/* SINCE 2025 라벨 — 위 카드와 동일 mt-6 간격 */}
           <div class="mt-6 fade-in">
             <div class="section-label inline-block" style="color:var(--gold); border-color:var(--gold); background:rgba(26,18,10,0.4);">
-              SINCE 2025 · 대구 북구
+              SINCE 2025 · <a href="/regions" style="color:inherit;">대구 북구 치과</a>
             </div>
           </div>
         </div>

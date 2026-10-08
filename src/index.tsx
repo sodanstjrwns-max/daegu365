@@ -15,6 +15,8 @@ import { CONTENT_DATES, latestDate, toIsoKst, kstYmd } from './lib/content-dates
 import { blogTreatmentSlug, treatmentGroup, stripTags, answerSummary, faqsFromArticleHtml, enhanceContentImages, DOCTOR_SLUG_ALIAS, periodLabel } from './lib/column-seo'
 import { fetchSiteStats, renderStatsPage, isValidStatsKey } from './lib/stats'
 import { renderOgPng } from './lib/og-png'
+import { RegionsHubPage, REGIONS_HUB_TITLE, REGIONS_HUB_DESC, REGIONS_HUB_FAQS, REGIONS_HUB_DATE } from './pages/regions-hub'
+import { DICT_ENRICHED, DICT_ALIAS_REDIRECTS, ENRICHED_DATE, isDictAlias, isDictIndexable, dictAliasNames, dictLastmod } from './data/dictionary-enriched'
 
 // Pages
 import { HomePage, HOME_FAQS } from './pages/home'
@@ -465,6 +467,10 @@ app.use('*', async (c, next) => {
   if (ALIAS_REDIRECTS[path]) {
     return c.redirect(ALIAS_REDIRECTS[path], 301)
   }
+  // 2-1) 백과사전 동의어 용어 → 정식 용어 301 (2026-10-08, data/dictionary-enriched DICT_ALIASES)
+  if (DICT_ALIAS_REDIRECTS[path]) {
+    return c.redirect(DICT_ALIAS_REDIRECTS[path], 301)
+  }
   return next()
 })
 
@@ -767,7 +773,8 @@ app.get('/treatments/:slug', async (c) => {
   const cases = isImplantPage
     ? await c.env.DB.prepare("SELECT * FROM before_afters WHERE treatment_slug IN ('implant','implant-general') AND is_published=1 ORDER BY id DESC LIMIT 6").all()
     : await c.env.DB.prepare('SELECT * FROM before_afters WHERE treatment_slug=? AND is_published=1 ORDER BY id DESC LIMIT 6').bind(slug).all()
-  const dictTerms = await c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? ORDER BY id LIMIT 20').bind(slug).all()
+  const dictTermsRaw = await c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? ORDER BY id LIMIT 30').bind(slug).all()
+  const dictTerms = { results: ((dictTermsRaw.results || []) as any[]).filter((d: any) => !isDictAlias(d.slug)).slice(0, 20) }
 
   // FAQPage schema
   const faqJsonLd = {
@@ -1592,7 +1599,8 @@ app.get('/dictionary', async (c) => {
   if (category) { where.push('category=?'); binds.push(category) }
   const sql = 'SELECT * FROM dictionary' + (where.length ? ' WHERE ' + where.join(' AND ') : '') + ' ORDER BY term LIMIT 1000'
   const r = await c.env.DB.prepare(sql).bind(...binds).all()
-  const dictRows = (r.results as any[]) || []
+  // 동의어(301 로 합친 용어)는 목록에서 제외 — 정식 용어 쪽만 노출
+  const dictRows = ((r.results as any[]) || []).filter((d: any) => !isDictAlias(d.slug))
   // 색인 허용(indexable=1) 용어는 허브 상단에 별도 노출 — 내부 링크 신호 강화 (검색/카테고리 필터 시 생략)
   let featured: any[] = []
   if (!q && !category) {
@@ -1636,7 +1644,7 @@ app.get('/dictionary', async (c) => {
       "item": { "@id": `${SITE.url}/dictionary/${d.slug}#term` }
     }))
   }
-  return c.render(<DictionaryListPage items={r.results as any} featured={featured} selectedCategory={category} query={q} />, {
+  return c.render(<DictionaryListPage items={dictRows as any} featured={featured} selectedCategory={category} query={q} />, {
     title: '치과 백과사전 · 500+ 용어',
     description: '치과 용어 500여 개를 담은 대구365치과 백과사전. 임플란트·교정·라미네이트 등 전문 용어 해설.',
     canonical: 'https://daegu365dc.kr/dictionary',
@@ -1653,19 +1661,40 @@ app.get('/dictionary/:slug', async (c) => {
   const entry = await c.env.DB.prepare('SELECT * FROM dictionary WHERE slug=?').bind(slug).first<any>()
   if (!entry) return c.notFound()
   await c.env.DB.prepare('UPDATE dictionary SET view_count=view_count+1 WHERE id=?').bind(entry.id).run()
-  // SEO Step3: 리라이트 완료 용어(indexable=1)는 색인 복귀 — 미들웨어 noindex 헤더 제외
-  const isIndexable = !!entry.indexable
+  // 색인 판정(2026-10-08): D1 indexable 플래그 대신 코드에서 — 리라이트 완료(indexable=1)·보강 데이터 보유·본문 임계값 이상이면 index
+  const enriched = DICT_ENRICHED[slug]
+  const isIndexable = isDictIndexable(entry)
   if (isIndexable) c.set('dictIndexable' as never, true as never)
+  const aliasNames = dictAliasNames(slug)
+  const pageLastmod = dictLastmod(entry)
 
-  const relSlugs: string[] = (() => { try { return JSON.parse(entry.related_treatments || '[]') } catch { return [] } })()
+  const relSlugs: string[] = (() => {
+    let base: string[] = []
+    try { base = JSON.parse(entry.related_treatments || '[]') } catch { base = [] }
+    return Array.from(new Set([...(Array.isArray(base) ? base : []), ...(enriched?.treatments || [])]))
+  })()
   let relatedTreatments: any[] = []
   if (relSlugs.length) {
     const ph = relSlugs.map(() => '?').join(',')
     const rr = await c.env.DB.prepare(`SELECT * FROM treatments WHERE slug IN (${ph})`).bind(...relSlugs).all()
     relatedTreatments = rr.results as any[]
   }
-  // 비슷한 용어: 색인 허용 용어를 우선 노출 (색인 페이지 간 내부 링크 강화)
-  const relatedEntries = await c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? AND id!=? ORDER BY indexable DESC, RANDOM() LIMIT 6').bind(entry.category, entry.id).all()
+  // 비슷한 용어: 보강 데이터의 관련 용어(내용상 가까운 것)를 먼저, 부족하면 같은 카테고리에서 채움. 동의어(301) 제외
+  const wantRel = (enriched?.related || []).filter(s => s !== slug && !isDictAlias(s)).slice(0, 6)
+  const [relPicked, relSameCat] = await Promise.all([
+    wantRel.length
+      ? c.env.DB.prepare(`SELECT * FROM dictionary WHERE slug IN (${wantRel.map(() => '?').join(',')})`).bind(...wantRel).all()
+      : Promise.resolve({ results: [] as any[] }),
+    c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? AND id!=? ORDER BY indexable DESC, RANDOM() LIMIT 10').bind(entry.category, entry.id).all(),
+  ])
+  const relOrdered = wantRel.map(s => ((relPicked.results || []) as any[]).find((d: any) => d.slug === s)).filter(Boolean)
+  const relSeen = new Set<string>([slug, ...relOrdered.map((d: any) => d.slug)])
+  const relatedEntries = {
+    results: [
+      ...relOrdered,
+      ...((relSameCat.results || []) as any[]).filter((d: any) => !relSeen.has(d.slug) && !isDictAlias(d.slug)),
+    ].slice(0, 6)
+  }
 
   // FAQ schema: related_treatments에 매핑되는 진료 FAQ 자동 주입 (rich result)
   // dictionary의 related_treatments → faqs.treatment_slug 매핑
@@ -1696,7 +1725,7 @@ app.get('/dictionary/:slug', async (c) => {
     "@type": "DefinedTerm",
     "@id": `${SITE.url}/dictionary/${slug}#term`,
     "name": entry.term,
-    ...(entry.term_en && { "alternateName": entry.term_en }),
+    ...((entry.term_en || aliasNames.length) && { "alternateName": [entry.term_en, ...aliasNames].filter(Boolean) }),
     "description": entry.short_desc,
     "url": `${SITE.url}/dictionary/${slug}`,
     "inDefinedTermSet": {
@@ -1706,6 +1735,17 @@ app.get('/dictionary/:slug', async (c) => {
       "url": `${SITE.url}/dictionary`
     },
     "inLanguage": "ko-KR"
+  }, {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${SITE.url}/dictionary/${slug}#webpage`,
+    "url": `${SITE.url}/dictionary/${slug}`,
+    "name": `${entry.term} - 치과 용어사전`,
+    "inLanguage": "ko-KR",
+    "isPartOf": { "@id": `${SITE.url}/#website` },
+    "about": { "@id": `${SITE.url}/dictionary/${slug}#term` },
+    "publisher": { "@id": `${SITE.url}/#dentist` },
+    ...(pageLastmod && { "dateModified": pageLastmod })
   }]
   // 용어 자체 FAQ(faq_json)를 우선 사용, 없으면 진료 FAQ를 fallback으로 사용
   let ownFaqs: { q: string, a: string }[] = []
@@ -1713,9 +1753,10 @@ app.get('/dictionary/:slug', async (c) => {
     const parsed = JSON.parse(entry.faq_json || '[]')
     if (Array.isArray(parsed)) ownFaqs = parsed.filter((f: any) => f && f.q && f.a)
   } catch {}
-  const faqForSchema = ownFaqs.length > 0
-    ? ownFaqs.map(f => ({ name: f.q, text: f.a }))
-    : dictFaqList.map((f: any) => ({ name: f.question, text: f.answer }))
+  // 화면과 1:1 — 화면에 보이는 용어 FAQ(D1 faq_json + 보강 FAQ)만 스키마에 싣는다(진료 FAQ 대체 주입 중단: 화면에 없던 문답)
+  const shownFaqs = [...ownFaqs, ...((enriched?.faq || []).filter(f => !ownFaqs.some(o => o.q === f.q)))]
+  void dictFaqList
+  const faqForSchema = shownFaqs.map(f => ({ name: f.q, text: f.a }))
   if (faqForSchema.length > 0) {
     dictJsonLd.push({
       "@context": "https://schema.org",
@@ -1743,11 +1784,12 @@ app.get('/dictionary/:slug', async (c) => {
     entry.key_points
   ])
 
-  return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} />, {
+  return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} enriched={enriched} aliasNames={aliasNames} updated={enriched ? ENRICHED_DATE : ''} />, {
     title: `${entry.term} - 치과 용어사전`,
     description: metaDesc,
-    // SEO Step3: indexable=1(리라이트 완료)만 색인 허용, 나머지는 noindex 유지
+    // 코드 판정(isDictIndexable): 리라이트 완료·보강·본문 임계값 이상만 색인, 나머지는 noindex
     robots: isIndexable ? undefined : 'noindex, follow',
+    ...(enriched && { modifiedTime: ENRICHED_DATE }),
     canonical: `https://daegu365dc.kr/dictionary/${slug}`,
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -1987,16 +2029,16 @@ app.get('/regions', async (c) => {
   })
   const breadcrumb = [
     { name: '홈', url: '/' },
-    { name: '지역별 진료', url: '/regions' }
+    { name: '대구 북구 치과', url: '/regions' }
   ]
-  // ItemList 스키마 — 지역별 진료 페이지 전체 목록을 구글에 명시 (siteLinks/rich result용)
+  // ItemList 스키마 — 지역별 진료 페이지 전체 목록
   const regionRows = (regions.results as any[]) || []
   const regionsItemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "@id": `${SITE.url}/regions#itemlist`,
     "name": "대구 지역별 치과 진료 안내",
-    "description": "대구 8개 자치구 × 진료별 랜딩 페이지 목록",
+    "description": "대구 8개 자치구 × 진료별 안내 페이지 목록",
     "url": `${SITE.url}/regions`,
     "numberOfItems": regionRows.length,
     "itemListElement": regionRows.slice(0, 100).map((r: any, i: number) => ({
@@ -2006,44 +2048,46 @@ app.get('/regions', async (c) => {
       "name": r.h1 || r.title || `${r.region_name} ${r.treatment_slug || '진료'}`
     }))
   }
+  // 2026-10-08: "대구 북구 치과" 대표 키워드 허브 — MedicalWebPage(about 병원 @id, areaServed) + FAQPage(화면 1:1)
+  const hubWebPage = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    "@id": `${SITE.url}/regions#webpage`,
+    "url": `${SITE.url}/regions`,
+    "name": `${REGIONS_HUB_TITLE} | ${SITE.name}`,
+    "description": REGIONS_HUB_DESC,
+    "inLanguage": "ko-KR",
+    "isPartOf": { "@id": `${SITE.url}/#website` },
+    "about": { "@id": `${SITE.url}/#dentist` },
+    "mainEntity": { "@id": `${SITE.url}/#dentist` },
+    "specialty": "Dentistry",
+    "audience": { "@type": "MedicalAudience", "audienceType": "Patient", "geographicArea": { "@type": "AdministrativeArea", "name": "대구 북구" } },
+    "areaServed": [
+      { "@type": "AdministrativeArea", "name": "대구광역시 북구" },
+      { "@type": "AdministrativeArea", "name": "침산동" },
+      { "@type": "City", "name": "대구광역시" }
+    ],
+    "dateModified": latestDate(CONTENT_DATES.regionsHub, REGIONS_HUB_DATE)
+  }
+  const hubFaq = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${SITE.url}/regions#faq`,
+    "mainEntity": REGIONS_HUB_FAQS.map(f => ({
+      "@type": "Question", "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a }
+    }))
+  }
   return c.render(
-    <>
-      <Navbar />
-      <section class="pt-20 pb-12 bg-cream">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-          <div class="section-label mb-6">REGIONAL DENTISTRY</div>
-          <h1 class="display text-4xl md:text-6xl font-light mb-6">대구 지역별 치과 진료 안내</h1>
-          <p class="text-brown-700 max-w-3xl mx-auto text-lg leading-relaxed">
-            대구 북구 침산동에 위치한 대구365치과는 대구 전역에서 환자분이 방문하시는 종합 치과입니다.
-            북구·수성구·중구·동구·서구·남구·달서구·달성군을 비롯한 대구 8개 자치구에서 가까운 진료 안내를 확인하실 수 있습니다.
-          </p>
-        </div>
-      </section>
-      <section class="py-16 max-w-6xl mx-auto px-6">
-        {Object.entries(byRegion).map(([region, items]) => (
-          <div class="mb-12">
-            <h2 class="display text-3xl font-medium mb-6 pb-3 border-b border-brown-200">{region}</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {(items as any[]).map((r: any) => (
-                <a href={`/region/${r.slug}`} class="lux-card hover:shadow-lg transition">
-                  <div class="text-xs text-brown-500 mb-2">{r.treatment_slug ? tNameBySlug[r.treatment_slug] || r.treatment_slug : '종합진료'}</div>
-                  <div class="display text-lg font-medium mb-1">{r.h1}</div>
-                  <div class="text-xs text-brown-600 line-clamp-2">{r.meta_description}</div>
-                </a>
-              ))}
-            </div>
-          </div>
-        ))}
-      </section>
-      <Footer />
-    </>,
+    <RegionsHubPage byRegion={byRegion} tNameBySlug={tNameBySlug} />,
     {
-      title: '대구 지역별 치과 진료 안내 · 대구365치과',
-      description: '대구 북구·수성구·중구·동구·서구·남구·달서구·달성군 등 대구 전 지역에서 가까운 대구365치과 진료 안내. 임플란트·교정·라미네이트·미백 등 진료별 지역 정보.',
+      title: REGIONS_HUB_TITLE,
+      description: REGIONS_HUB_DESC,
+      keywords: '대구 북구 치과,북구 치과,침산동 치과,대구 북구 임플란트,대구 북구 교정,대구365치과',
       canonical: 'https://daegu365dc.kr/regions',
       breadcrumb,
-      // Dentist/Breadcrumb는 renderer.tsx에서 전역 자동 주입 → ItemList만 추가
-      jsonLd: regionsItemListSchema
+      // Dentist/WebSite/Breadcrumb 는 renderer.tsx 에서 전역 자동 주입
+      jsonLd: [hubWebPage, hubFaq, regionsItemListSchema]
     }
   )
 })
@@ -2103,7 +2147,7 @@ app.get('/region/:slug', async (c) => {
           .bind(faqTreatmentSlug).all()
       : Promise.resolve({ results: [] }),
   ])
-  const relatedDict = (relatedDictRows as any).results || []
+  const relatedDict = (((relatedDictRows as any).results || []) as any[]).filter((d: any) => !isDictAlias(d.slug))
   const regionFaqList = ((regionFaqs as any).results || []) as any[]
   const breadcrumb = [
     { name: '홈', url: '/' },
@@ -3274,6 +3318,7 @@ const buildLlmsLines = async (c: any): Promise<string[]> => {
   lines.push(`- [자주 묻는 질문 (250+ FAQ)](${base}/faq)`)
   lines.push(`- [비용 안내](${base}/fees)`)
   lines.push(`- [오시는 길](${base}/directions)`)
+  lines.push(`- [대구 북구 치과 — 위치·진료시간·의료진·진료 안내](${base}/regions)`)
   lines.push('')
   lines.push('## 차별점')
   lines.push('- 4단계 무통마취: 모든 진료 기본 적용 (가글마취 → 도포마취 → iject BTS 컴퓨터 제어 → 본마취)')
@@ -3398,9 +3443,9 @@ const mainStaticDates = async (DB: D1Database): Promise<Record<string, string>> 
     '/directions': CONTENT_DATES.directions,
     '/hours': CONTENT_DATES.hours,
     '/fees': latestDate(fees, CONTENT_DATES.feesPage),
-    '/dictionary': dict,
+    '/dictionary': latestDate(dict, Object.keys(DICT_ENRICHED).length ? ENRICHED_DATE : ''),
     '/faq': latestDate(faqs, CONTENT_DATES.faqsData),
-    '/regions': latestDate(regions, CONTENT_DATES.regionsData),
+    '/regions': latestDate(regions, CONTENT_DATES.regionsData, CONTENT_DATES.regionsHub, REGIONS_HUB_DATE),
   }
 }
 const xmlEscape = (s: any): string => {
@@ -3426,7 +3471,7 @@ app.get('/sitemap.xml', async (c) => {
     d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM notices WHERE is_published=1', 'SELECT MAX(created_at) as m FROM notices WHERE is_published=1']),
     d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0', 'SELECT MAX(created_at) as m FROM blog_posts WHERE is_published=1']),
     d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM before_afters WHERE is_published=1 AND COALESCE(noindex,0)=0', 'SELECT MAX(created_at) as m FROM before_afters WHERE is_published=1']),
-    d1MaxDate(DB, ['SELECT MAX(COALESCE(updated_at, created_at)) as m FROM dictionary WHERE indexable=1']),
+    dictSitemapRows(DB).then(rows => latestDate(...rows.map(r => r.lastmod))),
   ])
   const lastmodMain = latestDate(...Object.values(staticDates), tDoc, tTreat, tNotice, CONTENT_DATES.doctorsData, CONTENT_DATES.treatmentsData, REVIEW_DATE)
 
@@ -3685,20 +3730,30 @@ ${urls.join('\n')}
 // Step1에서 전량 철수 → Step3에서 리라이트 완료된 용어(indexable=1)만 선별 복귀.
 // 나머지 용어는 noindex 유지 + 사이트맵 미포함.
 // 2026-09-21: 정식 경로 /sitemap-dictionary.xml 신설. /sitemap-content.xml 은 GSC 기존 제출분 호환용 별칭(동일 내용).
+// 2026-10-08: 색인 판정을 코드(isDictIndexable)로 — 보강 용어 복귀, 동의어(301) 제외, lastmod = max(D1 수정일, 보강일)
+const dictSitemapRows = async (DB: D1Database): Promise<{ slug: string, lastmod: string }[]> => {
+  let rows: any[] = []
+  try {
+    const r = await DB.prepare(
+      'SELECT slug, indexable, short_desc, full_desc, long_desc, key_points, usage_context, cautions, faq_json, created_at, updated_at FROM dictionary'
+    ).all()
+    rows = (r.results as any[]) || []
+  } catch {
+    try {
+      const r = await DB.prepare('SELECT slug, short_desc, full_desc, created_at FROM dictionary').all()
+      rows = (r.results as any[]) || []
+    } catch { rows = [] }
+  }
+  return rows
+    .filter(isDictIndexable)
+    .map(d => ({ slug: String(d.slug), lastmod: dictLastmod(d) }))
+    .sort((a, b) => (a.lastmod < b.lastmod ? 1 : a.lastmod > b.lastmod ? -1 : a.slug.localeCompare(b.slug)))
+}
 const dictionarySitemap = async (c: any) => {
   const base = SITE.url
-  let dict: any = { results: [] }
-  try {
-    dict = await c.env.DB.prepare(
-      'SELECT slug, COALESCE(updated_at, created_at) as lastmod FROM dictionary WHERE indexable=1 ORDER BY COALESCE(updated_at, created_at) DESC'
-    ).all()
-  } catch {
-    // indexable 컬럼 미적용 DB에서는 빈 사이트맵 유지 (안전 fallback)
-  }
-
-  const urls: string[] = []
-  ;((dict.results || []) as any[]).forEach((d: any) =>
-    urls.push(`  <url><loc>${base}/dictionary/${d.slug}</loc>${lastmodTag(sitemapIso(d.lastmod))}<priority>0.7</priority><changefreq>monthly</changefreq></url>`)
+  const rows = await dictSitemapRows(c.env.DB)
+  const urls: string[] = rows.map(d =>
+    `  <url><loc>${base}/dictionary/${d.slug}</loc>${lastmodTag(d.lastmod)}<priority>0.7</priority><changefreq>monthly</changefreq></url>`
   )
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

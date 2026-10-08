@@ -9,7 +9,7 @@
 declare const __CONTENT_DATES__: Record<string, string> | undefined
 
 const FALLBACK: Record<string, string> = {
-  home: '2026-09-29',
+  home: '2026-10-08',
   mission: '2026-08-18',
   directions: '2026-08-02',
   hours: '2026-08-02',
@@ -18,6 +18,7 @@ const FALLBACK: Record<string, string> = {
   treatmentsData: '2026-06-12',
   faqsData: '2026-06-12',
   regionsData: '2026-04-20',
+  regionsHub: '2026-10-08',
 }
 
 export const isYmd = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)

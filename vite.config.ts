@@ -59,6 +59,7 @@ const CONTENT_DATES = {
   treatmentsData: migrationsDateFor('treatments'),
   faqsData: migrationsDateFor('faqs'),
   regionsData: migrationsDateFor('region_seo'),
+  regionsHub: lastCommitDate(['src/pages/regions-hub.tsx']),
 }
 
 // Custom plugin: ?wasm-base64 import → base64 string (워커 번들에 인라인)

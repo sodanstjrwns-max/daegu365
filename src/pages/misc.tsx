@@ -1,6 +1,7 @@
 import { Navbar, Footer } from '../components/Layout'
 import type { Notice, DictEntry, FAQ, Treatment } from '../lib/types'
 import { kstYmd } from '../lib/content-dates'
+import type { DictEnriched } from '../data/dictionary-enriched/types'
 
 // === Notices ===
 export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
@@ -193,8 +194,8 @@ export const DictionaryListPage = ({ items, featured, selectedCategory, query }:
 }
 
 export const DictionaryDetailPage = ({
-  entry, relatedTreatments, relatedEntries
-}: { entry: DictEntry, relatedTreatments: Treatment[], relatedEntries: DictEntry[] }) => {
+  entry, relatedTreatments, relatedEntries, enriched, aliasNames = [], updated = ''
+}: { entry: DictEntry, relatedTreatments: Treatment[], relatedEntries: DictEntry[], enriched?: DictEnriched, aliasNames?: string[], updated?: string }) => {
   // key_points: 줄바꿈 구분 리스트
   const keyPoints = (entry.key_points || '')
     .split(/\n+/).map(s => s.replace(/^[-•·\s]+/, '').trim()).filter(Boolean)
@@ -207,6 +208,8 @@ export const DictionaryDetailPage = ({
     const parsed = JSON.parse(entry.faq_json || '[]')
     if (Array.isArray(parsed)) faqs = parsed.filter(f => f && f.q && f.a)
   } catch {}
+  // 보강 FAQ(2026-10-08) 병합 — 스키마(FAQPage)와 같은 목록
+  if (enriched?.faq?.length) faqs = [...faqs, ...enriched.faq.filter(f => !faqs.some(o => o.q === f.q))]
   const usageContext = (entry.usage_context || '').trim()
 
   return (
@@ -217,8 +220,11 @@ export const DictionaryDetailPage = ({
       <div class="mt-8 text-xs tracking-widest text-brown-500">DICTIONARY</div>
       <h1 class="display text-5xl md:text-6xl font-black tracking-tight leading-tight my-4">{entry.term}</h1>
       {entry.term_en && <div class="display italic text-xl text-brown-600 mb-8">{entry.term_en}</div>}
+      {aliasNames.length > 0 && (
+        <div class="text-sm text-brown-600 -mt-4 mb-6">같은 뜻으로 쓰는 말: {aliasNames.join(', ')}</div>
+      )}
       <div class="text-sm text-brown-500 mb-10 pb-6 border-b border-brown-200">
-        카테고리: {entry.category} · 조회 {entry.view_count}
+        카테고리: {entry.category} · 조회 {entry.view_count}{updated && <> · 내용 업데이트 <time datetime={updated}>{updated}</time></>}
       </div>
 
       <p class="display italic text-2xl text-brown-800 border-l-4 border-gold pl-6 mb-10 leading-relaxed">
@@ -231,6 +237,15 @@ export const DictionaryDetailPage = ({
           <p>{para}</p>
         ))}
       </div>
+
+      {enriched && enriched.sections.map((sec, i) => (
+        <section class={i === 0 ? 'mt-14' : 'mt-10'}>
+          <h2 class="display text-2xl font-medium mb-4 text-brown-900">{sec.h}</h2>
+          <div class="prose-dental text-brown-700 space-y-4 leading-loose">
+            {sec.p.map(para => (<p>{para}</p>))}
+          </div>
+        </section>
+      ))}
 
       {keyPoints.length > 0 && (
         <section class="mt-14 bg-cream rounded-3xl p-8">
