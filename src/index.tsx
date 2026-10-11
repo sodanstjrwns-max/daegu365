@@ -16,7 +16,8 @@ import { blogTreatmentSlug, treatmentGroup, stripTags, answerSummary, faqsFromAr
 import { fetchSiteStats, renderStatsPage, isValidStatsKey } from './lib/stats'
 import { renderOgPng } from './lib/og-png'
 import { RegionsHubPage, REGIONS_HUB_TITLE, REGIONS_HUB_DESC, REGIONS_HUB_FAQS, REGIONS_HUB_DATE } from './pages/regions-hub'
-import { DICT_ENRICHED, DICT_ALIAS_REDIRECTS, ENRICHED_DATE, isDictAlias, isDictIndexable, dictAliasNames, dictLastmod } from './data/dictionary-enriched'
+import { REGION_PAGES, REGION_PAGES_DATE, hasRegionPage, regionTitleParts, regionAreaName, type RegionPage } from './data/region-pages'
+import { DICT_ENRICHED, DICT_ALIAS_REDIRECTS, ENRICHED_DATE, isDictAlias, isDictIndexable, dictAliasNames, dictLastmod, dictCodeDate, applyDictOverride, applyDictOverrides, DICT_OVERRIDES, DICT_REVISED_DATE } from './data/dictionary-enriched'
 
 // Pages
 import { HomePage, HOME_FAQS } from './pages/home'
@@ -492,9 +493,10 @@ app.use('*', async (c, next) => {
   // SEO Step1+3: 얇은 중복 페이지(용어사전 detail·지역 detail) 색인 철수
   // 허브(/dictionary, /regions)는 색인 유지 — trailing slash 로 detail 만 매칭
   // Step3: 리라이트 완료(indexable=1) 용어는 라우트에서 dictIndexable 플래그를 세트해 색인 복귀
+  // 2026-10-08: 지역 상세(/region/*)도 보강 데이터가 있으면 라우트에서 pageIndexable 을 세트해 색인 복귀
   if (
-    (path.startsWith('/dictionary/') || path.startsWith('/region/')) &&
-    !c.get('dictIndexable' as never)
+    (path.startsWith('/dictionary/') && !c.get('dictIndexable' as never)) ||
+    (path.startsWith('/region/') && !c.get('pageIndexable' as never))
   ) {
     c.res.headers.set('X-Robots-Tag', 'noindex, follow')
   }
@@ -774,7 +776,7 @@ app.get('/treatments/:slug', async (c) => {
     ? await c.env.DB.prepare("SELECT * FROM before_afters WHERE treatment_slug IN ('implant','implant-general') AND is_published=1 ORDER BY id DESC LIMIT 6").all()
     : await c.env.DB.prepare('SELECT * FROM before_afters WHERE treatment_slug=? AND is_published=1 ORDER BY id DESC LIMIT 6').bind(slug).all()
   const dictTermsRaw = await c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? ORDER BY id LIMIT 30').bind(slug).all()
-  const dictTerms = { results: ((dictTermsRaw.results || []) as any[]).filter((d: any) => !isDictAlias(d.slug)).slice(0, 20) }
+  const dictTerms = { results: applyDictOverrides((dictTermsRaw.results || []) as any[]).filter((d: any) => !isDictAlias(d.slug)).slice(0, 20) }
 
   // FAQPage schema
   const faqJsonLd = {
@@ -1435,8 +1437,9 @@ app.get('/blog/:slug', async (c) => {
   const author = post.author_doctor_slug
     ? await c.env.DB.prepare('SELECT * FROM doctors WHERE slug=?').bind(post.author_doctor_slug).first<any>()
     : null
-  // 작성 의료진이 없는 글: author 는 병원(Organization) 유지(날조 금지), 감수(reviewedBy)는 대표원장으로 연결
-  const reviewer = author || await c.env.DB.prepare("SELECT * FROM doctors WHERE slug='kim-seongju'").first<any>()
+  // 작성 의료진이 없는 글: author·publisher 모두 병원(Organization). 원장이 검토하지 않은 글에 대표원장 감수를 기본값으로
+  // 붙이던 것을 제거(2026-10-11, 허위 감수 신호 금지). 작성 의료진이 저장된 글은 그 원장이 작성자(reviewedBy 도 같은 원장).
+  const reviewer = author
 
   // 관련 진료(제목 키워드 매핑) → 같은 진료 칼럼·비포애프터 (내부 링크, 2026-10-03 칼럼 표준)
   const txSlug = blogTreatmentSlug(post.title)
@@ -1522,7 +1525,7 @@ app.get('/blog/:slug', async (c) => {
     }] : []),
   ]
 
-  return c.render(<BlogDetailPage post={{ ...post, content: contentHtml }} author={author} reviewer={reviewer} summary={summary} treatment={treatment} cases={cases} related={related as any} />, {
+  return c.render(<BlogDetailPage post={{ ...post, content: contentHtml }} author={author} summary={summary} treatment={treatment} cases={cases} related={related as any} />, {
     title: post.title,
     description: autoDesc,
     keywords: autoKeywords,
@@ -1595,12 +1598,21 @@ app.get('/dictionary', async (c) => {
   const { q, category } = c.req.query()
   const where: string[] = []
   const binds: any[] = []
-  if (q) { where.push('(term LIKE ? OR term_en LIKE ? OR short_desc LIKE ?)'); binds.push(`%${q}%`,`%${q}%`,`%${q}%`) }
+  if (q) {
+    // 오버라이드로 이름을 바로잡은 용어(예: 엠도게인)는 바른 이름으로도 검색되게 slug 조건을 덧붙인다
+    const ovSlugs = Object.entries(DICT_OVERRIDES)
+      .filter(([, o]) => (o.term && o.term.includes(q)) || (o.short_desc && o.short_desc.includes(q)))
+      .map(([s]) => s)
+    where.push(`(term LIKE ? OR term_en LIKE ? OR short_desc LIKE ?${ovSlugs.length ? ` OR slug IN (${ovSlugs.map(() => '?').join(',')})` : ''})`)
+    binds.push(`%${q}%`,`%${q}%`,`%${q}%`, ...ovSlugs)
+  }
   if (category) { where.push('category=?'); binds.push(category) }
   const sql = 'SELECT * FROM dictionary' + (where.length ? ' WHERE ' + where.join(' AND ') : '') + ' ORDER BY term LIMIT 1000'
   const r = await c.env.DB.prepare(sql).bind(...binds).all()
   // 동의어(301 로 합친 용어)는 목록에서 제외 — 정식 용어 쪽만 노출
-  const dictRows = ((r.results as any[]) || []).filter((d: any) => !isDictAlias(d.slug))
+  // 용어명 오버라이드(DICT_OVERRIDES) 적용 후 이름순 재정렬
+  const dictRows = applyDictOverrides((r.results as any[]) || []).filter((d: any) => !isDictAlias(d.slug))
+    .sort((a: any, b: any) => (a.term < b.term ? -1 : a.term > b.term ? 1 : 0))
   // 색인 허용(indexable=1) 용어는 허브 상단에 별도 노출 — 내부 링크 신호 강화 (검색/카테고리 필터 시 생략)
   let featured: any[] = []
   if (!q && !category) {
@@ -1608,7 +1620,8 @@ app.get('/dictionary', async (c) => {
       const fr = await c.env.DB.prepare(
         'SELECT slug, term, term_en, short_desc, category FROM dictionary WHERE indexable=1 ORDER BY term'
       ).all()
-      featured = (fr.results as any[]) || []
+      featured = applyDictOverrides((fr.results as any[]) || [])
+        .sort((a: any, b: any) => (a.term < b.term ? -1 : a.term > b.term ? 1 : 0))
     } catch { featured = [] }
   }
   // DefinedTermSet (기존 유지) + ItemList (신규 carousel rich result)
@@ -1658,8 +1671,10 @@ app.get('/dictionary', async (c) => {
 
 app.get('/dictionary/:slug', async (c) => {
   const slug = c.req.param('slug')
-  const entry = await c.env.DB.prepare('SELECT * FROM dictionary WHERE slug=?').bind(slug).first<any>()
-  if (!entry) return c.notFound()
+  const entryRaw = await c.env.DB.prepare('SELECT * FROM dictionary WHERE slug=?').bind(slug).first<any>()
+  if (!entryRaw) return c.notFound()
+  // D1 이름·정의 오류는 코드 오버라이드로 바로잡는다(heading·title·스키마·빵부스러기 모두 entry.term 사용)
+  const entry = applyDictOverride(entryRaw)
   await c.env.DB.prepare('UPDATE dictionary SET view_count=view_count+1 WHERE id=?').bind(entry.id).run()
   // 색인 판정(2026-10-08): D1 indexable 플래그 대신 코드에서 — 리라이트 완료(indexable=1)·보강 데이터 보유·본문 임계값 이상이면 index
   const enriched = DICT_ENRICHED[slug]
@@ -1687,12 +1702,12 @@ app.get('/dictionary/:slug', async (c) => {
       : Promise.resolve({ results: [] as any[] }),
     c.env.DB.prepare('SELECT * FROM dictionary WHERE category=? AND id!=? ORDER BY indexable DESC, RANDOM() LIMIT 10').bind(entry.category, entry.id).all(),
   ])
-  const relOrdered = wantRel.map(s => ((relPicked.results || []) as any[]).find((d: any) => d.slug === s)).filter(Boolean)
+  const relOrdered = wantRel.map(s => applyDictOverrides((relPicked.results || []) as any[]).find((d: any) => d.slug === s)).filter(Boolean)
   const relSeen = new Set<string>([slug, ...relOrdered.map((d: any) => d.slug)])
   const relatedEntries = {
     results: [
       ...relOrdered,
-      ...((relSameCat.results || []) as any[]).filter((d: any) => !relSeen.has(d.slug) && !isDictAlias(d.slug)),
+      ...applyDictOverrides((relSameCat.results || []) as any[]).filter((d: any) => !relSeen.has(d.slug) && !isDictAlias(d.slug)),
     ].slice(0, 6)
   }
 
@@ -1784,12 +1799,12 @@ app.get('/dictionary/:slug', async (c) => {
     entry.key_points
   ])
 
-  return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} enriched={enriched} aliasNames={aliasNames} updated={enriched ? ENRICHED_DATE : ''} />, {
+  return c.render(<DictionaryDetailPage entry={entry} relatedTreatments={relatedTreatments} relatedEntries={relatedEntries.results as any} enriched={enriched} aliasNames={aliasNames} updated={dictCodeDate(slug)} />, {
     title: `${entry.term} - 치과 용어사전`,
     description: metaDesc,
     // 코드 판정(isDictIndexable): 리라이트 완료·보강·본문 임계값 이상만 색인, 나머지는 noindex
     robots: isIndexable ? undefined : 'noindex, follow',
-    ...(enriched && { modifiedTime: ENRICHED_DATE }),
+    ...(dictCodeDate(slug) && { modifiedTime: dictCodeDate(slug) }),
     canonical: `https://daegu365dc.kr/dictionary/${slug}`,
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -2021,9 +2036,16 @@ app.get('/regions', async (c) => {
   ])
   const tNameBySlug: Record<string, string> = {}
   ;(treatments.results as any[]).forEach((t: any) => { tNameBySlug[t.slug] = t.name })
-  // group by region
+  // group by region — 2026-10-08: 보강 데이터(src/data/region-pages)의 H1·설명으로 목록 표시, 북구 동네부터
+  const REGION_ORDER = ['침산동', '산격동', '북구', '대구 북구', '대구', '중구', '서구', '동구', '남구', '수성구', '대구 수성구', '범어동', '달서구', '달성군']
+  const rank = (n: string) => { const i = REGION_ORDER.indexOf(n); return i < 0 ? 99 : i }
+  const regionList = ((regions.results as any[]) || []).map((r: any) => ({
+    ...r,
+    h1: REGION_PAGES[r.slug]?.h1 || r.h1,
+    meta_description: REGION_PAGES[r.slug]?.description || r.meta_description,
+  })).sort((a: any, b: any) => rank(a.region_name) - rank(b.region_name))
   const byRegion: Record<string, any[]> = {}
-  ;(regions.results as any[]).forEach((r: any) => {
+  regionList.forEach((r: any) => {
     if (!byRegion[r.region_name]) byRegion[r.region_name] = []
     byRegion[r.region_name].push(r)
   })
@@ -2032,13 +2054,13 @@ app.get('/regions', async (c) => {
     { name: '대구 북구 치과', url: '/regions' }
   ]
   // ItemList 스키마 — 지역별 진료 페이지 전체 목록
-  const regionRows = (regions.results as any[]) || []
+  const regionRows = regionList
   const regionsItemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "@id": `${SITE.url}/regions#itemlist`,
     "name": "대구 지역별 치과 진료 안내",
-    "description": "대구 8개 자치구 × 진료별 안내 페이지 목록",
+    "description": "대구 지역·주제별 진료 안내 페이지 목록",
     "url": `${SITE.url}/regions`,
     "numberOfItems": regionRows.length,
     "itemListElement": regionRows.slice(0, 100).map((r: any, i: number) => ({
@@ -2098,125 +2120,93 @@ app.get('/region/:slug', async (c) => {
   const r = await c.env.DB.prepare('SELECT * FROM region_seo WHERE slug=?').bind(slug).first<any>()
   if (!r) return c.notFound()
   await c.env.DB.prepare('UPDATE region_seo SET view_count=view_count+1 WHERE id=?').bind(r.id).run()
-  // FAQ schema 매핑: treatment_slug 변형 → faqs.treatment_slug 실제 값으로 매핑
-  // faqs DB 실제 슬러그: aesthetic, cavity-endo-crown, conservative, general, implant,
-  //   lamineer, ortho, pediatric, pediatric-ortho, perio, prosthetic, whitening,
-  //   airflow-gbt, icon-resin, in-house-lab, painless-anesthesia, qray, sleep-therapy, vinique
-  const faqMap: Record<string, string> = {
-    // 임플란트 계열
-    'implant': 'implant', 'implant-cost': 'implant', 'implant-review': 'implant',
-    'implant-recommend': 'implant', 'implant-event': 'implant',
-    'elderly-implant': 'implant', 'sleep-implant': 'sleep-therapy',
-    // 교정 계열
-    'ortho': 'ortho', 'ortho-cost': 'ortho',
-    'kids-ortho': 'pediatric-ortho', 'childrens-ortho': 'pediatric-ortho',
-    // 라미네이트 계열
-    'lamineer': 'lamineer', 'lamineer-cost': 'lamineer',
-    'veneer-front': 'lamineer', 'lamineer-extra': 'lamineer',
-    'lamineer-new': 'lamineer', 'cosmetic-dental': 'aesthetic',
-    // 충치/신경/일반 치료
-    'cavity': 'cavity-endo-crown', 'cavity-new': 'cavity-endo-crown',
-    'cavity-treatment': 'cavity-endo-crown', 'nerve-treatment': 'cavity-endo-crown',
-    // 미백/예방
-    'whitening': 'whitening', 'whitening-new': 'whitening',
-    'prevention': 'prevention', 'wisdom': 'general', 'wisdom-tooth': 'general',
-    // 보철/잇몸/턱관절
-    'prosthesis': 'prosthetic', 'denture': 'prosthetic',
-    'perio': 'perio', 'gum-graft': 'perio', 'tmj': 'general',
-    // 소아/임산부
-    'kids': 'pediatric', 'kids-dental': 'pediatric', 'childbirth-dental': 'pediatric',
-    // 운영/시스템 키워드 (배치7 신규)
-    'evening': 'general', 'weekend': 'general', 'emergency': 'general',
-  }
-  // 매핑 테이블에 없는 슬러그도 자체 시도 (정확히 일치할 수도 있음)
-  const faqTreatmentSlug = r.treatment_slug ? (faqMap[r.treatment_slug] || r.treatment_slug) : null
-  const [treatments, doctors, mainTreatment, relatedRegions, relatedDictRows, regionFaqs] = await Promise.all([
-    c.env.DB.prepare('SELECT * FROM treatments ORDER BY is_core DESC, display_order').all(),
-    c.env.DB.prepare('SELECT * FROM doctors WHERE is_representative=1 OR display_order<=3').all(),
-    r.treatment_slug
-      ? c.env.DB.prepare('SELECT * FROM treatments WHERE slug=?').bind(r.treatment_slug).first<any>()
-      : Promise.resolve(null),
-    c.env.DB.prepare('SELECT slug, region_name, treatment_slug, h1 FROM region_seo WHERE slug != ? ORDER BY (treatment_slug = ?) DESC, RANDOM() LIMIT 8')
-      .bind(slug, r.treatment_slug || '').all(),
+  // 2026-10-08: 보강 데이터(src/data/region-pages)가 있는 페이지만 색인 — 화면 본문·title·H1·FAQ 는 데이터에서.
+  // 예전 D1 본문(지역끼리 거의 같은 글 + 확인 안 된 주장 + 마크다운 원문)은 렌더하지 않는다.
+  const page = REGION_PAGES[slug]
+  if (page) c.set('pageIndexable' as never, true as never)
+  const tSlugs = page ? page.treatments : (r.treatment_slug ? [r.treatment_slug] : [])
+  const [treatmentRows, siblingRows, relatedDictRows] = await Promise.all([
+    tSlugs.length
+      ? c.env.DB.prepare(`SELECT slug, name, short_desc FROM treatments WHERE slug IN (${tSlugs.map(() => '?').join(',')})`).bind(...tSlugs).all()
+      : Promise.resolve({ results: [] as any[] }),
+    // 관련 지역 페이지: 같은 지역의 다른 주제 → 같은 진료의 다른 지역 순 (매 요청 같은 결과 — RANDOM 제거)
+    c.env.DB.prepare('SELECT id, slug, region_name, treatment_slug, h1 FROM region_seo WHERE slug != ? ORDER BY (region_name = ?) DESC, (treatment_slug = ?) DESC, id LIMIT 8')
+      .bind(slug, r.region_name || '', r.treatment_slug || '').all(),
     r.treatment_slug
       ? c.env.DB.prepare(`SELECT slug, term, short_desc FROM dictionary WHERE category=? OR related_treatments LIKE ? ORDER BY view_count DESC LIMIT 6`)
           .bind(r.treatment_slug, `%${r.treatment_slug}%`).all()
       : Promise.resolve({ results: [] }),
-    faqTreatmentSlug
-      ? c.env.DB.prepare('SELECT question, answer FROM faqs WHERE treatment_slug=? ORDER BY display_order, id LIMIT 8')
-          .bind(faqTreatmentSlug).all()
-      : Promise.resolve({ results: [] }),
   ])
-  const relatedDict = (((relatedDictRows as any).results || []) as any[]).filter((d: any) => !isDictAlias(d.slug))
-  const regionFaqList = ((regionFaqs as any).results || []) as any[]
+  const tBySlug: Record<string, any> = {}
+  ;((treatmentRows.results || []) as any[]).forEach((t: any) => { tBySlug[t.slug] = t })
+  const careLinks = tSlugs.map(s => tBySlug[s]).filter(Boolean)
+  const relatedRegions = ((siblingRows.results || []) as any[]).map((rr: any) => ({
+    slug: rr.slug, region_name: rr.region_name, h1: REGION_PAGES[rr.slug]?.h1 || rr.h1,
+  }))
+  const relatedDict = applyDictOverrides(((relatedDictRows as any).results || []) as any[]).filter((d: any) => !isDictAlias(d.slug))
+  const h1 = page?.h1 || r.h1 || r.title
+  const description = page?.description || r.meta_description
   const breadcrumb = [
     { name: '홈', url: '/' },
-    { name: '지역별 진료', url: '/regions' },
-    ...(r.region_name ? [{ name: r.region_name, url: `/regions/${encodeURIComponent(r.region_name)}` }] : []),
-    { name: r.h1 || r.title, url: `/region/${slug}` }
+    { name: '대구 북구 치과', url: '/regions' },
+    { name: h1, url: `/region/${slug}` }
   ]
-  // Schema.org JSON-LD package
-  const procedureSchema = mainTreatment ? {
-    "@context": "https://schema.org",
-    "@type": "MedicalProcedure",
-    "@id": `${SITE.url}/region/${slug}#procedure`,
-    "name": `${r.region_name} ${mainTreatment.name}`,
-    "description": r.meta_description,
-    "url": `${SITE.url}/region/${slug}`,
-    "performer": { "@id": `${SITE.url}/#dentist` },
-    "availableService": { "@id": `${SITE.url}/#dentist` },
-    "bodyLocation": "치아 및 구강",
-  } : null
+  const areaName = regionAreaName(r.region_name)
+  const titleParts = page ? regionTitleParts(page, SITE.name) : { title: r.title }
   const webPageSchema = {
     "@context": "https://schema.org",
     "@type": "MedicalWebPage",
     "@id": `${SITE.url}/region/${slug}#webpage`,
     "url": `${SITE.url}/region/${slug}`,
-    "name": r.title,
-    "description": r.meta_description,
+    "name": page ? page.title : r.title,
+    "headline": h1,
+    "description": description,
     "inLanguage": "ko-KR",
     "isPartOf": { "@id": `${SITE.url}/#website` },
     "about": { "@id": `${SITE.url}/#dentist` },
+    // 작성·발행 = 병원(원장 감수 표시 없음 — 원장이 검토한 글이 아님)
+    "publisher": { "@id": `${SITE.url}/#dentist` },
     "primaryImageOfPage": ogStaticUrl('default', {}),
     "specialty": "Dentistry",
     "audience": {
       "@type": "MedicalAudience",
       "audienceType": "Patient",
-      "geographicArea": {
-        "@type": "AdministrativeArea",
-        "name": r.region_name
-      }
-    }
+      "geographicArea": { "@type": "AdministrativeArea", "name": areaName }
+    },
+    ...(page && { "dateModified": REGION_PAGES_DATE }),
+    ...(careLinks.length && {
+      "relatedLink": careLinks.map((t: any) => `${SITE.url}/treatments/${t.slug}`)
+    }),
   }
-  // Dentist/Breadcrumb는 renderer.tsx에서 전역 자동 주입 → 페이지 고유 스키마만 추가
   const jsonLd: any[] = [webPageSchema]
-  if (procedureSchema) jsonLd.push(procedureSchema)
-  // FAQPage schema — 해당 진료의 FAQ 8개 자동 주입 (Google rich result 노출)
-  if (regionFaqList.length > 0) {
+  // FAQPage — 화면에 보이는 이 페이지 FAQ 3개와 1:1 (예전처럼 진료 FAQ 를 화면 밖에서 주입하지 않음)
+  if (page && page.faq.length) {
     jsonLd.push({
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "@id": `${SITE.url}/region/${slug}#faq`,
-      "mainEntity": regionFaqList.map((f: any) => ({
+      "mainEntity": page.faq.map(f => ({
         "@type": "Question",
-        "name": f.question,
-        "acceptedAnswer": { "@type": "Answer", "text": f.answer }
+        "name": f.q,
+        "acceptedAnswer": { "@type": "Answer", "text": f.a }
       }))
     })
   }
   return c.render(
     <RegionSEOInline
       r={r}
-      treatments={treatments.results as any}
-      doctors={doctors.results as any}
-      mainTreatment={mainTreatment}
-      relatedRegions={(relatedRegions as any).results || []}
+      page={page}
+      h1={h1}
+      careLinks={careLinks}
+      relatedRegions={relatedRegions}
       relatedDict={relatedDict}
-      regionFaqs={regionFaqList}
     />,
     {
-      title: r.title, description: r.meta_description,
-      robots: 'noindex, follow', // SEO Step1: 얇은 페이지 색인 철수 (X-Robots-Tag 이중 방어)
+      ...titleParts,
+      description,
+      // 보강 데이터가 있으면 index(렌더러 기본값), 없으면 noindex — X-Robots-Tag 는 미들웨어가 pageIndexable 로 맞춘다
+      robots: page ? undefined : 'noindex, follow',
+      ...(page && { modifiedTime: REGION_PAGES_DATE }),
       canonical: `https://daegu365dc.kr/region/${slug}`,
       breadcrumb,
       jsonLd,
@@ -3111,7 +3101,7 @@ app.get('/admin/seo', async (c) => {
     ba: baCount?.n || 0,
     doctors: doctorCount?.n || 0,
     treatments: treatmentCount?.n || 0,
-    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-blog.xml', 'sitemap-cases.xml', 'sitemap-dictionary.xml']
+    sitemaps: ['sitemap.xml', 'sitemap-main.xml', 'sitemap-blog.xml', 'sitemap-cases.xml', 'sitemap-dictionary.xml', 'sitemap-regions.xml']
   }
   return c.render(<AdminSeoGuidePage stats={stats} />, { title: 'Admin · SEO 가이드', robots: 'noindex,nofollow' })
 })
@@ -3267,6 +3257,7 @@ app.get('/robots.txt', (c) => {
     `Sitemap: ${SITE.url}/sitemap-blog.xml`,
     `Sitemap: ${SITE.url}/sitemap-cases.xml`,
     `Sitemap: ${SITE.url}/sitemap-dictionary.xml`,
+    `Sitemap: ${SITE.url}/sitemap-regions.xml`,
     `Host: ${SITE.url.replace(/^https?:\/\//, '')}`,
     ''
   ].join('\n')
@@ -3313,7 +3304,7 @@ const buildLlmsLines = async (c: any): Promise<string[]> => {
   lines.push('## 핵심 콘텐츠')
   lines.push(`- [병원 미션](${base}/mission)`)
   lines.push(`- [실제 치료 사례 (Before/After)](${base}/before-after)`)
-  lines.push(`- [의료진 칼럼 (블로그)](${base}/blog)`)
+  lines.push(`- [치과 칼럼 (블로그 — 작성 의료진이 표시된 글은 해당 원장 작성, 그 외는 병원 작성 일반 건강정보)](${base}/blog)`)
   lines.push(`- [치과 백과사전 (500+ 용어)](${base}/dictionary)`)
   lines.push(`- [자주 묻는 질문 (250+ FAQ)](${base}/faq)`)
   lines.push(`- [비용 안내](${base}/fees)`)
@@ -3443,7 +3434,7 @@ const mainStaticDates = async (DB: D1Database): Promise<Record<string, string>> 
     '/directions': CONTENT_DATES.directions,
     '/hours': CONTENT_DATES.hours,
     '/fees': latestDate(fees, CONTENT_DATES.feesPage),
-    '/dictionary': latestDate(dict, Object.keys(DICT_ENRICHED).length ? ENRICHED_DATE : ''),
+    '/dictionary': latestDate(dict, Object.keys(DICT_ENRICHED).length ? ENRICHED_DATE : '', DICT_REVISED_DATE),
     '/faq': latestDate(faqs, CONTENT_DATES.faqsData),
     '/regions': latestDate(regions, CONTENT_DATES.regionsData, CONTENT_DATES.regionsHub, REGIONS_HUB_DATE),
   }
@@ -3481,6 +3472,7 @@ app.get('/sitemap.xml', async (c) => {
   <sitemap><loc>${base}/sitemap-blog.xml</loc>${lastmodTag(tBlog)}</sitemap>
   <sitemap><loc>${base}/sitemap-cases.xml</loc>${lastmodTag(tCases)}</sitemap>
   <sitemap><loc>${base}/sitemap-dictionary.xml</loc>${lastmodTag(tDict)}</sitemap>
+  <sitemap><loc>${base}/sitemap-regions.xml</loc>${lastmodTag(REGION_PAGES_DATE)}</sitemap>
 </sitemapindex>`
   return c.text(xml, 200, {
     'Content-Type': 'application/xml; charset=utf-8',
@@ -3563,14 +3555,21 @@ ${urls.join('\n')}
   })
 })
 
-// ============ Sitemap: Regions — SEO Step1 색인 철수 (2026-07) ============
-// 지역×진료 페이지 98개는 페이지 간 고유율 6~12%로 구글 품질 필터에 걸려
-// 색인 전량 해제됨 → 사이트맵에서 제외 + noindex 처리.
-// 지역 상세(/region/*)는 noindex 유지 → 사이트맵에 넣을 URL 이 없다.
-// 빈 urlset(200)은 GSC 에서 '1개 오류'로 잡히므로 410 Gone 으로 응답해 GSC 에서 삭제할 수 있게 한다. (2026-09-21)
-app.get('/sitemap-regions.xml', (c) => {
-  return c.text('Gone: region pages are noindex and not listed in any sitemap.', 410, {
-    'Content-Type': 'text/plain; charset=utf-8',
+// ============ Sitemap: Regions — 보강 후 색인 복귀 (2026-10-08) ============
+// 2026-07 고유율 6~12% 로 색인 철수 → 2026-09-21 410 → 2026-10-08 페이지마다 다른 본문(src/data/region-pages)으로 보강해 복귀.
+// 보강 데이터가 있고 D1 에도 있는 slug 만 싣는다. lastmod = 보강 작성일(고정값).
+app.get('/sitemap-regions.xml', async (c) => {
+  const base = SITE.url
+  let rows: any[] = []
+  try { rows = ((await c.env.DB.prepare('SELECT slug FROM region_seo ORDER BY id').all()).results as any[]) || [] } catch { rows = [] }
+  const urls = rows.filter((r: any) => hasRegionPage(r.slug))
+    .map((r: any) => `  <url><loc>${base}/region/${xmlEscape(r.slug)}</loc>${lastmodTag(REGION_PAGES_DATE)}<changefreq>monthly</changefreq><priority>0.6</priority></url>`)
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join('\n')}
+</urlset>`
+  return c.text(xml, 200, {
+    'Content-Type': 'application/xml; charset=utf-8',
     'Cache-Control': 'public, max-age=3600'
   })
 })
@@ -3637,22 +3636,30 @@ app.get('/rss.xml', async (c) => {
   let posts: any[] = []
   try {
     posts = ((await c.env.DB.prepare(
-      'SELECT slug, title, meta_description, excerpt, content, created_at, updated_at FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0 ORDER BY created_at DESC LIMIT 50'
+      'SELECT slug, title, meta_description, excerpt, content, created_at, updated_at, author_doctor_slug FROM blog_posts WHERE is_published=1 AND COALESCE(noindex,0)=0 ORDER BY created_at DESC LIMIT 50'
     ).all()).results as any[]) || []
   } catch {
     try {
       posts = ((await c.env.DB.prepare(
-        'SELECT slug, title, meta_description, excerpt, content, created_at, updated_at FROM blog_posts WHERE is_published=1 ORDER BY created_at DESC LIMIT 50'
+        'SELECT slug, title, meta_description, excerpt, content, created_at, updated_at, author_doctor_slug FROM blog_posts WHERE is_published=1 ORDER BY created_at DESC LIMIT 50'
       ).all()).results as any[]) || []
     } catch {}
   }
+  // dc:creator = 화면 작성자와 동일: 작성 의료진이 저장된 글은 그 원장, 없으면 병원(2026-10-11)
+  const docNames: Record<string, string> = {}
+  try {
+    for (const d of ((await c.env.DB.prepare('SELECT slug, name FROM doctors').all()).results as any[]) || []) {
+      if (d?.slug && d?.name) docNames[d.slug] = String(d.name)
+    }
+  } catch {}
   const items = posts.map((p: any) => {
     const desc = p.meta_description || p.excerpt || stripHtml(p.content).slice(0, 300) || p.title
     return `  <item>
     <title>${xmlEscape(p.title)}</title>
     <link>${base}/blog/${xmlEscape(p.slug)}</link>
     <guid isPermaLink="true">${base}/blog/${xmlEscape(p.slug)}</guid>
-    <description>${xmlEscape(desc)}</description>${toRfc822(p.created_at) ? `
+    <description>${xmlEscape(desc)}</description>
+    <dc:creator>${xmlEscape((p.author_doctor_slug && docNames[p.author_doctor_slug]) || SITE.name)}</dc:creator>${toRfc822(p.created_at) ? `
     <pubDate>${toRfc822(p.created_at)}</pubDate>` : ''}
   </item>`
   }).join('\n')
@@ -3665,7 +3672,7 @@ app.get('/rss.xml', async (c) => {
   <title>${xmlEscape(SITE.name)} 블로그</title>
   <link>${base}/blog</link>
   <atom:link href="${base}/rss.xml" rel="self" type="application/rss+xml"/>
-  <description>${xmlEscape(SITE.name)} 의료진이 직접 쓰는 치과 칼럼 — 수면임플란트·인비절라인·라미네이트</description>
+  <description>${xmlEscape(SITE.name)} 치과 칼럼 — 수면임플란트·인비절라인·라미네이트</description>
   <language>ko-KR</language>${lastBuild ? `
   <lastBuildDate>${lastBuild}</lastBuildDate>` : ''}
 ${items}
@@ -3769,142 +3776,111 @@ app.get('/sitemap-dictionary.xml', dictionarySitemap)
 app.get('/sitemap-content.xml', dictionarySitemap)
 
 // ============ Region SEO inline component ============
-function RegionSEOInline({ r, treatments, doctors, mainTreatment, relatedRegions, relatedDict, regionFaqs }: any) {
+function RegionSEOInline({ r, page, h1, careLinks, relatedRegions, relatedDict }: any) {
+  const p = page as RegionPage | undefined
   return (
     <>
       <Navbar />
       <section class="pt-20 pb-12 bg-cream">
         <div class="max-w-5xl mx-auto px-6">
-          <nav class="text-xs text-brown-500 mb-6">
+          <nav class="text-xs text-brown-500 mb-6" aria-label="breadcrumb">
             <a href="/" class="hover:text-brown-900">홈</a>
             <span class="mx-2">›</span>
-            <a href="/regions" class="hover:text-brown-900">지역별 진료</a>
+            <a href="/regions" class="hover:text-brown-900">대구 북구 치과</a>
             <span class="mx-2">›</span>
-            <span class="text-brown-700">{r.region_name}</span>
-            {mainTreatment && (<>
-              <span class="mx-2">›</span>
-              <span class="text-brown-900">{mainTreatment.name}</span>
-            </>)}
+            <span class="text-brown-900">{r.region_name}</span>
           </nav>
           <div class="section-label mb-6">REGIONAL · {r.region_name}</div>
-          <h1 class="display text-4xl md:text-6xl font-light mb-6 fade-in">{r.h1}</h1>
-          <p class="text-brown-700 max-w-3xl text-lg leading-relaxed fade-in">{r.meta_description}</p>
+          <h1 class="display text-3xl md:text-5xl font-light mb-6 fade-in">{h1}</h1>
+          <p class="text-brown-700 max-w-3xl text-lg leading-relaxed fade-in">{p ? p.lead : r.meta_description}</p>
           <div class="mt-8 flex flex-wrap gap-3 text-sm">
-            <a href="tel:053-357-0365" class="px-5 py-2.5 rounded-full bg-brown-900 text-ivory hover:bg-brown-800 transition">
-              📞 053-357-0365 전화상담
-            </a>
-            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-full bg-gold text-brown-900 hover:bg-gold-dark transition">
-              네이버 예약
-            </a>
-            <a href="/directions" class="px-5 py-2.5 rounded-full border border-brown-300 text-brown-700 hover:bg-brown-100 transition">
-              오시는 길
-            </a>
+            <a href="tel:053-357-0365" class="px-5 py-2.5 rounded-full bg-brown-900 text-ivory hover:bg-brown-800 transition">053-357-0365 전화 문의</a>
+            <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-full bg-gold text-brown-900 hover:bg-gold-dark transition">네이버 예약</a>
+            <a href="/directions" class="px-5 py-2.5 rounded-full border border-brown-300 text-brown-700 hover:bg-brown-100 transition">오시는 길</a>
           </div>
         </div>
       </section>
 
-      {/* Main content */}
-      <section class="py-16 max-w-4xl mx-auto px-6 prose-dental fade-in" dangerouslySetInnerHTML={{__html: r.content}}></section>
+      {/* 본문 — 페이지마다 다른 보강 데이터 */}
+      {p && (
+        <section class="py-14 max-w-4xl mx-auto px-6 text-brown-700 leading-loose">
+          {p.sections.map((s, i) => (
+            <div class={i ? 'mt-12' : ''}>
+              <h2 class="display text-2xl md:text-3xl font-medium text-brown-900 mb-4">{s.h}</h2>
+              {s.p.map(t => <p class="mb-4">{t}</p>)}
+            </div>
+          ))}
+        </section>
+      )}
 
-      {/* Main treatment CTA — if linked to a treatment */}
-      {mainTreatment && (
+      {/* 관련 진료 */}
+      {careLinks && careLinks.length > 0 && (
         <section class="py-12 bg-brown-50">
           <div class="max-w-4xl mx-auto px-6">
-            <div class="lux-card flex flex-col md:flex-row gap-6 items-start md:items-center">
-              <div class="flex-1">
-                <div class="text-xs text-brown-500 mb-2">{r.region_name} 환자분께 추천드리는 진료</div>
-                <h2 class="display text-2xl md:text-3xl font-medium mb-3">{mainTreatment.name}</h2>
-                <p class="text-brown-700">{mainTreatment.short_desc}</p>
-              </div>
-              <a href={`/treatments/${mainTreatment.slug}`} class="px-6 py-3 rounded-full bg-brown-900 text-ivory hover:bg-brown-800 transition whitespace-nowrap">
-                자세히 보기 →
-              </a>
+            <h2 class="display text-2xl font-medium text-brown-900 mb-6">이 페이지와 관련된 진료</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              {careLinks.map((t: any) => (
+                <a href={`/treatments/${t.slug}`} class="lux-card hover:shadow-lg transition block">
+                  <div class="display text-lg font-medium text-brown-900 mb-1">{t.name}</div>
+                  <p class="text-brown-700 text-sm">{t.short_desc}</p>
+                  <div class="mt-3 text-xs text-gold">진료 안내 보기 →</div>
+                </a>
+              ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* Clinic info card */}
-      <section class="py-16 max-w-5xl mx-auto px-6">
-        <h2 class="display text-3xl font-light mb-8">{r.region_name}에서 대구365치과까지</h2>
+      {/* 병원 기본 정보 (모든 지역 페이지 공통 — 레포 확인값) */}
+      <section class="py-14 max-w-5xl mx-auto px-6">
         <div class="grid md:grid-cols-2 gap-6">
           <div class="lux-card">
-            <h3 class="display text-xl font-medium mb-4">병원 정보</h3>
+            <h2 class="display text-xl font-medium mb-4">대구365치과 위치</h2>
             <dl class="space-y-3 text-sm">
               <div class="flex"><dt class="w-20 text-brown-500">주소</dt><dd class="flex-1 text-brown-800">{SITE.address}</dd></div>
               <div class="flex"><dt class="w-20 text-brown-500">전화</dt><dd class="flex-1 text-brown-800"><a href={`tel:${SITE.phone}`} class="hover:text-gold">{SITE.phone}</a></dd></div>
-              <div class="flex"><dt class="w-20 text-brown-500">평일</dt><dd class="flex-1 text-brown-800">월·목 09:30–21:00 · 화·수·금 09:30–18:30</dd></div>
-              <div class="flex"><dt class="w-20 text-brown-500">주말</dt><dd class="flex-1 text-brown-800">토·일 09:30–17:00</dd></div>
+              <div class="flex"><dt class="w-20 text-brown-500">버스</dt><dd class="flex-1 text-brown-800">‘엠브로스퀘어’ 정류장 하차(건물 앞)</dd></div>
               <div class="flex"><dt class="w-20 text-brown-500">주차</dt><dd class="flex-1 text-brown-800">건물 주차장 이용 가능</dd></div>
             </dl>
+            <a href="/directions" class="inline-block mt-4 text-sm text-gold hover:text-gold-dark">오시는 길·지도 →</a>
           </div>
           <div class="lux-card">
-            <h3 class="display text-xl font-medium mb-4">{r.region_name}에서 오시는 길</h3>
-            <p class="text-brown-700 text-sm leading-relaxed">
-              대구365치과는 <strong>대구 북구 침산동 엠브로스퀘어 7층</strong>에 위치한 400평 규모의 종합 치과입니다.
-              {r.region_name === '침산동' && ' 침산동 거주 환자분은 도보 또는 자전거로 5~10분 내 방문 가능합니다.'}
-              {r.region_name === '북구' && ' 북구 내에서는 자가용·버스로 10~20분, 도시철도 이용 시 대구역에서 환승하여 접근 가능합니다.'}
-              {r.region_name === '수성구' && ' 수성구에서 자가용으로 20~30분, 신천대로·동대구로를 이용하면 편리하게 방문하실 수 있습니다.'}
-              {r.region_name === '범어동' && ' 범어동에서 자가용 20~25분, 동대구로를 통해 빠르게 접근 가능합니다.'}
-              {r.region_name === '중구' && ' 중구에서 자가용·버스로 10~15분, 도시철도 1호선 대구역 방면으로 쉽게 오실 수 있습니다.'}
-              {r.region_name === '동구' && ' 동구에서 자가용으로 15~25분, 동북로·신천대로를 이용하시면 편리합니다.'}
-              {r.region_name === '서구' && ' 서구에서 자가용으로 10~20분, 침산교를 건너 바로 도달 가능합니다.'}
-              {r.region_name === '남구' && ' 남구에서 자가용으로 20~30분, 신천대로를 따라 북상하시면 됩니다.'}
-              {r.region_name === '달서구' && ' 달서구에서 자가용으로 25~35분, 와룡로·서대구IC를 거쳐 오시면 편리합니다.'}
-              {r.region_name === '달성군' && ' 달성군에서 자가용으로 30~40분, 중부내륙고속도로·서대구IC를 통해 접근 가능합니다.'}
-              {r.region_name === '대구' && ' 대구 전역에서 자가용 30분 내 접근이 가능한 위치입니다.'}
-              {r.region_name === '산격동' && ' 산격동에서 도보·자가용으로 5~10분 내 도착 가능한 가까운 거리입니다.'}
-            </p>
-            <a href="/directions" class="inline-block mt-4 text-sm text-gold hover:text-gold-dark">오시는 길 자세히 →</a>
+            <h2 class="display text-xl font-medium mb-4">진료시간</h2>
+            <dl class="space-y-3 text-sm">
+              <div class="flex"><dt class="w-20 text-brown-500">월·목</dt><dd class="flex-1 text-brown-800">09:30–21:00 (야간)</dd></div>
+              <div class="flex"><dt class="w-20 text-brown-500">화·수·금</dt><dd class="flex-1 text-brown-800">09:30–18:30</dd></div>
+              <div class="flex"><dt class="w-20 text-brown-500">토·일</dt><dd class="flex-1 text-brown-800">09:30–17:00</dd></div>
+              <div class="flex"><dt class="w-20 text-brown-500">점심</dt><dd class="flex-1 text-brown-800">12:30–14:00 · 공휴일은 전화 확인</dd></div>
+            </dl>
+            <a href="/hours" class="inline-block mt-4 text-sm text-gold hover:text-gold-dark">진료시간 자세히 →</a>
           </div>
         </div>
       </section>
 
-      {/* Core treatments showcase */}
-      <section class="py-16 bg-cream">
-        <div class="max-w-7xl mx-auto px-6">
-          <h2 class="display text-3xl font-light mb-8">{r.region_name} 환자분이 자주 찾는 진료</h2>
-          <div class="grid md:grid-cols-3 gap-4">
-            {treatments.filter((t: any) => t.is_core).slice(0, 6).map((t: any) => (
-              <a href={`/treatments/${t.slug}`} class="lux-card hover:shadow-lg transition">
-                <div class="display text-xl font-medium mb-2">{t.name}</div>
-                <p class="text-brown-700 text-sm">{t.short_desc}</p>
-                <div class="mt-3 text-xs text-gold">자세히 보기 →</div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ — region/treatment context (rich result eligible) */}
-      {regionFaqs && regionFaqs.length > 0 && (
-        <section class="py-16 max-w-4xl mx-auto px-6">
+      {/* FAQ — 화면 = FAQPage 스키마 */}
+      {p && p.faq.length > 0 && (
+        <section class="py-14 max-w-4xl mx-auto px-6">
           <div class="section-label mb-6">FAQ · 자주 묻는 질문</div>
-          <h2 class="display text-3xl font-light mb-8">
-            {r.region_name} 환자분이 자주 묻는 질문{mainTreatment ? ` — ${mainTreatment.name}` : ''}
-          </h2>
+          <h2 class="display text-2xl md:text-3xl font-medium text-brown-900 mb-8">{r.region_name} 관련 자주 묻는 질문</h2>
           <div class="space-y-4">
-            {regionFaqs.map((f: any, i: number) => (
+            {p.faq.map((f, i) => (
               <details class="lux-card group" open={i === 0}>
                 <summary class="cursor-pointer list-none flex items-start gap-3">
                   <span class="text-gold font-medium mt-0.5 flex-shrink-0">Q{i + 1}.</span>
-                  <span class="display text-lg font-medium flex-1">{f.question}</span>
+                  <span class="display text-lg font-medium flex-1">{f.q}</span>
                   <span class="text-brown-400 group-open:rotate-180 transition flex-shrink-0">▾</span>
                 </summary>
-                <div class="mt-4 pl-9 text-brown-700 leading-relaxed whitespace-pre-line">{f.answer}</div>
+                <div class="mt-4 pl-9 text-brown-700 leading-relaxed">{f.a}</div>
               </details>
             ))}
-          </div>
-          <div class="mt-8 text-center">
-            <a href="/faq" class="text-sm text-gold hover:text-gold-dark">전체 FAQ 보기 →</a>
           </div>
         </section>
       )}
 
-      {/* Related dictionary terms — internal linking gold */}
+      {/* 관련 치과 용어 */}
       {relatedDict && relatedDict.length > 0 && (
-        <section class="py-16 max-w-5xl mx-auto px-6">
-          <h2 class="display text-3xl font-light mb-8">관련 치과 용어</h2>
+        <section class="py-14 max-w-5xl mx-auto px-6">
+          <h2 class="display text-2xl font-medium text-brown-900 mb-6">관련 치과 용어</h2>
           <div class="grid md:grid-cols-2 gap-3">
             {relatedDict.map((d: any) => (
               <a href={`/dictionary/${d.slug}`} class="p-5 rounded-xl bg-cream hover:bg-brown-100 transition">
@@ -3916,11 +3892,11 @@ function RegionSEOInline({ r, treatments, doctors, mainTreatment, relatedRegions
         </section>
       )}
 
-      {/* Related regional pages — hub-and-spoke */}
+      {/* 관련 지역 페이지 (허브 링크는 상단 breadcrumb 앵커 + 푸터 = 2개) */}
       {relatedRegions && relatedRegions.length > 0 && (
-        <section class="py-16 bg-brown-50">
+        <section class="py-14 bg-brown-50">
           <div class="max-w-5xl mx-auto px-6">
-            <h2 class="display text-3xl font-light mb-8">관련 지역별 진료 안내</h2>
+            <h2 class="display text-2xl font-medium text-brown-900 mb-6">다른 지역·주제 안내</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
               {relatedRegions.map((rr: any) => (
                 <a href={`/region/${rr.slug}`} class="p-4 rounded-xl bg-ivory border border-brown-200 hover:border-gold hover:shadow-md transition">
@@ -3933,15 +3909,12 @@ function RegionSEOInline({ r, treatments, doctors, mainTreatment, relatedRegions
         </section>
       )}
 
-      {/* Final CTA */}
-      <section class="py-20 bg-brown-900 text-ivory text-center">
+      <section class="py-16 bg-brown-900 text-ivory text-center">
         <div class="max-w-3xl mx-auto px-6">
-          <h2 class="display text-3xl md:text-4xl font-light mb-4">
-            {r.region_name}에서 가까운 대구365치과
-          </h2>
-          <p class="text-brown-200 mb-8">평일 야간진료 (월·목 21시까지) · 주말 진료 · 무료 주차</p>
+          <h2 class="display text-2xl md:text-3xl font-light mb-4">상담 예약</h2>
+          <p class="text-brown-200 mb-8">월·목 21시까지 · 토·일 17시까지 진료 · 대구 북구 침산로 148 엠브로스퀘어 7층</p>
           <div class="flex flex-wrap justify-center gap-3">
-            <a href={`tel:${SITE.phone}`} class="px-6 py-3 rounded-full bg-gold text-brown-900 hover:bg-gold-dark transition">📞 {SITE.phone}</a>
+            <a href={`tel:${SITE.phone}`} class="px-6 py-3 rounded-full bg-gold text-brown-900 hover:bg-gold-dark transition">{SITE.phone}</a>
             <a href="https://naver.me/GhSIroMf" target="_blank" rel="noopener" class="px-6 py-3 rounded-full border border-ivory text-ivory hover:bg-ivory hover:text-brown-900 transition">네이버 예약</a>
           </div>
         </div>

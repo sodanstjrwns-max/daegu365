@@ -4,6 +4,7 @@ import { REVIEW_DATE } from './lib/tldr'
 
 type RendererProps = {
   title?: string
+  fullTitle?: string
   description?: string
   keywords?: string
   canonical?: string
@@ -507,7 +508,7 @@ export const speakableSchema = (opts: {
 // ============================================================
 
 export const renderer = jsxRenderer(({
-  children, title, description, keywords, canonical, ogImage,
+  children, title, fullTitle, description, keywords, canonical, ogImage,
   ogType, jsonLd, breadcrumb, publishedTime, modifiedTime, author,
   robots, preloadImage,
   naverVerify: nv, googleVerify: gv, msVerify: mv
@@ -518,7 +519,8 @@ export const renderer = jsxRenderer(({
   const googleVerify = gv || env.GOOGLE_SITE_VERIFICATION || ''
   const msVerify = mv || env.MS_SITE_VERIFICATION || ''
 
-  const pageTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} | 대구 북구 치과 · 수면임플란트 · 인비절라인 전문`
+  // fullTitle: 병원명이 이미 들어간 제목(예: '수성구에서 대구365치과 가는 길·…') — 접미사 없이 그대로 쓴다
+  const pageTitle = fullTitle || (title ? `${title} | ${SITE.name}` : `${SITE.name} | 대구 북구 치과 · 수면임플란트 · 인비절라인 전문`)
   const pageDesc = description || '대구 북구 침산동 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인, 라미네이트 전문. 월·목 21시까지, 주말 진료.'
   const pageKw = keywords || '대구치과,대구365치과,침산동치과,북구치과,수면임플란트,인비절라인,라미네이트,대구임플란트,수성구치과,대구교정,투명교정,치과공포증'
   const pageCanonical = canonical || SITE.url

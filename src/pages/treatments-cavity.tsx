@@ -1,6 +1,7 @@
 import { Navbar, Footer, DoctorProfileBlock, TldrBox} from '../components/Layout'
 import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 충치·신경치료·크라운 풀볼륨 상세 페이지 v1
@@ -446,6 +447,8 @@ export const CavityTreatmentPage = ({
         credentials={['보존과 전문의', '미세현미경 신경치료', '심미 보존 수복']}
         treatmentLabel="충치·신경치료·크라운"
       />
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

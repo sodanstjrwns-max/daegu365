@@ -2,6 +2,7 @@ import { Navbar, Footer, ComparisonTable, DoctorProfileBlock, TldrBox } from '..
 import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 import { getTldr } from '../lib/tldr'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 수면임플란트 풀볼륨 상세 페이지 v2
@@ -833,6 +834,8 @@ export const ImplantTreatmentPage = ({
         credentials={['경북대치과대학 외래교수', '통합치의학과 전문의', '수면임플란트 평생 보증']}
         treatmentLabel="수면임플란트"
       />
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

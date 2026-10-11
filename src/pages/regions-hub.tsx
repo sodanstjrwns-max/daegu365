@@ -8,7 +8,7 @@ import { Navbar, Footer } from '../components/Layout'
 // - FAQ 는 화면과 FAQPage 스키마 1:1 (REGIONS_HUB_FAQS 한 곳에서 둘 다 생성)
 // ============================================================
 
-export const REGIONS_HUB_DATE = '2026-10-08'
+export const REGIONS_HUB_DATE = '2026-10-11'
 
 export const REGIONS_HUB_TITLE = '대구 북구 치과'
 
@@ -163,8 +163,8 @@ export const RegionsHubPage = ({ byRegion, tNameBySlug }: { byRegion: Record<str
 
     <section class="py-14 bg-cream">
       <div class="max-w-6xl mx-auto px-6">
-        <h2 class="display text-3xl font-medium text-brown-900 mb-3">대구 다른 지역에서 오시는 분께</h2>
-        <p class="text-brown-700 mb-10">수성구·중구·동구·서구·남구·달서구·달성군 등에서 오시는 분을 위한 진료별 안내도 함께 정리해 두었습니다.</p>
+        <h2 class="display text-3xl font-medium text-brown-900 mb-3">동네·지역별 안내</h2>
+        <p class="text-brown-700 mb-10">침산동·산격동 등 북구 동네 주민을 위한 진료 안내와, 수성구·중구·동구·서구·남구·달서구·달성군에서 오시는 분을 위한 찾아오는 길·일정 안내를 주제별로 나눠 정리했습니다.</p>
         {Object.entries(byRegion).map(([region, items]) => (
           <div class="mb-12">
             <h3 class="display text-2xl font-medium mb-6 pb-3 border-b border-brown-200">{region}</h3>
@@ -181,6 +181,6 @@ export const RegionsHubPage = ({ byRegion, tNameBySlug }: { byRegion: Record<str
         ))}
       </div>
     </section>
-    <Footer />
+    <Footer hubSelf />
   </>
 )

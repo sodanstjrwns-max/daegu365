@@ -3,6 +3,7 @@ import { getTldr } from '../lib/tldr'
 import { comparisonFor } from '../lib/comparison-data'
 import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 에어플로우 (GBT) 풀볼륨 상세 페이지 v1
@@ -492,6 +493,8 @@ export const AirflowGBTTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

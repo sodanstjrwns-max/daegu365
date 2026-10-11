@@ -1,6 +1,7 @@
 import { Navbar, Footer, TldrBox} from '../components/Layout'
 import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 아이콘 레진 (ICON Resin) 풀볼륨 상세 페이지 v1
@@ -275,6 +276,8 @@ export const IconTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

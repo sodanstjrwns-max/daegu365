@@ -1,6 +1,7 @@
 import { Navbar, Footer, TldrBox} from '../components/Layout'
 import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 심미치료 풀볼륨 v1
@@ -213,6 +214,8 @@ export const AestheticTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

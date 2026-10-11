@@ -1,6 +1,7 @@
 import { Navbar, Footer, TldrBox } from '../components/Layout'
 import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 치주치료 풀볼륨 상세 페이지 v1
@@ -291,6 +292,8 @@ export const PerioTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

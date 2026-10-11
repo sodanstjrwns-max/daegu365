@@ -2,6 +2,7 @@ import { Navbar, Footer, ComparisonTable, TldrBox} from '../components/Layout'
 import { getTldr } from '../lib/tldr'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · Q-ray 형광 충치 진단 풀볼륨 상세 페이지 v1
@@ -291,6 +292,8 @@ export const QrayTreatmentPage = ({
           </div>
         </div>
       </section>
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

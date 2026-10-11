@@ -1,6 +1,7 @@
 import { Navbar, Footer } from '../components/Layout'
 import type { BlogPost, Doctor } from '../lib/types'
 import { kstYmd } from '../lib/content-dates'
+import { BlogHubSentence, htmlHasHubLink } from '../lib/hub-link'
 
 export const BlogListPage = ({ posts, doctors, page = 1, totalPages = 1 }: { posts: BlogPost[], doctors: Doctor[], page?: number, totalPages?: number }) => (
   <>
@@ -64,7 +65,7 @@ export const BlogListPage = ({ posts, doctors, page = 1, totalPages = 1 }: { pos
   </>
 )
 
-export const BlogDetailPage = ({ post, author, reviewer, summary, treatment, cases, related }: { post: BlogPost, author: Doctor | null, reviewer: Doctor | null, summary: string, treatment: { slug: string, name: string, short_desc?: string } | null, cases: { id: number, title: string, treatment_period?: string }[], related: BlogPost[] }) => (
+export const BlogDetailPage = ({ post, author, summary, treatment, cases, related }: { post: BlogPost, author: Doctor | null, summary: string, treatment: { slug: string, name: string, short_desc?: string } | null, cases: { id: number, title: string, treatment_period?: string }[], related: BlogPost[] }) => (
   <>
     <Navbar />
     <article class="max-w-3xl mx-auto px-6 py-16">
@@ -99,19 +100,29 @@ export const BlogDetailPage = ({ post, author, reviewer, summary, treatment, cas
 
       <div class="prose-dental fade-in" dangerouslySetInnerHTML={{__html: post.content}}></div>
 
-      {reviewer && (
-        <aside class="mt-16 flex items-start gap-5 lux-card fade-in" aria-label="작성·감수 의료진">
-          <a href={`/doctors/${reviewer.slug}`} class="shrink-0">
-            {reviewer.photo_url
-              ? <img src={reviewer.photo_url} alt={`${reviewer.name} ${reviewer.position}`} width="72" height="72" loading="lazy" decoding="async" class="w-[72px] h-[72px] rounded-full object-cover object-top" />
+      {/* 허브 내부 링크(INTERNAL_LINK_RULES) — 본문에 이미 /regions 링크가 있으면 생략 */}
+      {!htmlHasHubLink(post.content) && <BlogHubSentence slug={post.slug} />}
+
+      {/* 작성 의료진이 저장된 글만 원장 박스. 작성자 없는 글은 병원 작성 — 원장 감수를 기본값으로 붙이지 않는다(2026-10-11) */}
+      {author ? (
+        <aside class="mt-16 flex items-start gap-5 lux-card fade-in" aria-label="작성 의료진">
+          <a href={`/doctors/${author.slug}`} class="shrink-0">
+            {author.photo_url
+              ? <img src={author.photo_url} alt={`${author.name} ${author.position}`} width="72" height="72" loading="lazy" decoding="async" class="w-[72px] h-[72px] rounded-full object-cover object-top" />
               : <div class="w-[72px] h-[72px] rounded-full bg-cream flex items-center justify-center"><i class="fas fa-user-doctor text-2xl text-brown-500"></i></div>}
           </a>
           <div class="min-w-0">
-            <div class="text-xs tracking-widest text-brown-500 mb-1">{author ? '작성' : '작성 대구365치과 · 감수'}</div>
-            <a href={`/doctors/${reviewer.slug}`} class="display text-xl font-medium hover:text-brown-700">{reviewer.name} <span class="text-sm text-brown-600">{reviewer.position}</span></a>
-            {reviewer.message && <p class="text-sm text-brown-700 mt-2">"{reviewer.message}"</p>}
+            <div class="text-xs tracking-widest text-brown-500 mb-1">작성</div>
+            <a href={`/doctors/${author.slug}`} class="display text-xl font-medium hover:text-brown-700">{author.name} <span class="text-sm text-brown-600">{author.position}</span></a>
+            {author.message && <p class="text-sm text-brown-700 mt-2">"{author.message}"</p>}
             <p class="text-xs text-brown-500 mt-2">최종 업데이트 <time datetime={kstYmd(post.updated_at || post.created_at)}>{kstYmd(post.updated_at || post.created_at).replace(/-/g,'.')}</time></p>
           </div>
+        </aside>
+      ) : (
+        <aside class="mt-16 lux-card fade-in" aria-label="작성">
+          <div class="text-xs tracking-widest text-brown-500 mb-1">작성 대구365치과</div>
+          <p class="text-sm text-brown-700">일반 건강정보입니다. 진료 판단은 내원 상담에서 원장이 직접 합니다.</p>
+          <p class="text-xs text-brown-500 mt-2">최종 업데이트 <time datetime={kstYmd(post.updated_at || post.created_at)}>{kstYmd(post.updated_at || post.created_at).replace(/-/g,'.')}</time></p>
         </aside>
       )}
 

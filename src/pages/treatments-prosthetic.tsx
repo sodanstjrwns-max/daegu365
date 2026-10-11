@@ -2,6 +2,7 @@ import { Navbar, Footer, ComparisonTable, DoctorProfileBlock, TldrBox} from '../
 import { getTldr } from '../lib/tldr'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 보철 (크라운 · 브릿지 · 인레이) 풀볼륨 v1
@@ -278,6 +279,8 @@ export const ProstheticTreatmentPage = ({
         credentials={['경북대치과대학 외래교수', '통합치의학과 전문의', '원내 디지털 기공실 운영']}
         treatmentLabel="보철"
       />
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

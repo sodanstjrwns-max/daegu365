@@ -1,6 +1,7 @@
 import { Navbar, Footer, TldrBox } from '../components/Layout'
 import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 export const TreatmentsListPage = ({ treatments }: { treatments: Treatment[] }) => {
   const core = treatments.filter(t => t.is_core)
@@ -392,6 +393,7 @@ export const TreatmentDetailPage = ({
         </div>
       </section>
 
+      <TreatmentHubLine />
       <Footer />
     </>
   )

@@ -3,6 +3,7 @@ import { getTldr } from '../lib/tldr'
 import { comparisonFor } from '../lib/comparison-data'
 import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 수면치료 시스템 풀볼륨 상세 페이지 v1
@@ -620,6 +621,8 @@ export const SleepTherapyTreatmentPage = ({
         credentials={['경북대치과대학 외래교수', '통합치의학과 전문의', '의식하 진정 시스템 설계']}
         treatmentLabel="수면치료"
       />
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

@@ -1,6 +1,7 @@
 import { Navbar, Footer, TldrBox} from '../components/Layout'
 import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 원내 디지털 기공실 (In-house D.LAB) 풀볼륨 v1
@@ -223,6 +224,8 @@ export const InhouseLabPage = ({
           </div>
         </div>
       </section>
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

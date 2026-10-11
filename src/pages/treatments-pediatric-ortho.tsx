@@ -3,6 +3,7 @@ import { getTldr } from '../lib/tldr'
 import { comparisonFor } from '../lib/comparison-data'
 import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 소아 교정장치 풀볼륨 상세 페이지 v1
@@ -582,6 +583,8 @@ export const PediatricOrthoTreatmentPage = ({
         credentials={['교정 진료', '소아 성장기 교정', '디지털 교정 진단']}
         treatmentLabel="소아 교정장치"
       />
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

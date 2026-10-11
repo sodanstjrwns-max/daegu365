@@ -3,6 +3,7 @@ import { getTldr } from '../lib/tldr'
 import { comparisonFor } from '../lib/comparison-data'
 import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 인비절라인 풀볼륨 v1
@@ -773,6 +774,8 @@ export const OrthoTreatmentPage = ({
         credentials={['교정과 전문의', '인비절라인 공인 닥터', '디지털 ClinCheck 시뮬레이션']}
         treatmentLabel="인비절라인 치아교정"
       />
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

@@ -2,6 +2,7 @@ import { Navbar, Footer } from '../components/Layout'
 import type { Notice, DictEntry, FAQ, Treatment } from '../lib/types'
 import { kstYmd } from '../lib/content-dates'
 import type { DictEnriched } from '../data/dictionary-enriched/types'
+import { DictionaryHubLine } from '../lib/hub-link'
 
 // === Notices ===
 export const NoticeListPage = ({ notices }: { notices: Notice[] }) => {
@@ -340,6 +341,8 @@ export const DictionaryDetailPage = ({
           </div>
         </section>
       )}
+
+      <DictionaryHubLine />
     </article>
     <Footer />
   </>

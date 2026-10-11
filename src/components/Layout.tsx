@@ -1119,7 +1119,8 @@ export const DoctorProfileBlock = ({ slug, name, position, quote, credentials, t
   )
 }
 
-export const Footer = () => (
+// hubSelf: 허브(/regions) 자신에서는 푸터 허브 링크를 텍스트로(자기 링크 금지, INTERNAL_LINK_RULES)
+export const Footer = ({ hubSelf = false }: { hubSelf?: boolean } = {}) => (
   <>
   {/* PPT PC4 슬라이드 2 — 우측 플로팅 퀵메뉴 바 복원 (전화·네이버예약·카카오·블로그·인스타·맨위로) */}
   <aside id="quick-menu" class="hidden md:flex flex-col fixed right-5 top-1/2 -translate-y-1/2 z-40 gap-2" aria-label="빠른 메뉴">
@@ -1216,7 +1217,7 @@ export const Footer = () => (
           <div class="display text-base text-gold mb-4 font-bold tracking-tight" role="heading" aria-level="3">내원안내</div>
           <ul class="space-y-3 text-sm text-brown-200">
             <li class="flex gap-2"><i class="fas fa-map-marker-alt mt-1 text-gold"></i>
-              <span>대구광역시 북구 침산로 148<br/>엠브로스퀘어 7층<br/><a href="/regions" class="underline hover:text-ivory">대구 북구 치과 안내</a></span>
+              <span>대구광역시 북구 침산로 148<br/>엠브로스퀘어 7층<br/>{hubSelf ? <span>대구 북구 치과</span> : <a href="/regions" class="underline hover:text-ivory">대구 북구 치과</a>}</span>
             </li>
             <li class="flex gap-2"><i class="fas fa-phone mt-1 text-gold"></i>
               <a href="tel:053-357-0365">053-357-0365</a>

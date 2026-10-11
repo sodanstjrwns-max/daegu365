@@ -2,6 +2,7 @@ import { Navbar, Footer, ComparisonTable, DoctorProfileBlock, TldrBox } from '..
 import { getTldr } from '../lib/tldr'
 import { comparisonFor } from '../lib/comparison-data'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 전문가 미백 풀볼륨 상세 페이지 v1
@@ -307,6 +308,8 @@ export const WhiteningTreatmentPage = ({
         credentials={['보존과 전문의', '전문가 미백 프로토콜', '심미 보존 수복']}
         treatmentLabel="전문가 미백"
       />
+
+      <TreatmentHubLine />
 
       <Footer />
     </>

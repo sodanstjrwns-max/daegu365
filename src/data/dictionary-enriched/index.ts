@@ -5,6 +5,7 @@
 // - 동의어 용어는 301 로 한쪽에 합친다(DICT_ALIASES). 합쳐진 쪽 slug 는 목록·사이트맵·관련 용어에서 제외.
 import { kstYmd, latestDate } from '../../lib/content-dates'
 import type { DictEnriched } from './types'
+import { DICT_REVISED_DATE, DICT_REVISED_SLUGS } from './overrides'
 import { BATCH_01 } from './batch-01'
 import { BATCH_02 } from './batch-02'
 import { BATCH_03 } from './batch-03'
@@ -74,6 +75,12 @@ export const isDictIndexable = (row: any): boolean => {
   return dictBodyChars(row) >= DICT_MIN_INDEX_CHARS
 }
 
-/** 용어 페이지의 실제 수정일(KST YYYY-MM-DD): max(D1 updated_at/created_at, 보강일) */
+/** 코드 쪽(보강·이름 수정) 내용이 마지막으로 바뀐 날짜 — 해당 없으면 '' */
+export const dictCodeDate = (slug: string): string =>
+  latestDate(slug && DICT_ENRICHED[slug] ? ENRICHED_DATE : '', slug && DICT_REVISED_SLUGS.has(slug) ? DICT_REVISED_DATE : '')
+
+/** 용어 페이지의 실제 수정일(KST YYYY-MM-DD): max(D1 updated_at/created_at, 보강일, 이름·표기 수정일) */
 export const dictLastmod = (row: any): string =>
-  latestDate(kstYmd(row?.updated_at || row?.created_at), row?.slug && DICT_ENRICHED[row.slug] ? ENRICHED_DATE : '')
+  latestDate(kstYmd(row?.updated_at || row?.created_at), dictCodeDate(String(row?.slug || '')))
+
+export { DICT_OVERRIDES, DICT_REVISED_DATE, DICT_REVISED_SLUGS, applyDictOverride, applyDictOverrides } from './overrides'

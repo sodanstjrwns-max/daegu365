@@ -3,6 +3,7 @@ import { getTldr } from '../lib/tldr'
 import { comparisonFor } from '../lib/comparison-data'
 import { getDoctorPhoto } from './doctors'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
+import { TreatmentHubLine } from '../lib/hub-link'
 
 /* ============================================================
    대구365치과 · 라미네이트 (VINIQUE) 풀볼륨 v1
@@ -999,6 +1000,8 @@ export const LamineerTreatmentPage = ({
         credentials={['비니크(라미네이트) 센터장', '보존과 전문의', 'VINIQUE 디자인 워크플로우']}
         treatmentLabel="비니크 프리미엄 라미네이트"
       />
+
+      <TreatmentHubLine />
 
       <Footer />
     </>
