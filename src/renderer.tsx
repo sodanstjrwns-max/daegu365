@@ -9,6 +9,8 @@ type RendererProps = {
   keywords?: string
   canonical?: string
   ogImage?: string
+  /** og:image:alt (없으면 페이지 제목) */
+  ogImageAlt?: string
   ogType?: 'website' | 'article' | 'profile'
   jsonLd?: any | any[]
   breadcrumb?: Array<{ name: string, url: string }>
@@ -508,7 +510,7 @@ export const speakableSchema = (opts: {
 // ============================================================
 
 export const renderer = jsxRenderer(({
-  children, title, fullTitle, description, keywords, canonical, ogImage,
+  children, title, fullTitle, description, keywords, canonical, ogImage, ogImageAlt,
   ogType, jsonLd, breadcrumb, publishedTime, modifiedTime, author,
   robots, preloadImage,
   naverVerify: nv, googleVerify: gv, msVerify: mv
@@ -520,7 +522,9 @@ export const renderer = jsxRenderer(({
   const msVerify = mv || env.MS_SITE_VERIFICATION || ''
 
   // fullTitle: 병원명이 이미 들어간 제목(예: '수성구에서 대구365치과 가는 길·…') — 접미사 없이 그대로 쓴다
-  const pageTitle = fullTitle || (title ? `${title} | ${SITE.name}` : `${SITE.name} | 대구 북구 치과 · 수면임플란트 · 인비절라인 전문`)
+  // 2026-10-14: title 에 이미 ' | 대구365치과' 가 붙어 오면 다시 붙이지 않는다 (진료 상세 '… | 대구365치과 | 대구365치과' 중복 원인)
+  const brandSuffix = ` | ${SITE.name}`
+  const pageTitle = fullTitle || (title ? (title.endsWith(brandSuffix) ? title : `${title}${brandSuffix}`) : `${SITE.name} | 대구 북구 치과 · 수면임플란트 · 인비절라인 전문`)
   const pageDesc = description || '대구 북구 침산동 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인, 라미네이트 전문. 월·목 21시까지, 주말 진료.'
   const pageKw = keywords || '대구치과,대구365치과,침산동치과,북구치과,수면임플란트,인비절라인,라미네이트,대구임플란트,수성구치과,대구교정,투명교정,치과공포증'
   const pageCanonical = canonical || SITE.url
@@ -586,7 +590,7 @@ export const renderer = jsxRenderer(({
         <meta property="og:image" content={pageOg} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content={pageTitle} />
+        <meta property="og:image:alt" content={ogImageAlt || pageTitle} />
         <meta property="og:locale" content="ko_KR" />
         {pageOgType === 'article' && publishedTime && (
           <meta property="article:published_time" content={publishedTime} />
@@ -613,7 +617,7 @@ export const renderer = jsxRenderer(({
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDesc} />
         <meta name="twitter:image" content={pageOg} />
-        <meta name="twitter:image:alt" content={pageTitle} />
+        <meta name="twitter:image:alt" content={ogImageAlt || pageTitle} />
 
         {/* Favicon */}
         <link rel="icon" href="/favicon.ico?v=fav20261014" sizes="any" />

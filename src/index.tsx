@@ -17,6 +17,7 @@ import { fetchSiteStats, renderStatsPage, isValidStatsKey } from './lib/stats'
 import { renderOgPng } from './lib/og-png'
 import { RegionsHubPage, REGIONS_HUB_TITLE, REGIONS_HUB_DESC, REGIONS_HUB_FAQS, REGIONS_HUB_DATE } from './pages/regions-hub'
 import { REGION_PAGES, REGION_PAGES_DATE, hasRegionPage, regionTitleParts, regionAreaName, type RegionPage } from './data/region-pages'
+import { REGION_CARDS_DATE, REGION_CARD_BY_SLUG, regionCardImages, regionCardsItemList, RegionHeroImage } from './lib/region-cards'
 import { DICT_ENRICHED, DICT_ALIAS_REDIRECTS, ENRICHED_DATE, isDictAlias, isDictIndexable, dictAliasNames, dictLastmod, dictCodeDate, applyDictOverride, applyDictOverrides, DICT_OVERRIDES, DICT_REVISED_DATE } from './data/dictionary-enriched'
 
 // Pages
@@ -572,6 +573,8 @@ app.get('/', async (c) => {
       "@type": "ListItem", "position": i + 1, "name": t.name, "url": `${SITE.url}${t.url}`
     }))
   })
+  // ItemList — "대구 북구 {진료}" 핵심 6페이지 사진 카드 (화면 카드 그리드와 1:1)
+  homeSchemas.push(regionCardsItemList(`${SITE.url}/#bukgu-core-cards`))
   return c.render(<HomePage />, {
     title: '대구 북구 치과 · 수면임플란트 · 인비절라인 전문',
     description: '치과가 두려웠던 의사가 만든 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인, 라미네이트 전문. 월·목 21시까지, 주말 진료.',
@@ -834,7 +837,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dictTerms={dictTerms.results as any}
       />, {
-        title: `수면임플란트 — 잠든 사이, 평생 가는 임플란트 | 대구365치과`,
+        title: `수면임플란트 — 잠든 사이, 평생 가는 임플란트`,
         description: `의식하 진정 + 4단계 무통마취 + 디지털 가이드 수술. 메가젠·오스템·스트라우만 5종 픽스쳐, 픽스쳐 5년·상부보철 평생 보증. 대구365치과 수면임플란트.`,
         canonical: `https://daegu365dc.kr/treatments/implant`,
         ogImage: ogUrl.treatment('수면임플란트', '잠든 사이, 평생 가는 임플란트', '임플란트'),
@@ -853,7 +856,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dictTerms={dictTerms.results as any}
       />, {
-        title: `임플란트 — 검증된 표준, 합리적 선택 | 대구365치과`,
+        title: `임플란트 — 검증된 표준, 합리적 선택`,
         description: `픽스처+맞춤기둥+지르코니아 크라운 포함 패키지 100~180만원(1개 기준). 메가젠·오스템·스트라우만 5종 픽스처, 디지털 가이드 수술, 픽스처 5년·상부보철 평생 보증. 대구365치과 임플란트.`,
         canonical: `https://daegu365dc.kr/treatments/implant-general`,
         ogImage: ogUrl.treatment('임플란트', '검증된 표준, 합리적 선택', '임플란트'),
@@ -872,7 +875,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dictTerms={dictTerms.results as any}
       />, {
-        title: `VINIQUE 라미네이트 — 자연을 닮은 미세 보철 | 대구365치과`,
+        title: `VINIQUE 라미네이트 — 자연을 닮은 미세 보철`,
         description: `0.3mm 미세 보철, VINIQUE 라미네이트 Standard(213MPa)/Premium(510MPa) 2-Tier 라인업. 자연치 삭제 최소화, In-house D.LAB 디지털 보철. 대구365치과 VINIQUE 라미네이트.`,
         canonical: `https://daegu365dc.kr/treatments/lamineer`,
         ogImage: ogUrl.treatment('VINIQUE 라미네이트', '자연을 닮은 0.3mm 미세 보철', '심미보철'),
@@ -891,7 +894,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dictTerms={dictTerms.results as any}
       />, {
-        title: `인비절라인 — 보이지 않는 투명교정 | 대구365치과`,
+        title: `인비절라인 — 보이지 않는 투명교정`,
         description: `iTero 5D 디지털 스캔 기반 인비절라인. ClinCheck 시뮬레이션, 투명·탈착식 교정으로 일상에 자유로움. 대구365치과 투명교정.`,
         canonical: `https://daegu365dc.kr/treatments/ortho`,
         ogImage: ogUrl.treatment('인비절라인', '보이지 않는 투명교정', '교정'),
@@ -910,7 +913,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dictTerms={dictTerms.results as any}
       />, {
-        title: `수면치료 시스템 — 치과의 기억을 바꿔드립니다 | 대구365치과`,
+        title: `수면치료 시스템 — 치과의 기억을 바꿔드립니다`,
         description: `의식하 진정(IV Sedation) + 4단계 무통마취 + 4지표 실시간 모니터링. 치과공포증 의사가 직접 설계한 수면치료 시스템. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/sleep-therapy`,
         ogImage: ogUrl.treatment('수면치료 시스템', '치과의 기억을 바꿔드립니다', '진정치료'),
@@ -929,7 +932,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dictTerms={dictTerms.results as any}
       />, {
-        title: `4단계 무통마취 — 바늘이 들어가는 그 순간을 없애드립니다 | 대구365치과`,
+        title: `4단계 무통마취 — 바늘이 들어가는 그 순간을 없애드립니다`,
         description: `가글마취 → 도포마취 → 컴퓨터 제어 무통마취기 → 본마취. 모든 진료에 기본 적용되는 추가 비용 없는 4단계 프로토콜. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/painless-anesthesia`,
         ogImage: ogUrl.treatment('4단계 무통마취', '바늘이 들어가는 그 순간을 없애드립니다', '마취'),
@@ -948,7 +951,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dictTerms={dictTerms.results as any}
       />, {
-        title: `에어플로우 (GBT) — 긁어내지 않습니다, 씻어냅니다 | 대구365치과`,
+        title: `에어플로우 (GBT) — 긁어내지 않습니다, 씻어냅니다`,
         description: `EMS 스위스 정품 장비, GBT 8단계 표준 프로토콜. 치아·잇몸 손상 없이 플라크와 착색을 동시에 제거하는 차세대 구강 위생 관리. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/airflow-gbt`,
         ogImage: ogUrl.treatment('에어플로우 GBT', '긁어내지 않습니다, 씻어냅니다', '구강위생'),
@@ -967,7 +970,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dictTerms={dictTerms.results as any}
       />, {
-        title: `소아 교정장치 — 7~10세 골든타임 | 대구365치과`,
+        title: `소아 교정장치 — 7~10세 골든타임`,
         description: `RPE·근기능장치·페이스마스크·MRC·공간유지 6종 풀라인업. 골격성 부정교합을 비수술로 잡는 7~10세 골든타임 1차 교정. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/pediatric-ortho`,
         ogImage: ogUrl.treatment('소아 교정장치', '7~10세 골든타임 1차 교정', '소아교정'),
@@ -986,7 +989,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dictTerms={dictTerms.results as any}
       />, {
-        title: `소아치과 — 아이의 첫 치과, 평생을 결정하는 한 번의 경험 | 대구365치과`,
+        title: `소아치과 — 아이의 첫 치과, 평생을 결정하는 한 번의 경험`,
         description: `치과공포증 의사가 설계한 어린이 진료. TSD·웃음가스까지 협조도 3단계 맞춤 시스템 + 4단계 무통마취 기본 적용. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/pediatric`,
         ogImage: ogUrl.treatment('소아치과', '아이의 첫 치과, 평생을 결정하는 한 번', '소아'),
@@ -1005,7 +1008,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `충치·신경치료·크라운 — 한 번 깎은 치아는 돌아오지 않습니다 | 대구365치과`,
+        title: `충치·신경치료·크라운 — 한 번 깎은 치아는 돌아오지 않습니다`,
         description: `Q-ray 형광 진단 + 4단계 무통마취 + 보존 우선 원칙. C0~C4 정밀 분류로 과잉 진료 없이, 놓치지도 않습니다. 신경치료 6단계·크라운 3종 풀라인업. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/cavity-endo-crown`,
         ogImage: ogUrl.treatment('충치·신경치료·크라운', '한 번 깎은 치아는 돌아오지 않습니다', '보존'),
@@ -1024,7 +1027,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `치주치료 — 치아를 잃는 1순위, 잇몸병입니다 | 대구365치과`,
+        title: `치주치료 — 치아를 잃는 1순위, 잇몸병입니다`,
         description: `잇몸병 5단계 정밀 진단 + 에어플로우(GBT) 연계 + SRP·치주수술·골재생술 통합. 3·6개월 맞춤 리콜로 평생 유지 관리. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/perio`,
         ogImage: ogUrl.treatment('치주치료', '치아를 잃는 1순위, 잇몸병입니다', '치주'),
@@ -1043,7 +1046,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `전문가 미백 — 깎지 않습니다, 톤만 밝힙니다 | 대구365치과`,
+        title: `전문가 미백 — 깎지 않습니다, 톤만 밝힙니다`,
         description: `1·2·3회 패키지 (15만원/30만원/40만원). 잇몸 보호제 + 고농도 안전 적용 + VITA Shade 정량 측정. 결혼·면접·이벤트 직전 60분 케어. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/whitening`,
         ogImage: ogUrl.treatment('전문가 미백', '깎지 않습니다, 톤만 밝힙니다', '심미'),
@@ -1062,7 +1065,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `아이콘 레진 — 깎지 않고, 반점만 지웁니다 | 대구365치과`,
+        title: `아이콘 레진 — 깎지 않고, 반점만 지웁니다`,
         description: `DMG ICON 독일 정품 침투형 레진. 교정 후 흰 반점·초기 우식·소아 변색까지 마취·삭제 없이 60분 한 번에. 25만원부터. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/icon-resin`,
         ogImage: ogUrl.treatment('아이콘 레진', '깎지 않고, 반점만 지웁니다', '심미'),
@@ -1081,7 +1084,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `Q-ray 형광 충치 진단 — 보이지 않는 충치를 빛으로 봅니다 | 대구365치과`,
+        title: `Q-ray 형광 충치 진단 — 보이지 않는 충치를 빛으로 봅니다`,
         description: `QLF 정량 형광 기술, 방사선 0의 차세대 진단 시스템. 초기 우식·플라크·교정 탈회까지 가시화. 정기 검진 기본 포함. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/qray`,
         ogImage: ogUrl.treatment('Q-ray 형광 진단', '보이지 않는 충치를 빛으로 봅니다', '진단'),
@@ -1100,7 +1103,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `보철 (크라운·브릿지·인레이) — 잘 만든 보철은 평생을 갑니다 | 대구365치과`,
+        title: `보철 (크라운·브릿지·인레이) — 잘 만든 보철은 평생을 갑니다`,
         description: `원내 디지털 기공실(D.LAB) + iTero 5D 스캔 + CAD/CAM 정밀 밀링. 지르코니아·PFM·하이브리드 인레이 풀라인업. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/prosthetic`,
         breadcrumb: treatmentBC,
@@ -1118,7 +1121,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `원내 디지털 기공실 D.LAB — 보철의 정밀함은 기공실에서 결정됩니다 | 대구365치과`,
+        title: `원내 디지털 기공실 D.LAB — 보철의 정밀함은 기공실에서 결정됩니다`,
         description: `iTero 5D + CAD/CAM + 3D 프린터 + 신터링 퍼니스. 환자 입에서 즉시 색상·교합 조정 가능한 원내 기공실. 외주 불일치 0. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/in-house-lab`,
         breadcrumb: treatmentBC,
@@ -1136,7 +1139,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `예방치과 — 가장 좋은 치료는 치료가 없는 것 | 대구365치과`,
+        title: `예방치과 — 가장 좋은 치료는 치료가 없는 것`,
         description: `GBT 에어플로우 + Q-ray 형광 진단 + 3·6·12개월 맞춤 리콜. 평생 자연치를 만드는 365일 관리 시스템. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/prevention`,
         breadcrumb: treatmentBC,
@@ -1154,7 +1157,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `심미치료 — 예쁜 치아가 아닌, 예쁜 미소 | 대구365치과`,
+        title: `심미치료 — 예쁜 치아가 아닌, 예쁜 미소`,
         description: `라미네이트·미백·아이콘·심미보철·교정의 통합 심미 디자인. iTero 5D 시뮬레이션으로 결과를 미리 확인. 얼굴 비례까지 고려한 맞춤 설계. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/aesthetic`,
         ogImage: ogUrl.treatment('심미치료', '예쁜 치아가 아닌, 예쁜 미소', '심미'),
@@ -1173,7 +1176,7 @@ app.get('/treatments/:slug', async (c) => {
         cases={cases.results as any}
         dict={dictTerms.results as any}
       />, {
-        title: `보존치료 — 가능한 한, 남깁니다 | 대구365치과`,
+        title: `보존치료 — 가능한 한, 남깁니다`,
         description: `확대경 + Q-ray + 러버댐 + 4단계 무통마취. 자연치를 살리는 가장 정확한 방법. 레진 7만원부터, 정직한 가격. 대구365치과.`,
         canonical: `https://daegu365dc.kr/treatments/conservative`,
         breadcrumb: treatmentBC,
@@ -2109,7 +2112,7 @@ app.get('/regions', async (c) => {
       canonical: 'https://daegu365dc.kr/regions',
       breadcrumb,
       // Dentist/WebSite/Breadcrumb 는 renderer.tsx 에서 전역 자동 주입
-      jsonLd: [hubWebPage, hubFaq, regionsItemListSchema]
+      jsonLd: [hubWebPage, hubFaq, regionsItemListSchema, regionCardsItemList(`${SITE.url}/regions#bukgu-core-cards`)]
     }
   )
 })
@@ -2153,6 +2156,9 @@ app.get('/region/:slug', async (c) => {
   ]
   const areaName = regionAreaName(r.region_name)
   const titleParts = page ? regionTitleParts(page, SITE.name) : { title: r.title }
+  // 2026-10-14: 대구 북구 핵심 6페이지 — 고유 대표 사진(og·본문 첫 이미지·스키마·사이트맵 동일)
+  const card = page ? REGION_CARD_BY_SLUG[slug] : undefined
+  const cardImg = card ? regionCardImages(slug) : undefined
   const webPageSchema = {
     "@context": "https://schema.org",
     "@type": "MedicalWebPage",
@@ -2166,14 +2172,17 @@ app.get('/region/:slug', async (c) => {
     "about": { "@id": `${SITE.url}/#dentist` },
     // 작성·발행 = 병원(원장 감수 표시 없음 — 원장이 검토한 글이 아님)
     "publisher": { "@id": `${SITE.url}/#dentist` },
-    "primaryImageOfPage": ogStaticUrl('default', {}),
+    ...(card ? {
+      "image": { "@type": "ImageObject", "url": cardImg!.og, "width": 1200, "height": 630, "caption": card.alt },
+      "primaryImageOfPage": { "@type": "ImageObject", "url": cardImg!.og, "width": 1200, "height": 630 },
+    } : { "primaryImageOfPage": ogStaticUrl('default', {}) }),
     "specialty": "Dentistry",
     "audience": {
       "@type": "MedicalAudience",
       "audienceType": "Patient",
       "geographicArea": { "@type": "AdministrativeArea", "name": areaName }
     },
-    ...(page && { "dateModified": REGION_PAGES_DATE }),
+    ...(page && { "dateModified": card ? REGION_CARDS_DATE : REGION_PAGES_DATE }),
     ...(careLinks.length && {
       "relatedLink": careLinks.map((t: any) => `${SITE.url}/treatments/${t.slug}`)
     }),
@@ -2206,8 +2215,9 @@ app.get('/region/:slug', async (c) => {
       description,
       // 보강 데이터가 있으면 index(렌더러 기본값), 없으면 noindex — X-Robots-Tag 는 미들웨어가 pageIndexable 로 맞춘다
       robots: page ? undefined : 'noindex, follow',
-      ...(page && { modifiedTime: REGION_PAGES_DATE }),
+      ...(page && { modifiedTime: card ? REGION_CARDS_DATE : REGION_PAGES_DATE }),
       canonical: `https://daegu365dc.kr/region/${slug}`,
+      ...(card && { ogImage: cardImg!.og, ogImageAlt: card.alt }),
       breadcrumb,
       jsonLd,
       schemaType: 'MedicalWebPage'
@@ -3471,7 +3481,7 @@ app.get('/sitemap.xml', async (c) => {
   <sitemap><loc>${base}/sitemap-blog.xml</loc>${lastmodTag(tBlog)}</sitemap>
   <sitemap><loc>${base}/sitemap-cases.xml</loc>${lastmodTag(tCases)}</sitemap>
   <sitemap><loc>${base}/sitemap-dictionary.xml</loc>${lastmodTag(tDict)}</sitemap>
-  <sitemap><loc>${base}/sitemap-regions.xml</loc>${lastmodTag(REGION_PAGES_DATE)}</sitemap>
+  <sitemap><loc>${base}/sitemap-regions.xml</loc>${lastmodTag(REGION_CARDS_DATE)}</sitemap>
 </sitemapindex>`
   return c.text(xml, 200, {
     'Content-Type': 'application/xml; charset=utf-8',
@@ -3561,10 +3571,16 @@ app.get('/sitemap-regions.xml', async (c) => {
   const base = SITE.url
   let rows: any[] = []
   try { rows = ((await c.env.DB.prepare('SELECT slug FROM region_seo ORDER BY id').all()).results as any[]) || [] } catch { rows = [] }
+  // 2026-10-14: 대구 북구 핵심 6페이지는 대표 사진 <image:image> (og·본문·스키마와 같은 파일)
+  const imageTag = (slug: string) => {
+    const card = REGION_CARD_BY_SLUG[slug]
+    if (!card) return ''
+    return `<image:image><image:loc>${xmlEscape(regionCardImages(slug).og)}</image:loc><image:title>${xmlEscape(card.name)}</image:title></image:image>`
+  }
   const urls = rows.filter((r: any) => hasRegionPage(r.slug))
-    .map((r: any) => `  <url><loc>${base}/region/${xmlEscape(r.slug)}</loc>${lastmodTag(REGION_PAGES_DATE)}<changefreq>monthly</changefreq><priority>0.6</priority></url>`)
+    .map((r: any) => `  <url><loc>${base}/region/${xmlEscape(r.slug)}</loc>${lastmodTag(REGION_CARD_BY_SLUG[r.slug] ? REGION_CARDS_DATE : REGION_PAGES_DATE)}<changefreq>monthly</changefreq><priority>0.6</priority>${imageTag(r.slug)}</url>`)
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls.join('\n')}
 </urlset>`
   return c.text(xml, 200, {
@@ -3791,6 +3807,7 @@ function RegionSEOInline({ r, page, h1, careLinks, relatedRegions, relatedDict }
           </nav>
           <div class="section-label mb-6">REGIONAL · {r.region_name}</div>
           <h1 class="display text-3xl md:text-5xl font-light mb-6 fade-in">{h1}</h1>
+          {p && <RegionHeroImage slug={r.slug} />}
           <p class="text-brown-700 max-w-3xl text-lg leading-relaxed fade-in">{p ? p.lead : r.meta_description}</p>
           <div class="mt-8 flex flex-wrap gap-3 text-sm">
             <a href="tel:053-357-0365" class="px-5 py-2.5 rounded-full bg-brown-900 text-ivory hover:bg-brown-800 transition">053-357-0365 전화 문의</a>

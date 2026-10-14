@@ -1,4 +1,5 @@
 import { Navbar, Footer } from '../components/Layout'
+import { RegionCardGrid } from '../lib/region-cards'
 
 /* ============================================================
    대구365치과 HOME — EDITORIAL SUPREME v3.0
@@ -468,6 +469,32 @@ export const HomePage = () => (
         <div class="text-center mt-10 fade-in">
           <a href="/treatments" class="btn-outline magnetic">
             <span>전체 진료 목록 보기</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {/* ================================================== */}
+    {/* 5.6 대구 북구 진료 사진 카드 6 — ItemList(src/index.tsx '/')와 1:1 */}
+    {/* ================================================== */}
+    <section class="py-24 lg:py-32 bg-cream" aria-labelledby="bukgu-cards-title">
+      <div class="max-w-[1200px] mx-auto px-6 lg:px-12">
+        <div class="flex flex-wrap justify-between items-end mb-10 gap-6">
+          <div class="max-w-xl">
+            <div class="section-label mb-6">DAEGU BUK-GU · 06</div>
+            <h2 id="bukgu-cards-title" class="t-display" style="letter-spacing:-0.02em; line-height:1.05;">
+              <a href="/regions" class="hover:text-brown-700">대구 북구 <span class="t-gold">치과</span> 진료 안내</a>
+            </h2>
+          </div>
+          <p class="t-lead max-w-md text-brown-700">
+            침산로 148 엠브로스퀘어 7층 — 북구에서 많이 찾는 진료를 주제별로 정리했습니다.
+          </p>
+        </div>
+        <RegionCardGrid />
+        <div class="text-center mt-10">
+          <a href="/regions" class="btn-outline magnetic">
+            <span>대구 북구 치과 안내 전체 보기</span>
             <i class="fas fa-arrow-right"></i>
           </a>
         </div>

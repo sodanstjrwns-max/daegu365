@@ -1,4 +1,20 @@
 import { Navbar, Footer } from '../components/Layout'
+import { RegionCardGrid } from '../lib/region-cards'
+
+// 2026-10-14: D1 region_seo.treatment_slug 가 treatments 테이블에 없는 주제 slug(evening·kids-dental 등)이면
+// 카드 라벨에 영문 slug 가 그대로 보였다 → 한글 라벨로 매핑, 모르는 영문 slug 는 '진료 안내'로 표시
+const TOPIC_LABELS: Record<string, string> = {
+  'cavity-treatment': '충치치료', 'nerve-treatment': '신경치료', 'kids-dental': '소아치과', 'kids-ortho': '어린이 교정',
+  'evening': '야간 진료', 'weekend': '주말 진료', 'emergency': '응급 진료', 'tmj': '턱관절',
+  'cosmetic-dental': '심미치료', 'front-tooth': '앞니 치료', 'denture': '틀니', 'elderly-implant': '어르신 임플란트',
+  'gum-graft': '잇몸이식', 'implant-cost': '임플란트 비용', 'implant-event': '임플란트 견적', 'implant-recommend': '임플란트 선택',
+  'implant-review': '임플란트 사례 확인', 'lamineer-2': '라미네이트', 'lamineer-cost': '라미네이트 비용', 'ortho-cost': '교정 비용',
+  'pregnancy-dental': '임신 전 검진', 'prosthesis': '크라운·보철', 'wisdom-tooth': '사랑니 발치',
+}
+export const regionTopicLabel = (slug: string | null | undefined, tNameBySlug: Record<string, string>): string => {
+  if (!slug) return '종합진료'
+  return tNameBySlug[slug] || TOPIC_LABELS[slug] || (/^[a-z0-9-]+$/i.test(slug) ? '진료 안내' : slug)
+}
 
 // ============================================================
 // /regions — "대구 북구 치과" 대표 키워드 허브 (2026-10-08, 지역 SEO 웨이브 §1)
@@ -88,6 +104,13 @@ export const RegionsHubPage = ({ byRegion, tNameBySlug }: { byRegion: Record<str
       </div>
     </section>
 
+    {/* 2026-10-14: 대구 북구 핵심 진료 6 사진 카드 — ItemList(#bukgu-core-cards)와 1:1 */}
+    <section class="pt-14 max-w-5xl mx-auto px-6" aria-labelledby="bukgu-cards-title">
+      <h2 id="bukgu-cards-title" class="display text-3xl font-medium text-brown-900 mb-3">대구 북구 진료별 안내</h2>
+      <p class="text-brown-700 mb-8 leading-relaxed">임플란트·교정·라미네이트·충치·잇몸·소아 진료를 북구 주민 입장에서 진행 순서와 일정 위주로 정리했습니다.</p>
+      <RegionCardGrid />
+    </section>
+
     <section class="py-14 max-w-5xl mx-auto px-6 text-brown-700 leading-loose">
       <h2 class="display text-3xl font-medium text-brown-900 mb-5">위치와 찾아오는 길</h2>
       <p>
@@ -171,7 +194,7 @@ export const RegionsHubPage = ({ byRegion, tNameBySlug }: { byRegion: Record<str
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
               {(items as any[]).map((r: any) => (
                 <a href={`/region/${r.slug}`} class="lux-card hover:shadow-lg transition">
-                  <div class="text-xs text-brown-500 mb-2">{r.treatment_slug ? tNameBySlug[r.treatment_slug] || r.treatment_slug : '종합진료'}</div>
+                  <div class="text-xs text-brown-500 mb-2">{regionTopicLabel(r.treatment_slug, tNameBySlug)}</div>
                   <div class="display text-lg font-medium mb-1">{r.h1}</div>
                   <div class="text-xs text-brown-600 line-clamp-2">{r.meta_description}</div>
                 </a>
