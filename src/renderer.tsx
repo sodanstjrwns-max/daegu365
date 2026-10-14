@@ -616,9 +616,11 @@ export const renderer = jsxRenderer(({
         <meta name="twitter:image:alt" content={pageTitle} />
 
         {/* Favicon */}
-        <link rel="icon" href="/static/favicon-32.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/static/favicon-180.png" />
+        <link rel="icon" href="/favicon.ico?v=fav20261014" sizes="any" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png?v=fav20261014" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png?v=fav20261014" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=fav20261014" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=fav20261014" />
         <link rel="manifest" href="/manifest.webmanifest" />
 
         {/* LCP 이미지 preload (F2 페이지 경험 — 핵심 리소스 힌트) */}

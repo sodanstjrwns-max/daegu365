@@ -51,10 +51,16 @@ await esbuild.build({
   logLevel: 'info'
 })
 
+// 루트 파비콘(2026-10-14 승인 아이콘) — Pages 정적 자산으로 직접 서빙
+const FAVICONS = ['favicon.ico', 'favicon-48.png', 'favicon-96.png', 'favicon-192.png', 'favicon-512.png', 'apple-touch-icon.png']
+for (const f of FAVICONS) {
+  if (existsSync(resolve(root, `public/${f}`))) cpSync(resolve(root, `public/${f}`), resolve(root, `dist/${f}`))
+}
+
 // _routes.json (Vite 빌드 산출물과 동일)
 writeFileSync(
   resolve(root, 'dist/_routes.json'),
-  JSON.stringify({ version: 1, include: ['/*'], exclude: ['/manifest.webmanifest', '/static/*'] })
+  JSON.stringify({ version: 1, include: ['/*'], exclude: ['/manifest.webmanifest', ...FAVICONS.map((f) => `/${f}`), '/static/*'] })
 )
 
 // 정적 자산 복사
