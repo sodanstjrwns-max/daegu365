@@ -94,6 +94,15 @@
     return gsap.fromTo(target, from, Object.assign({ ease: 'none', scrollTrigger: Object.assign({ scrub: true }, st) }, to));
   }
 
+  // 사진 시차: CSS 변수(translate·scale 개별 속성)로 — 기존 hover transform·transition 과 겹치지 않음
+  function par(img, y0, y1, s0, s1, trigger, st) {
+    if (!img) return;
+    img.classList.add('mx-pimg');
+    claim(img);
+    gsap.fromTo(img, { '--mx-y': y0 + '%', '--mx-s': s0 }, { '--mx-y': y1 + '%', '--mx-s': s1, ease: 'none',
+      scrollTrigger: Object.assign({ trigger: trigger || img, start: 'top bottom', end: 'bottom top', scrub: true }, st || {}) });
+  }
+
   // 낱말 감싸기: 하위 span·br 은 보존하고 텍스트만 낱말 단위로
   function splitWords(el) {
     var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
@@ -145,8 +154,7 @@
     // 편집 그리드: 사진은 커튼(.img-reveal) 그대로 + 안쪽 사진이 서로 다른 속도로 흐름
     $$('.editorial-grid .img-frame img', manifesto).forEach(function (img, i) {
       var box = img.parentElement; box.classList.add('mx-par');
-      gsap.fromTo(img, { yPercent: -6 - i * 2, scale: 1.14 }, { yPercent: 6 + i * 2, scale: 1.14, ease: 'none',
-        scrollTrigger: { trigger: box, start: 'top bottom', end: 'bottom top', scrub: true } });
+      par(img, -6 - i * 2, 6 + i * 2, 1.14, 1.14, box);
     });
     var eg3 = $('.eg-3', manifesto);
     if (eg3) enter(eg3, { rotate: -4, scale: 0.88, opacity: 0, duration: 1.4, ease: SILK }, eg3, 'top 90%');
@@ -173,7 +181,7 @@
     enter(hcards, { clipPath: 'inset(100% 0% 0% 0%)', y: 60, duration: 1.4, ease: 'expo.inOut', stagger: 0.14 }, hs, 'top 82%');
     hcards.forEach(function (c) {
       var img = $('img', c); if (!img) return;
-      gsap.fromTo(img, { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: hs, start: 'top bottom', end: 'bottom 40%', scrub: true } });
+      par(img, 0, 0, 1.25, 1, hs, { end: 'bottom 40%' });
       var num = $('.h-scroll-number', c);
       if (num) gsap.fromTo(num, { yPercent: 30 }, { yPercent: -30, ease: 'none', scrollTrigger: { trigger: hs, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
@@ -212,7 +220,7 @@
     enter(lis, { y: mobile ? 40 : 90, opacity: 0, duration: 1.2, ease: SILK, stagger: 0.09 }, lis[0], 'top 88%');
     $$('ul > li img', bukgu).forEach(function (img) {
       var box = img.closest('.aspect-square'); if (box) box.classList.add('mx-par');
-      gsap.fromTo(img, { scale: 1.2 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: box || img, start: 'top bottom', end: 'bottom 30%', scrub: true } });
+      par(img, 0, 0, 1.2, 1, box || img, { end: 'bottom 30%' });
     });
   }
 
@@ -223,13 +231,13 @@
     frame.classList.add('mx-own', 'mx-par');
     scrubOnce(frame, { clipPath: mobile ? 'inset(0% 4% 0% 4% round 32px)' : 'inset(6% 12% 6% 12% round 32px)' },
       { clipPath: 'inset(0% 0% 0% 0% round 32px)' }, { trigger: frame, start: 'top 95%', end: 'top 25%' });
-    gsap.fromTo(team, { scale: 1.15 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: frame, start: 'top bottom', end: 'bottom top', scrub: true } });
+    par(team, 0, 0, 1.15, 1, frame);
   }
   var spot = $('.spotlight-card');
   if (spot) {
     scrubOnce(spot, { scale: mobile ? 0.95 : 0.88 }, { scale: 1 }, { trigger: spot, start: 'top bottom', end: 'top 35%' });
     var simg = $('.spotlight-card-img', spot);
-    if (simg) gsap.fromTo(simg, { yPercent: -5 }, { yPercent: 5, ease: 'none', scrollTrigger: { trigger: spot, start: 'top bottom', end: 'bottom top', scrub: true } });
+    if (simg) par(simg, -5, 5, 1.1, 1.1, spot);
     var fname = $('.founder-name-line', spot);
     if (fname) enter(fname, { y: 40, opacity: 0, duration: 1.3, ease: SILK }, spot, 'top 60%');
   }
@@ -275,8 +283,7 @@
     $$('.img-reveal img', gallerySec).forEach(function (img, i) {
       var box = img.parentElement; box.classList.add('mx-par');
       var d = (i % 3 === 0) ? 9 : (i % 3 === 1 ? 5 : 12);
-      gsap.fromTo(img, { yPercent: -d, scale: 1.22 }, { yPercent: d, scale: 1.22, ease: 'none',
-        scrollTrigger: { trigger: box, start: 'top bottom', end: 'bottom top', scrub: true } });
+      par(img, -d, d, 1.22, 1.22, box);
     });
   }
 
@@ -297,7 +304,7 @@
     }
     pcards.forEach(function (c) {
       var img = $('img', c); if (!img) return;
-      gsap.fromTo(img, { yPercent: -5, scale: 1.12 }, { yPercent: 5, scale: 1.12, ease: 'none', scrollTrigger: { trigger: c, start: 'top bottom', end: 'bottom top', scrub: true } });
+      par(img, -5, 5, 1.12, 1.12, c);
     });
   }
 
@@ -315,7 +322,7 @@
   if (ctaSec && $('img[src*="cta-operation-room"]', ctaSec)) {
     var cimg = $('img[src*="cta-operation-room"]', ctaSec);
     claim(cimg);
-    gsap.fromTo(cimg, { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: ctaSec, start: 'top bottom', end: 'bottom bottom', scrub: true } });
+    par(cimg, 0, 0, 1.25, 1, ctaSec, { end: 'bottom bottom' });
     $$('.blob', ctaSec).forEach(function (b) { claim(b); });
   }
 

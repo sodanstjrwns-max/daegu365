@@ -12,6 +12,8 @@ html.mx .mx-read .mx-w { overflow: visible; }
 /* 사진 시차 */
 .mx-par { overflow: hidden; }
 .mx-par img { will-change: transform; }
+/* 사진 시차 — translate·scale 개별 속성이라 hover transform 과 충돌하지 않는다 */
+html.mx .mx-pimg { translate: 0 var(--mx-y, 0%); scale: var(--mx-s, 1); will-change: translate, scale; }
 /* 단체 사진처럼 이 연출이 직접 여는 액자는 기존 커튼을 쓰지 않는다 */
 html.mx .img-reveal.mx-own::before { display: none; }
 

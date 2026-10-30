@@ -639,7 +639,7 @@ export const renderer = jsxRenderer(({
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
         <link href="/static/styles.css" rel="stylesheet" />
-        {immersive && <link href="/static/immersive.css?v=3b0190ab8e" rel="stylesheet" />}
+        {immersive && <link href="/static/immersive.css?v=9f22b555f8" rel="stylesheet" />}
 
         <script dangerouslySetInnerHTML={{__html: `
           tailwind.config = {
@@ -680,7 +680,7 @@ export const renderer = jsxRenderer(({
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
           <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-          <script src="/static/immersive.js?v=be5478250d" defer></script>
+          <script src="/static/immersive.js?v=0e5446d38a" defer></script>
         </>}
       </body>
     </html>

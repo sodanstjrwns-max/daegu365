@@ -460,7 +460,7 @@ app.use('*', async (c, next) => {
   // 몰입 연출 미리보기(immersive-pilot 브랜치 전용): Pages 미리보기 호스트는 리디렉션하지 않고 noindex 로만 연다
   if (url.hostname.endsWith('.daegu365dc.pages.dev')) {
     await next()
-    c.res.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    try { c.res.headers.set('X-Robots-Tag', 'noindex, nofollow') } catch {}
     return
   }
   if (url.hostname.endsWith('.pages.dev') || url.hostname === 'www.daegu365dc.kr') {
