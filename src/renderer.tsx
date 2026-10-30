@@ -680,7 +680,7 @@ export const renderer = jsxRenderer(({
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
           <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-          <script src="/static/immersive.js?v=0e5446d38a" defer></script>
+          <script src="/static/immersive.js?v=92a846717a" defer></script>
         </>}
       </body>
     </html>

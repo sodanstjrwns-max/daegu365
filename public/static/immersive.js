@@ -28,9 +28,12 @@
     if (inHero(el)) return;
     el.classList.remove('fade-in', 'fade-in-stagger', 'visible');
   });
+  // 히어로 안 .fade-in 은 첫 화면 아래 끝(1440×900 기준 854px)에 걸리면 IO 여백(-60px) 때문에 스크롤 전까지 숨어 있다 → 첫 화면이니 바로 연다
+  if (hero) $$('.fade-in', hero).forEach(function (el, i) { setTimeout(function () { el.classList.add('visible'); }, 120 + i * 90); });
 
   // 1) 관성 스크롤 — 마우스·트랙패드만 (터치는 기본 스크롤). 무게감 있게 조금 길게
-  if (fine && window.Lenis) {
+  // 표준 모드(<!DOCTYPE html>)에서만 — 호환(quirks) 모드는 스크롤 주체가 body 라 Lenis 가 움직이지 못한다
+  if (fine && window.Lenis && document.compatMode === 'CSS1Compat') {
     var lenis = new Lenis({ duration: 1.35, smoothWheel: true, wheelMultiplier: 0.9,
       prevent: function (node) { return !!(node.closest && node.closest('[data-hscroll], #mobileMenu, .mobile-menu')); } });
     lenis.on('scroll', ScrollTrigger.update);
