@@ -512,7 +512,7 @@ export const speakableSchema = (opts: {
 export const renderer = jsxRenderer(({
   children, title, fullTitle, description, keywords, canonical, ogImage, ogImageAlt,
   ogType, jsonLd, breadcrumb, publishedTime, modifiedTime, author,
-  robots, preloadImage,
+  robots, preloadImage, immersive,
   naverVerify: nv, googleVerify: gv, msVerify: mv
 }: any, c: any) => {
   // 환경변수 우선, props fallback (wrangler secret put 으로 한 번에 박기 위함)
@@ -639,6 +639,7 @@ export const renderer = jsxRenderer(({
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet" />
         <link href="/static/styles.css" rel="stylesheet" />
+        {immersive && <link href="/static/immersive.css?v=3b0190ab8e" rel="stylesheet" />}
 
         <script dangerouslySetInnerHTML={{__html: `
           tailwind.config = {
@@ -675,6 +676,12 @@ export const renderer = jsxRenderer(({
         {children}
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
         <script src="/static/app.js"></script>
+        {immersive && <>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+          <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+          <script src="/static/immersive.js?v=be5478250d" defer></script>
+        </>}
       </body>
     </html>
   )

@@ -1,0 +1,34 @@
+/* 대구365치과 메인 스크롤 몰입 연출 — /static/immersive.js 가 html.mx 를 붙였을 때만 작동 */
+html.mx, html.mx body { scroll-behavior: auto !important; }
+html.mx.lenis, html.mx.lenis body { height: auto; }
+html.mx .lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+/* 제목 낱말 마스크 */
+.mx-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
+.mx-wi { display: inline-block; will-change: transform; transform-origin: 0% 100%; }
+/* 선언문: 읽는 속도대로 한 낱말씩 */
+html.mx .mx-read .mx-w { overflow: visible; }
+
+/* 사진 시차 */
+.mx-par { overflow: hidden; }
+.mx-par img { will-change: transform; }
+/* 단체 사진처럼 이 연출이 직접 여는 액자는 기존 커튼을 쓰지 않는다 */
+html.mx .img-reveal.mx-own::before { display: none; }
+
+/* 숫자 기울기 */
+html.mx .mx-skew { display: inline-block; will-change: transform; transform-origin: 0% 100%; }
+
+/* 무엇이 다른가: 골드 실 */
+html.mx .mx-thread::after {
+  content: ''; position: absolute; left: 18px; top: 0; width: 2px; height: 100%; margin-left: -.5px;
+  background: linear-gradient(to bottom, #e9cf9f, #c9a876 70%, rgba(201,168,118,0));
+  transform: scaleY(var(--mx-p, 0)); transform-origin: 50% 0; pointer-events: none;
+  box-shadow: 0 0 14px rgba(201,168,118,.55);
+}
+html.mx .mx-thread .timeline-item::before { transition: background-color .5s, transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s; }
+html.mx .mx-thread .timeline-title { transition: color .5s; }
+html.mx .mx-thread .timeline-item.mx-on::before { background: #c9a876; transform: scale(1.35); box-shadow: 0 0 0 6px rgba(201,168,118,.18); }
+html.mx .mx-thread .timeline-item.mx-on .timeline-title { color: #e9cf9f !important; }
+
+/* 옆에서 들어오는 카드가 가로 스크롤을 만들지 않도록 */
+html.mx body { overflow-x: clip; }
