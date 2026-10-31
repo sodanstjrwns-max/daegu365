@@ -457,12 +457,6 @@ app.use('*', async (c, next) => {
   const path = url.pathname
   // 0) SEO: pages.dev(중복 도메인) + www 서브도메인 → daegu365dc.kr 301 통합
   //    구글 중복 콘텐츠 신호 제거 — canonical 방어에 더해 리다이렉트로 확정 (A4 canonical 정합성)
-  // 몰입 연출 미리보기(immersive-pilot 브랜치 전용): Pages 미리보기 호스트는 리디렉션하지 않고 noindex 로만 연다
-  if (url.hostname.endsWith('.daegu365dc.pages.dev')) {
-    await next()
-    try { c.res.headers.set('X-Robots-Tag', 'noindex, nofollow') } catch {}
-    return
-  }
   if (url.hostname.endsWith('.pages.dev') || url.hostname === 'www.daegu365dc.kr') {
     return c.redirect(`https://daegu365dc.kr${path}${url.search}`, 301)
   }
