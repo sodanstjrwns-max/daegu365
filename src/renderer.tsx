@@ -2,6 +2,7 @@ import { jsxRenderer } from 'hono/jsx-renderer'
 import { ogStaticUrl } from './lib/og'
 import { REVIEW_DATE } from './lib/tldr'
 import { TAILWIND_CSS_VERSION } from './lib/tailwind-version'
+import { DOCTOR_PHOTO } from './pages/doctors'
 
 type RendererProps = {
   title?: string
@@ -257,8 +258,28 @@ export const medicalProcedureSchema = (opts: {
   "availableService": { "@id": `${SITE.url}/#dentist` }
 })
 
-/** Physician 스키마 — 원장 프로필 강화 (2026 YMYL 자격 신호 정밀화) */
-export const physicianSchema = (doctor: any) => {
+/** 의료진 사진 주소 — 화면(pages/doctors.tsx DOCTOR_PHOTO)과 같은 사람의 사진을 쓴다 (2026-11-10).
+ *  R2 파일명이 최혜정↔김진덕 서로 바뀌어 있어 `슬러그.jpg` 를 그대로 쓰면 스키마에 다른 원장 사진이 들어간다. */
+export const doctorImageUrl = (slug: string): string => {
+  const shown = DOCTOR_PHOTO[slug]
+  return `${SITE.url}${shown ? shown.replace(/\.webp$/, '.jpg') : `/r2/images/doctors/${slug}.jpg`}`
+}
+
+const parseList = (v: any): string[] => { try { const a = JSON.parse(v || '[]'); return Array.isArray(a) ? a : [] } catch { return [] } }
+
+/** 전문과목 — 화면 학력·경력 목록의 '○○과 전문의' 줄에서 과목명만 추림 (예: '보건복지부 인증 치과보존과 전문의' → '치과보존과') */
+export const doctorBoardSpecialties = (doctor: any): string[] =>
+  Array.from(new Set([...parseList(doctor?.education), ...parseList(doctor?.career)]
+    .map((s) => (String(s).match(/([가-힣]+)\s*전문의/) || [])[1])
+    .filter(Boolean))) as string[]
+
+/** 학력·수련 줄에서 기관명만 추림 (예: '경북대학교 치의학전문대학원 석사' → '경북대학교 치의학전문대학원'). 못 찾으면 원문 그대로 */
+const institutionOf = (s: string): string =>
+  (s.match(/^(?:전\s+)?([가-힣A-Za-z0-9]+(?:대학교|세브란스)(?:\s+(?:치의학전문대학원|치과대학|대학원|치과병원))?)/) || [])[1] || s
+
+/** Physician 스키마 — 원장 프로필 강화 (2026 YMYL 자격 신호 정밀화)
+ *  treatmentNames: 진료 슬러그→진료명. 넘기면 상세 화면의 진료 태그와 같은 이름을 knowsAbout 으로 싣는다. */
+export const physicianSchema = (doctor: any, treatmentNames?: Record<string, string>) => {
   let education: string[] = []
   let career: string[] = []
   let specialties: string[] = []
@@ -271,8 +292,17 @@ export const physicianSchema = (doctor: any) => {
   const isDegree = (s: string) => /석사|박사|학사|졸업|수료|대학원|대학|레지던트|인턴|residency|master|phd/i.test(s)
   const isMembership = (s: string) => /정회원|학회|협회|위원|member/i.test(s)
 
-  // 출신 교육기관 (학위/수련) → alumniOf
-  const alumni = [...education, ...career].filter(isDegree)
+  // 출신 교육기관 (학위/수련) → alumniOf. 외래교수·임상교수 줄은 출신 기관이 아니라 직함이므로 제외(2026-11-10)
+  const alumni = Array.from(new Set([...education, ...career].filter(isDegree).filter((s) => !/교수/.test(s)).map(institutionOf)))
+  // 전문과목(전문의 자격의 과목명) → medicalSpecialty. 예전엔 내부 진료 슬러그(implant 등)가 그대로 들어갔다
+  const boardSpecialties = doctorBoardSpecialties(doctor)
+  // 화면 진료 태그(진료명) → knowsAbout
+  const knows = treatmentNames ? specialties.map((sl) => treatmentNames[sl]).filter(Boolean) : []
+  // 학회·협회 정회원 → memberOf (Organization)
+  const societies = Array.from(new Set([...education, ...career]
+    .filter((s) => /정회원/.test(s))
+    .map((s) => (s.match(/(대한[가-힣]+(?:학회|협회))/) || [])[1])
+    .filter(Boolean))) as string[]
   // 전문의·인정의 등 자격증 → hasCredential (Certification)
   const certs = [...education, ...career].filter(isCredential)
   // 학회/협회 소속 → memberOf 보조 (텍스트)
@@ -308,17 +338,20 @@ export const physicianSchema = (doctor: any) => {
     "jobTitle": doctor.position,
     "description": doctor.philosophy || doctor.message || '',
     "url": `${SITE.url}/doctors/${doctor.slug}`,
-    "image": `${SITE.url}/r2/images/doctors/${doctor.slug}.jpg`,
+    "image": doctorImageUrl(doctor.slug),
     "hasOccupation": {
       "@type": "Occupation",
       "name": "치과의사",
       "occupationalCategory": "치과 전문의"
     },
     "worksFor": { "@id": `${SITE.url}/#dentist` },
-    "memberOf": { "@id": `${SITE.url}/#dentist` },
-    "medicalSpecialty": specialties.length > 0 ? specialties : ["Dentistry"],
+    "memberOf": societies.length > 0
+      ? [{ "@id": `${SITE.url}/#dentist` }, ...societies.map((n) => ({ "@type": "Organization", "name": n }))]
+      : { "@id": `${SITE.url}/#dentist` },
+    "medicalSpecialty": boardSpecialties.length > 0 ? boardSpecialties : (specialties.length > 0 ? specialties : ["Dentistry"]),
+    ...(knows.length > 0 && { "knowsAbout": knows }),
     ...(alumni.length > 0 && {
-      "alumniOf": Array.from(new Set(alumni)).map(e => ({ "@type": "EducationalOrganization", "name": e }))
+      "alumniOf": alumni.map(e => ({ "@type": "EducationalOrganization", "name": e }))
     }),
     ...(credentials.length > 0 && { "hasCredential": credentials }),
     "knowsLanguage": ["ko"]
@@ -338,7 +371,7 @@ export const videoObjectSchema = (opts: {
   "@id": `${SITE.url}/doctors/${opts.doctorSlug}#video`,
   "name": `${opts.doctorName} ${opts.doctorPosition} 인터뷰 — 대구365치과`,
   "description": opts.description,
-  "thumbnailUrl": `${SITE.url}/r2/images/doctors/${opts.doctorSlug}.jpg`,
+  "thumbnailUrl": doctorImageUrl(opts.doctorSlug),
   "contentUrl": `${SITE.url}/api/videos/${opts.doctorSlug}`,
   "uploadDate": opts.uploadDate || '2024-12-01',
   "publisher": { "@id": `${SITE.url}/#dentist` },
