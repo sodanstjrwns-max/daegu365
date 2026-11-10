@@ -30,16 +30,28 @@ const BATCH_BLOG_SLUGS = new Set([
   'whitening-vs-laminate-choice',
 ])
 
+// 병원 소재 지역 "대구 북구 {진료}" 핵심 6쪽 — 홈과 /regions 사진 카드로 연결된 목표 검색어 착지 페이지라 구글에도 남긴다.
+// (src/lib/region-cards.tsx 의 REGION_CARDS 와 같은 6개. 카드를 바꾸면 여기도 같이 바꾼다.)
+const KEEP_REGION_SLUGS = new Set([
+  'bukgu-implant',
+  'bukgu-ortho',
+  'bukgu-lamineer',
+  'bukgu-cavity-new',
+  'bukgu-perio',
+  'bukgu-kids',
+])
+
 /**
  * 구글에만 가리는 경로인가 (경로 판정은 이 함수 한 곳).
- * 가린다: 백과(/dictionary 목록 + /dictionary/*), 지역×진료 조합(/region/*), 일괄 발행 칼럼 6편.
+ * 가린다: 백과(/dictionary 목록 + /dictionary/*), 지역×진료 조합(/region/* — 아래 6쪽 제외), 일괄 발행 칼럼 6편.
  * 남긴다: 홈 · 진료 · 의료진 · 비용 · 소개 · 오시는 길 · 진료시간 · FAQ · 공지 · 치료 사례 · 칼럼 목록과 관리자 발행 칼럼,
- *         그리고 주 지역 허브 /regions("대구 북구 치과").
+ *         주 지역 허브 /regions("대구 북구 치과"), 그리고 "대구 북구 {진료}" 핵심 6쪽(KEEP_REGION_SLUGS).
  */
 export const isGoogleHiddenPath = (pathname: string): boolean => {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname
   if (path === '/dictionary' || path.startsWith('/dictionary/')) return true
-  if (path.startsWith('/region/')) return true // '/regions' 는 '/region/' 로 시작하지 않으므로 남는다
+  // '/regions' 는 '/region/' 로 시작하지 않으므로 남는다
+  if (path.startsWith('/region/')) return !KEEP_REGION_SLUGS.has(path.slice('/region/'.length))
   if (path.startsWith('/blog/')) return BATCH_BLOG_SLUGS.has(path.slice('/blog/'.length))
   return false
 }
