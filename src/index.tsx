@@ -18,6 +18,7 @@ import { renderOgPng } from './lib/og-png'
 import { RegionsHubPage, REGIONS_HUB_TITLE, REGIONS_HUB_DESC, REGIONS_HUB_FAQS, REGIONS_HUB_DATE } from './pages/regions-hub'
 import { REGION_PAGES, REGION_PAGES_DATE, hasRegionPage, regionTitleParts, regionAreaName, type RegionPage } from './data/region-pages'
 import { REGION_CARDS_DATE, REGION_CARD_BY_SLUG, regionCardImages, regionCardsItemList, RegionHeroImage } from './lib/region-cards'
+import { isGoogleCrawler, isGoogleHiddenPath, GOOGLE_HIDE_HEADER } from './lib/google-hide'
 import { DICT_ENRICHED, DICT_ALIAS_REDIRECTS, ENRICHED_DATE, isDictAlias, isDictIndexable, dictAliasNames, dictLastmod, dictCodeDate, applyDictOverride, applyDictOverrides, DICT_OVERRIDES, DICT_REVISED_DATE } from './data/dictionary-enriched'
 
 // Pages
@@ -70,6 +71,18 @@ import {
 } from './pages/admin'
 
 const app = new Hono<{ Bindings: Bindings }>()
+
+// 구글 전용 검색 제외 — 맨 바깥 미들웨어(다른 미들웨어가 X-Robots-Tag 를 다 정한 뒤 마지막에 실행).
+// 구글 크롤러 + 대상 구역 + 200 HTML 일 때만 X-Robots-Tag 를 'googlebot: noindex' 로 교체한다.
+// 그 밖의 요청은 아무것도 바꾸지 않는다. 기준·대상·되돌리는 방법: src/lib/google-hide.ts
+app.use('*', async (c, next) => {
+  await next()
+  if (!isGoogleCrawler(c.req.header('User-Agent'))) return
+  if (c.res.status !== 200) return
+  if (!(c.res.headers.get('Content-Type') || '').toLowerCase().includes('text/html')) return
+  if (!isGoogleHiddenPath(new URL(c.req.url).pathname)) return
+  c.res.headers.set('X-Robots-Tag', GOOGLE_HIDE_HEADER)
+})
 
 // 동적 HTML 응답에도 기본 헤더 적용 (_headers는 정적 자산에만 적용됨).
 app.use('*', async (c, next) => {
