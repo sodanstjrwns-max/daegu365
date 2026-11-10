@@ -13,9 +13,14 @@ import { execSync } from 'node:child_process'
 const git = (cmd: string) => execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
 const isShallow = (() => { try { return git('git rev-parse --is-shallow-repository') === 'true' } catch { return true } })()
 
+// 화면 원고와 무관한 수정(좌표·구조화 데이터 같은 정비)으로 lastmod 가 바뀌지 않게,
+// 커밋 메시지에 [lastmod-skip] 이 들어간 커밋은 날짜 계산에서 건너뛴다 (2026-11-10).
+// 화면 원고를 실제로 고친 커밋에는 이 표시를 쓰지 않는다.
+const SKIP = `--fixed-strings --invert-grep --grep="[lastmod-skip]"`
+
 function lastCommitDate(paths: string[]): string {
   if (isShallow || !paths.length) return ''
-  try { return git(`git log -1 --format=%cs -- ${paths.join(' ')}`) } catch { return '' }
+  try { return git(`git log -1 --format=%cs ${SKIP} -- ${paths.join(' ')}`) } catch { return '' }
 }
 
 // 한 파일 안의 컴포넌트(export const Name ~ 다음 export const 직전)만의 마지막 수정 날짜
@@ -28,7 +33,7 @@ function lastCommitDateOfExport(file: string, name: string): string {
     if (start < 0) return lastCommitDate([file])
     let end = src.findIndex((l, i) => i > start && l.startsWith('export '))
     end = end < 0 ? src.length : end
-    return git(`git log -1 --format=%cs -s -L ${start + 1},${end}:${file}`).split('\n')[0] || ''
+    return git(`git log -1 --format=%cs -s ${SKIP} -L ${start + 1},${end}:${file}`).split('\n')[0] || ''
   } catch {
     return ''
   }

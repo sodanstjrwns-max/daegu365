@@ -409,7 +409,7 @@ export const DirectionsPage = () => (
       <h2 class="display text-3xl font-black tracking-tight text-brown-900 mb-8 text-center">대구365치과 위치 안내</h2>
       <div class="aspect-[16/9] rounded-3xl overflow-hidden mb-6 fade-in shadow-lux relative">
         <iframe
-          src="https://map.kakao.com/?map_type=TYPE_MAP&itemId=27339974&q=%EB%8C%80%EA%B5%AC365%EC%B9%98%EA%B3%BC&urlX=473870&urlY=1119810&urlLevel=3"
+          src="https://map.kakao.com/?map_type=TYPE_MAP&itemId=27339974&q=%EB%8C%80%EA%B5%AC365%EC%B9%98%EA%B3%BC&urlX=859220&urlY=667368&urlLevel=3"
           class="w-full h-full border-0"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"

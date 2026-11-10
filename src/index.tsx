@@ -1903,7 +1903,7 @@ app.get('/directions', (c) => {
       "latitude": SITE.lat,
       "longitude": SITE.lng
     },
-    "hasMap": "https://map.kakao.com/?urlX=473870&urlY=1119810&urlLevel=3",
+    "hasMap": "https://map.kakao.com/?urlX=859220&urlY=667368&urlLevel=3",
     "publicAccess": true,
     "smokingAllowed": false,
     "openingHoursSpecification": [

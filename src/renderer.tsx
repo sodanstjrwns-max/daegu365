@@ -34,8 +34,9 @@ export const SITE = {
   addressRegion: '대구광역시',
   postalCode: '41545',
   email: 'daegu365dc@naver.com',
-  lat: 35.888,
-  lng: 128.584,
+  // 네이버 플레이스 좌표 (2026-11-10 확인) — 스키마 geo·geo.position·ICBM 이 이 값을 쓴다
+  lat: 35.8894412,
+  lng: 128.5913526,
   logo: 'https://daegu365dc.kr/static/images/logo-vertical-gold.png',
   logoHorizontal: 'https://daegu365dc.kr/static/images/logo-horizontal-brown.png',
   founded: '2025',
@@ -83,7 +84,7 @@ export const dentistSchema = () => ({
     "latitude": SITE.lat,
     "longitude": SITE.lng
   },
-  "hasMap": "https://map.kakao.com/?urlX=473870&urlY=1119810&urlLevel=3",
+  "hasMap": "https://map.kakao.com/?urlX=859220&urlY=667368&urlLevel=3",
   "openingHoursSpecification": [
     { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Thursday"], "opens": "09:30", "closes": "21:00" },
     { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Friday"], "opens": "09:30", "closes": "18:30" },
