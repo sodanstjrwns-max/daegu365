@@ -69,10 +69,10 @@ export const HomePage = () => (
             </div>
           </div>
 
-          {/* PPT PC3 슬라이드 2 — 상단 정보 박스 (7인 협진 / 365일 / 평일 야간 21시 / 대구침산동) */}
+          {/* PPT PC3 슬라이드 2 — 상단 정보 박스 (5인 협진 / 365일 / 평일 야간 21시 / 대구침산동) — 2026-11-21 원장단 6인→5인 */}
           <div class="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-2 mt-6 fade-in">
             {[
-              { icon: 'fa-user-doctor', label: '전문의 6인 협진', sub: 'SPECIALIZED TEAM' },
+              { icon: 'fa-user-doctor', label: '전문의 5인 협진', sub: 'SPECIALIZED TEAM' },
               { icon: 'fa-calendar-days', label: '365일 연중무휴', sub: 'ALWAYS OPEN' },
               { icon: 'fa-moon', label: '평일 야간 21시까지', sub: 'LATE NIGHT' },
               { icon: 'fa-location-dot', label: '대구 북구 침산동', sub: 'CHIMSAN-DONG' },
@@ -135,7 +135,7 @@ export const HomePage = () => (
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-12 pt-14 border-t border-ivory/10 fade-in">
           {[
             { num: '365', unit: '일', label: '연중무휴', stack: true },
-            { num: '6', unit: '명의', label: '전문 의료진', stack: true },
+            { num: '5', unit: '명의', label: '전문 의료진', stack: true },
             { num: '21:00', unit: '', label: '월·목 야간진료' },
             { num: '∞', unit: '', label: '평생 보증 임플란트' },
           ].map((s: any) => (
@@ -354,11 +354,11 @@ export const HomePage = () => (
               ],
             },
             {
-              num: 6,
+              num: 5,
               suffix: '명',
               label: 'SPECIALIZED TEAM',
               lines: [
-                '대표원장 1명 + 진료원장 5명',
+                '대표원장 1명 + 진료원장 4명',
                 '보존·소아·교정·보철·심미',
                 '각 분야 전문의가',
                 '하나의 케이스를 함께 설계합니다',
@@ -422,8 +422,9 @@ export const HomePage = () => (
               전체 <span class="t-gold">진료안내</span>
             </h2>
           </div>
-          <p class="t-lead max-w-md text-brown-700">
-            13개 진료 영역, 6인의 전문의가 함께 설계하는 정밀 협진
+          {/* 2026-11-21 원장 요청 — PC 에서는 한 줄로 (md 이상 줄바꿈 금지, 모바일은 자연 줄바꿈) */}
+          <p class="t-lead max-w-md md:max-w-none md:whitespace-nowrap text-brown-700">
+            13개 진료 영역, 5인의 전문의가<br class="md:hidden"/> 함께 설계하는 정밀 협진
           </p>
         </div>
 
@@ -510,7 +511,7 @@ export const HomePage = () => (
           <div class="max-w-xl">
             <div class="section-label mb-6">MEDICAL TEAM · 05</div>
             <h2 class="t-display medical-team-title" style="letter-spacing:-0.02em; line-height:1.05;">
-              <span class="medical-team-keyword">6인의</span><br/>
+              <span class="medical-team-keyword">5인의</span><br/>
               <span class="t-gold">전문 의료진</span>
             </h2>
           </div>
@@ -520,9 +521,9 @@ export const HomePage = () => (
           </p>
         </div>
 
-        {/* Team group image */}
+        {/* Team group image — 2026-11-21 5인 단체사진(원장 제공 누끼 컷을 스튜디오 배경에 합성), 정적 자산 */}
         <div class="img-frame img-reveal aspect-[16/9] rounded-[32px] mb-8 fade-in shadow-xl">
-          <img src="/r2/images/doctors/team-6-main.webp" alt="대구365치과 의료진 6인" loading="lazy" />
+          <img src="/static/images/doctors/team-5-main.webp" alt="대구365치과 의료진 5인" width="1600" height="900" loading="lazy" style="object-position:center 30%;" />
         </div>
 
         {/* 대표원장 스포트라이트 */}
@@ -563,7 +564,7 @@ export const HomePage = () => (
           </div>
           <div class="flex flex-wrap justify-center gap-2">
             {[
-              { dep: '보존과',   doctors: '정재헌·최혜정·김상원' },
+              { dep: '보존과',   doctors: '최혜정·김상원' },
               { dep: '교정과',   doctors: '김진덕' },
               { dep: '소아치과', doctors: '한지은' },
               { dep: '통합치의학과', doctors: '김성주 대표원장' },
@@ -576,9 +577,9 @@ export const HomePage = () => (
           </div>
         </div>
 
-        <div class="grid md:grid-cols-3 lg:grid-cols-5 gap-4 fade-in-stagger">
+        {/* 진료원장 4인 카드 (2026-11-21 원장단 6인→5인: 5열 → 4열) */}
+        <div class="grid md:grid-cols-4 gap-4 fade-in-stagger">
           {[
-            { slug: 'jung-jaeheon',  name: '정재헌', pos: '보존과 전문의',   spec: '보존·심미 치료',     img: '/r2/images/doctors/jung-jaeheon.webp' },
             { slug: 'choi-hyejung',  name: '최혜정', pos: '보존과 전문의',   spec: '보존·정직 치료',     img: '/r2/images/doctors/kim-jinduk.webp' },
             { slug: 'han-jieun',     name: '한지은', pos: '소아치과 전문의', spec: '소아·따뜻한 기억',   img: '/r2/images/doctors/han-jieun.webp' },
             { slug: 'kim-jinduk',    name: '김진덕', pos: '교정과 전문의',   spec: '교정·자신감 미소',   img: '/r2/images/doctors/choi-hyejung.webp' },

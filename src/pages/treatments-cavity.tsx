@@ -1,4 +1,4 @@
-import { Navbar, Footer, DoctorProfileBlock, TldrBox} from '../components/Layout'
+import { Navbar, Footer, TldrBox} from '../components/Layout'
 import { getTldr } from '../lib/tldr'
 import type { Treatment, FAQ, Doctor, BeforeAfter, DictEntry } from '../lib/types'
 import { TreatmentHubLine } from '../lib/hub-link'
@@ -437,16 +437,6 @@ export const CavityTreatmentPage = ({
           </div>
         </div>
       </section>
-
-      {/* PPT PC2 슬라이드 25 — 충치·신경치료·크라운 담당 정재헌 원장 프로필 박스 */}
-      <DoctorProfileBlock
-        slug="jung-jaeheon"
-        name="정재헌"
-        position="통합진료센터장 · 보존과 전문의"
-        quote={'저를 만난 것이 환자분 인생에서\n절대 손해가 되지 않게 하겠습니다.'}
-        credentials={['보존과 전문의', '미세현미경 신경치료', '심미 보존 수복']}
-        treatmentLabel="충치·신경치료·크라운"
-      />
 
       <TreatmentHubLine />
 

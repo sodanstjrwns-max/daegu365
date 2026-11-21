@@ -34,7 +34,6 @@ export const REVIEW_DATE = '2026-08-02'
 // 진료별 검수 전문의 (전공 일치 · 실제 DB doctors 자격 기반)
 const R: Record<string, Reviewer> = {
   kim:    { name: '김성주', position: '대표원장 · 통합치의학과 전문의', slug: 'kim-seongju',  date: REVIEW_DATE },
-  jung:   { name: '정재헌', position: '통합진료센터장 · 치과보존과 전문의', slug: 'jung-jaeheon', date: REVIEW_DATE },
   sangwon:{ name: '김상원', position: '치과보존과 전문의', slug: 'kim-sangwon',  date: REVIEW_DATE },
   choi:   { name: '최혜정', position: '비니크 센터장 · 치과보존과 전문의', slug: 'choi-hyejung', date: REVIEW_DATE },
   jin:    { name: '김진덕', position: '치과교정과 전문의', slug: 'kim-jinduk',   date: REVIEW_DATE },
@@ -45,7 +44,8 @@ const TLDR_REVIEWER: Record<string, Reviewer> = {
   'painless-anesthesia': R.kim, 'general': R.kim,
   'lamineer': R.choi, 'vinique': R.choi, 'aesthetic': R.choi,
   'cavity-endo-crown': R.sangwon, 'conservative': R.sangwon,
-  'icon-resin': R.jung, 'prosthetic': R.jung, 'in-house-lab': R.jung,
+  // 2026-11-21 원장단 6인→5인: 아이콘레진·보철·원내기공실 검수는 대표원장으로 재배정 (src/index.tsx PROCEDURE_REVIEWER 와 동일)
+  'icon-resin': R.kim, 'prosthetic': R.kim, 'in-house-lab': R.kim,
   'ortho': R.jin, 'pediatric-ortho': R.jin,
   'pediatric': R.han,
   'perio': R.kim, 'airflow-gbt': R.kim, 'qray': R.kim, 'prevention': R.kim,

@@ -29,7 +29,7 @@ export const REGIONS_HUB_DATE = '2026-10-11'
 export const REGIONS_HUB_TITLE = '대구 북구 치과'
 
 export const REGIONS_HUB_DESC =
-  '대구 북구 치과를 찾는 분께 — 침산로 148 엠브로스퀘어 7층 대구365치과의 위치·주차, 월·목 21시 야간과 토·일 진료시간, 의료진 6인, 임플란트·교정·충치·소아 진료를 한 페이지에 정리했습니다.'
+  '대구 북구 치과를 찾는 분께 — 침산로 148 엠브로스퀘어 7층 대구365치과의 위치·주차, 월·목 21시 야간과 토·일 진료시간, 의료진 5인, 임플란트·교정·충치·소아 진료를 한 페이지에 정리했습니다.'
 
 export const REGIONS_HUB_FAQS: { q: string, a: string }[] = [
   {
@@ -62,7 +62,6 @@ const HOURS = [
 
 const DOCTORS = [
   { slug: 'kim-seongju', name: '김성주', role: '대표원장 · 임플란트, 상악동 거상술, 사랑니 발치' },
-  { slug: 'jung-jaeheon', name: '정재헌', role: '통합진료센터장 · 보존과 전문의' },
   { slug: 'kim-sangwon', name: '김상원', role: '자연치아살리기 센터장 · 보존과 전문의' },
   { slug: 'choi-hyejung', name: '최혜정', role: '비니크(라미네이트) 센터장 · 보존과 전문의' },
   { slug: 'kim-jinduk', name: '김진덕', role: '교정과 전문의 · 인비절라인, 소아·성인 교정' },
@@ -141,7 +140,7 @@ export const RegionsHubPage = ({ byRegion, tNameBySlug }: { byRegion: Record<str
 
       <h2 class="display text-3xl font-medium text-brown-900 mt-14 mb-5">진료하는 의료진</h2>
       <p>
-        여섯 명의 원장이 진료 분야를 나누어 맡고, 한 환자의 치료에 여러 분야가 얽혀 있으면 함께 상의해 계획을 세웁니다.
+        다섯 명의 원장이 진료 분야를 나누어 맡고, 한 환자의 치료에 여러 분야가 얽혀 있으면 함께 상의해 계획을 세웁니다.
         이름을 누르면 각 원장의 진료 분야와 이력을 볼 수 있습니다.
       </p>
       <ul class="mt-5 grid md:grid-cols-2 gap-3">

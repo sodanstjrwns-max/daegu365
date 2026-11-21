@@ -337,7 +337,6 @@ const treatmentBreadcrumb = (slug: string, name: string) => [
 // 각 진료를 전공이 일치하는 전문의가 검수 — 실제 DB doctors 자격 기반 (검증 가능 사실)
 const REVIEWERS: Record<string, { name: string; slug: string; position: string }> = {
   'kim-seongju':   { name: '김성주', slug: 'kim-seongju',  position: '대표원장 · 통합치의학과 전문의' },
-  'jung-jaeheon':  { name: '정재헌', slug: 'jung-jaeheon', position: '통합진료센터장 · 치과보존과 전문의' },
   'kim-sangwon':   { name: '김상원', slug: 'kim-sangwon',  position: '자연치아살리기 센터장 · 치과보존과/통합치의학과 전문의' },
   'choi-hyejung':  { name: '최혜정', slug: 'choi-hyejung', position: '비니크 센터장 · 치과보존과 전문의' },
   'kim-jinduk':    { name: '김진덕', slug: 'kim-jinduk',   position: '치과교정과 전문의' },
@@ -349,7 +348,8 @@ const PROCEDURE_REVIEWER: Record<string, string> = {
   'painless-anesthesia': 'kim-seongju', 'general': 'kim-seongju',
   'lamineer': 'choi-hyejung', 'vinique': 'choi-hyejung', 'aesthetic': 'choi-hyejung',
   'cavity-endo-crown': 'kim-sangwon', 'conservative': 'kim-sangwon',
-  'icon-resin': 'jung-jaeheon', 'prosthetic': 'jung-jaeheon', 'in-house-lab': 'jung-jaeheon',
+  // 2026-11-21 원장단 6인→5인: 아이콘레진·보철·원내기공실 검수는 대표원장(통합치의학과)으로 재배정
+  'icon-resin': 'kim-seongju', 'prosthetic': 'kim-seongju', 'in-house-lab': 'kim-seongju',
   'ortho': 'kim-jinduk', 'pediatric-ortho': 'kim-jinduk',
   'pediatric': 'han-jieun',
   'perio': 'kim-seongju', 'airflow-gbt': 'kim-seongju', 'qray': 'kim-seongju', 'prevention': 'kim-seongju',
@@ -412,7 +412,6 @@ const howToSchemaFor = (slug: string) => {
 // ============ 원장 인터뷰 영상 메타 ============
 const DOCTOR_INTERVIEW_DESC: Record<string, string> = {
   'kim-seongju': '대구365치과 김성주 대표원장의 진료 철학과 병원 비전 인터뷰. 치과공포증을 가졌던 의사가 설계한 두려움 없는 치과의 시작.',
-  'jung-jaeheon': '대구365치과 정재헌 원장의 진료 철학과 전문 분야 인터뷰.',
   'kim-sangwon': '대구365치과 김상원 원장의 진료 철학과 전문 분야 인터뷰.',
   'choi-hyejung': '대구365치과 최혜정 원장의 진료 철학과 전문 분야 인터뷰.',
   'kim-jinduk': '대구365치과 김진덕 원장의 진료 철학과 전문 분야 인터뷰.',
@@ -425,8 +424,9 @@ const DOCTOR_INTERVIEW_DESC: Record<string, string> = {
 // 2) 흔한 alias 키워드 (/implant 등) → 정식 경로 301 redirect
 // 3) 누락된 흔한 SEO 경로 (/about, /contact 등) → 적절한 페이지 301 redirect
 const ALIAS_REDIRECTS: Record<string, string> = {
-  // 퇴사 원장 프로필 → 의료진 목록 (2026-08 원장단 7인→6인 변동, 색인 잔존 대비)
+  // 퇴사 원장 프로필 → 의료진 목록 (2026-08 원장단 7인→6인, 2026-11 6인→5인 변동, 색인 잔존 대비)
   '/doctors/lee-seoyoung': '/doctors',
+  '/doctors/jung-jaeheon': '/doctors',
   // 진료 단축 경로 → /treatments/:slug
   '/implant': '/treatments/implant',
   '/implants': '/treatments/implant',
@@ -644,7 +644,7 @@ app.get('/doctors', async (c) => {
     "@type": "ItemList",
     "@id": `${SITE.url}/doctors#itemlist`,
     "name": "대구365치과 의료진",
-    "description": "대구365치과 6인의 의료진 — 보존·소아·교정·보철·심미 분야 전문 협진",
+    "description": "대구365치과 5인의 의료진 — 보존·소아·교정·보철·심미 분야 전문 협진",
     "url": `${SITE.url}/doctors`,
     "numberOfItems": doctorRows.length,
     "itemListElement": doctorRows.map((d: any, i: number) => ({
@@ -658,12 +658,12 @@ app.get('/doctors', async (c) => {
   return c.render(<DoctorsListPage doctors={r.results as any} />, {
     title: '의료진 소개',
     description: fitDesc([
-      '대구365치과 6인의 의료진. 보존·소아·교정·보철·심미 각 분야 전문 협진.',
+      '대구365치과 5인의 의료진. 보존·소아·교정·보철·심미 각 분야 전문 협진.',
       doctorRows.length ? `의료진: ${doctorRows.map((d: any) => d.is_representative ? `${d.name} 대표원장` : d.name).join(', ')}.` : '',
       NAP_DESC
     ]),
     canonical: 'https://daegu365dc.kr/doctors',
-    ogImage: ogUrl.default('의료진 소개', '6인의 전문 협진.'),
+    ogImage: ogUrl.default('의료진 소개', '5인의 전문 협진.'),
     ogType: 'profile',
     breadcrumb: [
       { name: '홈', url: '/' },
@@ -803,7 +803,7 @@ app.get('/treatments/:slug', async (c) => {
 
   const faqs = await c.env.DB.prepare('SELECT * FROM faqs WHERE treatment_slug=? ORDER BY display_order, id').bind(slug).all()
   // Doctors who specialize
-  // PPT 모바일 슬라이드 249 — vinique(특화진료>라미네이트) 페이지도 핵심진료 라미네이트와 동일 의료진(정재헌·최혜정) 노출
+  // PPT 모바일 슬라이드 249 — vinique(특화진료>라미네이트) 페이지도 핵심진료 라미네이트와 동일 의료진 노출
   const doctorMatchSlug = slug === 'vinique' ? 'lamineer' : slug
   const allDocs = await c.env.DB.prepare('SELECT * FROM doctors ORDER BY display_order').all()
   const doctors = (allDocs.results as any[]).filter(d => {
@@ -2329,11 +2329,16 @@ app.get('/api/og.png', async (c) => {
 // 인테리어 사진, 영상 등 대용량 정적 자산을 R2에서 서빙
 // 업로드 후 사용 예: <img src="/r2/clinic/lobby/lobby-pano.jpg">
 // (/static/* 은 _routes.json 에서 Worker 우회 정적 자산 처리되므로 별도 prefix /r2/ 사용)
+// 퇴사 원장 사진·인터뷰 영상과 그 원장이 함께 찍힌 옛 단체사진 — 버킷에 남아 있어도 공개하지 않음(410 Gone).
+// 2026-11-21 원장단 6인→5인(정재헌 원장 퇴사). R2 객체 자체 삭제는 운영 승인 뒤 별도.
+const RETIRED_R2_KEY = /^(images\/doctors\/(jung-jaeheon|team-6-(main|horizontal|vertical)|team-horizontal-(smile|serious)|team-(2|3)rows)\.(webp|jpe?g|png)|정재헌_인터뷰_master\.mp4)$/
+
 app.get('/r2/*', async (c) => {
   const url = new URL(c.req.url)
   // '/r2/' 다음 경로를 R2 key 로 사용
   const key = decodeURIComponent(url.pathname.replace(/^\/r2\//, ''))
   if (!key) return c.notFound()
+  if (RETIRED_R2_KEY.test(key)) return new Response('Gone', { status: 410, headers: { 'Cache-Control': 'public, max-age=3600' } })
 
   const object = await c.env.R2.get(key)
   if (!object) return c.notFound()
@@ -2407,7 +2412,6 @@ app.post('/api/admin/upload', async (c) => {
 
 // 의료진 인터뷰 영상 (R2의 한글 파일명 → 영문 슬러그로 매핑)
 const DOCTOR_VIDEO_KEYS: Record<string, string> = {
-  'jung-jaeheon': '정재헌_인터뷰_master.mp4',
   'kim-sangwon':  '김상원_인터뷰_master.mp4',
   'choi-hyejung': '최혜정_인터뷰_master.mp4',
   'kim-jinduk':   '김진덕_인터뷰_master.mp4',
@@ -3382,7 +3386,7 @@ const buildLlmsLines = async (c: any): Promise<string[]> => {
   lines.push(`- 이메일: ${SITE.email}`)
   lines.push(`- 진료시간: 월·목 09:30~21:00 (야간), 화·수·금 09:30~18:30, 토·일 09:30~17:00`)
   lines.push(`- 휴진: 명절 당일`)
-  lines.push(`- 의료진: 6명 협진 시스템`)
+  lines.push(`- 의료진: 5명 협진 시스템`)
   lines.push(`- 설립: ${SITE.founded}년`)
   lines.push('')
   lines.push('## 주요 진료')
@@ -4081,7 +4085,7 @@ app.notFound((c) => {
             </a>
             <a href="/doctors" class="lux-card hover:bg-brown-50 transition text-left">
               <div class="display text-lg font-medium mb-1">의료진</div>
-              <div class="text-xs text-brown-600">6명 협진 시스템</div>
+              <div class="text-xs text-brown-600">5명 협진 시스템</div>
             </a>
             <a href="/before-after" class="lux-card hover:bg-brown-50 transition text-left">
               <div class="display text-lg font-medium mb-1">치료 사례</div>

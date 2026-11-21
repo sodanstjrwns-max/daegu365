@@ -269,7 +269,7 @@
   }
 
   // ── 7. 의료진: 단체 사진이 액자에서 화면 폭으로 펼쳐지고 → 대표원장 카드가 다가오고 → 원장 카드는 계단처럼
-  var team = $('img[src*="team-6-main"]');
+  var team = $('img[src*="team-5-main"]');
   if (team) {
     var frame = team.closest('.img-frame');
     frame.classList.add('mx-own', 'mx-par');

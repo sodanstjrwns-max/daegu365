@@ -61,7 +61,7 @@ export const dentistSchema = () => ({
   "@id": `${SITE.url}/#dentist`,
   "name": SITE.name,
   "alternateName": SITE.nameEn,
-  "description": "대구 북구 침산동 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인 투명교정, VINIQUE 라미네이트 전문 치과. 월·목 21시까지, 주말 진료. 6명의 전문 의료진 협진.",
+  "description": "대구 북구 침산동 대구365치과. 치과공포증 환자를 위한 수면임플란트, 인비절라인 투명교정, VINIQUE 라미네이트 전문 치과. 월·목 21시까지, 주말 진료. 5명의 전문 의료진 협진.",
   "url": SITE.url,
   "telephone": SITE.phone,
   "email": SITE.email,
@@ -119,7 +119,7 @@ export const dentistSchema = () => ({
   ],
   "knowsLanguage": ["ko", "en"],
   "slogan": "치과가 두려웠던 의사가 만든, 두려움 없는 치과",
-  "numberOfEmployees": { "@type": "QuantitativeValue", "value": 6, "unitText": "전문 의료진" },
+  "numberOfEmployees": { "@type": "QuantitativeValue", "value": 5, "unitText": "전문 의료진" },
   // AI 답변엔진 주제 권위 신호 (2026 AEO) — 검증 가능한 진료 영역만 명시
   "knowsAbout": [
     "수면임플란트", "디지털 가이드 임플란트", "전악 임플란트", "임플란트 재수술",
@@ -697,7 +697,7 @@ export const renderer = jsxRenderer(({
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
           <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-          <script src="/static/immersive.js?v=99b3d02b2e" defer></script>
+          <script src="/static/immersive.js?v=a7684dcd12" defer></script>
         </>}
       </body>
     </html>

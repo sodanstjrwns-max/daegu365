@@ -295,9 +295,9 @@ export const LamineerTreatmentPage = ({
     ? faqs
     : DEFAULT_FAQS.map((f, i) => ({ id: i, treatment_slug: 'lamineer', question: f.q, answer: f.a, display_order: i } as FAQ))
 
-  // PPT 슬라이드 34 — 라미네이트(VINIQUE) 담당 의료진은 최혜정 원장(센터장)을 먼저, 정재헌 원장을 다음으로
+  // PPT 슬라이드 34 — 라미네이트(VINIQUE) 담당 의료진은 최혜정 원장(센터장)을 먼저
   const orderedDoctors = [...doctors].sort((a: any, b: any) => {
-    const rank = (s: string) => (s === 'choi-hyejung' ? 0 : s === 'jung-jaeheon' ? 1 : 2)
+    const rank = (s: string) => (s === 'choi-hyejung' ? 0 : 1)
     return rank(a.slug) - rank(b.slug)
   })
 

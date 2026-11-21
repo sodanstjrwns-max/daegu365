@@ -2,9 +2,9 @@
 // public/static/og/{key}.png 로 미리 렌더된 og:image 목록
 export const OG_STATIC_KEYS = new Set<string>([
   'before-after-d624a279',
+  'default-3609a7ed',
   'default-3dd93094',
   'default-7cf31fdb',
-  'default-7e38cb5c',
   'default-84ecf1f6',
   'default-8e31a70b',
   'default-d084a0f3',

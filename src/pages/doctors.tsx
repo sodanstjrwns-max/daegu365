@@ -1,26 +1,24 @@
 import { Navbar, Footer } from '../components/Layout'
 import type { Doctor, Treatment, BeforeAfter, BlogPost } from '../lib/types'
 
-// 의료진 슬러그 → 프로필 사진 매핑 (파일명 기준 6명 + 단체 사진)
+// 의료진 슬러그 → 프로필 사진 매핑 (파일명 기준 5명 + 단체 사진) — 2026-11-21 원장단 6인→5인
 // PPT 모바일 슬라이드 7 + PC1 슬라이드 13 — 최혜정 ↔ 김진덕 사진 서로 교체
 // export: 진료별 페이지에서도 동일한 매핑을 공유하여 사진이 누락되지 않도록 함
 export const DOCTOR_PHOTO: Record<string, string> = {
   'kim-seongju':  '/r2/images/doctors/kim-seongju.webp',
-  'jung-jaeheon': '/r2/images/doctors/jung-jaeheon.webp',
   'kim-sangwon':  '/r2/images/doctors/kim-sangwon.webp',
   'choi-hyejung': '/r2/images/doctors/kim-jinduk.webp',
   'kim-jinduk':   '/r2/images/doctors/choi-hyejung.webp',
   'han-jieun':    '/r2/images/doctors/han-jieun.webp',
 }
 export const getDoctorPhoto = (slug: string) =>
-  DOCTOR_PHOTO[slug] || '/r2/images/doctors/team-horizontal-smile.webp'
+  DOCTOR_PHOTO[slug] || '/static/images/doctors/team-5-main.webp'
 
 // 의료진 슬러그 → 인터뷰 영상 R2 스트리밍 라우트 매핑
 // (R2 버킷 daegu365dc-assets 의 한글 master 파일을 /api/videos/:slug 라우트로 서빙)
 // ※ 영상은 R2 파일명과 슬러그가 정상 매칭됨 (사진만 스왑 처리됨)
 const DOCTOR_VIDEO: Record<string, string> = {
   'kim-seongju':  '/api/videos/kim-seongju',
-  'jung-jaeheon': '/api/videos/jung-jaeheon',
   'kim-sangwon':  '/api/videos/kim-sangwon',
   'choi-hyejung': '/api/videos/choi-hyejung',
   'kim-jinduk':   '/api/videos/kim-jinduk',
@@ -49,17 +47,17 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
       <div class="relative max-w-[1280px] mx-auto px-6 lg:px-12 py-28 md:py-36 text-center fade-in">
         <div class="text-xs tracking-[0.5em] text-gold mb-8 font-bold">MEDICAL TEAM · 대구365치과</div>
 
-        {/* 7인의 전문 의료진 — 폰트 키움 (PPT 요청) */}
+        {/* 5인의 전문 의료진 — 폰트 키움 (PPT 요청) */}
         <h1 class="display font-black tracking-tight leading-[0.92] text-ivory mb-10"
             style="font-size: clamp(3.5rem, 9vw, 8rem);">
-          <span class="block">6인의</span>
+          <span class="block">5인의</span>
           <span class="block text-gold mt-2">전문 의료진</span>
         </h1>
 
-        {/* 4개 칩 — 6인 협진 / 365일 진료 / 평일 야간 21시 / 대구침산동 */}
+        {/* 4개 칩 — 5인 협진 / 365일 진료 / 평일 야간 21시 / 대구침산동 */}
         <div class="flex flex-wrap justify-center gap-3 md:gap-4 mb-12 max-w-3xl mx-auto">
           {[
-            { icon: 'fa-user-doctor', text: '6인 협진' },
+            { icon: 'fa-user-doctor', text: '5인 협진' },
             { icon: 'fa-calendar-check', text: '365일 진료' },
             { icon: 'fa-moon', text: '평일 야간 21시' },
             { icon: 'fa-location-dot', text: '대구 침산동' },
@@ -108,10 +106,10 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
       <div class="max-w-[1440px] mx-auto px-6 lg:px-12 relative">
         <div class="text-center mb-12 fade-in">
           <div class="text-xs tracking-[0.5em] text-gold mb-6">WEEKLY SCHEDULE</div>
-          {/* 7인 글자 잘림 방지 — whitespace-nowrap + 폭 여유 */}
+          {/* 5인 글자 잘림 방지 — whitespace-nowrap + 폭 여유 */}
           <h2 class="display text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-ivory mb-6 leading-[1.15]" style="padding:0.1em 0.05em;">
-            {/* PPT 모바일 슬라이드 18 — "원장님 7인" → "7인의 원장님" + 기울임 없음 */}
-            <span class="inline-block not-italic" style="white-space:nowrap;"><span class="t-gold not-italic" style="padding:0 0.08em;">6인의</span> 원장님</span>{' '}
+            {/* PPT 모바일 슬라이드 18 — "원장님 N인" → "N인의 원장님" + 기울임 없음 */}
+            <span class="inline-block not-italic" style="white-space:nowrap;"><span class="t-gold not-italic" style="padding:0 0.08em;">5인의</span> 원장님</span>{' '}
             <span class="inline-block not-italic">요일별 진료 스케줄</span>
           </h2>
           <p class="text-brown-200 max-w-2xl mx-auto leading-relaxed text-sm md:text-base">
@@ -169,7 +167,6 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
             // 한국어 이름 → slug + 직책 매핑 (사진 가져오기 위함)
             const NAME_TO_SLUG: Record<string, string> = {
               '김성주': 'kim-seongju',
-              '정재헌': 'jung-jaeheon',
               '김상원': 'kim-sangwon',
               '최혜정': 'choi-hyejung',
               '김진덕': 'kim-jinduk',
@@ -177,25 +174,25 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
             }
             const SCHEDULE: Record<string, { doctors: { name: string; hours?: string; tag?: string }[] }> = {
               mon: { doctors: [
-                { name: '김성주' }, { name: '정재헌' }, { name: '김상원' },
+                { name: '김성주' }, { name: '김상원' },
               ]},
               tue: { doctors: [
-                { name: '정재헌' }, { name: '김상원' }, { name: '최혜정' }, { name: '한지은' },
+                { name: '김상원' }, { name: '최혜정' }, { name: '한지은' },
               ]},
               wed: { doctors: [
-                { name: '정재헌' }, { name: '김상원' }, { name: '최혜정' },
+                { name: '김상원' }, { name: '최혜정' },
               ]},
               thu: { doctors: [
                 { name: '김성주' }, { name: '최혜정' }, { name: '김진덕' },
               ]},
               fri: { doctors: [
-                { name: '김성주' }, { name: '정재헌' }, { name: '김상원' }, { name: '김진덕' },
+                { name: '김성주' }, { name: '김상원' }, { name: '김진덕' },
               ]},
               sat: { doctors: [
                 { name: '김성주' }, { name: '최혜정' }, { name: '김진덕' }, { name: '한지은' },
               ]},
               sun: { doctors: [
-                { name: '김성주' }, { name: '정재헌' }, { name: '김상원' },
+                { name: '김성주' }, { name: '김상원' },
               ]},
             }
             // 각 의료진의 직책 (대표원장/원장)을 doctors prop에서 추출
@@ -213,7 +210,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-[1200px] mx-auto">
                   {info.doctors.map(doc => {
                     const slug = NAME_TO_SLUG[doc.name]
-                    const photo = slug ? getDoctorPhoto(slug) : '/r2/images/doctors/team-horizontal-smile.webp'
+                    const photo = slug ? getDoctorPhoto(slug) : '/static/images/doctors/team-5-main.webp'
                     const pos = positionMap[doc.name] || '원장'
                     return (
                       <a
@@ -394,42 +391,28 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
             함께, <em class="text-brown-700 not-italic">협진</em>으로 완성합니다
           </h2>
           <p class="mt-6 text-brown-700 max-w-2xl mx-auto leading-relaxed">
-            6인의 전문의가 한 자리에서 케이스를 검토하고 진단합니다.<br/>
+            5인의 전문의가 한 자리에서 케이스를 검토하고 진단합니다.<br/>
             한 환자의 모든 진료를 같은 기준으로, 그것이 협진의 약속입니다.
           </p>
         </div>
 
-        {/* 12-col 매거진 그리드: 가로 사진(7) + 세로 사진(5) */}
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 fade-in-stagger items-stretch">
-          {/* 왼쪽 — 가로 단체 컷 (3:2) */}
-          <figure class="md:col-span-7 group">
-            <div class="img-frame aspect-[3/2] rounded-[24px] overflow-hidden bg-brown-100">
+        {/* 2026-11-21 원장단 6인→5인: 원장 제공 5인 단체컷 1장(4:3 원본 비율, 잘림 없음).
+            예전 세로 단체컷(6인)은 새 사진이 없어 내림 — 세로 컷이 오면 2단 매거진 그리드로 되돌릴 수 있음 */}
+        <div class="max-w-[1100px] mx-auto fade-in-stagger">
+          <figure class="group">
+            <div class="img-frame aspect-[4/3] rounded-[24px] overflow-hidden bg-brown-100">
               <img
-                src="/r2/images/doctors/team-6-horizontal.webp"
-                alt="대구365치과 6인 의료진 가로 단체컷"
-                loading="lazy"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-            <figcaption class="mt-4 flex items-baseline gap-3 text-xs tracking-[0.3em] text-brown-700">
-              <span class="text-gold font-bold">01</span>
-              <span class="uppercase">Wide Group · 한 자리에서</span>
-            </figcaption>
-          </figure>
-
-          {/* 오른쪽 — 세로 단체 컷 (2:3 = 세로 비율) */}
-          <figure class="md:col-span-5 group">
-            <div class="img-frame aspect-[2/3] rounded-[24px] overflow-hidden bg-brown-100">
-              <img
-                src="/r2/images/doctors/team-6-vertical.webp"
-                alt="대구365치과 6인 의료진 세로 단체컷"
+                src="/static/images/doctors/team-5-group.webp"
+                alt="대구365치과 5인 의료진 단체컷"
+                width="1440"
+                height="1080"
                 loading="lazy"
                 class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
               />
             </div>
             <figcaption class="mt-4 flex items-baseline gap-3 text-xs tracking-[0.3em] text-brown-700">
-              <span class="text-gold font-bold">02</span>
-              <span class="uppercase">Close Group · 가까이에서</span>
+              <span class="text-gold font-bold">TEAM</span>
+              <span class="uppercase">Wide Group · 한 자리에서</span>
             </figcaption>
           </figure>
         </div>
@@ -458,7 +441,7 @@ export const DoctorsListPage = ({ doctors }: { doctors: Doctor[] }) => (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 fade-in-stagger">
           {[
             { icon: 'fa-bed', title: '수면 임플란트', sub: '4단계 무통마취 · 평생 보증', doctor: '김성주 대표원장', slug: 'kim-seongju', href: '/treatments/implant', accent: 'gold' },
-            { icon: 'fa-tooth', title: '충치 · 신경치료 · 크라운', sub: '보존이 가능하면 보존부터', doctor: '정재헌 원장', slug: 'jung-jaeheon', href: '/treatments/cavity-endo-crown' },
+            { icon: 'fa-tooth', title: '충치 · 신경치료 · 크라운', sub: '보존이 가능하면 보존부터', doctor: '보존과 전문의 협진', slug: '', href: '/treatments/cavity-endo-crown' },
             { icon: 'fa-leaf', title: '자연치아 살리기', sub: '재신경치료 · 재생 근관치료', doctor: '김상원 원장', slug: 'kim-sangwon', href: '/treatments/conservative' },
             { icon: 'fa-gem', title: '비니크 라미네이트', sub: '0.3mm 박막 심미보철', doctor: '최혜정 원장', slug: 'choi-hyejung', href: '/treatments/lamineer', accent: 'gold' },
             { icon: 'fa-grip', title: '인비절라인 · 교정', sub: '성장기 · 중장년 · 디지털 교정', doctor: '김진덕 원장', slug: 'kim-jinduk', href: '/treatments/ortho' },
